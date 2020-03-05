@@ -1,12 +1,11 @@
-LAST_TESTDATA_VED_OPPSTART: true
 PAMCV_TOPIC: arbeid-pam-cv-endret-v2-dev
 
 kafka:
   consumer.concurrency: 1
-  retry.max: 4
+  retry.max: 5760
   retry.multiplier: 1.2
-  retry.initial_interval: 500
-  retry.max_interval: 5000
+  retry.initial_interval: 2000
+  retry.max_interval: 30000
   cvtopic: ${PAMCV_TOPIC}
 spring:
   kafka:
@@ -18,7 +17,6 @@ spring:
       client-id: pam-cv-eures
       key-deserializer: org.springframework.kafka.support.serializer.ErrorHandlingDeserializer2
       value-deserializer: org.springframework.kafka.support.serializer.ErrorHandlingDeserializer2
-
     properties:
       specific.avro.reader: true
       sasl.mechanism: null
@@ -27,9 +25,6 @@ spring:
       security.protocol: PLAINTEXT
       spring.deserializer.key.delegate.class: org.apache.kafka.common.serialization.StringDeserializer
       spring.deserializer.value.delegate.class: io.confluent.kafka.serializers.KafkaAvroDeserializer
-
-
     ssl:
       truststore-location: null
       truststore-password: null
-
