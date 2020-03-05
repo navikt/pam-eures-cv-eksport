@@ -1,0 +1,34 @@
+LAST_TESTDATA_VED_OPPSTART: true
+PAMCV_TOPIC: arbeid-pam-cv-endret-v2-dev
+
+kafka:
+  consumer.concurrency: 1
+  retry.max: 4
+  retry.multiplier: 1.2
+  retry.initial_interval: 500
+  retry.max_interval: 5000
+  cvtopic: ${PAMCV_TOPIC}
+spring:
+  kafka:
+    bootstrap-servers: ${KAFKA_HOST_IP:localhost}:${KAFKA_BROKER_PORT}
+    consumer:
+      group-id: pam-eures-cv-test
+      auto-offset-reset: earliest
+      enable-auto-commit: false
+      client-id: pam-cv-eures
+      key-deserializer: org.springframework.kafka.support.serializer.ErrorHandlingDeserializer2
+      value-deserializer: org.springframework.kafka.support.serializer.ErrorHandlingDeserializer2
+
+    properties:
+      specific.avro.reader: true
+      sasl.mechanism: null
+      sasl.jaas.config: null
+      schema.registry.url: http://${KAFKA_HOST_IP:localhost}:${SCHEMA_REGISTRY_PORT}
+      security.protocol: PLAINTEXT
+      spring.deserializer.key.delegate.class: org.apache.kafka.common.serialization.StringDeserializer
+      spring.deserializer.value.delegate.class: io.confluent.kafka.serializers.KafkaAvroDeserializer
+
+    ssl:
+      truststore-location: null
+      truststore-password: null
+
