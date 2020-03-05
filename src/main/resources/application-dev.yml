@@ -28,6 +28,7 @@ spring:
       spring.deserializer.key.delegate.class: org.apache.kafka.common.serialization.StringDeserializer
       spring.deserializer.value.delegate.class: io.confluent.kafka.serializers.KafkaAvroDeserializer
 
+
     ssl:
       truststore-location: null
       truststore-password: null
