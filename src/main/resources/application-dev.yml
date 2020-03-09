@@ -1,4 +1,5 @@
 PAMCV_TOPIC: arbeid-pam-cv-endret-v2-dev
+DBNAVN: cvdb
 
 # Custom Kafka-config som leses av vår egen kode
 kafka:
@@ -9,8 +10,9 @@ kafka:
   retry.max_interval: 30000
   cvtopic: ${PAMCV_TOPIC}
 
-# Spring Kafka consumer
+
 spring:
+  # Spring Kafka consumer
   kafka:
     bootstrap-servers: ${KAFKA_HOST_IP:localhost}:${KAFKA_BROKER_PORT}
     consumer:
@@ -31,3 +33,14 @@ spring:
     ssl:
       truststore-location: null
       truststore-password: null
+  h2:
+    console:
+      enabled: true
+      path: /internal/h2-console
+      settings:
+        web-allow-others: true
+  datasource:
+    url: jdbc:h2:mem:${DBNAVN};MODE=PostgreSQL;DATABASE_TO_LOWER=TRUE;DB_CLOSE_DELAY=-1
+    driverClassName: org.h2.Driver
+    username: sa
+    password:
