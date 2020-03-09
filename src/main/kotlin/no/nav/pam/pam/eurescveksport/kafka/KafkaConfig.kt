@@ -20,10 +20,11 @@ import java.util.*
 class KafkaConfig {
 
     @Bean
-    fun kafkaListenerContainerFactory(kafkaProperties: KafkaProperties): ConcurrentKafkaListenerContainerFactory<String, String> {
+    fun kafkaListenerContainerFactory(kafkaProperties: KafkaProperties, @Value("\${kafka.consumer.concurrency}") kafkaConcurrency: Int)
+            : ConcurrentKafkaListenerContainerFactory<String, String> {
         val factory: ConcurrentKafkaListenerContainerFactory<String, String> = ConcurrentKafkaListenerContainerFactory()
         factory.consumerFactory = DefaultKafkaConsumerFactory(kafkaProperties.buildConsumerProperties())
-        factory.setConcurrency(1)
+        factory.setConcurrency(kafkaConcurrency)
         factory.containerProperties.ackMode = ContainerProperties.AckMode.MANUAL
         return factory
     }

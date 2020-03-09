@@ -1,5 +1,6 @@
 PAMCV_TOPIC: arbeid-pam-cv-endret-v2-dev
 
+# Custom Kafka-config som leses av vår egen kode
 kafka:
   consumer.concurrency: 1
   retry.max: 5760
@@ -7,6 +8,8 @@ kafka:
   retry.initial_interval: 2000
   retry.max_interval: 30000
   cvtopic: ${PAMCV_TOPIC}
+
+# Spring Kafka consumer
 spring:
   kafka:
     bootstrap-servers: ${KAFKA_HOST_IP:localhost}:${KAFKA_BROKER_PORT}

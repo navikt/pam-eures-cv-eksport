@@ -16,11 +16,9 @@ class CvConsumer(private val retryTemplate: RetryTemplate) {
     @KafkaListener(topics = ["\${kafka.cvtopic}"])
     fun onMessage(record: ConsumerRecord<String, Melding>, ack: Acknowledgment) {
         logger.info("got message: {}", record)
-
         retryTemplate.execute<Any?, RuntimeException> {
             processMessage(record.value())
         }
-
         ack.acknowledge()
     }
 
