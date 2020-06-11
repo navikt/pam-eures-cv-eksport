@@ -1,4 +1,3 @@
-FROM adoptopenjdk/openjdk13-openj9:jdk-13.0.2_8_openj9-0.18.0-alpine-slim
-COPY build/libs/eures-*-all.jar eures.jar
-EXPOSE 8080
-CMD ["java", "-Dcom.sun.management.jmxremote", "-Xmx128m", "-XX:+IdleTuningGcOnIdle", "-Xtune:virtualized", "-jar", "eures.jar"]
+FROM navikt/java:11
+COPY scripts/init_secrets.sh /init-scripts/init_secrets.sh
+COPY build/libs/pam-eures-cv-eksport-*-all.jar ./app.jar
