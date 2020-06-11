@@ -1,3 +1,5 @@
 micronaut:
   application:
-    name: eures
+    name: eures-cv-eksport
+  server:
+    context-path: pam-eures-cv-eksport
