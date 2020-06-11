@@ -3,12 +3,12 @@ package no.nav.cv.eures.nais
 import io.micronaut.http.annotation.Controller
 import io.micronaut.http.annotation.Get
 
-@Controller("/internal/status")
+@Controller("/internal")
 class StatusController {
 
-    @Get("alive")
+    @Get("isAlive")
     fun isAlive() = "OK"
 
-    @Get("ready")
+    @Get("isReady")
     fun isReady() = "OK"
 }
