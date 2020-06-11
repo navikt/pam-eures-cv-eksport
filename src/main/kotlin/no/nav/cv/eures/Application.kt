@@ -1,4 +1,4 @@
-package no.nav.cv
+package no.nav.cv.eures
 
 import io.micronaut.runtime.Micronaut
 
