@@ -9,7 +9,7 @@ plugins {
 
 
 version "0.1"
-group "no.nav.cv"
+group "no.nav.cv.eures"
 
 repositories {
     mavenCentral()
@@ -44,7 +44,7 @@ dependencies {
 
 test.classpath += configurations.developmentOnly
 
-mainClassName = "no.nav.cv.Application"
+mainClassName = "no.nav.cv.eures.Application"
 
 test {
     useJUnitPlatform()
