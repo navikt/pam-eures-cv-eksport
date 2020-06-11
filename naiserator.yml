@@ -1,0 +1,39 @@
+apiVersion: "nais.io/v1alpha1"
+kind: "Application"
+metadata:
+  name: pam-eures-cv-eksport
+  namespace: default
+  labels:
+    team: teampam
+spec:
+  image: {{ image }}
+  port: 9030
+  liveness:
+    path: /pam-eures-cv-eksport/internal/isAlive
+    initialDelay: 20
+  readiness:
+    path: /pam-eures-cv-eksport/internal/isReady
+    initialDelay: 20
+  replicas:
+    min: 2
+    max: 2
+  cpuThresholdPercentage: 50
+  resources:
+    limits:
+      cpu: 1000m
+      memory: 2048Mi
+    requests:
+      cpu: 200m
+      memory: 256Mi
+  vault:
+    enabled: true
+    paths:
+      - kvPath: {{ servicebruker_cv_eksport }}
+        mountPath: /serviceuser/kafka/cveksport/
+  webproxy: false
+  prometheus:
+    enabled: true
+    path: /pam-eures-cv-eksport/prometheus
+  env:
+    - name: KAFKA_CONSUMER_TOPIC_CV_ENDRET
+      value: {{ kafka_consumer_topic_cv_endret }}

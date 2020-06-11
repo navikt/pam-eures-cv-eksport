@@ -3,3 +3,4 @@ micronaut:
     name: eures-cv-eksport
   server:
     context-path: pam-eures-cv-eksport
+    port: 9030

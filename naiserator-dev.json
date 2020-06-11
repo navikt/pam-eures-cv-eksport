@@ -1,0 +1,5 @@
+{
+  "servicebruker_cv_eksport": "/serviceuser/data/dev/srvpamcveures",
+
+  "kafka_consumer_topic_cv_endret":"arbeid-pam-cv-endret-v4-q0"
+}
