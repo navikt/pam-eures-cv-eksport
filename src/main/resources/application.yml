@@ -4,3 +4,11 @@ micronaut:
   server:
     context-path: pam-eures-cv-eksport
     port: 9030
+
+kafka:
+  brokers:
+    cv_endret: "localhost:9092"
+  topics:
+    consumers:
+      cv_endret:  ${KAFKA_CONSUMER_TOPIC_CV_ENDRET:`arbeid-pam-cv-endret-v4-q0`}
+      group_id: "pam-cv-eures-cv-eksport-v1"
