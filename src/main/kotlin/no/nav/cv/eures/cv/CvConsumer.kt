@@ -9,7 +9,9 @@ import org.apache.kafka.common.serialization.StringDeserializer
 import java.time.Duration
 import java.time.ZonedDateTime
 import java.util.*
+import java.util.concurrent.locks.ReentrantLock
 import javax.inject.Singleton
+import kotlin.concurrent.withLock
 
 @Singleton
 class CvConsumer(
@@ -21,6 +23,8 @@ class CvConsumer(
 
     private val consumer = createConsumer()
 
+    private val concurrencyLock = ReentrantLock()
+
     companion object {
         val log = LoggerFactory.getLogger(CvConsumer::class.java)
     }
@@ -29,7 +33,7 @@ class CvConsumer(
     fun process() {
         log.info("Process() starter")
 
-        val endredeCVer = consumer.poll(Duration.ofSeconds(1))
+        val endredeCVer = concurrencyLock.withLock { consumer.poll(Duration.ofSeconds(1)) }
 
         log.info("Fikk ${endredeCVer.count()} CVer")
 
@@ -53,14 +57,14 @@ class CvConsumer(
     fun seekToBeginning() {
         log.info("Kjører seekToBeginning() på CvConsumer")
 
-        // TODO Legg til locking
+        concurrencyLock.withLock {
+            // For at seekToBeginning skal fungere må vi ha kjørt poll() minst en gang, siden subscribe er lazy
+            // https://stackoverflow.com/questions/41997415/why-calls-to-seektobeginning-and-seektoend-apis-of-kafka-hang-forever
+            consumer.poll(Duration.ofSeconds(1))
 
-        // For at seekToBeginning skal fungere må vi ha kjørt poll() minst en gang, siden subscribe er lazy
-        // https://stackoverflow.com/questions/41997415/why-calls-to-seektobeginning-and-seektoend-apis-of-kafka-hang-forever
-        consumer.poll(Duration.ofSeconds(1))
-
-        // TODO Er dette virkelig starten, eller kun per partisjon? Dokumentasjonen sier at dette søker tilbake til begynnelsen av "partitions your consumer is currently assigned to"
-        consumer.seekToBeginning(consumer.assignment())
+            // TODO Er dette virkelig starten, eller kun per partisjon? Dokumentasjonen sier at dette søker tilbake til begynnelsen av "partitions your consumer is currently assigned to"
+            consumer.seekToBeginning(consumer.assignment())
+        }
     }
 
     private fun createConsumer() : Consumer<String, String> {
