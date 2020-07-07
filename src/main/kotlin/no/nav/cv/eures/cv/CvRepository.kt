@@ -73,6 +73,10 @@ class RawCV() {
         return this
     }
 
+    override fun toString(): String {
+        return "RawCV(aktorId='$aktorId', sistEndret=$sistEndret, rawAvro='$rawAvro')"
+    }
+
     companion object {
         fun create(aktorId: String, sistEndret: ZonedDateTime, rawAvro: String)
                 = RawCV().update(aktorId, sistEndret, rawAvro)

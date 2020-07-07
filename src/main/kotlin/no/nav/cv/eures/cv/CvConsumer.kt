@@ -50,7 +50,11 @@ class CvConsumer(
                             sistEndret = ZonedDateTime.now(),
                             rawAvro = rawAvro.value())
 
-            cvRepository.lagreCv(oppdatertCv)
+            try {
+                cvRepository.lagreCv(oppdatertCv)
+            } catch (e: Exception) {
+                log.error("Fikk exception $e under lagring av cv $oppdatertCv")
+            }
         }
     }
 
