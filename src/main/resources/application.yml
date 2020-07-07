@@ -35,7 +35,7 @@ datasources:
     idleTimeout: 10001
     maxLifetime: 30001
     connectionTestQuery: "select 1"
-    jdbcUrl: ${JDBC_URL:`jdbc:postgresql://localhost:5432/pam_eures_cv_export`}
+    jdbcUrl: ${JDBC_URL:`jdbc:postgresql://localhost:5432/pam_eures_cv_eksport`}
     driverClassName: 'org.postgresql.Driver'
 
 flyway:
