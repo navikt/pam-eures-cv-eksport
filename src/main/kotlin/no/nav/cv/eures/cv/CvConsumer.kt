@@ -26,7 +26,7 @@ class CvConsumer(
     @Scheduled(fixedDelay = "15s")
     fun process() {
         log.info("Process() starter")
-        
+
         val endredeCVer = consumer.poll(Duration.ofSeconds(1))
 
         log.info("Fikk ${endredeCVer.count()} CVer")
@@ -34,6 +34,17 @@ class CvConsumer(
         for(cv in endredeCVer) {
             log.info("Fikk CV $cv")
         }
+    }
+
+    fun seekToBeginning() {
+        log.info("Kjører seekToBeginning() på CvConsumer")
+
+        // For at seekToBeginning skal fungere må vi ha kjørt poll() minst en gang, siden subscribe er lazy
+        // https://stackoverflow.com/questions/41997415/why-calls-to-seektobeginning-and-seektoend-apis-of-kafka-hang-forever
+        consumer.poll(Duration.ofSeconds(1))
+
+        // TODO Er dette virkelig starten, eller kun per partisjon? Dokumentasjonen sier at dette søker tilbake til begynnelsen av "partitions your consumer is currently assigned to"
+        consumer.seekToBeginning(consumer.assignment())
     }
 
     private fun createConsumer() : Consumer<String, String> {
