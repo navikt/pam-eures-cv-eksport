@@ -7,6 +7,7 @@ import org.apache.kafka.clients.consumer.Consumer
 import org.apache.kafka.clients.consumer.KafkaConsumer
 import org.apache.kafka.common.serialization.StringDeserializer
 import java.time.Duration
+import java.time.ZonedDateTime
 import java.util.*
 import javax.inject.Singleton
 
@@ -14,7 +15,8 @@ import javax.inject.Singleton
 class CvConsumer(
         @Value("\${kafka.brokers.cv_endret}") private val brokers: String,
         @Value("\${kafka.topics.consumers.cv_endret}") private val topic: String,
-        @Value("\${kafka.topics.consumers.group_id}") private val groupId: String
+        @Value("\${kafka.topics.consumers.group_id}") private val groupId: String,
+        private val cvRepository: CvRepository
 ) {
 
     private val consumer = createConsumer()
@@ -31,8 +33,16 @@ class CvConsumer(
 
         log.info("Fikk ${endredeCVer.count()} CVer")
 
-        for(cv in endredeCVer) {
-            log.info("Fikk CV $cv")
+        for(rawAvro in endredeCVer) {
+            log.info("Fikk CV $rawAvro")
+
+            val cv = CV(
+                    aktorId = "123",
+                    sistEndret = ZonedDateTime.now(),
+                    rawAvro = rawAvro.value()
+            )
+
+            cvRepository.lagreCv(cv)
         }
     }
 
