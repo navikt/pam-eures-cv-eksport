@@ -36,18 +36,24 @@ class CvConsumer(
         for(rawAvro in endredeCVer) {
             log.info("Fikk CV $rawAvro")
 
-            val cv = CV(
-                    aktorId = "123",
-                    sistEndret = ZonedDateTime.now(),
-                    rawAvro = rawAvro.value()
-            )
+            val oppdatertCv = cvRepository
+                    .hentCv("123")
+                    ?.update(aktorId = "123",
+                            sistEndret = ZonedDateTime.now(),
+                            rawAvro = rawAvro.value())
+                    ?: RawCV.create(
+                            aktorId = "123",
+                            sistEndret = ZonedDateTime.now(),
+                            rawAvro = rawAvro.value())
 
-            cvRepository.lagreCv(cv)
+            cvRepository.lagreCv(oppdatertCv)
         }
     }
 
     fun seekToBeginning() {
         log.info("Kjører seekToBeginning() på CvConsumer")
+
+        // TODO Legg til locking
 
         // For at seekToBeginning skal fungere må vi ha kjørt poll() minst en gang, siden subscribe er lazy
         // https://stackoverflow.com/questions/41997415/why-calls-to-seektobeginning-and-seektoend-apis-of-kafka-hang-forever
