@@ -12,3 +12,25 @@ kafka:
     consumers:
       cv_endret:  ${KAFKA_CONSUMER_TOPIC_CV_ENDRET:`arbeid-pam-cv-endret-v4-q0`}
       group_id: "pam-cv-eures-cv-eksport-v1"
+
+db:
+  vault:
+    path: ${DB_VAULT_PATH:`postgresql/preprod`}
+    username: ${DB_VAULT_USERNAME:`pam-eures-cv-eksport-admin`}
+
+datasources:
+  default:
+    minimumIdle: 0
+    maximumPoolSize: 4
+    idleTimeout: 10001
+    maxLifetime: 30001
+    connectionTestQuery: "select 1"
+    jdbcUrl: ${JDBC_URL:`jdbc:postgresql://localhost:5432/pam-eures-cv-export`}
+    driverClassName: 'org.postgresql.Driver'
+
+flyway:
+  datasources:
+    default:
+      locations: classpath:db
+      initSql:
+        - 'SET ROLE "pam-eures-cv-eksport-admin"'
