@@ -1,15 +1,10 @@
 package no.nav.cv
 
-import assertk.assertThat
-import assertk.assertions.isEqualTo
-import assertk.assertions.isNotNull
-import assertk.assertions.isNull
 import io.micronaut.test.annotation.MicronautTest
 import no.nav.cv.eures.cv.CvRepository
 import no.nav.cv.eures.cv.RawCV
-import org.hibernate.exception.ConstraintViolationException
+import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.Test
-import org.junit.jupiter.api.assertThrows
 import java.time.ZonedDateTime
 import javax.inject.Inject
 
@@ -38,10 +33,10 @@ class CvRepositoryTest {
 
         val hentet = cvRepository.hentCv(aktorId1)
 
-        assertThat(hentet).isNotNull()
-        assertThat(hentet?.aktorId).isEqualTo(aktorId1)
-        assertThat(hentet?.sistEndret).isEqualTo(now)
-        assertThat(hentet?.rawAvro).isEqualTo(rawAvro1)
+        assertNotNull(hentet)
+        assertEquals(hentet?.aktorId, aktorId1)
+        assertEquals(hentet?.sistEndret, now)
+        assertEquals(hentet?.rawAvro, rawAvro1)
     }
 
     @Test
@@ -54,17 +49,17 @@ class CvRepositoryTest {
 
         val hentet1 = cvRepository.hentCv(aktorId1)
 
-        assertThat(hentet1).isNotNull()
-        assertThat(hentet1?.aktorId).isEqualTo(aktorId1)
-        assertThat(hentet1?.sistEndret).isEqualTo(now)
-        assertThat(hentet1?.rawAvro).isEqualTo(rawAvro1)
+        assertNotNull(hentet1)
+        assertEquals(hentet1?.aktorId, aktorId1)
+        assertEquals(hentet1?.sistEndret, now)
+        assertEquals(hentet1?.rawAvro, rawAvro1)
 
         val hentet2 = cvRepository.hentCv(aktorId2)
 
-        assertThat(hentet2).isNotNull()
-        assertThat(hentet2?.aktorId).isEqualTo(aktorId2)
-        assertThat(hentet2?.sistEndret).isEqualTo(yesterday)
-        assertThat(hentet2?.rawAvro).isEqualTo(rawAvro2)
+        assertNotNull(hentet2)
+        assertEquals(hentet2?.aktorId, aktorId2)
+        assertEquals(hentet2?.sistEndret, yesterday)
+        assertEquals(hentet2?.rawAvro, rawAvro2)
     }
 
     @Test
@@ -76,20 +71,20 @@ class CvRepositoryTest {
         val cv2 = cvRepository.hentCv(aktorId1)
                 ?.update(aktorId1, now, rawAvro2)
 
-        assertThat(cv2).isNotNull()
+        assertNotNull(cv2)
         cvRepository.lagreCv(cv2!!)
 
         val hentet2 = cvRepository.hentCv(aktorId1)
 
-        assertThat(hentet2?.aktorId).isEqualTo(aktorId1)
-        assertThat(hentet2?.sistEndret).isEqualTo(now)
-        assertThat(hentet2?.rawAvro).isEqualTo(rawAvro2)
+        assertEquals(hentet2?.aktorId, aktorId1)
+        assertEquals(hentet2?.sistEndret, now)
+        assertEquals(hentet2?.rawAvro, rawAvro2)
     }
 
     @Test
     fun `ukjent cv gir null`() {
         val ukjentCv = cvRepository.hentCv(aktorIdUkjent)
 
-        assertThat(ukjentCv).isNull()
+        assertNull(ukjentCv)
     }
 }
