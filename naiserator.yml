@@ -37,3 +37,9 @@ spec:
   env:
     - name: KAFKA_CONSUMER_TOPIC_CV_ENDRET
       value: {{ kafka_consumer_topic_cv_endret }}
+    - name: JDBC_URL
+      value: {{ jdbc_url }}
+    - name: DB_VAULT_PATH
+      value: {{ db_vault_path }}
+    - name: DB_VAULT_USERNAME
+      value: {{ db_vault_username }}
