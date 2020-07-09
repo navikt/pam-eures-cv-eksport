@@ -1,5 +1,9 @@
 {
   "servicebruker_cv_eksport": "/serviceuser/data/dev/srvpamcveures",
 
-  "kafka_consumer_topic_cv_endret":"arbeid-pam-cv-endret-v4-q0"
+  "kafka_consumer_topic_cv_endret":"arbeid-pam-cv-endret-v4-q0",
+
+  "jdbc_url": "jdbc:postgresql://b27dbvl016.preprod.local/pam-eures-cv-eksport",
+  "db_vault_path": "postgresql/preprod-fss/",
+  "db_vault_username": "pam-eures-cv-eksport-admin"
 }

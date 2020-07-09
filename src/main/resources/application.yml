@@ -42,5 +42,5 @@ flyway:
   datasources:
     default:
       locations: classpath:db
-      #initSql:
-      #  - 'SET ROLE "pam-eures-cv-eksport-admin"'
+      initSql:
+        - 'SET ROLE "pam-eures-cv-eksport-admin"'
