@@ -1,7 +1,7 @@
 plugins {
-    id "org.jetbrains.kotlin.jvm" version "1.3.50"
-    id "org.jetbrains.kotlin.kapt" version "1.3.50"
-    id "org.jetbrains.kotlin.plugin.allopen" version "1.3.50"
+    id "org.jetbrains.kotlin.jvm" version "1.3.72"
+    id "org.jetbrains.kotlin.kapt" version "1.3.72"
+    id "org.jetbrains.kotlin.plugin.allopen" version "1.3.72"
     id "com.github.johnrengelman.shadow" version "5.2.0"
     id "application"
 }
@@ -27,6 +27,7 @@ dependencies {
     implementation "javax.annotation:javax.annotation-api"
     implementation "org.apache.kafka:kafka-clients"
     implementation("no.nav:vault-jdbc:1.3.7")
+    implementation "net.logstash.logback:logstash-logback-encoder:6.2"
 
     implementation platform("io.micronaut:micronaut-bom:$micronautVersion")
     implementation "io.micronaut:micronaut-runtime"
