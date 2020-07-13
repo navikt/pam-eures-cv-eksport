@@ -1,0 +1,9 @@
+kafka:
+  brokers:
+    cv_endret: "localhost:9092"
+
+datasources:
+  default:
+    connectionTestQuery: "select 1"
+    jdbcUrl: "jdbc:postgresql://localhost:5432/pam-eures-cv-eksport"
+    driverClassName: 'org.postgresql.Driver'

@@ -6,8 +6,6 @@ plugins {
     id "application"
 }
 
-
-
 version "0.1"
 group "no.nav.cv.eures"
 
@@ -90,5 +88,8 @@ shadowJar {
 
 tasks.withType(JavaExec) {
     classpath += configurations.developmentOnly
-    jvmArgs('-noverify', '-XX:TieredStopAtLevel=1', '-Dcom.sun.management.jmxremote')
+    if(System.getenv('RUN_LOCAL') != null)
+        jvmArgs('-noverify', '-XX:TieredStopAtLevel=1', '-Dcom.sun.management.jmxremote', '-Dmicronaut.environments=local')
+    else
+        jvmArgs('-noverify', '-XX:TieredStopAtLevel=1', '-Dcom.sun.management.jmxremote')
 }
