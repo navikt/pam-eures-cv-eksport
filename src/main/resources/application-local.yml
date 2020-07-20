@@ -1,6 +1,7 @@
 kafka:
-  brokers:
-    cv_endret: "192.168.99.100:9092"
+  bootstrap:
+    servers:
+    - 192.168.99.100:9092
   topics:
     consumers:
       cv_endret: "arbeid-pam-cv-endret-v2-dev"

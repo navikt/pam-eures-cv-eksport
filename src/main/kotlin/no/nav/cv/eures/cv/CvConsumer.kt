@@ -15,7 +15,7 @@ import kotlin.concurrent.withLock
 
 @Singleton
 class CvConsumer(
-        @Value("\${kafka.brokers.cv_endret}") private val brokers: String,
+        @Value("\${kafka.bootstrap.servers}") private val bootstrapServers: String,
         @Value("\${kafka.topics.consumers.cv_endret}") private val topic: String,
         @Value("\${kafka.topics.consumers.group_id}") private val groupId: String,
         private val cvRepository: CvRepository
@@ -74,7 +74,7 @@ class CvConsumer(
 
     private fun createConsumer() : Consumer<String, String> {
         val props = Properties()
-        props["bootstrap.servers"] = brokers
+        props["bootstrap.servers"] = bootstrapServers
         props["group.id"] = groupId
         props["key.deserializer"] = StringDeserializer::class.java
         props["value.deserializer"] = StringDeserializer::class.java
