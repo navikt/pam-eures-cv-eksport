@@ -5,5 +5,7 @@
 
   "jdbc_url": "jdbc:postgresql://b27dbvl016.preprod.local/pam-eures-cv-eksport",
   "db_vault_path": "postgresql/preprod-fss/",
-  "db_vault_username": "pam-eures-cv-eksport-admin"
+  "db_vault_username": "pam-eures-cv-eksport-admin",
+
+  "ingress": "https://pam-eures-CV-eksport.nais.preprod.local"
 }

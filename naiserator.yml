@@ -43,3 +43,5 @@ spec:
       value: {{ db_vault_path }}
     - name: DB_VAULT_USERNAME
       value: {{ db_vault_username }}
+ingresses:
+  - {{ ingress }}
