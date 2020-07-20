@@ -29,7 +29,7 @@ class CvConsumer(
         val log = LoggerFactory.getLogger(CvConsumer::class.java)
     }
 
-    @Scheduled(fixedDelay = "15s")
+    @Scheduled(fixedDelay = "5s")
     fun process() {
         log.info("Process() starter")
 
@@ -78,6 +78,7 @@ class CvConsumer(
         props["group.id"] = groupId
         props["key.deserializer"] = StringDeserializer::class.java
         props["value.deserializer"] = StringDeserializer::class.java
+        props["max.poll.records"] = 200
         val consumer = KafkaConsumer<String, String>(props)
         consumer.subscribe(listOf(topic))
         return consumer
