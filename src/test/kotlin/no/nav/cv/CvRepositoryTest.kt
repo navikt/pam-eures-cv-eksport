@@ -6,6 +6,7 @@ import no.nav.cv.eures.cv.RawCV
 import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.Test
 import java.time.ZonedDateTime
+import java.util.*
 import javax.inject.Inject
 
 @MicronautTest
@@ -21,8 +22,8 @@ class CvRepositoryTest {
     private val aktorId2 = "321"
     private val aktorIdUkjent = "ukjent"
 
-    private val rawAvro1 = "raw avro string 1"
-    private val rawAvro2 = "raw avro string 2"
+    private val rawAvro1 = Base64.getEncoder().encodeToString("raw avro string 1".toByteArray())
+    private val rawAvro2 = Base64.getEncoder().encodeToString("raw avro string 2".toByteArray())
 
 
     @Test

@@ -37,18 +37,19 @@ class CvConsumer(
 
         log.info("Fikk ${endredeCVer.count()} CVer")
 
-        for(rawAvro in endredeCVer) {
-            log.info("Fikk CV $rawAvro")
+        for(melding in endredeCVer) {
+            val aktorId = melding.key()
+            val rawAvroBase64 = Base64.getEncoder().encodeToString(melding.value().toByteArray())
 
             val oppdatertCv = cvRepository
-                    .hentCv("123")
-                    ?.update(aktorId = "123",
+                    .hentCv(aktorId)
+                    ?.update(aktorId = aktorId,
                             sistEndret = ZonedDateTime.now(),
-                            rawAvro = rawAvro.value())
+                            rawAvro = rawAvroBase64)
                     ?: RawCV.create(
-                            aktorId = "123",
+                            aktorId = aktorId,
                             sistEndret = ZonedDateTime.now(),
-                            rawAvro = rawAvro.value())
+                            rawAvro = rawAvroBase64)
 
             try {
                 cvRepository.lagreCv(oppdatertCv)
