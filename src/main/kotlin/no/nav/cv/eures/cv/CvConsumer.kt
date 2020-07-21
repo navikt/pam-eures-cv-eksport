@@ -21,7 +21,7 @@ class CvConsumer(
         private val cvRepository: CvRepository
 ) {
 
-    private val consumer = createConsumer()
+    private val consumer by lazy { createConsumer() }
 
     private val concurrencyLock = ReentrantLock()
 
@@ -30,9 +30,13 @@ class CvConsumer(
     }
 
     @Scheduled(fixedDelay = "5s")
-    fun process() {
-        log.info("Process() starter")
+    fun cron() {
+        log.info("cron() starter")
 
+        process(consumer)
+    }
+
+    fun process(consumer: Consumer<String, String>) {
         val endredeCVer = concurrencyLock.withLock { consumer.poll(Duration.ofSeconds(1)) }
 
         log.info("Fikk ${endredeCVer.count()} CVer")
