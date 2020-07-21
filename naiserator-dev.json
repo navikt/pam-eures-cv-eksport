@@ -7,5 +7,5 @@
   "db_vault_path": "postgresql/preprod-fss/",
   "db_vault_username": "pam-eures-cv-eksport-admin",
 
-  "ingress": "https://pam-eures-CV-eksport.nais.preprod.local"
+  "ingress": "https://pam-eures-cv-eksport.nais.preprod.local"
 }
