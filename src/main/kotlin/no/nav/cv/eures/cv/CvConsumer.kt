@@ -18,8 +18,6 @@ class CvConsumer(
         @Value("\${kafka.bootstrap.servers}") private val bootstrapServers: String,
         @Value("\${kafka.topics.consumers.cv_endret}") private val topic: String,
         @Value("\${kafka.topics.consumers.group_id}") private val groupId: String,
-        @Value("\${kafka.auth.username}") private val username: String,
-        @Value("\${kafka.auth.password}") private val password: String,
         private val cvRepository: CvRepository
 ) {
 
