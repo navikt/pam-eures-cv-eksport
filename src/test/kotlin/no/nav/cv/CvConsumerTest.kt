@@ -71,6 +71,32 @@ class CvConsumerTest {
         assertTrue(sjekkAktor(testData.aktorId2, testData.rawAvro2Base64))
     }
 
+//    TODO: Finn ut hvorfor denne testen feiler på siste assert
+//    @Test
+//    fun seekToBegining() {
+//        var offset = 0L
+//
+//        consumer.schedulePollTask {
+//            consumer.addRecord(record(offset++, testData.aktorId1, testData.rawAvro1))
+//            consumer.addRecord(record(offset++, testData.aktorId2, testData.rawAvro2))
+//        }
+//
+//        val recordsBeforeSeek1 = consumer.poll(Duration.ofSeconds(1))
+//
+//        assertEquals(2, recordsBeforeSeek1.toList().size)
+//
+//        val recordsBeforeSeek2 = consumer.poll(Duration.ofSeconds(1))
+//
+//        assertEquals(0, recordsBeforeSeek2.toList().size)
+//
+//
+//        cvConsumer.seekToBeginningActual(consumer)
+//
+//        val recordsAfterSeek = consumer.poll(Duration.ofSeconds(1))
+//
+//        assertEquals(2, recordsAfterSeek.toList().size)
+//    }
+
     private fun sjekkAktor(aktorId: String, rawAvroBase64: String) : Boolean {
         val hentet = cvRepository.hentCv(aktorId)
 

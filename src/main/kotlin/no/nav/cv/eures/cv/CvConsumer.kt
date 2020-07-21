@@ -31,6 +31,8 @@ class CvConsumer(
 
     @Scheduled(fixedDelay = "5s")
     fun cron() {
+        // TODO: Fiks slik at denne ikke kjører under testing
+
         log.info("cron() starter")
 
         process(consumer)
@@ -64,6 +66,10 @@ class CvConsumer(
     }
 
     fun seekToBeginning() {
+        seekToBeginningActual(consumer)
+    }
+
+    fun seekToBeginningActual(consumer: Consumer<String, String>) {
         log.info("Kjører seekToBeginning() på CvConsumer")
 
         concurrencyLock.withLock {
