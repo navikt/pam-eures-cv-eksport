@@ -15,76 +15,67 @@ class CvRepositoryTest {
     @Inject
     lateinit var cvRepository: CvRepository
 
-    private val now = ZonedDateTime.now()
-    private val yesterday = ZonedDateTime.now().minusDays(1)
-
-    private val aktorId1 = "123"
-    private val aktorId2 = "321"
-    private val aktorIdUkjent = "ukjent"
-
-    private val rawAvro1 = Base64.getEncoder().encodeToString("raw avro string 1".toByteArray())
-    private val rawAvro2 = Base64.getEncoder().encodeToString("raw avro string 2".toByteArray())
-
+    private val testData = CvTestData()
 
     @Test
     fun `finn cv knyttet til aktorid`() {
-        val cv = RawCV.create(aktorId1, now, rawAvro1)
+        val cv = RawCV.create(testData.aktorId1, testData.now, testData.rawAvro1Base64)
 
         cvRepository.lagreCv(cv)
 
-        val hentet = cvRepository.hentCv(aktorId1)
+        val hentet = cvRepository.hentCv(testData.aktorId1)
 
         assertNotNull(hentet)
-        assertEquals(hentet?.aktorId, aktorId1)
-        assertEquals(hentet?.sistEndret, now)
-        assertEquals(hentet?.rawAvro, rawAvro1)
+        assertEquals(hentet?.aktorId, testData.aktorId1)
+        assertEquals(hentet?.sistEndret, testData.now)
+        assertEquals(hentet?.rawAvro, testData.rawAvro1Base64)
     }
 
     @Test
     fun `finn en av flere cv`() {
-        val cv1 = RawCV.create(aktorId1, now, rawAvro1)
-        val cv2 = RawCV.create(aktorId2, yesterday, rawAvro2)
+        val cv1 = RawCV.create(testData.aktorId1, testData.now, testData.rawAvro1Base64)
+        val cv2 = RawCV.create(testData.aktorId2, testData.yesterday, testData.rawAvro2Base64)
 
         cvRepository.lagreCv(cv1)
         cvRepository.lagreCv(cv2)
 
-        val hentet1 = cvRepository.hentCv(aktorId1)
+        val hentet1 = cvRepository.hentCv(testData.aktorId1)
 
         assertNotNull(hentet1)
-        assertEquals(hentet1?.aktorId, aktorId1)
-        assertEquals(hentet1?.sistEndret, now)
-        assertEquals(hentet1?.rawAvro, rawAvro1)
+        assertEquals(hentet1?.aktorId, testData.aktorId1)
+        assertEquals(hentet1?.sistEndret, testData.now)
+        assertEquals(hentet1?.rawAvro, testData.rawAvro1Base64)
 
-        val hentet2 = cvRepository.hentCv(aktorId2)
+        val hentet2 = cvRepository.hentCv(testData.aktorId2)
 
         assertNotNull(hentet2)
-        assertEquals(hentet2?.aktorId, aktorId2)
-        assertEquals(hentet2?.sistEndret, yesterday)
-        assertEquals(hentet2?.rawAvro, rawAvro2)
+        assertEquals(hentet2?.aktorId, testData.aktorId2)
+        assertEquals(hentet2?.sistEndret, testData.yesterday)
+        assertEquals(hentet2?.rawAvro, testData.rawAvro2Base64)
     }
 
     @Test
     fun `cv blir oppdatert`() {
-        val cv1 = RawCV.create(aktorId1, yesterday, rawAvro1)
+        val cv1 = RawCV.create(testData.aktorId1, testData.yesterday, testData.rawAvro1Base64)
 
         cvRepository.lagreCv(cv1)
 
-        val cv2 = cvRepository.hentCv(aktorId1)
-                ?.update(aktorId1, now, rawAvro2)
+        val cv2 = cvRepository.hentCv(testData.aktorId1)
+                ?.update(testData.aktorId1, testData.now, testData.rawAvro2Base64)
 
         assertNotNull(cv2)
         cvRepository.lagreCv(cv2!!)
 
-        val hentet2 = cvRepository.hentCv(aktorId1)
+        val hentet2 = cvRepository.hentCv(testData.aktorId1)
 
-        assertEquals(hentet2?.aktorId, aktorId1)
-        assertEquals(hentet2?.sistEndret, now)
-        assertEquals(hentet2?.rawAvro, rawAvro2)
+        assertEquals(hentet2?.aktorId, testData.aktorId1)
+        assertEquals(hentet2?.sistEndret, testData.now)
+        assertEquals(hentet2?.rawAvro, testData.rawAvro2Base64)
     }
 
     @Test
     fun `ukjent cv gir null`() {
-        val ukjentCv = cvRepository.hentCv(aktorIdUkjent)
+        val ukjentCv = cvRepository.hentCv(testData.aktorIdUkjent)
 
         assertNull(ukjentCv)
     }
