@@ -18,6 +18,8 @@ class CvConsumer(
         @Value("\${kafka.bootstrap.servers}") private val bootstrapServers: String,
         @Value("\${kafka.topics.consumers.cv_endret}") private val topic: String,
         @Value("\${kafka.topics.consumers.group_id}") private val groupId: String,
+        @Value("\${kafka.auth.username}") private val username: String,
+        @Value("\${kafka.auth.password}") private val password: String,
         private val cvRepository: CvRepository
 ) {
 
@@ -86,6 +88,10 @@ class CvConsumer(
         val props = Properties()
         props["bootstrap.servers"] = bootstrapServers
         props["group.id"] = groupId
+        props["sasl.jaas.config"] = "org.apache.kafka.common.security.plain.PlainLoginModule required username=$username password=$password;"
+        props["security.protocol"] = "SASL_PLAINTEXT"
+        props["asl.mechanism"] = "PLAIN"
+
         props["key.deserializer"] = StringDeserializer::class.java
         props["value.deserializer"] = StringDeserializer::class.java
         props["max.poll.records"] = 200
