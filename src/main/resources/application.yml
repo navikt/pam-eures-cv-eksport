@@ -6,9 +6,6 @@ micronaut:
     port: 9030
 
 kafka:
-  auth:
-    username: ${KAFKA_USER:`dummy`}
-    password: ${KAFKA_PWD:`dummy`}
   bootstrap:
     servers:
       - 10.183.160.26:8443
@@ -18,6 +15,18 @@ kafka:
     consumers:
       cv_endret:  ${KAFKA_CONSUMER_TOPIC_CV_ENDRET}
       group_id: "pam-cv-eures-cv-eksport-v1"
+  health:
+    enabled: false
+  security:
+    protocol: SASL_SSL
+  sasl:
+    jaas:
+      config: 'org.apache.kafka.common.security.plain.PlainLoginModule required username=${KAFKA_USER} password=${KAFKA_PWD};'
+    mechanism: PLAIN
+  ssl:
+    truststore:
+      location: ${NAV_TRUSTSTORE_PATH}
+      password: ${NAV_TRUSTSTORE_PASSWORD}
   schema.registry.url: http://${KAFKA_HOST_IP:localhost}:${SCHEMA_REGISTRY_PORT}
 
 db:
