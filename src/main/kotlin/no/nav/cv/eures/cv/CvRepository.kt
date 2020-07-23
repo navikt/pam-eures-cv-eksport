@@ -11,7 +11,7 @@ interface CvRepository {
 
     fun lagreCv(rawCv: RawCV)
 
-    fun hentCv(aktorId: String) : RawCV?
+    fun hentCv(aktoerId: String) : RawCV?
 }
 
 @Singleton
@@ -27,13 +27,13 @@ private open class JpaCvRepository(
     private val hentCv =
             """
                 SELECT * FROM CV_RAW
-                WHERE AKTOR_ID = :aktorId
+                WHERE AKTOER_ID = :aktoerId
             """.replace(serieMedWhitespace, " ")
 
     @Transactional(readOnly = true)
-    override fun hentCv(aktorId: String): RawCV? {
+    override fun hentCv(aktoerId: String): RawCV? {
         return entityManager.createNativeQuery(hentCv, RawCV::class.java)
-                .setParameter("aktorId", aktorId)
+                .setParameter("aktoerId", aktoerId)
                 .resultList
                 .map { it as RawCV }
                 .firstOrNull()
@@ -41,9 +41,9 @@ private open class JpaCvRepository(
 
     @Transactional
     override fun lagreCv(rawCv: RawCV) {
-        log.info("Lagrer cv for ${rawCv.aktorId}")
+        log.info("Lagrer cv for ${rawCv.aktoerId}")
         if(rawCv.rawAvro.length > 128_000)
-            throw Exception("Raw avro string for aktor ${rawCv.aktorId} is larger than the limit of 128_000 bytes")
+            throw Exception("Raw avro string for aktoer ${rawCv.aktoerId} is larger than the limit of 128_000 bytes")
 
         entityManager.merge(rawCv)
     }
@@ -59,8 +59,8 @@ class RawCV() {
     @GeneratedValue(generator = "CV_SEQ")
     private var id: Long? = null
 
-    @Column(name = "AKTOR_ID", nullable = false, unique = true)
-    lateinit var aktorId: String
+    @Column(name = "AKTOER_ID", nullable = false, unique = true)
+    lateinit var aktoerId: String
 
     @Column(name = "SIST_ENDRET", nullable = false)
     lateinit var sistEndret: ZonedDateTime
@@ -68,8 +68,8 @@ class RawCV() {
     @Column(name = "RAW_AVRO", nullable = false)
     lateinit var rawAvro: String
 
-    fun update(aktorId: String, sistEndret: ZonedDateTime, rawAvro: String) : RawCV {
-        this.aktorId = aktorId
+    fun update(aktoerId: String, sistEndret: ZonedDateTime, rawAvro: String) : RawCV {
+        this.aktoerId = aktoerId
         this.sistEndret = sistEndret
         this.rawAvro = rawAvro
 
@@ -77,11 +77,11 @@ class RawCV() {
     }
 
     override fun toString(): String {
-        return "RawCV(aktorId='$aktorId', sistEndret=$sistEndret, rawAvro='$rawAvro')"
+        return "RawCV(aktoerId='$aktoerId', sistEndret=$sistEndret, rawAvro='$rawAvro')"
     }
 
     companion object {
-        fun create(aktorId: String, sistEndret: ZonedDateTime, rawAvro: String)
-                = RawCV().update(aktorId, sistEndret, rawAvro)
+        fun create(aktoerId: String, sistEndret: ZonedDateTime, rawAvro: String)
+                = RawCV().update(aktoerId, sistEndret, rawAvro)
     }
 }

@@ -45,16 +45,16 @@ class CvConsumerTest {
     fun `mottar en og en cv - lagres riktig`() {
         var offset = 0L
 
-        consumer.schedulePollTask { consumer.addRecord(record(offset++, testData.aktorId1, testData.rawAvro1)) }
+        consumer.schedulePollTask { consumer.addRecord(record(offset++, testData.aktoerId1, testData.rawAvro1)) }
         cvConsumer.process(consumer)
 
-        assertTrue(sjekkAktor(testData.aktorId1, testData.rawAvro1Base64))
+        assertTrue(sjekkAktor(testData.aktoerId1, testData.rawAvro1Base64))
 
-        consumer.addRecord(record(offset++, testData.aktorId2, testData.rawAvro2))
+        consumer.addRecord(record(offset++, testData.aktoerId2, testData.rawAvro2))
         cvConsumer.process(consumer)
 
-        assertTrue(sjekkAktor(testData.aktorId1, testData.rawAvro1Base64))
-        assertTrue(sjekkAktor(testData.aktorId2, testData.rawAvro2Base64))
+        assertTrue(sjekkAktor(testData.aktoerId1, testData.rawAvro1Base64))
+        assertTrue(sjekkAktor(testData.aktoerId2, testData.rawAvro2Base64))
     }
 
     @Test
@@ -62,13 +62,13 @@ class CvConsumerTest {
         var offset = 0L
 
         consumer.schedulePollTask {
-            consumer.addRecord(record(offset++, testData.aktorId1, testData.rawAvro1))
-            consumer.addRecord(record(offset++, testData.aktorId2, testData.rawAvro2))
+            consumer.addRecord(record(offset++, testData.aktoerId1, testData.rawAvro1))
+            consumer.addRecord(record(offset++, testData.aktoerId2, testData.rawAvro2))
         }
         cvConsumer.process(consumer)
 
-        assertTrue(sjekkAktor(testData.aktorId1, testData.rawAvro1Base64))
-        assertTrue(sjekkAktor(testData.aktorId2, testData.rawAvro2Base64))
+        assertTrue(sjekkAktor(testData.aktoerId1, testData.rawAvro1Base64))
+        assertTrue(sjekkAktor(testData.aktoerId2, testData.rawAvro2Base64))
     }
 
 //    TODO: Finn ut hvorfor denne testen feiler på siste assert
@@ -101,7 +101,7 @@ class CvConsumerTest {
         val hentet = cvRepository.hentCv(aktorId)
 
         return hentet != null
-                && hentet.aktorId == aktorId
+                && hentet.aktoerId == aktorId
                 && hentet.rawAvro == rawAvroBase64
     }
 
