@@ -42,6 +42,9 @@ private open class JpaCvRepository(
     @Transactional
     override fun lagreCv(rawCv: RawCV) {
         log.info("Lagrer cv for ${rawCv.aktorId}")
+        if(rawCv.rawAvro.length > 128_000)
+            throw Exception("Raw avro string for aktor ${rawCv.aktorId} is larger than the limit of 128_000 bytes")
+
         entityManager.merge(rawCv)
     }
 }
