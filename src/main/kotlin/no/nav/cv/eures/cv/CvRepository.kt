@@ -27,13 +27,13 @@ private open class JpaCvRepository(
     private val hentCv =
             """
                 SELECT * FROM CV_RAW
-                WHERE AKTOR_ID = :aktorId
+                WHERE AKTOER_ID = :aktoerId
             """.replace(serieMedWhitespace, " ")
 
     @Transactional(readOnly = true)
     override fun hentCv(aktorId: String): RawCV? {
         return entityManager.createNativeQuery(hentCv, RawCV::class.java)
-                .setParameter("aktorId", aktorId)
+                .setParameter("aktoerId", aktorId)
                 .resultList
                 .map { it as RawCV }
                 .firstOrNull()
@@ -59,7 +59,7 @@ class RawCV() {
     @GeneratedValue(generator = "CV_SEQ")
     private var id: Long? = null
 
-    @Column(name = "AKTOR_ID", nullable = false, unique = true)
+    @Column(name = "AKTOER_ID", nullable = false, unique = true)
     lateinit var aktorId: String
 
     @Column(name = "SIST_ENDRET", nullable = false)
@@ -77,7 +77,7 @@ class RawCV() {
     }
 
     override fun toString(): String {
-        return "RawCV(aktorId='$aktorId', sistEndret=$sistEndret, rawAvro='$rawAvro')"
+        return "RawCV(aktoerId='$aktorId', sistEndret=$sistEndret, rawAvro='$rawAvro')"
     }
 
     companion object {
