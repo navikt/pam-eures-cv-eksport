@@ -26,7 +26,7 @@ private open class JpaCvRepository(
 
     private val hentCv =
             """
-                SELECT * FROM CV
+                SELECT * FROM CV_RAW
                 WHERE AKTOR_ID = :aktorId
             """.replace(serieMedWhitespace, " ")
 
@@ -52,7 +52,7 @@ private open class JpaCvRepository(
 
 
 @Entity
-@Table(name = "CV")
+@Table(name = "CV_RAW")
 class RawCV() {
     @Id
     @Column(name = "ID")
