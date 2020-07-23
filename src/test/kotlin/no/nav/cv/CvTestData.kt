@@ -7,9 +7,9 @@ data class CvTestData(
         val now: ZonedDateTime = ZonedDateTime.now(),
         val yesterday: ZonedDateTime = ZonedDateTime.now().minusDays(1),
 
-        val aktorId1: String = "123",
-        val aktorId2: String = "321",
-        val aktorIdUkjent: String = "ukjent",
+        val aktoerId1: String = "123",
+        val aktoerId2: String = "321",
+        val aktoerIdUkjent: String = "ukjent",
 
         val rawAvro1: String = Base64.getEncoder().encodeToString("raw avro string 1".toByteArray()),
         val rawAvro2: String = Base64.getEncoder().encodeToString("raw avro string 2".toByteArray()),
