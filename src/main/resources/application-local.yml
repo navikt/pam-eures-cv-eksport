@@ -1,11 +1,23 @@
 kafka:
   bootstrap:
     servers:
-    - 192.168.99.100:9092
+      - ${KAFKA_HOST}:9092
   topics:
     consumers:
       cv_endret: "arbeid-pam-cv-endret-v2-dev"
-  schema.registry.url: http://192.168.99.100:8081
+  health:
+    enabled: false
+  security:
+    protocol:
+  sasl:
+    jaas:
+      config:
+    mechanism:
+  ssl:
+    truststore:
+      location:
+      password:
+  schema.registry.url: http://${KAFKA_HOST}:8081
 
 datasources:
   default:
