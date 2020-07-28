@@ -23,7 +23,7 @@ class CvConsumerTest {
     @Inject
     private lateinit var cvRepository: CvRepository
 
-    private lateinit var consumer: MockConsumer<String, String>
+    private lateinit var consumer: MockConsumer<String, ByteArray>
 
     private val testData = CvTestData()
 
@@ -106,5 +106,5 @@ class CvConsumerTest {
     }
 
     private fun record(offset: Long, aktorId: String, melding:String)
-    = ConsumerRecord<String, String>(TOPIC, PARTITION, offset, aktorId, melding)
+    = ConsumerRecord<String, ByteArray>(TOPIC, PARTITION, offset, aktorId, melding.toByteArray())
 }

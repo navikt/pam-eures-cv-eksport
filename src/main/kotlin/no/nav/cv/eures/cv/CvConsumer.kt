@@ -5,6 +5,7 @@ import io.micronaut.scheduling.annotation.Scheduled
 import org.slf4j.LoggerFactory
 import org.apache.kafka.clients.consumer.Consumer
 import org.apache.kafka.clients.consumer.KafkaConsumer
+import org.apache.kafka.common.serialization.ByteArrayDeserializer
 import org.apache.kafka.common.serialization.StringDeserializer
 import java.time.Duration
 import java.time.ZonedDateTime
@@ -38,14 +39,14 @@ class CvConsumer(
         process(consumer)
     }
 
-    fun process(consumer: Consumer<String, String>) {
+    fun process(consumer: Consumer<String, ByteArray>) {
         val endredeCVer = concurrencyLock.withLock { consumer.poll(Duration.ofSeconds(1)) }
 
         log.info("Fikk ${endredeCVer.count()} CVer")
 
         for(melding in endredeCVer) {
             val aktoerId = melding.key()
-            val rawAvroBase64 = Base64.getEncoder().encodeToString(melding.value().toByteArray())
+            val rawAvroBase64 = Base64.getEncoder().encodeToString(melding.value())
 
             val oppdatertCv = cvRepository
                     .hentCv(aktoerId)
@@ -69,7 +70,7 @@ class CvConsumer(
         seekToBeginningActual(consumer)
     }
 
-    fun seekToBeginningActual(consumer: Consumer<String, String>) {
+    fun seekToBeginningActual(consumer: Consumer<String, ByteArray>) {
         log.info("Kjører seekToBeginning() på CvConsumer")
 
         concurrencyLock.withLock {
@@ -82,15 +83,15 @@ class CvConsumer(
         }
     }
 
-    private fun createConsumer() : Consumer<String, String> {
+    private fun createConsumer() : Consumer<String, ByteArray> {
         val props = Properties()
         props["bootstrap.servers"] = bootstrapServers
         props["group.id"] = groupId
         props["key.deserializer"] = StringDeserializer::class.java
-        props["value.deserializer"] = StringDeserializer::class.java
+        props["value.deserializer"] = ByteArrayDeserializer::class.java
         props["max.poll.records"] = 200
         props["fetch.max.bytes"] = 10*1024
-        val consumer = KafkaConsumer<String, String>(props)
+        val consumer = KafkaConsumer<String, ByteArray>(props)
         consumer.subscribe(listOf(topic))
         return consumer
     }

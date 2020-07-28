@@ -23,6 +23,7 @@ dependencies {
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:${kotlinVersion}"
     implementation "org.jetbrains.kotlin:kotlin-reflect:${kotlinVersion}"
     implementation "javax.annotation:javax.annotation-api"
+    implementation "org.apache.avro:avro:${avroVersion}"
     implementation "org.apache.kafka:kafka-clients"
     implementation("no.nav:vault-jdbc:latest.release")
     implementation "net.logstash.logback:logstash-logback-encoder:6.2"

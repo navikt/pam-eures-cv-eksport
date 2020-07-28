@@ -3,6 +3,7 @@ package no.nav.cv.eures.cv
 import io.micronaut.spring.tx.annotation.Transactional
 import org.slf4j.LoggerFactory
 import java.time.ZonedDateTime
+import java.util.*
 import javax.inject.Singleton
 import javax.persistence.*
 
@@ -75,6 +76,9 @@ class RawCV() {
 
         return this
     }
+
+    fun getAvroBytes() : ByteArray
+        = Base64.getDecoder().decode(this.rawAvro)
 
     override fun toString(): String {
         return "RawCV(aktoerId='$aktoerId', sistEndret=$sistEndret, rawAvro='$rawAvro')"
