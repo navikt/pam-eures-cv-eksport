@@ -1,5 +1,6 @@
 package no.nav.cv.eures.model
 
+import java.time.LocalDate
 import java.time.LocalDateTime
 
 data class Candidate(
@@ -11,15 +12,15 @@ data class Candidate(
         val updatedBy: String?,
         val majorVersionID: Int = 3,
         val minorVersionID: Int = 2,
-        val validFrom: LocalDateTime,
-        val validTo: LocalDateTime,
+        val validFrom: LocalDate,
+        val validTo: LocalDate,
         val suppliers: List<Supplier>,
         val person: Person,
         val posistionSeekingStatus: PositionSeekingStatus?,
         val profile: Profile
 )
 
-data class Id(val documentId: Long)
+data class Id(val documentId: String)
 
 // 4.5
 data class Supplier(
@@ -60,9 +61,9 @@ enum class ChannelCode{
 
 // 4.6.5 and 4.9.3
 data class Choice(
-        val address: Address,
-        val dialNumber: String,
-        val URI: String
+        val address: Address?,
+        val dialNumber: String?,
+        val URI: String?
 )
 
 // 4.9.4
@@ -81,7 +82,7 @@ data class Person(
         val communication: List<Communication>,
         val residencyCountryCode: CountryCodeISO3166_Alpha_2,
         val nationality: List<CountryCodeISO3166_Alpha_2>,
-        val birthDate: String,
+        val birthDate: LocalDate,
         val gender: GenderType,
         val primaryLanguageCode: List<LanguageCodeISO639_1_2002_Aplpha2>
 )
@@ -143,6 +144,6 @@ enum class EducationLevel(code: Int) {
 
 // 4.13.7.2
 data class AttendancePeriod(
-        val startDate: LocalDateTime,
-        val endDate: LocalDateTime?
+        val startDate: LocalDate,
+        val endDate: LocalDate?
 )
