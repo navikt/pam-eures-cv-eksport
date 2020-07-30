@@ -1,8 +1,7 @@
-package no.nav.cv.eures.cv
+package no.nav.cv.eures.konverterer
 
 import io.micronaut.http.annotation.Get
 import io.micronaut.http.client.annotation.Client
-import no.nav.cv.eures.konverterer.Konverterer
 import org.apache.avro.Schema
 import org.slf4j.LoggerFactory
 import java.nio.ByteBuffer
