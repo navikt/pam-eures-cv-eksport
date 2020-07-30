@@ -77,7 +77,7 @@ class RawCV() {
         return this
     }
 
-    fun getAvroBytes() : ByteArray
+    fun getWireBytes() : ByteArray
         = Base64.getDecoder().decode(this.rawAvro)
 
     override fun toString(): String {
