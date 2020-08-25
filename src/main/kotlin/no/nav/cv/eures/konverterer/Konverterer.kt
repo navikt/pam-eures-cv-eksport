@@ -44,18 +44,18 @@ class Konverterer (
         val candidate = Candidate(
                 id = Id(cv.get("cv_id") as String),
                 uuid = cv.get("cv_id") as String,
-                created = Converters.timestampToLocalDateTime(cv.get("opprettet") as Long),
+                created = Converters.timestampToLocalDateTime(cv.get("opprettet") as Long).toString(),
                 createdBy = null,
-                updated = Converters.timestampToLocalDateTime(cv.get("sist_endret") as Long),
+                updated = Converters.timestampToLocalDateTime(cv.get("sist_endret") as Long).toString(),
                 updatedBy = null,
-                validFrom = LocalDate.now(),
-                validTo = LocalDate.now().plusDays(3650), // about ten years
-                suppliers = listOf(
-                        Supplier(
+                validFrom = LocalDate.now().toString(),
+                validTo = LocalDate.now().plusDays(3650).toString(), // about ten years
+                candidateSupplier = listOf(
+                        CandidateSupplier(
                                 id = "NAV.NO",
                                 partyName = "Nav",
-                                contact = listOf(
-                                        Contact(
+                                personContact = listOf(
+                                        PersonContact(
                                                 personName = Name(
                                                         givenName = "Magnus Skjeggerud",
                                                         familyName = "Espeland"),
@@ -74,7 +74,7 @@ class Konverterer (
                                         choice = Choice(address = null, dialNumber = cv.get("telefon") as String, URI = null))),
                         residencyCountryCode = CountryCodeISO3166_Alpha_2.NO, // cv.get("land")
                         nationality = listOf(CountryCodeISO3166_Alpha_2.NO), // cv.get("nasjonalitet")
-                        birthDate = LocalDate.of(2020, 7, 30), //cv.get("foedselsdato)
+                        birthDate = LocalDate.of(2020, 7, 30).toString(), //cv.get("foedselsdato)
                         gender = GenderType.NotSpecified,
                         primaryLanguageCode = listOf(LanguageCodeISO639_1_2002_Aplpha2.Norwegian)),
                 posistionSeekingStatus = PositionSeekingStatus.Active,
@@ -83,7 +83,7 @@ class Konverterer (
                             listOf(OrganizationAttendance(
                                     organizationName = "Test skole",
                                     educationLevel = EducationLevel.Bachelor,
-                                    attendancePeriod = AttendancePeriod(LocalDate.of(2010, 8, 1), null)
+                                    attendancePeriod = AttendancePeriod(LocalDate.of(2010, 8, 1).toString(), null)
                             ))
                     )
                 )
@@ -93,5 +93,6 @@ class Konverterer (
         log.info("AktoerID :$aktoerId")
         log.info("Record :$record")
         log.info("Candidate :$candidate")
+        log.info("XML: ${XmlSerializer.serialize(candidate)}")
     }
 }

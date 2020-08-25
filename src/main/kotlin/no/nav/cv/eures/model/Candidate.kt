@@ -1,20 +1,34 @@
 package no.nav.cv.eures.model
 
-import java.time.LocalDate
-import java.time.LocalDateTime
+import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlElementWrapper
+import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty
+
 
 data class Candidate(
+        @JacksonXmlProperty(isAttribute = true, localName = "xmlns")
+        val xmlns: String = "http://www.hr-xml.org/3",
+
         val id: Id,
         val uuid: String,
-        val created: LocalDateTime,
+        val created: String,
         val createdBy: String?,
-        val updated: LocalDateTime,
+        val updated: String,
         val updatedBy: String?,
+
+        @JacksonXmlProperty(isAttribute = true, localName = "majorVersionID")
         val majorVersionID: Int = 3,
+
+        @JacksonXmlProperty(isAttribute = true, localName = "minorVersionID")
         val minorVersionID: Int = 2,
-        val validFrom: LocalDate,
-        val validTo: LocalDate,
-        val suppliers: List<Supplier>,
+
+        @JacksonXmlProperty(isAttribute = true, localName = "validFrom")
+        val validFrom: String,
+
+        @JacksonXmlProperty(isAttribute = true, localName = "validTo")
+        val validTo: String,
+
+        @JacksonXmlElementWrapper(useWrapping = false)
+        val candidateSupplier: List<CandidateSupplier>,
         val person: Person,
         val posistionSeekingStatus: PositionSeekingStatus?,
         val profile: Profile
@@ -23,15 +37,17 @@ data class Candidate(
 data class Id(val documentId: String)
 
 // 4.5
-data class Supplier(
-        val id: String,
+data class CandidateSupplier(
+        val partyId: String,
         val partyName: String,
-        val contact: List<Contact>,
+
+        @JacksonXmlElementWrapper(useWrapping = false)
+        val personContact: List<PersonContact>,
         val precedence: Int
 )
 
 // 4.6
-data class Contact(
+data class PersonContact(
         val personName: Name,
         val communication: List<Communication>
 
@@ -82,7 +98,7 @@ data class Person(
         val communication: List<Communication>,
         val residencyCountryCode: CountryCodeISO3166_Alpha_2,
         val nationality: List<CountryCodeISO3166_Alpha_2>,
-        val birthDate: LocalDate,
+        val birthDate: String,
         val gender: GenderType,
         val primaryLanguageCode: List<LanguageCodeISO639_1_2002_Aplpha2>
 )
@@ -144,6 +160,6 @@ enum class EducationLevel(code: Int) {
 
 // 4.13.7.2
 data class AttendancePeriod(
-        val startDate: LocalDate,
-        val endDate: LocalDate?
+        val startDate: String,
+        val endDate: String?
 )
