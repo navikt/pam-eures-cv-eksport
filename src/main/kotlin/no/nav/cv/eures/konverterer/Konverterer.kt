@@ -52,7 +52,7 @@ class Konverterer (
                 validTo = LocalDate.now().plusDays(3650).toString(), // about ten years
                 candidateSupplier = listOf(
                         CandidateSupplier(
-                                id = "NAV.NO",
+                                partyId = "NAV.NO",
                                 partyName = "Nav",
                                 personContact = listOf(
                                         PersonContact(
