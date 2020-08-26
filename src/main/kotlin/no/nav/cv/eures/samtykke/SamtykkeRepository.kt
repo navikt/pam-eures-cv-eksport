@@ -10,7 +10,7 @@ import javax.persistence.*
 interface SamtykkeRepository {
 
     fun hentSamtykke(aktoerId: String) : Samtykke?
-    fun slettSamtykke(aktoerId: String)
+    fun slettSamtykke(samtykke: Samtykke)
     fun oppdaterSamtykke(samtykke: Samtykke)
 }
 
@@ -26,9 +26,16 @@ private open class JpaSamtykkeRepository(
                 WHERE AKTOER_ID = :aktoerId
             """.replace(serieMedWhitespace, " ")
 
+    private val slettSamtykke =
+            """
+                DELETE FROM SAMTYKKE
+                WHERE aktoerId NOT IN
+            """
+
+
     @Transactional(readOnly = true)
     override fun hentSamtykke(aktoerId: String): Samtykke? {
-        return entityManager.createNativeQuery(hentSamtykke, Samtykke::class.java)
+        return entityManager.createNativeQuery(hentSamtykke, SamtykkeEntity::class.java)
                 .setParameter("aktoerId", aktoerId)
                 .resultList
                 .map { it as SamtykkeEntity }
@@ -36,12 +43,13 @@ private open class JpaSamtykkeRepository(
                 .firstOrNull()
     }
 
-    override fun slettSamtykke(aktoerId: String) {
-        TODO("Not yet implemented")
+    override fun slettSamtykke(samtykke: Samtykke) {
+        slettSamtykke
+        return entityManager.persist(SamtykkeEntity.from(samtykke))
     }
 
     override fun oppdaterSamtykke(samtykke: Samtykke) {
-        TODO("Not yet implemented")
+        entityManager.persist(SamtykkeEntity.from(samtykke))
     }
 }
 
@@ -57,18 +65,30 @@ class SamtykkeEntity() {
     lateinit var aktoerId: String
 
     @Column(name = "SIST_ENDRET", nullable = false)
-    lateinit var sistEndret: ZonedDateTime
+    var sistEndret: ZonedDateTime = ZonedDateTime.now()
 
     @Column(name = "PERSONALIA", nullable = false)
-    lateinit var personalia: Boolean
+    var personalia: Boolean = false
 
     @Column(name = "UTDANNING", nullable = false)
-    lateinit var utdanning: Boolean
+    var utdanning: Boolean = false
 
 
     fun toSamtykke() = Samtykke(
             aktoerId = aktoerId,
+            sistEndret = sistEndret,
             personalia = personalia,
             utdanning = utdanning
     )
+
+    companion object {
+        fun from(samtykke: Samtykke): SamtykkeEntity {
+            val samtykkeEntity = SamtykkeEntity()
+            samtykkeEntity.aktoerId = samtykke.aktoerId
+            samtykkeEntity.sistEndret = samtykke.sistEndret
+            samtykkeEntity.personalia = samtykke.personalia
+            samtykkeEntity.utdanning = samtykke.utdanning
+            return samtykkeEntity
+        }
+    }
 }

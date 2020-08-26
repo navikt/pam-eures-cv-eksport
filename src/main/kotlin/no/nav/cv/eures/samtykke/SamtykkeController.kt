@@ -1,10 +1,6 @@
 package no.nav.cv.eures.samtykke
 
-import io.micronaut.http.HttpStatus
 import io.micronaut.http.annotation.*
-import io.micronaut.http.exceptions.HttpException
-import java.lang.Exception
-import java.net.http.HttpResponse
 
 @Controller("samtykke")
 class SamtykkeController(
@@ -21,6 +17,6 @@ class SamtykkeController(
             = samtykkeRepository.oppdaterSamtykke(samtykke)
 
     @Delete("/{aktoerId}", produces = [ "application/json" ])
-    fun slettSamtykke(aktoerId: String)
-            = samtykkeRepository.slettSamtykke(aktoerId)
+    fun slettSamtykke(aktoerId: String, @Body samtykke : Samtykke)
+            = samtykkeRepository.slettSamtykke(samtykke)
 }
