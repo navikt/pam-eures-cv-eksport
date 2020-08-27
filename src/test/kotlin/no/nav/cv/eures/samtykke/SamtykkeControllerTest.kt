@@ -1,14 +1,11 @@
 package no.nav.cv.eures.samtykke
 
 import io.micronaut.http.HttpRequest
-import io.micronaut.http.HttpRequestFactory
-import io.micronaut.http.HttpStatus
 import io.micronaut.http.client.RxHttpClient
 import io.micronaut.http.client.annotation.Client
 import io.micronaut.test.annotation.MicronautTest
-import org.junit.jupiter.api.Assertions
+import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.Test
-import java.time.LocalDateTime
 import java.time.ZonedDateTime
 import javax.inject.Inject
 
@@ -28,15 +25,13 @@ class SamtykkeControllerTest(
     @Test
     fun `oppdater og hent samtykke`() {
 
-        val samtykke = Samtykke(aktoerId1, now, personalia = true, utdanning = true )
+        val samtykke = Samtykke(aktoerId1, now, personalia = true, utdanning = true)
 
         val request = HttpRequest.POST("/samtykke/$aktoerId1", samtykke)
 
-        Assertions.assertEquals(
-                client.toBlocking().exchange<String>(request,).status,
-                HttpStatus.OK)
+        val body = client.toBlocking().retrieve(request)
 
+        assertNotNull(body)
     }
-
 
 }
