@@ -41,6 +41,7 @@ jpa:
   default:
     packages-to-scan:
       - 'no.nav.cv.eures.cv'
+      - 'no.nav.cv.eures.samtykke'
     properties:
       hibernate:
         hbm2ddl:
