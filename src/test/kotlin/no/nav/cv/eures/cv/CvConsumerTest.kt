@@ -1,8 +1,6 @@
-package no.nav.cv
+package no.nav.cv.eures.cv
 
 import io.micronaut.test.annotation.MicronautTest
-import no.nav.cv.eures.cv.CvConsumer
-import no.nav.cv.eures.cv.CvRepository
 import org.apache.kafka.clients.consumer.ConsumerRecord
 import org.apache.kafka.clients.consumer.MockConsumer
 import org.apache.kafka.clients.consumer.OffsetResetStrategy

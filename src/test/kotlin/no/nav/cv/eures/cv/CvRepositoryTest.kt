@@ -1,8 +1,6 @@
-package no.nav.cv
+package no.nav.cv.eures.cv
 
 import io.micronaut.test.annotation.MicronautTest
-import no.nav.cv.eures.cv.CvRepository
-import no.nav.cv.eures.cv.RawCV
 import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.Test
 import javax.inject.Inject

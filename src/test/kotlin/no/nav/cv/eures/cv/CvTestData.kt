@@ -1,4 +1,4 @@
-package no.nav.cv
+package no.nav.cv.eures.cv
 
 import java.time.ZonedDateTime
 import java.util.*
