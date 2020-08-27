@@ -17,6 +17,6 @@ class SamtykkeController(
             = samtykkeRepository.oppdaterSamtykke(samtykke)
 
     @Delete("/{aktoerId}", produces = [ "application/json" ])
-    fun slettSamtykke(aktoerId: String, @Body samtykke : Samtykke)
-            = samtykkeRepository.slettSamtykke(samtykke)
+    fun slettSamtykke(aktoerId: String)
+            = samtykkeRepository.slettSamtykke(aktoerId)
 }

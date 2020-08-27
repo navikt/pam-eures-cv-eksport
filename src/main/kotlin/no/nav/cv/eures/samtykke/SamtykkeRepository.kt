@@ -1,16 +1,16 @@
 package no.nav.cv.eures.samtykke
 
 import io.micronaut.spring.tx.annotation.Transactional
-import no.nav.cv.eures.cv.RawCV
+import no.nav.cv.eures.cv.CvConsumer
+import org.slf4j.LoggerFactory
 import java.time.ZonedDateTime
-import java.util.*
 import javax.inject.Singleton
 import javax.persistence.*
 
 interface SamtykkeRepository {
 
     fun hentSamtykke(aktoerId: String) : Samtykke?
-    fun slettSamtykke(samtykke: Samtykke)
+    fun slettSamtykke(aktoerId: String) : Int
     fun oppdaterSamtykke(samtykke: Samtykke)
 }
 
@@ -20,18 +20,15 @@ private open class JpaSamtykkeRepository(
 ) : SamtykkeRepository {
     private val serieMedWhitespace = Regex("(\\s+)")
 
+    companion object {
+        val log = LoggerFactory.getLogger(SamtykkeRepository::class.java)
+    }
+
     private val hentSamtykke =
             """
                 SELECT * FROM SAMTYKKE
                 WHERE AKTOER_ID = :aktoerId
             """.replace(serieMedWhitespace, " ")
-
-    private val slettSamtykke =
-            """
-                DELETE FROM SAMTYKKE
-                WHERE aktoerId NOT IN
-            """
-
 
     @Transactional(readOnly = true)
     override fun hentSamtykke(aktoerId: String): Samtykke? {
@@ -43,12 +40,21 @@ private open class JpaSamtykkeRepository(
                 .firstOrNull()
     }
 
-    override fun slettSamtykke(samtykke: Samtykke) {
-        slettSamtykke
-        return entityManager.persist(SamtykkeEntity.from(samtykke))
-    }
+    private val slettSamtykke =
+            """
+                DELETE SamtykkeEntity se
+                WHERE se.aktoerId = :aktoerId
+            """.replace(serieMedWhitespace, " ")
 
+    @Transactional
+    override fun slettSamtykke(aktoerId: String)
+            = entityManager.createQuery(slettSamtykke)
+                .setParameter("aktoerId", aktoerId)
+                .executeUpdate()
+
+    @Transactional
     override fun oppdaterSamtykke(samtykke: Samtykke) {
+        slettSamtykke(samtykke.aktoerId)
         entityManager.persist(SamtykkeEntity.from(samtykke))
     }
 }
