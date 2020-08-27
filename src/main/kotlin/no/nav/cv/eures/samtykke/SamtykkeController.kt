@@ -13,7 +13,7 @@ class SamtykkeController(
             ?: throw Exception("not found")
 
     @Post("/{aktoerId}", produces = [ "application/json" ])
-    fun oppdaterSamtykke(aktoerId: String, @Body samtykke: Samtykke)
+    fun oppdaterSamtykke(@Body samtykke: Samtykke)
             = samtykkeRepository.oppdaterSamtykke(samtykke)
 
     @Delete("/{aktoerId}", produces = [ "application/json" ])
