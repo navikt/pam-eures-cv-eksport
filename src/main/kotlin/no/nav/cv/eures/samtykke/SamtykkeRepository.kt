@@ -31,16 +31,14 @@ private open class JpaSamtykkeRepository(
             """.replace(serieMedWhitespace, " ")
 
     @Transactional(readOnly = true)
-    override fun hentSamtykke(aktoerId: String): Samtykke? {
-
-        log.debug("Henter fra repo $aktoerId")
-        return entityManager.createNativeQuery(hentSamtykke, SamtykkeEntity::class.java)
+    override fun hentSamtykke(aktoerId: String)
+            = entityManager.createNativeQuery(hentSamtykke, SamtykkeEntity::class.java)
                 .setParameter("aktoerId", aktoerId)
                 .resultList
                 .map { it as SamtykkeEntity }
                 .map { it.toSamtykke() }
                 .firstOrNull()
-    }
+
 
     private val slettSamtykke =
             """
@@ -56,7 +54,6 @@ private open class JpaSamtykkeRepository(
 
     @Transactional
     override fun oppdaterSamtykke(samtykke: Samtykke) {
-        log.debug("Lagrer samtykke $samtykke")
         slettSamtykke(samtykke.aktoerId)
         entityManager.persist(SamtykkeEntity.from(samtykke))
     }

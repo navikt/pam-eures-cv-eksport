@@ -13,15 +13,10 @@ class SamtykkeController(
     }
 
     @Get("/{aktoerId}", produces = [ "application/json" ])
-    fun hentSamtykke(aktoerId: String) : Samtykke {
-        log.debug("Henter $aktoerId")
-        val samtykke = samtykkeRepository.hentSamtykke(aktoerId)
+    fun hentSamtykke(aktoerId: String)
+            = samtykkeRepository.hentSamtykke(aktoerId)
+            ?: throw Exception("not found")
 
-
-        log.debug("Fra repo $samtykke")
-
-        return samtykke ?: throw Exception("not found")
-    }
 
     @Post("/{aktoerId}")
     fun oppdaterSamtykke(@Body samtykke: Samtykke) : String {
