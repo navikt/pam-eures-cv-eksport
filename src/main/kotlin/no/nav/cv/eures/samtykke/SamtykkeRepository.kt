@@ -32,6 +32,8 @@ private open class JpaSamtykkeRepository(
 
     @Transactional(readOnly = true)
     override fun hentSamtykke(aktoerId: String): Samtykke? {
+
+        log.debug("Henter fra repo $aktoerId")
         return entityManager.createNativeQuery(hentSamtykke, SamtykkeEntity::class.java)
                 .setParameter("aktoerId", aktoerId)
                 .resultList
@@ -54,6 +56,7 @@ private open class JpaSamtykkeRepository(
 
     @Transactional
     override fun oppdaterSamtykke(samtykke: Samtykke) {
+        log.debug("Lagrer samtykke $samtykke")
         slettSamtykke(samtykke.aktoerId)
         entityManager.persist(SamtykkeEntity.from(samtykke))
     }
