@@ -70,7 +70,7 @@ class Konverterer (
                                                 personName = Name(
                                                         givenName = "Arbeidsplassen.no",
                                                         familyName = "Arbeidsplassen.no"),
-                                                communication = Communication.buildList(email = "asdasd"))), // TODO ekte epostadresselistOf(
+                                                communication = Communication.buildList(email = "asdasd"))), // TODO ekte epostadresse
                                 precedence = 1)),
                 person = Person(
                         personName = Name(
@@ -79,7 +79,7 @@ class Konverterer (
                         communication = Communication.buildList(telephone = cv.telefon, email = cv.epost),
                         residencyCountryCode = CountryCodeISO3166_Alpha_2.NO, // cv.get("land")
                         nationality = listOf(CountryCodeISO3166_Alpha_2.NO), // cv.get("nasjonalitet")
-                        birthDate = LocalDate.of(2020, 7, 30).toString(), //cv.get("foedselsdato)
+                        birthDate = cv.foedselsdato.toString(),
                         gender = GenderType.NotSpecified,
                         primaryLanguageCode = listOf(LanguageCodeISO639_1_2002_Aplpha2.Norwegian)),
                 posistionSeekingStatus = PositionSeekingStatus.Active,
