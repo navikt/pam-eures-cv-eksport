@@ -1,10 +1,10 @@
 package no.nav.cv.eures.model
 
+import no.nav.arbeid.cv.avro.Cv
 import no.nav.cv.eures.samtykke.Samtykke
-import org.apache.avro.generic.GenericRecord
 
 class Employment (
-        private val cv: GenericRecord,
+        private val cv: Cv,
         private val samtykke: Samtykke
 ){
     fun getEmploymentHistory() : EmploymentHistory {

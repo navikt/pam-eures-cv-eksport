@@ -1,11 +1,11 @@
 package no.nav.cv.eures.model
 
+import no.nav.arbeid.cv.avro.Cv
 import no.nav.cv.eures.samtykke.Samtykke
-import org.apache.avro.generic.GenericRecord
 
 
 class Contact(
-        private val cv: GenericRecord,
+        private val cv: Cv,
         private val samtykke: Samtykke
 ) {
     fun getCommunicationList() : List<Communication> {
@@ -33,7 +33,69 @@ data class Name(
 data class Communication(
         val channelCode: ChannelCode,
         val choice: Choice
-)
+) {
+    companion object {
+        fun buildList(
+                telephone: String? = null,
+                mobileTelephone: String? = null,
+                fax: String? = null,
+                email: String? = null,
+                instantMessage: String? = null,
+                web: String? = null
+        ) : List<Communication> {
+            val comList = mutableListOf<Communication>()
+
+            if(telephone != null)
+                comList.add(
+                        Communication(
+                                ChannelCode.Telephone,
+                                Choice(dialNumber = telephone)
+                        ))
+
+
+            if(mobileTelephone != null)
+                comList.add(
+                        Communication(
+                                ChannelCode.MobileTelephone,
+                                Choice(dialNumber = mobileTelephone)
+                        ))
+
+
+            if(fax != null)
+                comList.add(
+                        Communication(
+                                ChannelCode.Fax,
+                                Choice(dialNumber = fax)
+                        ))
+
+
+            if(email != null)
+                comList.add(
+                        Communication(
+                                ChannelCode.Email,
+                                Choice(URI = email)
+                        ))
+
+
+            if(instantMessage != null)
+                comList.add(
+                        Communication(
+                                ChannelCode.InstantMessage,
+                                Choice(URI = instantMessage)
+                        ))
+
+
+            if(web != null)
+                comList.add(
+                        Communication(
+                                ChannelCode.Web,
+                                Choice(URI = web)
+                        ))
+
+            return comList
+        }
+    }
+}
 
 // 4.28.3
 enum class ChannelCode{
@@ -47,9 +109,9 @@ enum class ChannelCode{
 
 // 4.6.5 and 4.9.3
 data class Choice(
-        val address: Address?,
-        val dialNumber: String?,
-        val URI: String?
+        val address: Address? = null,
+        val dialNumber: String? = null,
+        val URI: String? = null
 )
 
 // 4.9.4
