@@ -46,51 +46,6 @@ data class CandidateSupplier(
         val precedence: Int
 )
 
-// 4.6
-data class PersonContact(
-        val personName: Name,
-        val communication: List<Communication>
-
-)
-
-// 4.6.3 and 4.8
-data class Name(
-        val givenName: String,
-        val familyName: String
-)
-
-// 4.6.4 and 4.9
-data class Communication(
-        val channelCode: ChannelCode,
-        val choice: Choice
-)
-
-// 4.28.3
-enum class ChannelCode{
-        Telephone,
-        MobileTelephone,
-        Fax,
-        Email,
-        InstantMessage,
-        Web
-}
-
-// 4.6.5 and 4.9.3
-data class Choice(
-        val address: Address?,
-        val dialNumber: String?,
-        val URI: String?
-)
-
-// 4.9.4
-data class Address(
-        val cityName: String,
-        val countryCode: CountryCodeISO3166_Alpha_2,
-        val postalCode: PostalCode
-)
-
-// EURES_PostalCodes.gc  NUTS 2013
-enum class PostalCode {}
 
 // 4.7
 data class Person(
@@ -130,36 +85,7 @@ enum class PositionSeekingStatus {
 
 // 4.11
 data class Profile(
-        val educationHistory: EducationHistory
+        val educationHistory: EducationHistory,
+        val employmentHistory: EmploymentHistory
 )
 
-// 4.13
-data class EducationHistory(
-        val organizationAttendance: List<OrganizationAttendance>
-)
-
-// 4.13.3
-data class OrganizationAttendance(
-        val organizationName: String,
-        val educationLevel: EducationLevel,
-        val attendancePeriod: AttendancePeriod
-)
-
-// 4.28.12
-enum class EducationLevel(code: Int) {
-    EarlyChildhood(0),
-    Primary(1),
-    LowerSecondary(2),
-    UpperSecondary(3),
-    PostSecondaryNonTertiary(4),
-    ShortCycleTertiary(5),
-    Bachelor(6),
-    Masters(7),
-    Doctoral(8)
-}
-
-// 4.13.7.2
-data class AttendancePeriod(
-        val startDate: String,
-        val endDate: String?
-)
