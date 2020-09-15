@@ -1,5 +1,7 @@
 package no.nav.cv.eures.model
 
+import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlElementWrapper
+import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty
 import no.nav.arbeid.cv.avro.Cv
 import no.nav.cv.eures.samtykke.Samtykke
 
@@ -19,12 +21,15 @@ class Contact(
 // 4.6
 data class PersonContact(
         val personName: Name,
+
+        @JacksonXmlElementWrapper(useWrapping = false)
         val communication: List<Communication>
 
 )
 
 // 4.6.3 and 4.8
 data class Name(
+        @JacksonXmlProperty(localName = "oa:GivenName")
         val givenName: String,
         val familyName: String
 )
@@ -32,7 +37,15 @@ data class Name(
 // 4.6.4 and 4.9
 data class Communication(
         val channelCode: ChannelCode,
-        val choice: Choice
+
+        val address: Address? = null,
+
+        @JacksonXmlProperty(localName = "oa:DialNumber")
+        val dialNumber: String? = null,
+
+        @JacksonXmlProperty(localName = "oa:Uri")
+        val URI: String? = null
+
 ) {
     companion object {
         fun buildList(
@@ -48,48 +61,48 @@ data class Communication(
             if(telephone != null)
                 comList.add(
                         Communication(
-                                ChannelCode.Telephone,
-                                Choice(dialNumber = telephone)
+                                channelCode = ChannelCode.Telephone,
+                                dialNumber = telephone
                         ))
 
 
             if(mobileTelephone != null)
                 comList.add(
                         Communication(
-                                ChannelCode.MobileTelephone,
-                                Choice(dialNumber = mobileTelephone)
+                                channelCode = ChannelCode.MobileTelephone,
+                                dialNumber = mobileTelephone
                         ))
 
 
             if(fax != null)
                 comList.add(
                         Communication(
-                                ChannelCode.Fax,
-                                Choice(dialNumber = fax)
+                                channelCode = ChannelCode.Fax,
+                                dialNumber = fax
                         ))
 
 
             if(email != null)
                 comList.add(
                         Communication(
-                                ChannelCode.Email,
-                                Choice(URI = email)
+                                channelCode = ChannelCode.Email,
+                                URI = email
                         ))
 
 
             if(instantMessage != null)
                 comList.add(
                         Communication(
-                                ChannelCode.InstantMessage,
-                                Choice(URI = instantMessage)
+                                channelCode = ChannelCode.InstantMessage,
+                                URI = instantMessage
                         ))
 
 
             if(web != null)
                 comList.add(
                         Communication(
-                                ChannelCode.Web,
-                                Choice(URI = web)
+                                channelCode = ChannelCode.Web,
+                                URI = web
                         ))
 
             return comList
@@ -106,13 +119,6 @@ enum class ChannelCode{
     InstantMessage,
     Web
 }
-
-// 4.6.5 and 4.9.3
-data class Choice(
-        val address: Address? = null,
-        val dialNumber: String? = null,
-        val URI: String? = null
-)
 
 // 4.9.4
 data class Address(

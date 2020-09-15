@@ -2,18 +2,23 @@ package no.nav.cv.eures.model
 
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlElementWrapper
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty
+import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlRootElement
+import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlText
 
-
+@JacksonXmlRootElement
 data class Candidate(
         @JacksonXmlProperty(isAttribute = true, localName = "xmlns")
         val xmlns: String = "http://www.hr-xml.org/3",
 
-        val id: Id,
-        val uuid: String,
-        val created: String,
-        val createdBy: String?,
-        val updated: String,
-        val updatedBy: String?,
+        @JacksonXmlProperty(isAttribute = true, localName = "xmlns:oa")
+        val xmlns_oa: String = "http://www.openapplications.org/oagis/9",
+
+        @JacksonXmlProperty(localName = "DocumentID")
+        val documentId: DocumentId,
+//        val created: String,
+//        val createdBy: String?,
+//        val updated: String,
+//        val updatedBy: String?,
 
         @JacksonXmlProperty(isAttribute = true, localName = "majorVersionID")
         val majorVersionID: Int = 3,
@@ -29,32 +34,50 @@ data class Candidate(
 
         @JacksonXmlElementWrapper(useWrapping = false)
         val candidateSupplier: List<CandidateSupplier>,
-        val person: Person,
-        val posistionSeekingStatus: PositionSeekingStatus?,
-        val profile: Profile
+        val candidatePerson: CandidatePerson,
+        //val posistionSeekingStatus: PositionSeekingStatus?,
+        val candidateProfile: CandidateProfile
 )
 
-data class Id(val documentId: String)
+data class DocumentId(
+        @JacksonXmlProperty(isAttribute = true, localName = "schemeID")
+        val schemeID: String = "NAV-002",
+        @JacksonXmlProperty(isAttribute = true, localName = "schemeAgencyID")
+        val schemeAgencyID: String = "NAV",
+        @JacksonXmlProperty(isAttribute = true, localName = "schemeAgencyName")
+        val schemeAgencyName: String = "NAV public employment services",
+        @JacksonXmlProperty(isAttribute = true, localName = "schemeVersionID")
+        val schemeVersionID: String = "1.3",
+        @JacksonXmlText
+        val uuid: String
+)
 
 // 4.5
 data class CandidateSupplier(
+        @JacksonXmlProperty(localName = "PartyID")
         val partyId: String,
         val partyName: String,
 
         @JacksonXmlElementWrapper(useWrapping = false)
         val personContact: List<PersonContact>,
-        val precedence: Int
+        val precedenceCode: Int
 )
 
 
 // 4.7
-data class Person(
+data class CandidatePerson(
         val personName: Name,
+
+        @JacksonXmlElementWrapper(useWrapping = false)
         val communication: List<Communication>,
         val residencyCountryCode: CountryCodeISO3166_Alpha_2,
-        val nationality: List<CountryCodeISO3166_Alpha_2>,
+
+        @JacksonXmlElementWrapper(useWrapping = false)
+        val nationalityCode: List<CountryCodeISO3166_Alpha_2>,
         val birthDate: String,
-        val gender: GenderType,
+        val genderCode: GenderCode,
+
+        @JacksonXmlElementWrapper(useWrapping = false)
         val primaryLanguageCode: List<LanguageCodeISO639_1_2002_Aplpha2>
 )
 
@@ -64,7 +87,7 @@ enum class CountryCodeISO3166_Alpha_2 {
 }
 
 // 4.28.14
-enum class GenderType {
+enum class GenderCode {
     NotKnown,
     Male,
     Female,
@@ -73,7 +96,7 @@ enum class GenderType {
 
 // 4.28.17
 enum class LanguageCodeISO639_1_2002_Aplpha2 {
-    Norwegian
+    NB
 }
 
 // 4.28.28
@@ -84,8 +107,11 @@ enum class PositionSeekingStatus {
 }
 
 // 4.11
-data class Profile(
-        val educationHistory: EducationHistory,
-        val employmentHistory: EmploymentHistory
+data class CandidateProfile(
+        @JacksonXmlProperty(isAttribute = true, localName = "languageCode")
+        val languageCode: String = "en",
+
+        val educationHistory: EducationHistory? = null
+        //val employmentHistory: EmploymentHistory
 )
 
