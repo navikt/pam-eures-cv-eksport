@@ -8,6 +8,7 @@ import com.fasterxml.jackson.dataformat.xml.ser.ToXmlGenerator
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
 import com.fasterxml.jackson.module.kotlin.registerKotlinModule
 import no.nav.cv.eures.model.Candidate
+import java.io.File
 
 object XmlSerializer {
 
@@ -21,7 +22,13 @@ object XmlSerializer {
     }
 
     fun serialize(candidate:Candidate): String {
-        return xml.writeValueAsString(candidate)
+        val xmlString = xml.writeValueAsString(candidate)
+
+        val filename = "cv_${candidate.documentId.uuid}.xml"
+
+        File(filename).writeText(xmlString)
+
+        return xmlString
     }
 
 }
