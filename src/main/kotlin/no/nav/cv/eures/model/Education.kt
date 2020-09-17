@@ -3,40 +3,6 @@ package no.nav.cv.eures.model
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlElementWrapper
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlText
-import no.nav.arbeid.cv.avro.Cv
-import no.nav.cv.eures.samtykke.Samtykke
-
-class Education(
-        private val cv: Cv,
-        private val samtykke: Samtykke)
-{
-    fun getEducationHistory() : EducationHistory {
-        val utdanninger = mutableListOf<EducationOrganizationAttendance>()
-
-        // TODO : Antar man alltid maa ha med en utdanning typ grunnskole
-        if(!samtykke.utdanning)
-            return EducationHistory(listOf())
-
-        for(utd in cv.utdannelse) {
-            utdanninger.add(EducationOrganizationAttendance(
-                    organizationName = utd.laerested,
-                    educationLevelCode = parseEducationLevel(utd.nuskodeGrad),
-                    attendancePeriod = AttendancePeriod(
-                            FormattedDateTime(utd.fraTidspunkt.toString()),
-                            null),
-                    programName = utd.utdanningsretning
-            ))
-        }
-
-        return EducationHistory(utdanninger)
-    }
-
-    private fun parseEducationLevel(nuskodeGrad: String) : EducationLevelCode {
-        // TODO Finn ut av kode mapping
-        return EducationLevelCode(code = EducationLevelCodeEnum.Bachelor.ordinal)
-    }
-}
-
 
 // 4.13
 data class EducationHistory(
@@ -64,7 +30,7 @@ data class EducationLevelCode(
         val listVersionID: String = "2008/C11/01",
 
         @JacksonXmlText
-        val code: Int
+        val code: String
 
 )
 enum class EducationLevelCodeEnum(code: Int) {

@@ -52,45 +52,7 @@ class Konverterer (
                 ?: Samtykke(aktoerId = aktoerId, sistEndret = ZonedDateTime.now(), utdanning = true)
                 ?: throw Exception("Aktoer $aktoerId har ikke gitt samtykke")
 
-        val education = Education(cv, samtykke)
-        val employment = Employment(cv, samtykke)
-
-        val candidate = Candidate(
-                documentId = DocumentId(uuid = cv.cvId),
-//                created = cv.opprettet.toString(),
-//                createdBy = null,
-//                updated = cv.sistEndret.toString(),
-//                updatedBy = null,
-                validFrom = LocalDate.now().toString(),
-                validTo = LocalDate.now().plusDays(3650).toString(), // about ten years
-                candidateSupplier = listOf(
-                        CandidateSupplier(
-                                partyId = "NAV.NO",
-                                partyName = "Nav",
-                                personContact = listOf(
-                                        PersonContact(
-                                                personName = Name(
-                                                        givenName = "Arbeidsplassen.no",
-                                                        familyName = "Arbeidsplassen.no"),
-                                                communication = Communication.buildList(telephone = "nav.team.arbeidsplassen@nav.no"))), // TODO ekte epostadresse
-                                precedenceCode = 1)),
-                candidatePerson =  CandidatePerson(
-                        personName = Name(
-                                givenName = cv.fornavn,
-                                familyName = cv.etternavn),
-                        communication = Communication.buildList(telephone = cv.telefon, mobileTelephone = cv.epost),
-                        residencyCountryCode = CountryCodeISO3166_Alpha_2.NO, // cv.get("land")
-                        nationalityCode = listOf(CountryCodeISO3166_Alpha_2.NO), // cv.get("nasjonalitet")
-                        birthDate = cv.foedselsdato.toString(),
-                        genderCode = GenderCode.NotSpecified,
-                        primaryLanguageCode = listOf(LanguageCodeISO639_1_2002_Aplpha2.NB)),
-                //posistionSeekingStatus = PositionSeekingStatus.Active,
-                candidateProfile = CandidateProfile(
-                        educationHistory = education.getEducationHistory()
-                        //employmentHistory = employment.getEmploymentHistory()
-                )
-        )
-
+        val candidate = CandidateConverter(cv, samtykke).toXmlRepresentation()
 
         log.info("AktoerID :$aktoerId")
         log.info("Record :$record")
