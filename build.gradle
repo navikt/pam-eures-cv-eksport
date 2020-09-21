@@ -12,7 +12,7 @@ group "no.nav.cv.eures"
 repositories {
     mavenCentral()
     maven { url "https://jcenter.bintray.com" }
-}
+    maven { url "https://github-package-registry-mirror.gc.nav.no/cached/maven-release" }}
 
 configurations {
     // for dependencies that are needed for development only
@@ -30,6 +30,8 @@ dependencies {
 
     implementation "com.fasterxml.jackson.module:jackson-module-kotlin"
     implementation "com.fasterxml.jackson.dataformat:jackson-dataformat-xml"
+
+    implementation "no.nav.arbeid.pam:pam-cv-avro-cvmeldinger:46"
 
     // SNYK fixes
     implementation "org.dom4j:dom4j:2.1.3"
