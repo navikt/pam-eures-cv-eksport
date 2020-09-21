@@ -7,12 +7,12 @@ import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlText
 
 @JacksonXmlRootElement
 data class Candidate(
-//        @JacksonXmlProperty(isAttribute = true, localName = "xmlns")
-//        val xmlns: String = "http://www.hr-xml.org/3",
-//
-//        @JacksonXmlProperty(isAttribute = true, localName = "xmlns:oa")
-//        val xmlns_oa: String = "http://www.openapplications.org/oagis/9",
-//
+        @JacksonXmlProperty(isAttribute = true, localName = "xmlns")
+        val xmlns: String = "http://www.hr-xml.org/3",
+
+        @JacksonXmlProperty(isAttribute = true, localName = "xmlns:oa")
+        val xmlns_oa: String = "http://www.openapplications.org/oagis/9",
+
         @JacksonXmlProperty(localName = "DocumentID")
         val documentId: DocumentId,
 ////        val created: String,
@@ -20,11 +20,11 @@ data class Candidate(
 ////        val updated: String,
 ////        val updatedBy: String?,
 //
-//        @JacksonXmlProperty(isAttribute = true, localName = "majorVersionID")
-//        val majorVersionID: Int = 3,
-//
-//        @JacksonXmlProperty(isAttribute = true, localName = "minorVersionID")
-//        val minorVersionID: Int = 2,
+        @JacksonXmlProperty(isAttribute = true, localName = "majorVersionID")
+        val majorVersionID: Int = 3,
+
+        @JacksonXmlProperty(isAttribute = true, localName = "minorVersionID")
+        val minorVersionID: Int = 2,
 //
 //        @JacksonXmlProperty(isAttribute = true, localName = "validFrom")
 //        val validFrom: String,
