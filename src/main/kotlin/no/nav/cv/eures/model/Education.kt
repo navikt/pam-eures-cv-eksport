@@ -45,10 +45,3 @@ enum class EducationLevelCodeEnum(code: Int) {
     Doctoral(8)
 }
 
-// 4.13.7.2
-data class AttendancePeriod(
-        val startDate: FormattedDateTime,
-        val endDate: FormattedDateTime?
-)
-
-data class FormattedDateTime(val formattedDateTime: String)
