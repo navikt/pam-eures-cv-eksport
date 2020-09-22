@@ -79,12 +79,48 @@ class SamtykkeEntity() {
     @Column(name = "UTDANNING", nullable = false)
     var utdanning: Boolean = false
 
+    @Column(name = "FAGBREV", nullable = false)
+    var fagbrev: Boolean = false
+
+    @Column(name = "ARBEIDSERFARING", nullable = false)
+    var arbeidserfaring: Boolean = false
+
+    @Column(name = "ANNEN_ERFARING", nullable = false)
+    var annenErfaring: Boolean = false
+
+    @Column(name = "FOERERKORT", nullable = false)
+    var foererkort: Boolean = false
+
+    @Column(name = "LOVREGULERTE_YRKER", nullable = false)
+    var lovregulerteYrker: Boolean = false
+
+    @Column(name = "ANDRE_GODKJENNINGER", nullable = false)
+    var andreGodkjenninger: Boolean = false
+
+    @Column(name = "KURS", nullable = false)
+    var kurs: Boolean = false
+
+    @Column(name = "SPRAAK", nullable = false)
+    var spraak: Boolean = false
+
+    @Column(name = "SAMMENDRAG", nullable = false)
+    var sammendrag: Boolean = false
+
 
     fun toSamtykke() = Samtykke(
             aktoerId = aktoerId,
             sistEndret = sistEndret,
             personalia = personalia,
-            utdanning = utdanning
+            utdanning = utdanning,
+            fagbrev = fagbrev,
+            arbeidserfaring = arbeidserfaring,
+            annenErfaring = annenErfaring,
+            foererkort = foererkort,
+            lovregulerteYrker = lovregulerteYrker,
+            andreGodkjenninger = andreGodkjenninger,
+            kurs = kurs,
+            spraak = spraak,
+            sammendrag = sammendrag
     )
 
     companion object {
@@ -94,6 +130,15 @@ class SamtykkeEntity() {
             samtykkeEntity.sistEndret = samtykke.sistEndret
             samtykkeEntity.personalia = samtykke.personalia
             samtykkeEntity.utdanning = samtykke.utdanning
+            samtykkeEntity.fagbrev = samtykke.fagbrev
+            samtykkeEntity.arbeidserfaring = samtykke.arbeidserfaring
+            samtykkeEntity.annenErfaring = samtykke.annenErfaring
+            samtykkeEntity.foererkort = samtykke.foererkort
+            samtykkeEntity.lovregulerteYrker = samtykke.lovregulerteYrker
+            samtykkeEntity.andreGodkjenninger = samtykke.andreGodkjenninger
+            samtykkeEntity.kurs = samtykke.kurs
+            samtykkeEntity.spraak = samtykke.spraak
+            samtykkeEntity.sammendrag = samtykke.sammendrag
             return samtykkeEntity
         }
     }
