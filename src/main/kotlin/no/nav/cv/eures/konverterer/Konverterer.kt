@@ -49,7 +49,7 @@ class Konverterer (
 
 
         val samtykke = samtykkeRepository.hentSamtykke(aktoerId)
-                ?: Samtykke(aktoerId = aktoerId, sistEndret = ZonedDateTime.now(), utdanning = true)
+                ?: Samtykke(aktoerId = aktoerId, sistEndret = ZonedDateTime.now(), utdanning = true, arbeidserfaring = true)
                 ?: throw Exception("Aktoer $aktoerId har ikke gitt samtykke")
 
         val candidate = CandidateConverter(cv, samtykke).toXmlRepresentation()

@@ -25,9 +25,16 @@ class EmploymentHistoryConverter (
                         it.fraTidspunkt.toFormattedDateTime(),
                         it.tilTidspunkt.toFormattedDateTime()
                 ),
-                industryCode = IndustryCode(it.janzzKonseptid))
+                positionHistory = it.toPositionHistory())
     }
 
+    fun Arbeidserfaring.toPositionHistory()
+            = listOf(PositionHistory(
+            positionTitle = stillingstittel ?: stillingstittelFritekst, // TODO Skal dette være friktekstfeltet?
+            employmentPeriod = AttendancePeriod(
+                    fraTidspunkt.toFormattedDateTime(),
+                    tilTidspunkt.toFormattedDateTime()
+            )))
 }
 
 //val organizationName: String,

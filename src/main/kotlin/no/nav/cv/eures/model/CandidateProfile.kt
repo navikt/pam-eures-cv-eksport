@@ -7,6 +7,7 @@ data class CandidateProfile(
         @JacksonXmlProperty(isAttribute = true, localName = "languageCode")
         val languageCode: String = "en",
 
+        val employmentHistory: EmploymentHistory? = null,
         val educationHistory: EducationHistory? = null
-        //val employmentHistory: EmploymentHistory
+
 )
