@@ -6,7 +6,7 @@ import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty
 data class CandidateProfile(
         @JacksonXmlProperty(isAttribute = true, localName = "languageCode")
         val languageCode: String = "en",
-
+        val executiveSummary: String = "",
         val employmentHistory: EmploymentHistory? = null,
         val educationHistory: EducationHistory? = null
 

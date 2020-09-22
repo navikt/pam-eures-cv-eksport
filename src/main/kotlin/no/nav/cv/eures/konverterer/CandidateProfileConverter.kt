@@ -10,6 +10,7 @@ class CandidateProfileConverter(
 ) {
     fun toXmlRepresentation()
             = CandidateProfile(
+            executiveSummary = cv.sammendrag,
             employmentHistory = EmploymentHistoryConverter(cv, samtykke).toXmlRepresentation(),
             educationHistory = EducationHistoryConverter(cv, samtykke).toXmlRepresentation()
     )
