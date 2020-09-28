@@ -21,14 +21,6 @@ object XmlSerializer {
         enable(SerializationFeature.INDENT_OUTPUT)
     }
 
-    fun serialize(candidate:Candidate): String {
-        val xmlString = xml.writeValueAsString(candidate)
-
-        val filename = "cv_${candidate.documentId.uuid}.xml"
-
-        File(filename).writeText(xmlString)
-
-        return xmlString
-    }
-
+    fun serialize(candidate:Candidate): String
+            = xml.writeValueAsString(candidate)
 }

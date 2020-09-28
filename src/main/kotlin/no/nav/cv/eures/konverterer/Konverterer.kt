@@ -25,19 +25,7 @@ class Konverterer (
     }
 
     fun konverterTilXML(aktoerId: String) : String {
-
-
-
-
-       return "Nothing"
-    }
-
-    @Scheduled(fixedDelay = "5s")
-    fun testing() {
-
-        val aktoerId = "10013106889"
         val record = cvRecordRetriever.getCvDTO(aktoerId)
-
 
         val cv = when(record.meldingstype) {
             Meldingstype.OPPRETT -> record.opprettCv.cv
@@ -54,9 +42,6 @@ class Konverterer (
 
         val candidate = CandidateConverter(cv, samtykke).toXmlRepresentation()
 
-        log.info("AktoerID :$aktoerId")
-        log.info("Record :$record")
-        log.info("Candidate :$candidate")
-        log.info("XML: ${XmlSerializer.serialize(candidate)}")
+       return XmlSerializer.serialize(candidate)
     }
 }
