@@ -15,12 +15,15 @@ class EuresController(
     fun ping() = "Hello from Input API"
 
     @Get("getAll", produces = ["application/json"])
-    fun getAll() = euresService.getAllReferences()
+    fun getAll() =
+            euresService.getAllReferences()
 
     @Get("getChanges/{modificationTimestamp}", produces = ["application/json"])
-    fun getChanges(modificationTimestamp: Timestamp) = euresService.getChangedReferences(modificationTimestamp)
+    fun getChanges(modificationTimestamp: Timestamp) =
+            euresService.getChangedReferences(modificationTimestamp)
 
     @Post("getDetails", produces = ["application/json"])
-    fun getDetails(@Body ids: List<String>) = CvDetails(mapOf(ids.first() to CvDetails.CandidateDetail()))
+    fun getDetails(@Body ids: List<String>) =
+            euresService.getDetails(ids)
 
 }

@@ -13,6 +13,8 @@ interface CvXmlRepository {
 
     fun hentAlle(): List<CvXml>
 
+    fun hentAlle(ids: List<Long>) : List<CvXml>
+
     fun hentAlleEtter(timestamp: Timestamp): List<CvXml>
 
     fun lagreCvXml(cvXml: CvXml)
@@ -42,6 +44,13 @@ private open class JpaCvXMLRepository(
                 WHERE SLETTET IS NULL
             """.replace(serieMedWhitespace, " ")
 
+    private val hentAlleAktiveCverMedIder =
+            """
+                SELECT * FROM CV_XML
+                WHERE SLETTET IS NULL
+                AND CV_XML.ID IN :ids
+            """.replace(serieMedWhitespace, " ")
+
     private val hentAlleCverEtter =
             """
                 SELECT * FROM CV_XML
@@ -55,6 +64,14 @@ private open class JpaCvXMLRepository(
                 .resultList
                 .map { it as CvXml }
                 .firstOrNull()
+    }
+
+    @Transactional(readOnly = true)
+    override fun hentAlle(ids: List<Long>): List<CvXml> {
+        return entityManager.createNativeQuery(hentAlleAktiveCverMedIder, CvXml::class.java)
+                .setParameter("ids", ids)
+                .resultList
+                .map { it as CvXml }
     }
 
     @Transactional(readOnly = true)
