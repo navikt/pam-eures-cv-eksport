@@ -1,7 +1,6 @@
 package no.nav.cv.eures.cv
 
 import io.micronaut.spring.tx.annotation.Transactional
-import no.nav.cv.eures.eures.EuresService
 import org.slf4j.LoggerFactory
 import java.sql.Timestamp
 import java.time.ZonedDateTime
