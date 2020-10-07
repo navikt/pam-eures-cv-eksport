@@ -2,7 +2,6 @@ package no.nav.cv.eures.cv
 
 import io.micronaut.spring.tx.annotation.Transactional
 import org.slf4j.LoggerFactory
-import java.sql.Timestamp
 import java.time.ZonedDateTime
 import javax.inject.Singleton
 import javax.persistence.*
@@ -15,7 +14,7 @@ interface CvXmlRepository {
 
     fun hentAlle(ids: List<Long>) : List<CvXml>
 
-    fun hentAlleEtter(timestamp: Timestamp): List<CvXml>
+    fun hentAlleEtter(timestamp: ZonedDateTime): List<CvXml>
 
     fun lagreCvXml(cvXml: CvXml)
 
@@ -82,9 +81,9 @@ private open class JpaCvXMLRepository(
     }
 
     @Transactional(readOnly = true)
-    override fun hentAlleEtter(timestamp: Timestamp): List<CvXml> {
+    override fun hentAlleEtter(time: ZonedDateTime): List<CvXml> {
         return entityManager.createNativeQuery(hentAlleCverEtter, CvXml::class.java)
-                .setParameter("timestamp", timestamp)
+                .setParameter("timestamp", time)
                 .resultList
                 .map { it as CvXml }
     }

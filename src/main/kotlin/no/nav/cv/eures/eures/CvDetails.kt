@@ -1,8 +1,6 @@
 package no.nav.cv.eures.eures
 
 import com.fasterxml.jackson.annotation.JsonInclude
-import io.micronaut.jackson.annotation.JacksonFeatures
-import no.nav.cv.eures.cv.CvXml
 import java.sql.Timestamp
 
 data class CvDetails(

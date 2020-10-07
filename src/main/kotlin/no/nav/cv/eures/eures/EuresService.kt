@@ -7,6 +7,7 @@ import no.nav.cv.eures.eures.ChangedReferences.ChangedReference
 import no.nav.cv.eures.eures.CvDetails.CandidateDetail
 import org.slf4j.LoggerFactory
 import java.sql.Timestamp
+import java.time.ZonedDateTime
 import javax.inject.Singleton
 
 @Singleton
@@ -22,7 +23,7 @@ class EuresService(
             .let {
                 val (closed, createdOrModified) = it
                 val (created, modified) = createdOrModified.partition { cv -> cv.opprettet.isEqual(cv.sistEndret) }
-                Triple(created, modified, closed)
+                return@let Triple(created, modified, closed)
             }
 
 
@@ -30,11 +31,11 @@ class EuresService(
             .map { Reference(it) }
             .let { AllReferences(it) }
 
-    fun getChangedReferences(timestamp: Timestamp) = cvXmlRepository.hentAlleEtter(timestamp)
+    fun getChangedReferences(time: ZonedDateTime) = cvXmlRepository.hentAlleEtter(time)
             .partitionCvs()
             .let {
                 val (created, modified, closed) = it
-                ChangedReferences(
+                return@let ChangedReferences(
                         createdReferences = created.map { cv -> ChangedReference(cv) },
                         modifiedReferences = modified.map { cv -> ChangedReference(cv) },
                         closedReferences = closed.map { cv -> ChangedReference(cv) }

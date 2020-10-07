@@ -25,6 +25,7 @@ class Konverterer(
         cvXmlRepository.hentCv(aktoerId)
                 ?.let {
                     it.sistEndret = now
+                    it.slettet = null
                     it.xml = konverterTilXML(it.aktoerId)
                 }
         ?: cvXmlRepository.lagreCvXml(
