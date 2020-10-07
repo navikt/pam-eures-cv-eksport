@@ -2,9 +2,12 @@ package no.nav.cv.eures.eures
 
 import no.nav.cv.eures.cv.CvXml
 import no.nav.cv.eures.cv.CvXmlRepository
-import no.nav.cv.eures.eures.AllReferences.Reference
-import no.nav.cv.eures.eures.ChangedReferences.ChangedReference
-import no.nav.cv.eures.eures.CvDetails.CandidateDetail
+import no.nav.cv.eures.eures.dto.GetAllReferences
+import no.nav.cv.eures.eures.dto.GetAllReferences.Reference
+import no.nav.cv.eures.eures.dto.GetChangedReferences
+import no.nav.cv.eures.eures.dto.GetChangedReferences.ChangedReference
+import no.nav.cv.eures.eures.dto.GetDetails
+import no.nav.cv.eures.eures.dto.GetDetails.CandidateDetail
 import org.slf4j.LoggerFactory
 import java.sql.Timestamp
 import java.time.ZonedDateTime
@@ -27,44 +30,44 @@ class EuresService(
             }
 
 
-    fun getAllReferences() = cvXmlRepository.hentAlle()
+    fun getAllReferences() = cvXmlRepository.fetchAllActive()
             .map { Reference(it) }
-            .let { AllReferences(it) }
+            .let { GetAllReferences(it) }
 
-    fun getChangedReferences(time: ZonedDateTime) = cvXmlRepository.hentAlleEtter(time)
+    fun getChangedReferences(time: ZonedDateTime) = cvXmlRepository.fetchAllCvsAfterTimestamp(time)
             .partitionCvs()
             .let {
                 val (created, modified, closed) = it
-                return@let ChangedReferences(
+                return@let GetChangedReferences(
                         createdReferences = created.map { cv -> ChangedReference(cv) },
                         modifiedReferences = modified.map { cv -> ChangedReference(cv) },
                         closedReferences = closed.map { cv -> ChangedReference(cv) }
                 )
             }
 
-    fun getDetails(ids: List<String>) = cvXmlRepository.hentAlle(ids.map(String::toLong))
+    fun getDetails(references: List<String>) = cvXmlRepository.fetchAllCvsByReference(references)
             .partitionCvs()
             .let {
                 val (created, modified, closed) = it
                 val map = mutableMapOf<String, CandidateDetail>()
                 listOf(created, modified).flatten().forEach { cv ->
-                    map["${cv.id}"] = CandidateDetail(
+                    map[cv.reference] = CandidateDetail(
                             creationTimestamp = Timestamp.from(cv.opprettet.toInstant()),
                             lastModificationTimestamp = Timestamp.from(cv.sistEndret.toInstant()),
-                            reference = "${cv.id}",
+                            reference = cv.reference,
                             status = "ACTIVE",
                             content = cv.xml
                     )
                 }
 
                 closed.forEach { cv ->
-                    map["${cv.id}"] = CandidateDetail(
+                    map[cv.reference] = CandidateDetail(
                             closingTimestamp = Timestamp.from(cv.slettet?.toInstant()),
-                            reference = "${cv.id}",
+                            reference = cv.reference,
                             status = "CLOSED"
                     )
                 }
 
-                return@let CvDetails(map)
+                return@let GetDetails(map)
             }
 }

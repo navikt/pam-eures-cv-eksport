@@ -34,7 +34,7 @@ class CvConsumer(
     fun cron() {
         // TODO: Fiks slik at denne ikke kjører under testing
 
-        log.info("cron() starter")
+        // log.info("cron() starter")
 
         process(consumer)
     }
@@ -42,7 +42,9 @@ class CvConsumer(
     fun process(consumer: Consumer<String, ByteArray>) {
         val endredeCVer = concurrencyLock.withLock { consumer.poll(Duration.ofSeconds(1)) }
 
-        log.info("Fikk ${endredeCVer.count()} CVer")
+        endredeCVer.count().let {
+            if (it > 0) log.info("Fikk $it CVer")
+        }
 
         for(melding in endredeCVer) {
             val aktoerId = melding.key()

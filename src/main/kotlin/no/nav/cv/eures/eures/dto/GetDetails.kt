@@ -1,9 +1,9 @@
-package no.nav.cv.eures.eures
+package no.nav.cv.eures.eures.dto
 
 import com.fasterxml.jackson.annotation.JsonInclude
 import java.sql.Timestamp
 
-data class CvDetails(
+data class GetDetails(
         val details: Map<String, CandidateDetail> = mapOf()
 ) {
     @JsonInclude(JsonInclude.Include.NON_NULL)

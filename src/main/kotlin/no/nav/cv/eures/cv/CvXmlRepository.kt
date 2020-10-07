@@ -8,19 +8,21 @@ import javax.persistence.*
 
 interface CvXmlRepository {
 
-    fun hentCv(aktoerId: String) : CvXml?
+    fun fetch(aktoerId: String) : CvXml?
 
-    fun hentAlle(): List<CvXml>
+    fun fetchAllActive(): List<CvXml>
 
-    fun hentAlle(ids: List<Long>) : List<CvXml>
+    fun fetchAllActiveCvsByAktoerId(aktoerIder: List<String>) : List<CvXml>
 
-    fun hentAlleEtter(timestamp: ZonedDateTime): List<CvXml>
+    fun fetchAllCvsByReference(references: List<String>) : List<CvXml>
 
-    fun lagreCvXml(cvXml: CvXml)
+    fun fetchAllCvsAfterTimestamp(time: ZonedDateTime): List<CvXml>
+
+    fun save(cvXml: CvXml) : CvXml
 
 }
 
-
+// TODO - ErrorHandling
 @Singleton
 private open class JpaCvXMLRepository(
         @PersistenceContext private val entityManager: EntityManager
@@ -31,78 +33,100 @@ private open class JpaCvXMLRepository(
         val log = LoggerFactory.getLogger(JpaCvXMLRepository::class.java)
     }
 
-    private val hentCv =
+    private val fetchQuery =
             """
                 SELECT * FROM CV_XML
-                WHERE AKTOER_ID > :aktoerId
-            """.replace(serieMedWhitespace, " ")
-
-    private val hentAlleAktiveCver =
-            """
-                SELECT * FROM CV_XML
-                WHERE SLETTET IS NULL
-            """.replace(serieMedWhitespace, " ")
-
-    private val hentAlleAktiveCverMedIder =
-            """
-                SELECT * FROM CV_XML
-                WHERE SLETTET IS NULL
-                AND CV_XML.ID IN :ids
-            """.replace(serieMedWhitespace, " ")
-
-    private val hentAlleCverEtter =
-            """
-                SELECT * FROM CV_XML
-                WHERE SIST_ENDRET > :timestamp
+                WHERE AKTOER_ID = :aktoerId
             """.replace(serieMedWhitespace, " ")
 
     @Transactional(readOnly = true)
-    override fun hentCv(aktoerId: String): CvXml? {
-        return entityManager.createNativeQuery(hentCv, CvXml::class.java)
+    override fun fetch(aktoerId: String): CvXml? {
+        return entityManager.createNativeQuery(fetchQuery, CvXml::class.java)
                 .setParameter("aktoerId", aktoerId)
                 .resultList
                 .map { it as CvXml }
                 .firstOrNull()
     }
 
+    private val fetchAllActiveQuery =
+            """
+                SELECT * FROM CV_XML
+                WHERE SLETTET IS NULL
+                AND EXISTS(
+                    SELECT * FROM SAMTYKKE 
+                    WHERE SAMTYKKE.AKTOER_ID = CV_XML.AKTOER_ID
+                )
+            """.replace(serieMedWhitespace, " ")
+
     @Transactional(readOnly = true)
-    override fun hentAlle(ids: List<Long>): List<CvXml> {
-        return entityManager.createNativeQuery(hentAlleAktiveCverMedIder, CvXml::class.java)
-                .setParameter("ids", ids)
+    override fun fetchAllActive(): List<CvXml> {
+        return entityManager.createNativeQuery(fetchAllActiveQuery, CvXml::class.java)
                 .resultList
                 .map { it as CvXml }
     }
 
+    private val fetchAllActiveCvsByAktoerIdQuery =
+            """
+                SELECT * FROM CV_XML
+                WHERE SLETTET IS NULL
+                AND AKTOER_ID IN :aktoerIder
+                AND EXISTS(
+                    SELECT * FROM SAMTYKKE 
+                    WHERE SAMTYKKE.AKTOER_ID = CV_XML.AKTOER_ID
+                )
+            """.replace(serieMedWhitespace, " ")
+
     @Transactional(readOnly = true)
-    override fun hentAlle(): List<CvXml> {
-        return entityManager.createNativeQuery(hentAlleAktiveCver, CvXml::class.java)
+    override fun fetchAllActiveCvsByAktoerId(aktoerIder: List<String>): List<CvXml> {
+        return entityManager.createNativeQuery(fetchAllActiveCvsByAktoerIdQuery, CvXml::class.java)
+                .setParameter("aktoerIder", aktoerIder)
                 .resultList
                 .map { it as CvXml }
     }
 
+    private val fetchAllCvsAfterTimestampQuery =
+            """
+                SELECT * FROM CV_XML
+                WHERE SIST_ENDRET > :timestamp
+            """.replace(serieMedWhitespace, " ")
+
     @Transactional(readOnly = true)
-    override fun hentAlleEtter(time: ZonedDateTime): List<CvXml> {
-        return entityManager.createNativeQuery(hentAlleCverEtter, CvXml::class.java)
+    override fun fetchAllCvsAfterTimestamp(time: ZonedDateTime): List<CvXml> {
+        return entityManager.createNativeQuery(fetchAllCvsAfterTimestampQuery, CvXml::class.java)
                 .setParameter("timestamp", time)
                 .resultList
                 .map { it as CvXml }
     }
 
+    private val fetchAllCvsByReferenceQuery =
+            """
+                SELECT * FROM CV_XML
+                AND REFERANSE IN :references
+            """.replace(serieMedWhitespace, " ")
+
+    @Transactional(readOnly = true)
+    override fun fetchAllCvsByReference(references: List<String>): List<CvXml> {
+        return entityManager.createNativeQuery(fetchAllCvsByReferenceQuery, CvXml::class.java)
+                .setParameter("references", references)
+                .resultList
+                .map { it as CvXml }
+    }
+
     @Transactional
-    override fun lagreCvXml(cvXml: CvXml) {
+    override fun save(cvXml: CvXml) : CvXml {
         log.info("Lagrer cv for ${cvXml.aktoerId}")
 
         if(cvXml.xml.length > 128_000)
             throw Exception("Cv XML string for aktoer ${cvXml.aktoerId} is larger than the limit of 128_000 bytes")
 
-        entityManager.merge(cvXml)
+        return entityManager.merge(cvXml)
     }
 
 }
 
 @Entity
 @Table(name = "CV_XML")
-class CvXml() {
+class CvXml {
     @Id
     @Column(name = "ID")
     @GeneratedValue(generator = "CV_SEQ")
@@ -110,6 +134,9 @@ class CvXml() {
 
     @Column(name = "AKTOER_ID", nullable = false, unique = true)
     lateinit var aktoerId: String
+
+    @Column(name = "REFERANSE", nullable = false, unique = true)
+    lateinit var reference: String
 
     @Column(name = "OPPRETTET", nullable = false)
     lateinit var opprettet: ZonedDateTime
@@ -124,12 +151,14 @@ class CvXml() {
     lateinit var xml: String
 
     fun update(
+            reference: String,
             aktoerId: String,
             opprettet: ZonedDateTime,
             sistEndret: ZonedDateTime,
             slettet: ZonedDateTime?,
             xml: String
     ) : CvXml {
+        this.reference = reference
         this.aktoerId = aktoerId
         this.opprettet = opprettet
         this.sistEndret = sistEndret
@@ -145,11 +174,12 @@ class CvXml() {
 
     companion object {
         fun create(
+                reference: String,
                 aktoerId: String,
                 opprettet: ZonedDateTime,
                 sistEndret: ZonedDateTime,
                 slettet: ZonedDateTime?,
                 xml: String
-        ) = CvXml().update(aktoerId, opprettet, sistEndret, slettet, xml)
+        ) = CvXml().update(reference, aktoerId, opprettet, sistEndret, slettet, xml)
     }
 }

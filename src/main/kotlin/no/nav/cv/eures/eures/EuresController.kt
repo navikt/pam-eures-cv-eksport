@@ -4,9 +4,7 @@ import io.micronaut.http.annotation.Body
 import io.micronaut.http.annotation.Controller
 import io.micronaut.http.annotation.Get
 import io.micronaut.http.annotation.Post
-import java.time.Instant
-import java.time.ZoneId
-import java.time.ZonedDateTime
+import no.nav.cv.eures.model.Converters.toUtcZonedDateTime
 
 @Controller("input/api/cv/v1.0")
 class EuresController(
@@ -22,11 +20,10 @@ class EuresController(
 
     @Get("getChanges/{modificationTimestamp}", produces = ["application/json"])
     fun getChanges(modificationTimestamp: Long) =
-            euresService.getChangedReferences(
-                    ZonedDateTime.ofInstant(Instant.ofEpochMilli(modificationTimestamp), ZoneId.of("UTC")))
+            euresService.getChangedReferences(modificationTimestamp.toUtcZonedDateTime())
 
     @Post("getDetails", produces = ["application/json"])
-    fun getDetails(@Body ids: List<String>) =
-            euresService.getDetails(ids)
+    fun getDetails(@Body references: List<String>) =
+            euresService.getDetails(references)
 
 }

@@ -1,3 +1,23 @@
+--- Endringer i CV_RAW tabell for å kunne kjøre batch på sletteeventer
+
+ALTER TABLE CV_RAW
+    ADD COLUMN PROSESSERT BOOLEAN DEFAULT FALSE;
+
+
+--- Endringer i CV_XML tabell for å kunne følge EURES standard
+
+ALTER TABLE CV_XML
+    ADD COLUMN OPPRETTET TIMESTAMP;
+
+ALTER TABLE CV_XML
+    ADD COLUMN SLETTET TIMESTAMP;
+
+ALTER TABLE CV_XML
+    ADD COLUMN REFERANSE VARCHAR(200);
+
+
+--- Samtykker bør være type boolean, endrer her.
+
 ALTER TABLE SAMTYKKE
     ALTER COLUMN PERSONALIA TYPE BOOLEAN;
 

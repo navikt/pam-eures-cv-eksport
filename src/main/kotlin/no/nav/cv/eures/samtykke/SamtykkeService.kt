@@ -15,5 +15,5 @@ class SamtykkeService(
     }
 
     fun oppdaterSamtykke(samtykke: Samtykke) = samtykkeRepository.oppdaterSamtykke(samtykke)
-            .run { konverterer.oppdater(samtykke.aktoerId) }
+            .run { konverterer.oppdaterEllerLag(samtykke.aktoerId) }
 }

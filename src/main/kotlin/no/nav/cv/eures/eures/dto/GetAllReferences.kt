@@ -1,11 +1,9 @@
-package no.nav.cv.eures.eures
+package no.nav.cv.eures.eures.dto
 
-import no.nav.arbeid.cv.avro.Melding
 import no.nav.cv.eures.cv.CvXml
-import java.io.InvalidObjectException
 import java.sql.Timestamp
 
-data class AllReferences(
+data class GetAllReferences(
         val allReferences: List<Reference> = listOf()
 ) {
 
@@ -18,7 +16,7 @@ data class AllReferences(
         val status: String = "ACTIVE"
 
         constructor(cv: CvXml) : this(
-                reference = "${cv.id}",
+                reference = cv.reference,
                 creationTimeStamp = Timestamp.from(cv.opprettet.toInstant()),
                 lastModificationTimestamp = Timestamp.from(cv.sistEndret.toInstant())
         )
