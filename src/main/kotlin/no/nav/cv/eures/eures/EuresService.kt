@@ -29,7 +29,6 @@ class EuresService(
                 return@let Triple(created, modified, closed)
             }
 
-
     fun getAllReferences() = cvXmlRepository.fetchAllActive()
             .map { Reference(it) }
             .let { GetAllReferences(it) }

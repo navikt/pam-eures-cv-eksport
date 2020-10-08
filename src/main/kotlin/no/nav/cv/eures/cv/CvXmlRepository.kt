@@ -87,7 +87,8 @@ private open class JpaCvXMLRepository(
     private val fetchAllCvsAfterTimestampQuery =
             """
                 SELECT * FROM CV_XML
-                WHERE SIST_ENDRET > :timestamp
+                WHERE SIST_ENDRET > :timestamp 
+                OR SLETTET > :timestamp
             """.replace(serieMedWhitespace, " ")
 
     @Transactional(readOnly = true)

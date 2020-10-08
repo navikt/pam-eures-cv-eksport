@@ -10,7 +10,7 @@ import java.time.ZonedDateTime
 import javax.inject.Singleton
 
 @Singleton
-class Konverterer(
+open class Konverterer(
         private val cvRecordRetriever: CvRecordRetriever,
         private val cvXmlRepository: CvXmlRepository,
         private val samtykkeRepository: SamtykkeRepository
