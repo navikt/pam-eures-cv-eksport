@@ -50,6 +50,7 @@ class Konverterer(
     fun slett(aktoerId: String): CvXml? = cvXmlRepository.fetch(aktoerId)
             ?.let {
                 it.slettet = if (it.slettet != null) it.slettet else ZonedDateTime.now()
+                it.xml = ""
                 return@let cvXmlRepository.save(it)
             }
 

@@ -101,7 +101,7 @@ private open class JpaCvXMLRepository(
     private val fetchAllCvsByReferenceQuery =
             """
                 SELECT * FROM CV_XML
-                AND REFERANSE IN :references
+                WHERE REFERANSE IN :references
             """.replace(serieMedWhitespace, " ")
 
     @Transactional(readOnly = true)
