@@ -9,8 +9,10 @@ import no.nav.cv.eures.konverterer.CvRecordRetriever
 import no.nav.cv.eures.konverterer.Konverterer
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
+import javax.inject.Singleton
 
 @Requires(notEnv = ["test"])
+@Singleton
 class MessageProcessor(
         private val cvRecordRetriever: CvRecordRetriever,
         private val cvRepository: CvRepository,
@@ -23,6 +25,7 @@ class MessageProcessor(
 
     @Scheduled(fixedDelay = "5s")
     fun process() {
+        // TODO - Make use of batches.
         val endringer = cvRecordRetriever.getUnprocessedCvDTOs()
                 .partition { it.second.meldingstype == Meldingstype.SLETT }
                 .let {
@@ -31,6 +34,7 @@ class MessageProcessor(
                         konverterer.slett(rawCv.aktoerId)
                         return@map rawCv
                     }
+                    // TODO - Implement query logic through code?
                     val createdOrModified = createdOrModifiedPairs.map { pair -> pair.first }.let{ rawCvs ->
                         cvXmlRepository.fetchAllActiveCvsByAktoerId(rawCvs.map { rawCv -> rawCv.aktoerId }).forEach { cv ->
                             konverterer.oppdaterEksisterende(cv)

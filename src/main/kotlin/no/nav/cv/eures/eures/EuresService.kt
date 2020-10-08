@@ -8,6 +8,7 @@ import no.nav.cv.eures.eures.dto.GetChangedReferences
 import no.nav.cv.eures.eures.dto.GetChangedReferences.ChangedReference
 import no.nav.cv.eures.eures.dto.GetDetails
 import no.nav.cv.eures.eures.dto.GetDetails.CandidateDetail
+import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import java.sql.Timestamp
 import java.time.ZonedDateTime
@@ -19,7 +20,7 @@ class EuresService(
 ) {
 
     companion object {
-        val log = LoggerFactory.getLogger(EuresService::class.java)
+        val log: Logger = LoggerFactory.getLogger(EuresService::class.java)
     }
 
     private fun List<CvXml>.partitionCvs() = partition { it.slettet != null }

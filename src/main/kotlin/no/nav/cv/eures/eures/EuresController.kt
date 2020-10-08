@@ -8,7 +8,7 @@ import no.nav.cv.eures.model.Converters.toUtcZonedDateTime
 
 @Controller("input/api/cv/v1.0")
 class EuresController(
-        val euresService: EuresService
+        private val euresService: EuresService
 ) {
 
     @Get("ping")

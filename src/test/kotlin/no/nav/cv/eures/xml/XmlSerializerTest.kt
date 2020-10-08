@@ -15,7 +15,7 @@ class XmlSerializerTest(
 
     @Test
     fun `produce xml document`() {
-        val aktorId = "10013106889";
+        val aktorId = "10013106889"
 
         val xmlString = konverterer.konverterTilXML(aktorId)
 
