@@ -74,53 +74,53 @@ class SamtykkeEntity() {
     var sistEndret: ZonedDateTime = ZonedDateTime.now()
 
     @Column(name = "PERSONALIA", nullable = false)
-    var personalia: Boolean = false
+    var personalia: Boolean? = false
 
     @Column(name = "UTDANNING", nullable = false)
-    var utdanning: Boolean = false
+    var utdanning: Boolean? = false
 
     @Column(name = "FAGBREV", nullable = false)
-    var fagbrev: Boolean = false
+    var fagbrev: Boolean? = false
 
     @Column(name = "ARBEIDSERFARING", nullable = false)
-    var arbeidserfaring: Boolean = false
+    var arbeidserfaring: Boolean? = false
 
     @Column(name = "ANNEN_ERFARING", nullable = false)
-    var annenErfaring: Boolean = false
+    var annenErfaring: Boolean? = false
 
     @Column(name = "FOERERKORT", nullable = false)
-    var foererkort: Boolean = false
+    var foererkort: Boolean? = false
 
     @Column(name = "LOVREGULERTE_YRKER", nullable = false)
-    var lovregulerteYrker: Boolean = false
+    var lovregulerteYrker: Boolean? = false
 
     @Column(name = "ANDRE_GODKJENNINGER", nullable = false)
-    var andreGodkjenninger: Boolean = false
+    var andreGodkjenninger: Boolean? = false
 
     @Column(name = "KURS", nullable = false)
-    var kurs: Boolean = false
+    var kurs: Boolean? = false
 
     @Column(name = "SPRAAK", nullable = false)
-    var spraak: Boolean = false
+    var spraak: Boolean? = false
 
     @Column(name = "SAMMENDRAG", nullable = false)
-    var sammendrag: Boolean = false
+    var sammendrag: Boolean? = false
 
 
     fun toSamtykke() = Samtykke(
             aktoerId = aktoerId,
             sistEndret = sistEndret,
-            personalia = personalia,
-            utdanning = utdanning,
-            fagbrev = fagbrev,
-            arbeidserfaring = arbeidserfaring,
-            annenErfaring = annenErfaring,
-            foererkort = foererkort,
-            lovregulerteYrker = lovregulerteYrker,
-            andreGodkjenninger = andreGodkjenninger,
-            kurs = kurs,
-            spraak = spraak,
-            sammendrag = sammendrag
+            personalia = personalia ?: false,
+            utdanning = utdanning ?: false,
+            fagbrev = fagbrev ?: false,
+            arbeidserfaring = arbeidserfaring ?: false,
+            annenErfaring = annenErfaring ?: false,
+            foererkort = foererkort ?: false,
+            lovregulerteYrker = lovregulerteYrker ?: false,
+            andreGodkjenninger = andreGodkjenninger ?: false,
+            kurs = kurs ?: false,
+            spraak = spraak ?: false,
+            sammendrag = sammendrag ?: false
     )
 
     companion object {

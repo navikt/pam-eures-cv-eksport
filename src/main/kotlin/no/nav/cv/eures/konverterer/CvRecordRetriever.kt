@@ -39,6 +39,7 @@ class CvAvroFromRepo(
     }
 
     override fun getCvDTO(aktoerId: String): Melding {
+        // TODO - Don't fail it doesn't exist -> Stops controller from returning
         val rawCV = cvRepository.hentCv(aktoerId)
                 ?: throw Exception("Prøver å konvertere CV for aktør $aktoerId, men finner den ikke i databasen.")
         return rawCV.toMelding()
