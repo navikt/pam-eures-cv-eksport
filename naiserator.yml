@@ -46,6 +46,8 @@ spec:
   env:
     - name: KAFKA_CONSUMER_TOPIC_CV_ENDRET
       value: {{ kafka_consumer_topic_cv_endret }}
+    - name: DB_DRIVER
+      value: 'org.postgresql.Driver'
 #    - name: JDBC_URL
 #      value: {{ jdbc_url }}
 #    - name: DB_VAULT_PATH

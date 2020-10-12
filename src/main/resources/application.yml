@@ -48,19 +48,19 @@ jpa:
           auto: none
         show_sql: false
 
+
 datasources:
   default:
-    minimumIdle: 0
-    maximumPoolSize: 4
-    idleTimeout: 10001
-    maxLifetime: 30001
+    url: ${DB_JDBC_URL:`jdbc:h2:mem:devDb;DB_CLOSE_ON_EXIT=FALSE;MODE=PostgreSQL;DATABASE_TO_LOWER=TRUE`}
+    driverClassName: ${DB_DRIVER:org.h2.Driver}
+    username: ${DB_USERNAME:sa}
+    password: ${DB_PASSWORD:''}
+    maximum-pool-size: 2
+    minimum-idle: 0
+    pool-name: default
     connectionTestQuery: "select 1"
-    jdbcUrl: jdbc:postgresql://${DB_HOST:localhost}:${DB_PORT:5432}/${DB_DATABASE:pam-eures-cv-eksport}?user=${DB_USERNAME:}&password=${DB_PASSWORD:}
-    driverClassName: 'org.postgresql.Driver'
 
 flyway:
   datasources:
     default:
       locations: classpath:db
-      initSql:
-        - 'SET ROLE "pam-eures-cv-eksport-admin"'
