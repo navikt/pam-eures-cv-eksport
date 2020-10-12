@@ -25,7 +25,7 @@ internal class SamtykkeRepositoryTest {
 
         val hentet = samtykkeRepository.hentSamtykke(aktoerId1)
 
-        assertEquals(samtykke.aktoerId, hentet?.aktoerId)
+        assertEquals(samtykke.foedselsnummer, hentet?.foedselsnummer)
         assertEquals(samtykke.sistEndret, hentet?.sistEndret)
         assertEquals(samtykke.personalia, hentet?.personalia)
         assertEquals(samtykke.utdanning, hentet?.utdanning)
@@ -46,7 +46,7 @@ internal class SamtykkeRepositoryTest {
 
         assertNull(hentet1)
 
-        assertEquals(samtykke2.aktoerId, hentet2?.aktoerId)
+        assertEquals(samtykke2.foedselsnummer, hentet2?.foedselsnummer)
         assertEquals(samtykke2.sistEndret, hentet2?.sistEndret)
         assertEquals(samtykke2.personalia, hentet2?.personalia)
         assertEquals(samtykke2.utdanning, hentet2?.utdanning)
@@ -59,7 +59,7 @@ internal class SamtykkeRepositoryTest {
 
         val hentet = samtykkeRepository.hentSamtykke(aktoerId1)
 
-        assertEquals(samtykke.aktoerId, hentet?.aktoerId)
+        assertEquals(samtykke.foedselsnummer, hentet?.foedselsnummer)
         assertEquals(samtykke.sistEndret, hentet?.sistEndret)
         assertEquals(samtykke.personalia, hentet?.personalia)
         assertEquals(samtykke.utdanning, hentet?.utdanning)
@@ -69,7 +69,7 @@ internal class SamtykkeRepositoryTest {
 
         val hentetOppdatert  = samtykkeRepository.hentSamtykke(aktoerId1)
 
-        assertEquals(samtykkeOppdatert.aktoerId, hentetOppdatert?.aktoerId)
+        assertEquals(samtykkeOppdatert.foedselsnummer, hentetOppdatert?.foedselsnummer)
         assertEquals(samtykkeOppdatert.sistEndret, hentetOppdatert?.sistEndret)
         assertEquals(samtykkeOppdatert.personalia, hentetOppdatert?.personalia)
         assertEquals(samtykkeOppdatert.utdanning, hentetOppdatert?.utdanning)

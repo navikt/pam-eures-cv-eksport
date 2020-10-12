@@ -10,11 +10,11 @@ import javax.persistence.*
 
 interface CvXmlRepository {
 
-    fun fetch(aktoerId: String) : CvXml?
+    fun fetch(foedselsnummer: String) : CvXml?
 
     fun fetchAllActive(): List<CvXml>
 
-    fun fetchAllActiveCvsByAktoerId(aktoerIder: List<String>) : List<CvXml>
+    fun fetchAllActiveCvsByFoedselsnummer(foedselsnummer: List<String>) : List<CvXml>
 
     fun fetchAllCvsByReference(references: List<String>) : List<CvXml>
 
@@ -24,6 +24,7 @@ interface CvXmlRepository {
 
 }
 
+// TODO - No FNR logging
 @Singleton
 private open class JpaCvXMLRepository(
         @PersistenceContext private val entityManager: EntityManager
@@ -37,19 +38,19 @@ private open class JpaCvXMLRepository(
     private val fetchQuery =
             """
                 SELECT * FROM CV_XML
-                WHERE AKTOER_ID = :aktoerId
+                WHERE FOEDSELSNUMMER = :foedselsnummer
             """.replace(serieMedWhitespace, " ")
 
     @Transactional(readOnly = true)
-    override fun fetch(aktoerId: String): CvXml? =
+    override fun fetch(foedselsnummer: String): CvXml? =
             try {
                 entityManager.createNativeQuery(fetchQuery, CvXml::class.java)
-                    .setParameter("aktoerId", aktoerId)
+                    .setParameter("foedselsnummer", foedselsnummer)
                     .resultList
                     .map { it as CvXml }
                     .firstOrNull()
             } catch (e: Exception) {
-                log.error("Feil ved henting av XML data for aktoer: $aktoerId", e)
+                log.error("Feil ved henting av XML data for aktoer: $foedselsnummer", e)
                 null
             }
 
@@ -59,7 +60,7 @@ private open class JpaCvXMLRepository(
                 WHERE SLETTET IS NULL
                 AND EXISTS(
                     SELECT * FROM SAMTYKKE 
-                    WHERE SAMTYKKE.AKTOER_ID = CV_XML.AKTOER_ID
+                    WHERE SAMTYKKE.FOEDSELSNUMMER = CV_XML.FOEDSELSNUMMER
                 )
             """.replace(serieMedWhitespace, " ")
 
@@ -78,25 +79,24 @@ private open class JpaCvXMLRepository(
             """
                 SELECT * FROM CV_XML
                 WHERE SLETTET IS NULL
-                AND AKTOER_ID IN (:aktoerIder)
+                AND FOEDSELSNUMMER IN (:foedselsnummer)
                 AND EXISTS(
                     SELECT * FROM SAMTYKKE 
-                    WHERE SAMTYKKE.AKTOER_ID = CV_XML.AKTOER_ID
+                    WHERE SAMTYKKE.FOEDSELSNUMMER = CV_XML.FOEDSELSNUMMER
                 )
             """.replace(serieMedWhitespace, " ")
 
     @Transactional(readOnly = true)
-    override fun fetchAllActiveCvsByAktoerId(aktoerIder: List<String>): List<CvXml> = try {
+    override fun fetchAllActiveCvsByFoedselsnummer(foedselsnummer: List<String>): List<CvXml> = try {
         entityManager.createNativeQuery(fetchAllActiveCvsByAktoerIdQuery, CvXml::class.java)
-                .setParameter("aktoerIder", aktoerIder)
+                .setParameter("foedselsnummer", foedselsnummer)
                 .resultList
                 .map { it as CvXml }
         } catch (e: Exception) {
-        log.error("Feil ved henting av XML dataer for aktoer ider: $aktoerIder", e)
+        log.error("Feil ved henting av XML dataer for aktoer ider: $foedselsnummer", e)
         listOf()
     }
 
-    @Language("POSTGRES-PSQL")
     private val fetchAllCvsAfterTimestampQuery =
             """
                 SELECT * FROM CV_XML
@@ -134,16 +134,16 @@ private open class JpaCvXMLRepository(
 
     @Transactional
     override fun save(cvXml: CvXml) : CvXml {
-        log.info("Lagrer cv for ${cvXml.aktoerId}")
+        log.info("Lagrer cv for ${cvXml.foedselsnummer}")
 
         if(cvXml.xml.length > 128_000)
-            throw Exception("Cv XML string for aktoer ${cvXml.aktoerId} is larger than the limit of 128_000 bytes")
+            throw Exception("Cv XML string for aktoer ${cvXml.foedselsnummer} is larger than the limit of 128_000 bytes")
 
         return try {
             entityManager.merge(cvXml)
         } catch (e: Exception) {
-            log.error("Feil ved lagring av XML data for aktoer: ${cvXml.aktoerId}", e)
-            throw Exception("Feil ved lagring av XML data for aktoer: ${cvXml.aktoerId}", e)
+            log.error("Feil ved lagring av XML data for aktoer: ${cvXml.foedselsnummer}", e)
+            throw Exception("Feil ved lagring av XML data for aktoer: ${cvXml.foedselsnummer}", e)
         }
     }
 
@@ -154,11 +154,11 @@ private open class JpaCvXMLRepository(
 class CvXml {
     @Id
     @Column(name = "ID")
-    @GeneratedValue(generator = "CV_SEQ")
+    @GeneratedValue(generator = "CV_XML_SEQ")
     var id: Long? = null
 
-    @Column(name = "AKTOER_ID", nullable = false, unique = true)
-    lateinit var aktoerId: String
+    @Column(name = "FOEDSELSNUMMER", nullable = false, unique = true)
+    lateinit var foedselsnummer: String
 
     @Column(name = "REFERANSE", nullable = false, unique = true)
     lateinit var reference: String
@@ -177,14 +177,14 @@ class CvXml {
 
     fun update(
             reference: String,
-            aktoerId: String,
+            foedselsnummer: String,
             opprettet: ZonedDateTime,
             sistEndret: ZonedDateTime,
             slettet: ZonedDateTime?,
             xml: String
     ) : CvXml {
         this.reference = reference
-        this.aktoerId = aktoerId
+        this.foedselsnummer = foedselsnummer
         this.opprettet = opprettet
         this.sistEndret = sistEndret
         this.slettet = slettet
@@ -194,7 +194,7 @@ class CvXml {
     }
 
     override fun toString(): String {
-        return "CvXml(aktoerId='$aktoerId', opprettet=$opprettet, sistEndret=$sistEndret, slettet=$slettet, xml='$xml')"
+        return "CvXml(aktoerId='$foedselsnummer', opprettet=$opprettet, sistEndret=$sistEndret, slettet=$slettet, xml='$xml')"
     }
 
     companion object {

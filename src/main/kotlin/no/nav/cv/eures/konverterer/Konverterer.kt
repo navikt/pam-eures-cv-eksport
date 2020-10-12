@@ -23,7 +23,7 @@ open class Konverterer(
     fun oppdaterEksisterende(cvXml: CvXml?): CvXml? {
         val now = ZonedDateTime.now()
         return cvXml?.let {
-            konverterTilXML(it.aktoerId).let { xml ->
+            konverterTilXML(it.foedselsnummer)?.let { xml ->
                 it.sistEndret = now
                 it.slettet = null
                 it.xml = xml.second
@@ -32,13 +32,13 @@ open class Konverterer(
         }
     }
 
-    fun oppdaterEllerLag(aktoerId: String) {
+    fun oppdaterEllerLag(foedselsnummer: String) {
         val now = ZonedDateTime.now()
-        cvXmlRepository.fetch(aktoerId)?.let { oppdaterEksisterende(it) }
-            ?: konverterTilXML(aktoerId).let {
+        cvXmlRepository.fetch(foedselsnummer)?.let { oppdaterEksisterende(it) }
+            ?: konverterTilXML(foedselsnummer)?.let {
                 cvXmlRepository.save(CvXml.create(
                         reference = it.first,
-                        aktoerId = aktoerId,
+                        aktoerId = foedselsnummer,
                         opprettet = now,
                         sistEndret = now,
                         slettet = null,
@@ -47,15 +47,15 @@ open class Konverterer(
             }
     }
 
-    fun slett(aktoerId: String): CvXml? = cvXmlRepository.fetch(aktoerId)
+    fun slett(foedselsnummer: String): CvXml? = cvXmlRepository.fetch(foedselsnummer)
             ?.let {
                 it.slettet = if (it.slettet != null) it.slettet else ZonedDateTime.now()
                 it.xml = ""
                 return@let cvXmlRepository.save(it)
             }
 
-    fun konverterTilXML(aktoerId: String): Pair<String, String> {
-        val record = cvRecordRetriever.getCvDTO(aktoerId)
+    fun konverterTilXML(foedselsnummer: String): Pair<String, String>? {
+        val record = cvRecordRetriever.getCvDTO(foedselsnummer) ?: return null
 
         val cv = when (record.meldingstype) {
             Meldingstype.OPPRETT -> record.opprettCv.cv
@@ -65,10 +65,8 @@ open class Konverterer(
 
         log.debug("Firstname : ${cv.fornavn}")
 
-
-        val samtykke = samtykkeRepository.hentSamtykke(aktoerId)
-        // ?: Samtykke(aktoerId = aktoerId, sistEndret = ZonedDateTime.now(), utdanning = true, arbeidserfaring = true)
-                ?: throw Exception("Aktoer $aktoerId har ikke gitt samtykke")
+        val samtykke = samtykkeRepository.hentSamtykke(foedselsnummer)
+                ?: throw Exception("Aktoer $foedselsnummer har ikke gitt samtykke")
 
         val candidate = CandidateConverter(cv, samtykke).toXmlRepresentation()
 

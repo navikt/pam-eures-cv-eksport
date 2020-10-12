@@ -3,7 +3,7 @@ package no.nav.cv.eures.samtykke
 import java.time.ZonedDateTime
 
 data class Samtykke(
-        val aktoerId: String,
+        val foedselsnummer: String,
         val sistEndret: ZonedDateTime,
         val personalia: Boolean = false,
         val utdanning: Boolean = false,

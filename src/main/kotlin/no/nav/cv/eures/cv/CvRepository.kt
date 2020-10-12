@@ -12,11 +12,14 @@ interface CvRepository {
 
     fun lagreCv(rawCv: RawCV)
 
-    fun hentCv(aktoerId: String) : RawCV?
+    fun hentCvByAktoerId(aktoerId: String) : RawCV?
+
+    fun hentCvByFoedselsnummer(foedselsnummer: String) : RawCV?
 
     fun hentUprosesserteCver(): List<RawCV>
 }
 
+// TODO - No FNR logging
 @Singleton
 private open class JpaCvRepository(
         @PersistenceContext private val entityManager: EntityManager
@@ -27,26 +30,42 @@ private open class JpaCvRepository(
         val log = LoggerFactory.getLogger(JpaCvRepository::class.java)
     }
 
-    private val hentCv =
+    private val hentCvByAktoerId =
             """
                 SELECT * FROM CV_RAW
                 WHERE AKTOER_ID = :aktoerId
             """.replace(serieMedWhitespace, " ")
 
-    private val hentUprosesserteCver =
-            """
-                SELECT * FROM CV_RAW
-                WHERE PROSESSERT IS FALSE 
-            """.replace(serieMedWhitespace, " ")
-
     @Transactional(readOnly = true)
-    override fun hentCv(aktoerId: String): RawCV? {
-        return entityManager.createNativeQuery(hentCv, RawCV::class.java)
+    override fun hentCvByAktoerId(aktoerId: String): RawCV? {
+        return entityManager.createNativeQuery(hentCvByAktoerId, RawCV::class.java)
                 .setParameter("aktoerId", aktoerId)
                 .resultList
                 .map { it as RawCV }
                 .firstOrNull()
     }
+
+
+    private val hentCvByFoedselsnummer =
+            """
+                SELECT * FROM CV_RAW
+                WHERE FOEDSELSNUMMER = :foedselsnummer
+            """.replace(serieMedWhitespace, " ")
+
+    @Transactional(readOnly = true)
+    override fun hentCvByFoedselsnummer(foedselsnummer: String): RawCV? {
+        return entityManager.createNativeQuery(hentCvByFoedselsnummer, RawCV::class.java)
+                .setParameter("foedselsnummer", foedselsnummer)
+                .resultList
+                .map { it as RawCV }
+                .firstOrNull()
+    }
+
+    private val hentUprosesserteCver =
+            """
+                SELECT * FROM CV_RAW
+                WHERE PROSESSERT = FALSE 
+            """.replace(serieMedWhitespace, " ")
 
     @Transactional(readOnly = true)
     override fun hentUprosesserteCver(): List<RawCV> =
@@ -56,9 +75,9 @@ private open class JpaCvRepository(
 
     @Transactional
     override fun lagreCv(rawCv: RawCV) {
-        log.info("Lagrer cv for ${rawCv.aktoerId}")
+        log.info("Lagrer cv for ${rawCv.foedselsnummer}")
         if(rawCv.rawAvro.length > 128_000)
-            throw Exception("Raw avro string for aktoer ${rawCv.aktoerId} is larger than the limit of 128_000 bytes")
+            throw Exception("Raw avro string for aktoer ${rawCv.foedselsnummer} is larger than the limit of 128_000 bytes")
 
         entityManager.merge(rawCv)
     }
@@ -68,14 +87,17 @@ private open class JpaCvRepository(
 
 @Entity
 @Table(name = "CV_RAW")
-class RawCV() {
+class RawCV {
     @Id
     @Column(name = "ID")
-    @GeneratedValue(generator = "CV_SEQ")
+    @GeneratedValue(generator = "CV_RAW_SEQ")
     private var id: Long? = null
 
     @Column(name = "AKTOER_ID", nullable = false, unique = true)
     lateinit var aktoerId: String
+
+    @Column(name = "FOEDSELSNUMMER", nullable = false, unique = true)
+    lateinit var foedselsnummer: String
 
     @Column(name = "SIST_ENDRET", nullable = false)
     lateinit var sistEndret: ZonedDateTime
@@ -86,10 +108,16 @@ class RawCV() {
     @Column(name = "PROSESSERT", nullable = false)
     var prosessert: Boolean = false
 
-    fun update(aktoerId: String, sistEndret: ZonedDateTime, rawAvro: String) : RawCV {
-        this.aktoerId = aktoerId
-        this.sistEndret = sistEndret
-        this.rawAvro = rawAvro
+    fun update(
+            aktoerId: String? = null,
+            foedselsnummer: String? = null,
+            sistEndret: ZonedDateTime? = null,
+            rawAvro: String? = null
+    ) : RawCV {
+        this.aktoerId = aktoerId ?: this.aktoerId
+        this.foedselsnummer = foedselsnummer ?: this.foedselsnummer
+        this.sistEndret = sistEndret ?: this.sistEndret
+        this.rawAvro = rawAvro ?: this.rawAvro
         this.prosessert = false
 
         return this
@@ -103,7 +131,7 @@ class RawCV() {
     }
 
     companion object {
-        fun create(aktoerId: String, sistEndret: ZonedDateTime, rawAvro: String)
-                = RawCV().update(aktoerId, sistEndret, rawAvro)
+        fun create(aktoerId: String, foedselsnummer: String, sistEndret: ZonedDateTime, rawAvro: String)
+                = RawCV().update(aktoerId, foedselsnummer, sistEndret, rawAvro)
     }
 }

@@ -5,13 +5,13 @@ import no.nav.cv.eures.cv.CvRepository
 import no.nav.cv.eures.cv.RawCV
 import org.apache.avro.io.DecoderFactory
 import org.apache.avro.specific.SpecificDatumReader
+import org.slf4j.Logger
 import org.slf4j.LoggerFactory
-import java.lang.Exception
 import javax.inject.Singleton
 
 
 interface CvRecordRetriever {
-    fun getCvDTO(aktoerId: String) : Melding
+    fun getCvDTO(foedselsnummer: String) : Melding?
     fun getUnprocessedCvDTOs() : List<Pair<RawCV, Melding>>
 }
 
@@ -22,7 +22,7 @@ class CvAvroFromRepo(
 )  : CvRecordRetriever {
 
     companion object {
-        val log = LoggerFactory.getLogger(CvAvroFromRepo::class.java)
+        val log: Logger = LoggerFactory.getLogger(CvAvroFromRepo::class.java)
     }
 
     private fun RawCV.toMelding() : Melding {
@@ -30,7 +30,7 @@ class CvAvroFromRepo(
 
         val avroBytes = wireBytes.slice(5 until wireBytes.size).toByteArray()
 
-        log.info("There is ${avroBytes.size} avro bytes for $aktoerId")
+        log.info("There is ${avroBytes.size} avro bytes for $foedselsnummer")
 
         val datumReader = SpecificDatumReader<Melding>(Melding::class.java)
         val decoder = DecoderFactory.get().binaryDecoder(avroBytes, null)
@@ -38,11 +38,9 @@ class CvAvroFromRepo(
         return datumReader.read(null, decoder)
     }
 
-    override fun getCvDTO(aktoerId: String): Melding {
-        // TODO - Don't fail it doesn't exist -> Stops controller from returning
-        val rawCV = cvRepository.hentCv(aktoerId)
-                ?: throw Exception("Prøver å konvertere CV for aktør $aktoerId, men finner den ikke i databasen.")
-        return rawCV.toMelding()
+    override fun getCvDTO(foedselsnummer: String): Melding? {
+        val rawCV = cvRepository.hentCv(foedselsnummer)
+        return rawCV?.toMelding()
     }
 
     override fun getUnprocessedCvDTOs(): List<Pair<RawCV, Melding>> =

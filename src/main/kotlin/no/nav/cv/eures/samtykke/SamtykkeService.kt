@@ -8,12 +8,14 @@ class SamtykkeService(
         private val samtykkeRepository: SamtykkeRepository,
         private val konverterer: Konverterer
 ) {
-    fun hentSamtykke(aktoerId: String): Samtykke? = samtykkeRepository.hentSamtykke(aktoerId)
-    fun slettSamtykke(aktoerId: String): Int {
-        konverterer.slett(aktoerId)
-        return samtykkeRepository.slettSamtykke(aktoerId)
+    fun hentSamtykke(foedselsnummer: String): Samtykke? =
+            samtykkeRepository.hentSamtykke(foedselsnummer)
+
+    fun slettSamtykke(foedselsnummer: String): Int {
+        konverterer.slett(foedselsnummer)
+        return samtykkeRepository.slettSamtykke(foedselsnummer)
     }
 
     fun oppdaterSamtykke(samtykke: Samtykke) = samtykkeRepository.oppdaterSamtykke(samtykke)
-            .run { konverterer.oppdaterEllerLag(samtykke.aktoerId) }
+            .run { konverterer.oppdaterEllerLag(samtykke.foedselsnummer) }
 }

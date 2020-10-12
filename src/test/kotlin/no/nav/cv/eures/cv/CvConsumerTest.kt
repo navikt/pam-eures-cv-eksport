@@ -99,7 +99,7 @@ class CvConsumerTest {
         val hentet = cvRepository.hentCv(aktorId)
 
         return hentet != null
-                && hentet.aktoerId == aktorId
+                && hentet.foedselsnummer == aktorId
                 && hentet.rawAvro == rawAvroBase64
     }
 

@@ -31,12 +31,12 @@ class MessageProcessor(
                 .let {
                     val (deletedPairs, createdOrModifiedPairs) = it
                     val deleted = deletedPairs.map { pair -> pair.first }.map { rawCv ->
-                        konverterer.slett(rawCv.aktoerId)
+                        konverterer.slett(rawCv.foedselsnummer)
                         return@map rawCv
                     }
                     // TODO - Implement query logic through code?
                     val createdOrModified = createdOrModifiedPairs.map { pair -> pair.first }.let{ rawCvs ->
-                        cvXmlRepository.fetchAllActiveCvsByAktoerId(rawCvs.map { rawCv -> rawCv.aktoerId }).forEach { cv ->
+                        cvXmlRepository.fetchAllActiveCvsByFoedselsnummer(rawCvs.map { rawCv -> rawCv.foedselsnummer }).forEach { cv ->
                             konverterer.oppdaterEksisterende(cv)
                         }
                         rawCvs

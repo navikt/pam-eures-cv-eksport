@@ -3,7 +3,6 @@ package no.nav.cv.eures.eures
 import io.micronaut.test.annotation.MicronautTest
 import no.nav.cv.eures.cv.CvXml
 import no.nav.cv.eures.cv.CvXmlRepository
-import no.nav.cv.eures.eures.dto.GetDetails
 import no.nav.cv.eures.eures.dto.GetDetails.CandidateDetail.Status.ACTIVE
 import no.nav.cv.eures.eures.dto.GetDetails.CandidateDetail.Status.CLOSED
 import org.junit.jupiter.api.Assertions.assertEquals
@@ -98,14 +97,14 @@ class EuresServiceTest {
         assertEquals(1, euresService.getChangedReferences(now.minusSeconds(1)).createdReferences.size)
 
         now = ZonedDateTime.now().plusHours(1)
-        cvXmlRepository.save(candidate.update(candidate.reference, candidate.aktoerId, candidate.opprettet, now, null, "SOME UPDATED XML"))
+        cvXmlRepository.save(candidate.update(candidate.reference, candidate.foedselsnummer, candidate.opprettet, now, null, "SOME UPDATED XML"))
         val modified = euresService.getChangedReferences(now.minusMinutes(1))
         assertEquals(0, modified.createdReferences.size)
         assertEquals(1, modified.modifiedReferences.size)
         assertEquals(0, modified.closedReferences.size)
 
         now = ZonedDateTime.now().plusHours(1)
-        cvXmlRepository.save(candidate.update(candidate.reference, candidate.aktoerId, candidate.opprettet, now, now, "SOME UPDATED XML"))
+        cvXmlRepository.save(candidate.update(candidate.reference, candidate.foedselsnummer, candidate.opprettet, now, now, "SOME UPDATED XML"))
         val closed = euresService.getChangedReferences(now.minusMinutes(1))
         assertEquals(0, closed.createdReferences.size)
         assertEquals(0, closed.modifiedReferences.size)

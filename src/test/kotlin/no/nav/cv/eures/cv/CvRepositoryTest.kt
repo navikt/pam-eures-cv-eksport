@@ -22,7 +22,7 @@ class CvRepositoryTest {
         val hentet = cvRepository.hentCv(testData.aktoerId1)
 
         assertNotNull(hentet)
-        assertEquals(hentet?.aktoerId, testData.aktoerId1)
+        assertEquals(hentet?.foedselsnummer, testData.aktoerId1)
         assertEquals(hentet?.sistEndret, testData.now)
         assertEquals(hentet?.rawAvro, testData.rawAvro1Base64)
     }
@@ -38,14 +38,14 @@ class CvRepositoryTest {
         val hentet1 = cvRepository.hentCv(testData.aktoerId1)
 
         assertNotNull(hentet1)
-        assertEquals(hentet1?.aktoerId, testData.aktoerId1)
+        assertEquals(hentet1?.foedselsnummer, testData.aktoerId1)
         assertEquals(hentet1?.sistEndret, testData.now)
         assertEquals(hentet1?.rawAvro, testData.rawAvro1Base64)
 
         val hentet2 = cvRepository.hentCv(testData.aktoerId2)
 
         assertNotNull(hentet2)
-        assertEquals(hentet2?.aktoerId, testData.aktoerId2)
+        assertEquals(hentet2?.foedselsnummer, testData.aktoerId2)
         assertEquals(hentet2?.sistEndret, testData.yesterday)
         assertEquals(hentet2?.rawAvro, testData.rawAvro2Base64)
     }
@@ -64,7 +64,7 @@ class CvRepositoryTest {
 
         val hentet2 = cvRepository.hentCv(testData.aktoerId1)
 
-        assertEquals(hentet2?.aktoerId, testData.aktoerId1)
+        assertEquals(hentet2?.foedselsnummer, testData.aktoerId1)
         assertEquals(hentet2?.sistEndret, testData.now)
         assertEquals(hentet2?.rawAvro, testData.rawAvro2Base64)
     }

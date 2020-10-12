@@ -48,7 +48,7 @@ class SamtykkeControllerTest(
 
         val hentet = client.toBlocking().retrieve(hentRequest, Samtykke::class.java)
 
-        assertEquals(aktoerId1, hentet?.aktoerId)
+        assertEquals(aktoerId1, hentet?.foedselsnummer)
         // TODO : Hvorfor tror databasen at den er UTC? --> Det er default for ZonedTimeDate
         assertEquals(now.withZoneSameInstant(ZoneId.of("UTC")), hentet?.sistEndret)
         assertEquals(true, hentet?.personalia)
