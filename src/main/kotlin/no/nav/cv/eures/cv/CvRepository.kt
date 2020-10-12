@@ -13,6 +13,8 @@ interface CvRepository {
     fun lagreCv(rawCv: RawCV)
 
     fun hentCv(aktoerId: String) : RawCV?
+
+    fun hentUprosesserteCver(): List<RawCV>
 }
 
 @Singleton
@@ -31,6 +33,12 @@ private open class JpaCvRepository(
                 WHERE AKTOER_ID = :aktoerId
             """.replace(serieMedWhitespace, " ")
 
+    private val hentUprosesserteCver =
+            """
+                SELECT * FROM CV_RAW
+                WHERE PROSESSERT IS FALSE 
+            """.replace(serieMedWhitespace, " ")
+
     @Transactional(readOnly = true)
     override fun hentCv(aktoerId: String): RawCV? {
         return entityManager.createNativeQuery(hentCv, RawCV::class.java)
@@ -39,6 +47,12 @@ private open class JpaCvRepository(
                 .map { it as RawCV }
                 .firstOrNull()
     }
+
+    @Transactional(readOnly = true)
+    override fun hentUprosesserteCver(): List<RawCV> =
+            entityManager.createNativeQuery(hentUprosesserteCver, RawCV::class.java)
+                    .resultList
+                    .map { it as RawCV }
 
     @Transactional
     override fun lagreCv(rawCv: RawCV) {
@@ -69,10 +83,14 @@ class RawCV() {
     @Column(name = "RAW_AVRO", nullable = false)
     lateinit var rawAvro: String
 
+    @Column(name = "PROSESSERT", nullable = false)
+    var prosessert: Boolean = false
+
     fun update(aktoerId: String, sistEndret: ZonedDateTime, rawAvro: String) : RawCV {
         this.aktoerId = aktoerId
         this.sistEndret = sistEndret
         this.rawAvro = rawAvro
+        this.prosessert = false
 
         return this
     }

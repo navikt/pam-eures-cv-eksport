@@ -11,7 +11,7 @@ import javax.annotation.PreDestroy
 
 
 @Factory
-@Requires(notEnv = [ "test", "local" ])
+@Requires(notEnv = [ "test", "local", "local-docker" ])
 @Replaces(factory = DatasourceFactory::class)
 class VaultDatasourceFactory(
         @Value("\${db.vault.path}") private val vaultPath: String,

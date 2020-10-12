@@ -64,3 +64,6 @@ flyway:
       locations: classpath:db
       initSql:
         - 'SET ROLE "pam-eures-cv-eksport-admin"'
+
+jackson:
+  serializationInclusion: ALWAYS
