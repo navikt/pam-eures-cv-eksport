@@ -12,10 +12,14 @@ data class GetDetails(
             val lastModificationTimestamp: Timestamp? = null,
             val closingTimestamp: Timestamp? = null,
             val reference: String,
-            val status: String,
+            val status: Status,
             val content: String? = null
     ) {
         val source: String = "NAV"
         val contentFormatVersion: String = "1.0"
+
+        enum class Status {
+            CLOSED, ACTIVE
+        }
     }
 }

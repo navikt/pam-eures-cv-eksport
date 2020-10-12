@@ -3,6 +3,9 @@ package no.nav.cv.eures.eures
 import io.micronaut.test.annotation.MicronautTest
 import no.nav.cv.eures.cv.CvXml
 import no.nav.cv.eures.cv.CvXmlRepository
+import no.nav.cv.eures.eures.dto.GetDetails
+import no.nav.cv.eures.eures.dto.GetDetails.CandidateDetail.Status.ACTIVE
+import no.nav.cv.eures.eures.dto.GetDetails.CandidateDetail.Status.CLOSED
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.BeforeAll
@@ -78,12 +81,12 @@ class EuresServiceTest {
         val details = euresService.getDetails(testData().map(CvXml::reference))
 
         assertAll({
-            assertTrue(details.details["PAM-1"]?.status == "ACTIVE"
-                    && details.details["PAM-2"]?.status == "ACTIVE")
+            assertTrue(details.details["PAM-1"]?.status == ACTIVE
+                    && details.details["PAM-2"]?.status == ACTIVE)
             assertTrue(!details.details["PAM-1"]?.content.isNullOrBlank()
                     && !details.details["PAM-2"]?.content.isNullOrBlank())
 
-            assertTrue(details.details["PAM-3"]?.status == "CLOSED")
+            assertTrue(details.details["PAM-3"]?.status == CLOSED)
             assertTrue(details.details["PAM-3"]?.content.isNullOrBlank())
         })
     }

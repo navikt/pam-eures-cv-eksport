@@ -1,6 +1,8 @@
 package no.nav.cv.eures.cv
 
 import io.micronaut.spring.tx.annotation.Transactional
+import org.intellij.lang.annotations.Language
+import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import java.time.ZonedDateTime
 import javax.inject.Singleton
@@ -22,7 +24,6 @@ interface CvXmlRepository {
 
 }
 
-// TODO - ErrorHandling
 @Singleton
 private open class JpaCvXMLRepository(
         @PersistenceContext private val entityManager: EntityManager
@@ -30,7 +31,7 @@ private open class JpaCvXMLRepository(
     private val serieMedWhitespace = Regex("(\\s+)")
 
     companion object {
-        val log = LoggerFactory.getLogger(JpaCvXMLRepository::class.java)
+        val log: Logger = LoggerFactory.getLogger(JpaCvXMLRepository::class.java)
     }
 
     private val fetchQuery =
@@ -40,13 +41,17 @@ private open class JpaCvXMLRepository(
             """.replace(serieMedWhitespace, " ")
 
     @Transactional(readOnly = true)
-    override fun fetch(aktoerId: String): CvXml? {
-        return entityManager.createNativeQuery(fetchQuery, CvXml::class.java)
-                .setParameter("aktoerId", aktoerId)
-                .resultList
-                .map { it as CvXml }
-                .firstOrNull()
-    }
+    override fun fetch(aktoerId: String): CvXml? =
+            try {
+                entityManager.createNativeQuery(fetchQuery, CvXml::class.java)
+                    .setParameter("aktoerId", aktoerId)
+                    .resultList
+                    .map { it as CvXml }
+                    .firstOrNull()
+            } catch (e: Exception) {
+                log.error("Feil ved henting av XML data for aktoer: $aktoerId", e)
+                null
+            }
 
     private val fetchAllActiveQuery =
             """
@@ -59,17 +64,21 @@ private open class JpaCvXMLRepository(
             """.replace(serieMedWhitespace, " ")
 
     @Transactional(readOnly = true)
-    override fun fetchAllActive(): List<CvXml> {
-        return entityManager.createNativeQuery(fetchAllActiveQuery, CvXml::class.java)
-                .resultList
-                .map { it as CvXml }
-    }
+    override fun fetchAllActive(): List<CvXml> =
+            try {
+                entityManager.createNativeQuery(fetchAllActiveQuery, CvXml::class.java)
+                    .resultList
+                    .map { it as CvXml }
+            } catch (e: Exception) {
+                log.error("Feil ved hending av aktive XML dataer", e)
+                listOf()
+            }
 
     private val fetchAllActiveCvsByAktoerIdQuery =
             """
                 SELECT * FROM CV_XML
                 WHERE SLETTET IS NULL
-                AND AKTOER_ID IN :aktoerIder
+                AND AKTOER_ID IN (:aktoerIder)
                 AND EXISTS(
                     SELECT * FROM SAMTYKKE 
                     WHERE SAMTYKKE.AKTOER_ID = CV_XML.AKTOER_ID
@@ -77,13 +86,17 @@ private open class JpaCvXMLRepository(
             """.replace(serieMedWhitespace, " ")
 
     @Transactional(readOnly = true)
-    override fun fetchAllActiveCvsByAktoerId(aktoerIder: List<String>): List<CvXml> {
-        return entityManager.createNativeQuery(fetchAllActiveCvsByAktoerIdQuery, CvXml::class.java)
+    override fun fetchAllActiveCvsByAktoerId(aktoerIder: List<String>): List<CvXml> = try {
+        entityManager.createNativeQuery(fetchAllActiveCvsByAktoerIdQuery, CvXml::class.java)
                 .setParameter("aktoerIder", aktoerIder)
                 .resultList
                 .map { it as CvXml }
+        } catch (e: Exception) {
+        log.error("Feil ved henting av XML dataer for aktoer ider: $aktoerIder", e)
+        listOf()
     }
 
+    @Language("POSTGRES-PSQL")
     private val fetchAllCvsAfterTimestampQuery =
             """
                 SELECT * FROM CV_XML
@@ -92,25 +105,31 @@ private open class JpaCvXMLRepository(
             """.replace(serieMedWhitespace, " ")
 
     @Transactional(readOnly = true)
-    override fun fetchAllCvsAfterTimestamp(time: ZonedDateTime): List<CvXml> {
-        return entityManager.createNativeQuery(fetchAllCvsAfterTimestampQuery, CvXml::class.java)
+    override fun fetchAllCvsAfterTimestamp(time: ZonedDateTime): List<CvXml> = try {
+        entityManager.createNativeQuery(fetchAllCvsAfterTimestampQuery, CvXml::class.java)
                 .setParameter("timestamp", time)
                 .resultList
                 .map { it as CvXml }
+    } catch (e: Exception) {
+        log.error("Feil ved henting av XML data etter timestamp: $time", e)
+        listOf()
     }
 
     private val fetchAllCvsByReferenceQuery =
             """
                 SELECT * FROM CV_XML
-                WHERE REFERANSE IN :references
+                WHERE REFERANSE IN (:references)
             """.replace(serieMedWhitespace, " ")
 
     @Transactional(readOnly = true)
-    override fun fetchAllCvsByReference(references: List<String>): List<CvXml> {
-        return entityManager.createNativeQuery(fetchAllCvsByReferenceQuery, CvXml::class.java)
+    override fun fetchAllCvsByReference(references: List<String>): List<CvXml>  = try {
+        entityManager.createNativeQuery(fetchAllCvsByReferenceQuery, CvXml::class.java)
                 .setParameter("references", references)
                 .resultList
                 .map { it as CvXml }
+    } catch (e: Exception) {
+        log.error("Feil ved henting av XML data for referanser: $references", e)
+        listOf()
     }
 
     @Transactional
@@ -120,7 +139,12 @@ private open class JpaCvXMLRepository(
         if(cvXml.xml.length > 128_000)
             throw Exception("Cv XML string for aktoer ${cvXml.aktoerId} is larger than the limit of 128_000 bytes")
 
-        return entityManager.merge(cvXml)
+        return try {
+            entityManager.merge(cvXml)
+        } catch (e: Exception) {
+            log.error("Feil ved lagring av XML data for aktoer: ${cvXml.aktoerId}", e)
+            throw Exception("Feil ved lagring av XML data for aktoer: ${cvXml.aktoerId}", e)
+        }
     }
 
 }

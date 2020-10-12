@@ -8,6 +8,8 @@ import no.nav.cv.eures.eures.dto.GetChangedReferences
 import no.nav.cv.eures.eures.dto.GetChangedReferences.ChangedReference
 import no.nav.cv.eures.eures.dto.GetDetails
 import no.nav.cv.eures.eures.dto.GetDetails.CandidateDetail
+import no.nav.cv.eures.eures.dto.GetDetails.CandidateDetail.Status.ACTIVE
+import no.nav.cv.eures.eures.dto.GetDetails.CandidateDetail.Status.CLOSED
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import java.sql.Timestamp
@@ -20,7 +22,7 @@ class EuresService(
 ) {
 
     companion object {
-        val log: Logger = LoggerFactory.getLogger(EuresService::class.java)
+        val log: Logger= LoggerFactory.getLogger(EuresService::class.java)
     }
 
     private fun List<CvXml>.partitionCvs() = partition { it.slettet != null }
@@ -55,7 +57,7 @@ class EuresService(
                             creationTimestamp = Timestamp.from(cv.opprettet.toInstant()),
                             lastModificationTimestamp = Timestamp.from(cv.sistEndret.toInstant()),
                             reference = cv.reference,
-                            status = "ACTIVE",
+                            status = ACTIVE,
                             content = cv.xml
                     )
                 }
@@ -64,7 +66,7 @@ class EuresService(
                     map[cv.reference] = CandidateDetail(
                             closingTimestamp = Timestamp.from(cv.slettet?.toInstant()),
                             reference = cv.reference,
-                            status = "CLOSED"
+                            status = CLOSED
                     )
                 }
 
