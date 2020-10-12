@@ -2,6 +2,7 @@ package no.nav.cv.eures.xml
 
 import io.micronaut.test.annotation.MicronautTest
 import no.nav.cv.eures.konverterer.Konverterer
+import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.Test
 import java.io.File
 
@@ -11,6 +12,7 @@ class XmlSerializerTest(
 ) {
 
     @Test
+    @Disabled
     fun `produce xml document`() {
         val aktorId = "10013106889";
 
