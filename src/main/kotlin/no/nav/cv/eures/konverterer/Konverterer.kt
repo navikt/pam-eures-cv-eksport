@@ -26,7 +26,7 @@ open class Konverterer(
             konverterTilXML(it.aktoerId).let { xml ->
                 it.sistEndret = now
                 it.slettet = null
-                it.xml = konverterTilXML(it.aktoerId).second
+                it.xml = xml.second
                 return cvXmlRepository.save(it)
             }
         }
