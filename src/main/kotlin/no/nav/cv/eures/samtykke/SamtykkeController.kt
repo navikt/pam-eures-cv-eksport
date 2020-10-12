@@ -1,6 +1,7 @@
 package no.nav.cv.eures.samtykke
 
 import io.micronaut.http.annotation.*
+import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 
 @Controller("samtykke")
@@ -8,7 +9,7 @@ class SamtykkeController(
         private val samtykkeService: SamtykkeService
 ) {
     companion object {
-        val log = LoggerFactory.getLogger(SamtykkeController::class.java)
+        val log: Logger = LoggerFactory.getLogger(SamtykkeController::class.java)
     }
 
     @Get("/{aktoerId}", produces = [ "application/json" ])
