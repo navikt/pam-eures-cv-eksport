@@ -25,23 +25,32 @@ spec:
     requests:
       cpu: 200m
       memory: 256Mi
-  vault:
-    enabled: true
-    paths:
-      - kvPath: {{ servicebruker_cv_eksport }}
-        mountPath: /serviceuser/kafka/cveksport/
+#  vault:
+#    enabled: true
+#    paths:
+#      - kvPath: {{ servicebruker_cv_eksport }}
+#        mountPath: /serviceuser/kafka/cveksport/
   webproxy: false
+  envFrom:
+    - secret: pam-import-api-env-secret
+  gcp:
+    sqlInstances:
+      - type: POSTGRES_11
+        diskAutoresize: true
+        databases:
+          - name: pam-eures-cv-eksport
+            envVarPrefix: DB
   prometheus:
     enabled: true
     path: /pam-eures-cv-eksport/prometheus
   env:
     - name: KAFKA_CONSUMER_TOPIC_CV_ENDRET
       value: {{ kafka_consumer_topic_cv_endret }}
-    - name: JDBC_URL
-      value: {{ jdbc_url }}
-    - name: DB_VAULT_PATH
-      value: {{ db_vault_path }}
-    - name: DB_VAULT_USERNAME
-      value: {{ db_vault_username }}
+#    - name: JDBC_URL
+#      value: {{ jdbc_url }}
+#    - name: DB_VAULT_PATH
+#      value: {{ db_vault_path }}
+#    - name: DB_VAULT_USERNAME
+#      value: {{ db_vault_username }}
   ingresses:
     - {{ ingress }}
