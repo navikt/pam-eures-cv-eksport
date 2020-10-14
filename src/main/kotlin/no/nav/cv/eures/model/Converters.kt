@@ -3,6 +3,7 @@ package no.nav.cv.eures.model
 import java.time.Instant
 import java.time.LocalDateTime
 import java.time.ZoneId
+import java.time.ZonedDateTime
 import java.time.format.DateTimeFormatter
 
 object Converters {
@@ -18,5 +19,9 @@ object Converters {
     @JvmStatic
     fun timestampToLocalDateTime(ts: Long): LocalDateTime =
             LocalDateTime.ofInstant(Instant.ofEpochMilli(ts), ZoneId.of("Europe/Oslo"))
+
+
+    fun Long.toUtcZonedDateTime(): ZonedDateTime =
+            ZonedDateTime.ofInstant(Instant.ofEpochMilli(this), ZoneId.of("UTC"))
 
 }

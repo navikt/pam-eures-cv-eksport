@@ -42,8 +42,8 @@ private open class JpaSamtykkeRepository(
 
     private val slettSamtykke =
             """
-                DELETE SamtykkeEntity se
-                WHERE se.aktoerId = :aktoerId
+                DELETE FROM SAMTYKKE
+                WHERE AKTOER_ID = :aktoerId
             """.replace(serieMedWhitespace, " ")
 
     @Transactional

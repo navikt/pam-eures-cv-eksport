@@ -21,6 +21,7 @@ kafka:
 
 datasources:
   default:
-    connectionTestQuery: "select 1"
-    jdbcUrl: "jdbc:postgresql://localhost:5432/pam-eures-cv-eksport"
-    driverClassName: 'org.postgresql.Driver'
+    url: 'jdbc:h2:mem:pam_eures_cv_eksport;MODE=PostgreSQL;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE'
+    username: 'sa'
+    password: ''
+    driverClassName: 'org.h2.Driver'

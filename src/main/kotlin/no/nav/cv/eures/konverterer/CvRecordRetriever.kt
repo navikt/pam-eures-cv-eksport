@@ -2,6 +2,7 @@ package no.nav.cv.eures.konverterer
 
 import no.nav.arbeid.cv.avro.Melding
 import no.nav.cv.eures.cv.CvRepository
+import no.nav.cv.eures.cv.RawCV
 import org.apache.avro.io.DecoderFactory
 import org.apache.avro.specific.SpecificDatumReader
 import org.slf4j.LoggerFactory
@@ -11,6 +12,7 @@ import javax.inject.Singleton
 
 interface CvRecordRetriever {
     fun getCvDTO(aktoerId: String) : Melding
+    fun getUnprocessedCvDTOs() : List<Pair<RawCV, Melding>>
 }
 
 @Singleton
@@ -23,11 +25,8 @@ class CvAvroFromRepo(
         val log = LoggerFactory.getLogger(CvAvroFromRepo::class.java)
     }
 
-    override fun getCvDTO(aktoerId: String): Melding {
-        val rawCV = cvRepository.hentCv(aktoerId)
-                ?: throw Exception("Prøver å konvertere CV for aktør $aktoerId, men finner den ikke i databasen.")
-
-        val wireBytes = rawCV.getWireBytes()
+    private fun RawCV.toMelding() : Melding {
+        val wireBytes = getWireBytes()
 
         val avroBytes = wireBytes.slice(5 until wireBytes.size).toByteArray()
 
@@ -38,4 +37,15 @@ class CvAvroFromRepo(
 
         return datumReader.read(null, decoder)
     }
+
+    override fun getCvDTO(aktoerId: String): Melding {
+        // TODO - Don't fail it doesn't exist -> Stops controller from returning
+        val rawCV = cvRepository.hentCv(aktoerId)
+                ?: throw Exception("Prøver å konvertere CV for aktør $aktoerId, men finner den ikke i databasen.")
+        return rawCV.toMelding()
+    }
+
+    override fun getUnprocessedCvDTOs(): List<Pair<RawCV, Melding>> =
+            cvRepository.hentUprosesserteCver()
+                    .map { Pair(it, it.toMelding()) }
 }

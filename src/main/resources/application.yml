@@ -64,3 +64,6 @@ flyway:
   datasources:
     default:
       locations: classpath:db
+
+jackson:
+  serializationInclusion: ALWAYS

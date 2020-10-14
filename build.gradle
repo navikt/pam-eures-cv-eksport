@@ -16,7 +16,7 @@ repositories {
 
 configurations {
     // for dependencies that are needed for development only
-    developmentOnly 
+    developmentOnly
 }
 
 dependencies {
@@ -63,7 +63,9 @@ dependencies {
     testImplementation "io.kotlintest:kotlintest-runner-junit5:3.3.2"
     testImplementation "org.junit.jupiter:junit-jupiter:5.6.2"
     testImplementation "io.micronaut.test:micronaut-test-junit5:1.1.3"
-    implementation "com.h2database:h2"
+    testImplementation "com.h2database:h2"
+
+    testCompile group: 'org.mockito', name: 'mockito-core', version: '3.5.13'
 }
 
 test.classpath += configurations.developmentOnly
@@ -80,16 +82,16 @@ allOpen {
 
 compileKotlin {
 	kotlinOptions {
-	    jvmTarget = '1.8' 
+	    jvmTarget = '1.8'
 	    //Will retain parameter names for Java reflection
-	    javaParameters = true 
+	    javaParameters = true
 	}
 }
 
 compileTestKotlin {
 	kotlinOptions {
-	    jvmTarget = '1.8' 
-	    javaParameters = true 
+	    jvmTarget = '1.8'
+	    javaParameters = true
 	}
 }
 
@@ -101,6 +103,8 @@ tasks.withType(JavaExec) {
     classpath += configurations.developmentOnly
     if(System.getenv('RUN_LOCAL') != null)
         jvmArgs('-noverify', '-XX:TieredStopAtLevel=1', '-Dcom.sun.management.jmxremote', '-Dmicronaut.environments=local')
+    else if (System.getenv('RUN_LOCAL_DOCKER') != null)
+        jvmArgs('-noverify', '-XX:TieredStopAtLevel=1', '-Dcom.sun.management.jmxremote', '-Dmicronaut.environments=local-docker')
     else
         jvmArgs('-noverify', '-XX:TieredStopAtLevel=1', '-Dcom.sun.management.jmxremote')
 }
