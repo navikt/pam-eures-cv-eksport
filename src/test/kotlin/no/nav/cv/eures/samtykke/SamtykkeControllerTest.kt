@@ -7,7 +7,7 @@ import io.micronaut.test.annotation.MicronautTest
 import io.micronaut.test.annotation.MockBean
 import io.mockk.mockk
 import no.nav.cv.eures.konverterer.CvRecordRetriever
-import no.nav.cv.eures.konverterer.Konverterer
+import no.nav.cv.eures.konverterer.CvConverterService
 import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.Test
 import java.time.ZoneId
@@ -27,8 +27,8 @@ class SamtykkeControllerTest(
 
     @Inject @field:Client("/pam-eures-cv-eksport/") lateinit var client: RxHttpClient
 
-    @MockBean(Konverterer::class)
-    fun konverterer(): Konverterer = mockk(relaxed = true)
+    @MockBean(CvConverterService::class)
+    fun konverterer(): CvConverterService = mockk(relaxed = true)
 
     @MockBean(CvRecordRetriever::class)
     fun cvRecordRetriever(): CvRecordRetriever = mockk(relaxed = true)

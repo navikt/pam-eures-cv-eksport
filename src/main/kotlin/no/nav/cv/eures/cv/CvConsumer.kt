@@ -35,13 +35,57 @@ class CvConsumer(
         val log: Logger = LoggerFactory.getLogger(CvConsumer::class.java)
     }
 
-    @Scheduled(fixedDelay = "5s")
+    @Scheduled(fixedDelay = "300ms")
     fun cron() {
         // TODO: Fiks slik at denne ikke kjører under testing
 
         // log.info("cron() starter")
 
         process(consumer)
+    }
+
+    /**
+     *
+     */
+    private fun Melding.createOrUpdateRawCvRecord(rawAvroBase64: String): RawCV =
+            cvRepository.hentCvByAktoerId(aktoerId)?.let { rawCvRecord ->
+                if (rawCvRecord.underOppfoelging && oppfolgingsinformasjon == null) {
+                    delete()
+                } else {
+                    rawCvRecord.update(
+                        sistEndret = ZonedDateTime.now(),
+                        rawAvro = rawAvroBase64,
+                        underOppfoelging = (oppfolgingsinformasjon != null),
+                        meldingstype = meldingstype
+                    )
+                }
+            }?: RawCV.create(
+                    aktoerId = aktoerId,
+                    foedselsnummer = opprettCv?.cv?.fodselsnummer ?: endreCv?.cv?.fodselsnummer ?: "-",
+                    sistEndret = ZonedDateTime.now(),
+                    rawAvro = rawAvroBase64,
+                    underOppfoelging = (oppfolgingsinformasjon != null),
+                    meldingstype = meldingstype
+            )
+
+    private fun Melding.delete(): RawCV? = cvRepository.hentCvByAktoerId(aktoerId)?.update(
+            sistEndret = ZonedDateTime.now(),
+            rawAvro = "",
+            underOppfoelging = false,
+            meldingstype = Meldingstype.SLETT
+    )
+
+    private fun Melding.toRawCV(rawAvroBase64: String): RawCV? = when (meldingstype) {
+        Meldingstype.OPPRETT -> createOrUpdateRawCvRecord(rawAvroBase64)
+        Meldingstype.ENDRE -> createOrUpdateRawCvRecord(rawAvroBase64)
+        Meldingstype.SLETT -> delete()
+        null -> throw Exception("Invalid meldingstype: null")
+    }
+
+    private fun ByteArray.toMelding(): Melding {
+        val datumReader = SpecificDatumReader<Melding>(Melding::class.java)
+        val decoder = DecoderFactory.get().binaryDecoder(slice(5 until size).toByteArray(), null)
+        return datumReader.read(null, decoder)
     }
 
     fun process(consumer: Consumer<String, ByteArray>) {
@@ -51,50 +95,19 @@ class CvConsumer(
             if (it > 0) log.info("Fikk $it CVer")
         }
 
-        for(melding in endredeCVer) {
-            val aktoerId = melding.key()
+        endredeCVer.forEach { melding ->
             val meldingValue = melding.value()
-
-            val datumReader = SpecificDatumReader<Melding>(Melding::class.java)
             val rawAvroBase64 = Base64.getEncoder().encodeToString(meldingValue)
-            val decoder = DecoderFactory.get().binaryDecoder(meldingValue, null)
+            val rawCV = meldingValue
+                    .toMelding()
+                    .toRawCV(rawAvroBase64)
 
-            val cvMelding = datumReader.read(null, decoder).let {
-                when(it.meldingstype) {
-                    Meldingstype.OPPRETT -> it.opprettCv.cv
-                    Meldingstype.ENDRE -> it.endreCv.cv
-                    else -> null
+            rawCV?.run{
+                try {
+                    cvRepository.lagreCv(this)
+                } catch (e: Exception) {
+                    log.error("Fikk exception ${e.message} under lagring av cv $this", e)
                 }
-            } ?: return run {
-                cvRepository.hentCvByAktoerId(aktoerId)
-                    ?.update(sistEndret = ZonedDateTime.now(), rawAvro = "")
-                    ?.let {
-                        try {
-                            cvRepository.lagreCv(it)
-                        } catch (e: Exception) {
-                            log.error("Fikk exception $e under lagring av slettet cv $it")
-                        }
-                    }
-            }
-
-
-            val oppdatertCv = cvRepository
-                    .hentCvByFoedselsnummer(cvMelding.fodselsnummer)
-                    ?.update(
-                            aktoerId = aktoerId,
-                            foedselsnummer = cvMelding.fodselsnummer,
-                            sistEndret = ZonedDateTime.now(),
-                            rawAvro = rawAvroBase64)
-                    ?: RawCV.create(
-                            aktoerId = aktoerId,
-                            foedselsnummer = cvMelding.fodselsnummer,
-                            sistEndret = ZonedDateTime.now(),
-                            rawAvro = rawAvroBase64)
-
-            try {
-                cvRepository.lagreCv(oppdatertCv)
-            } catch (e: Exception) {
-                log.error("Fikk exception $e under lagring av cv $oppdatertCv")
             }
         }
     }
@@ -116,14 +129,14 @@ class CvConsumer(
         }
     }
 
-    private fun createConsumer() : Consumer<String, ByteArray> {
+    private fun createConsumer(): Consumer<String, ByteArray> {
         val props = Properties()
         props["bootstrap.servers"] = bootstrapServers
         props["group.id"] = groupId
         props["key.deserializer"] = StringDeserializer::class.java
         props["value.deserializer"] = ByteArrayDeserializer::class.java
         props["max.poll.records"] = 200
-        props["fetch.max.bytes"] = 10*1024
+        props["fetch.max.bytes"] = 10 * 1024
         val consumer = KafkaConsumer<String, ByteArray>(props)
         consumer.subscribe(listOf(topic))
         return consumer

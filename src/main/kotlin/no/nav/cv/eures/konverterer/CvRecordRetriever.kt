@@ -12,7 +12,6 @@ import javax.inject.Singleton
 
 interface CvRecordRetriever {
     fun getCvDTO(foedselsnummer: String) : Melding?
-    fun getUnprocessedCvDTOs() : List<Pair<RawCV, Melding>>
 }
 
 @Singleton
@@ -25,7 +24,7 @@ class CvAvroFromRepo(
         val log: Logger = LoggerFactory.getLogger(CvAvroFromRepo::class.java)
     }
 
-    private fun RawCV.toMelding() : Melding {
+    fun RawCV.toMelding() : Melding {
         val wireBytes = getWireBytes()
 
         val avroBytes = wireBytes.slice(5 until wireBytes.size).toByteArray()
@@ -39,11 +38,7 @@ class CvAvroFromRepo(
     }
 
     override fun getCvDTO(foedselsnummer: String): Melding? {
-        val rawCV = cvRepository.hentCv(foedselsnummer)
+        val rawCV = cvRepository.hentCvByFoedselsnummer(foedselsnummer)
         return rawCV?.toMelding()
     }
-
-    override fun getUnprocessedCvDTOs(): List<Pair<RawCV, Melding>> =
-            cvRepository.hentUprosesserteCver()
-                    .map { Pair(it, it.toMelding()) }
 }

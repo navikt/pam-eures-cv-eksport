@@ -1,6 +1,7 @@
 package no.nav.cv.eures.cv
 
 import io.micronaut.spring.tx.annotation.Transactional
+import no.nav.arbeid.cv.avro.Meldingstype
 import org.slf4j.LoggerFactory
 import java.time.ZonedDateTime
 import java.util.*
@@ -108,30 +109,47 @@ class RawCV {
     @Column(name = "PROSESSERT", nullable = false)
     var prosessert: Boolean = false
 
+    @Column(name = "UNDER_OPPFOELGING", nullable = false)
+    var underOppfoelging: Boolean = false
+
+    @Column(name = "MELDINGSTYPE", nullable = false)
+    lateinit var meldingstype: Meldingstype
+
     fun update(
             aktoerId: String? = null,
             foedselsnummer: String? = null,
             sistEndret: ZonedDateTime? = null,
-            rawAvro: String? = null
+            rawAvro: String? = null,
+            underOppfoelging: Boolean? = null,
+            meldingstype: Meldingstype
     ) : RawCV {
         this.aktoerId = aktoerId ?: this.aktoerId
         this.foedselsnummer = foedselsnummer ?: this.foedselsnummer
         this.sistEndret = sistEndret ?: this.sistEndret
         this.rawAvro = rawAvro ?: this.rawAvro
+        this.underOppfoelging = underOppfoelging ?: this.underOppfoelging
+        this.meldingstype = meldingstype
+
         this.prosessert = false
 
         return this
     }
 
     fun getWireBytes() : ByteArray
-        = Base64.getDecoder().decode(this.rawAvro)
+        = if (!rawAvro.isBlank()) Base64.getDecoder().decode(rawAvro) else ByteArray(0)
 
     override fun toString(): String {
         return "RawCV(aktoerId='$aktoerId', sistEndret=$sistEndret, rawAvro='$rawAvro')"
     }
 
     companion object {
-        fun create(aktoerId: String, foedselsnummer: String, sistEndret: ZonedDateTime, rawAvro: String)
-                = RawCV().update(aktoerId, foedselsnummer, sistEndret, rawAvro)
+        fun create(
+                aktoerId: String,
+                foedselsnummer: String,
+                sistEndret: ZonedDateTime,
+                rawAvro: String,
+                underOppfoelging: Boolean? = false,
+                meldingstype: Meldingstype
+        ) = RawCV().update(aktoerId, foedselsnummer, sistEndret, rawAvro, underOppfoelging, meldingstype)
     }
 }

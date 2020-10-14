@@ -4,7 +4,7 @@ import java.time.ZonedDateTime
 
 data class Samtykke(
         val foedselsnummer: String,
-        val sistEndret: ZonedDateTime,
+        val sistEndret: ZonedDateTime = ZonedDateTime.now(),
         val personalia: Boolean = false,
         val utdanning: Boolean = false,
         val fagbrev: Boolean = false,

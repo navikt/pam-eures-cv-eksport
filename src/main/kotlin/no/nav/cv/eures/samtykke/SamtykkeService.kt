@@ -1,21 +1,21 @@
 package no.nav.cv.eures.samtykke
 
-import no.nav.cv.eures.konverterer.Konverterer
+import no.nav.cv.eures.konverterer.CvConverterService
 import javax.inject.Singleton
 
 @Singleton
 class SamtykkeService(
         private val samtykkeRepository: SamtykkeRepository,
-        private val konverterer: Konverterer
+        private val cvConverterService: CvConverterService
 ) {
     fun hentSamtykke(foedselsnummer: String): Samtykke? =
             samtykkeRepository.hentSamtykke(foedselsnummer)
 
     fun slettSamtykke(foedselsnummer: String): Int {
-        konverterer.slett(foedselsnummer)
+        cvConverterService.delete(foedselsnummer)
         return samtykkeRepository.slettSamtykke(foedselsnummer)
     }
 
     fun oppdaterSamtykke(samtykke: Samtykke) = samtykkeRepository.oppdaterSamtykke(samtykke)
-            .run { konverterer.oppdaterEllerLag(samtykke.foedselsnummer) }
+            .run { cvConverterService.createOrUpdate(samtykke.foedselsnummer) }
 }
