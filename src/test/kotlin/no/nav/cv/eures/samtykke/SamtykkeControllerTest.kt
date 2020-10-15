@@ -6,7 +6,6 @@ import io.micronaut.http.client.annotation.Client
 import io.micronaut.test.annotation.MicronautTest
 import io.micronaut.test.annotation.MockBean
 import io.mockk.mockk
-import no.nav.cv.eures.konverterer.CvRecordRetriever
 import no.nav.cv.eures.konverterer.CvConverterService
 import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.Test
@@ -30,8 +29,6 @@ class SamtykkeControllerTest(
     @MockBean(CvConverterService::class)
     fun konverterer(): CvConverterService = mockk(relaxed = true)
 
-    @MockBean(CvRecordRetriever::class)
-    fun cvRecordRetriever(): CvRecordRetriever = mockk(relaxed = true)
 
     @Test
     fun `oppdater og hent samtykke`() {

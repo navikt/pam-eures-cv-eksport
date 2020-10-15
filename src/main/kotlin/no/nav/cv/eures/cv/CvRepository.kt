@@ -1,7 +1,6 @@
 package no.nav.cv.eures.cv
 
 import io.micronaut.spring.tx.annotation.Transactional
-import no.nav.arbeid.cv.avro.Meldingstype
 import org.slf4j.LoggerFactory
 import java.time.ZonedDateTime
 import java.util.*
@@ -113,7 +112,7 @@ class RawCV {
     var underOppfoelging: Boolean = false
 
     @Column(name = "MELDINGSTYPE", nullable = false)
-    lateinit var meldingstype: Meldingstype
+    lateinit var meldingstype: RecordType
 
     fun update(
             aktoerId: String? = null,
@@ -121,7 +120,7 @@ class RawCV {
             sistEndret: ZonedDateTime? = null,
             rawAvro: String? = null,
             underOppfoelging: Boolean? = null,
-            meldingstype: Meldingstype
+            meldingstype: RecordType
     ) : RawCV {
         this.aktoerId = aktoerId ?: this.aktoerId
         this.foedselsnummer = foedselsnummer ?: this.foedselsnummer
@@ -143,13 +142,17 @@ class RawCV {
     }
 
     companion object {
+        enum class RecordType {
+            CREATE, UPDATE, DELETE
+        }
+
         fun create(
                 aktoerId: String,
                 foedselsnummer: String,
                 sistEndret: ZonedDateTime,
                 rawAvro: String,
                 underOppfoelging: Boolean? = false,
-                meldingstype: Meldingstype
+                meldingstype: RecordType
         ) = RawCV().update(aktoerId, foedselsnummer, sistEndret, rawAvro, underOppfoelging, meldingstype)
     }
 }

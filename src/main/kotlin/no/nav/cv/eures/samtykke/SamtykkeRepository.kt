@@ -10,11 +10,12 @@ import javax.persistence.*
 interface SamtykkeRepository {
 
     fun hentSamtykke(foedselsnummer: String) : Samtykke?
+    fun hentSamtykkeUtenNaaverendeXml(foedselsnummer: List<String>) : List<SamtykkeEntity>
     fun slettSamtykke(foedselsnummer: String) : Int
     fun oppdaterSamtykke(samtykke: Samtykke)
+
 }
 
-// TODO - No FNR logging
 @Singleton
 private open class JpaSamtykkeRepository(
         @PersistenceContext private val entityManager: EntityManager
@@ -40,6 +41,22 @@ private open class JpaSamtykkeRepository(
                 .map { it.toSamtykke() }
                 .firstOrNull()
 
+    private val hentSamtykkeUtenNaavaerendeXmlQuery =
+            """
+                SELECT * FROM SAMTYKKE
+                WHERE FOEDSELSNUMMER IN (:foedselsnummer)
+                AND NOT EXISTS(
+                    SELECT * FROM CV_XML 
+                    WHERE SAMTYKKE.FOEDSELSNUMMER = CV_XML.FOEDSELSNUMMER
+                )
+            """.replace(serieMedWhitespace, " ")
+
+    @Transactional(readOnly = true)
+    override fun hentSamtykkeUtenNaaverendeXml(foedselsnummer: List<String>)
+            = entityManager.createNativeQuery(hentSamtykkeUtenNaavaerendeXmlQuery, SamtykkeEntity::class.java)
+            .setParameter("foedselsnummer", foedselsnummer)
+            .resultList
+            .map { it as SamtykkeEntity }
 
     private val slettSamtykke =
             """

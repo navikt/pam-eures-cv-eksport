@@ -27,14 +27,14 @@ open class CvConverterService(
     }
 
 
-    private fun RawCV.toMelding() : Melding? {
+    private fun RawCV.toMelding(): Melding? {
         val wireBytes = getWireBytes()
 
         if (wireBytes.isEmpty()) return null
 
         val avroBytes = wireBytes.slice(5 until wireBytes.size).toByteArray()
 
-        CvAvroFromRepo.log.info("There is ${avroBytes.size} avro bytes for $foedselsnummer")
+        log.info("There is ${avroBytes.size} avro bytes for $foedselsnummer")
 
         val datumReader = SpecificDatumReader<Melding>(Melding::class.java)
         val decoder = DecoderFactory.get().binaryDecoder(avroBytes, null)
@@ -42,7 +42,7 @@ open class CvConverterService(
         return datumReader.read(null, decoder)
     }
 
-    private fun Melding.cv() : Cv? = when(meldingstype) {
+    private fun Melding.cv(): Cv? = when (meldingstype) {
         Meldingstype.OPPRETT -> opprettCv.cv
         Meldingstype.ENDRE -> endreCv.cv
         else -> null
@@ -62,40 +62,44 @@ open class CvConverterService(
 
     fun createOrUpdate(foedselsnummer: String) {
         val now = ZonedDateTime.now()
-        cvXmlRepository.fetch(foedselsnummer)?.let { updateExisting(it) }
-            ?: convertToXml(foedselsnummer)?.let {
-                cvXmlRepository.save(CvXml.create(
-                        reference = it.first,
-                        aktoerId = foedselsnummer,
-                        opprettet = now,
-                        sistEndret = now,
-                        slettet = null,
-                        xml = it.second
-                ))
-            }
+        cvXmlRepository.fetch(foedselsnummer)
+                ?.let { updateExisting(it) }
+                ?: convertToXml(foedselsnummer)
+                        ?.let {
+                            cvXmlRepository.save(CvXml.create(
+                                    reference = it.first,
+                                    aktoerId = foedselsnummer,
+                                    opprettet = now,
+                                    sistEndret = now,
+                                    slettet = null,
+                                    xml = it.second
+                            ))
+                        }
     }
 
-    fun delete(foedselsnummer: String): CvXml? = cvXmlRepository.fetch(foedselsnummer)
-            ?.let {
-                it.slettet = it.slettet ?: ZonedDateTime.now()
-                it.xml = ""
-                samtykkeRepository.slettSamtykke(foedselsnummer)
-                return@let cvXmlRepository.save(it)
-            }
+    fun delete(foedselsnummer: String): CvXml? =
+            cvXmlRepository.fetch(foedselsnummer)
+                    ?.let {
+                        it.slettet = it.slettet ?: ZonedDateTime.now()
+                        it.xml = ""
+                        samtykkeRepository.slettSamtykke(foedselsnummer)
+                        return@let cvXmlRepository.save(it)
+                    }
 
     fun convertToXml(foedselsnummer: String): Pair<String, String>? {
         val record = cvRepository.hentCvByFoedselsnummer(foedselsnummer) ?: return null
-        return record.toMelding()?.cv()?.let { cv ->
+        return record.toMelding()
+                ?.cv()
+                ?.let { cv ->
 
-            log.debug("Firstname : ${cv.fornavn}")
+                    log.debug("Firstname : ${cv.fornavn}")
 
-            val samtykke = samtykkeRepository.hentSamtykke(foedselsnummer)
-                    ?: throw Exception("Aktoer $foedselsnummer har ikke gitt samtykke")
-
-            val candidate = CandidateConverter(cv, samtykke).toXmlRepresentation()
-
-            return@let Pair(cv.arenaKandidatnr, XmlSerializer.serialize(candidate))
-        }
+                    samtykkeRepository.hentSamtykke(foedselsnummer)
+                            ?.run {
+                                val candidate = CandidateConverter(cv, this).toXmlRepresentation()
+                                return@let Pair(cv.arenaKandidatnr, XmlSerializer.serialize(candidate))
+                            }
+                }
 
     }
 

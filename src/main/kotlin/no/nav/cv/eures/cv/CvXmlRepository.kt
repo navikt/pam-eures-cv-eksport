@@ -1,7 +1,6 @@
 package no.nav.cv.eures.cv
 
 import io.micronaut.spring.tx.annotation.Transactional
-import org.intellij.lang.annotations.Language
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import java.time.ZonedDateTime

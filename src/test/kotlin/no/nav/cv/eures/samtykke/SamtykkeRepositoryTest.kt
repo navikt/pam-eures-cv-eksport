@@ -9,8 +9,8 @@ import javax.inject.Inject
 
 @MicronautTest
 internal class SamtykkeRepositoryTest {
-    val aktoerId1 = "dummy"
-    val aktoerId2 = "dummy2"
+    val foedselsnummer = "dummy"
+    val foedselsnummer2 = "dummy2"
     val now = ZonedDateTime.now()
     val yesterday = ZonedDateTime.now().minusDays(1)
 
@@ -20,10 +20,10 @@ internal class SamtykkeRepositoryTest {
 
     @Test
     fun `lagre og hente samtykke`() {
-        val samtykke = Samtykke(aktoerId1, now, true, false)
+        val samtykke = Samtykke(foedselsnummer, now, personalia = true, utdanning = false)
         samtykkeRepository.oppdaterSamtykke(samtykke)
 
-        val hentet = samtykkeRepository.hentSamtykke(aktoerId1)
+        val hentet = samtykkeRepository.hentSamtykke(foedselsnummer)
 
         assertEquals(samtykke.foedselsnummer, hentet?.foedselsnummer)
         assertEquals(samtykke.sistEndret, hentet?.sistEndret)
@@ -33,16 +33,16 @@ internal class SamtykkeRepositoryTest {
 
     @Test
     fun `lagre, slette og hente samtykke - bare slette en av to`() {
-        val samtykke1 = Samtykke(aktoerId1, now, true, true)
-        val samtykke2 = Samtykke(aktoerId2, yesterday, false, false)
+        val samtykke1 = Samtykke(foedselsnummer, now, personalia = true, utdanning = true)
+        val samtykke2 = Samtykke(foedselsnummer2, yesterday, personalia = false, utdanning = false)
 
         samtykkeRepository.oppdaterSamtykke(samtykke1)
         samtykkeRepository.oppdaterSamtykke(samtykke2)
 
-        samtykkeRepository.slettSamtykke(aktoerId1)
+        samtykkeRepository.slettSamtykke(foedselsnummer)
 
-        val hentet1 = samtykkeRepository.hentSamtykke(aktoerId1)
-        val hentet2 = samtykkeRepository.hentSamtykke(aktoerId2)
+        val hentet1 = samtykkeRepository.hentSamtykke(foedselsnummer)
+        val hentet2 = samtykkeRepository.hentSamtykke(foedselsnummer2)
 
         assertNull(hentet1)
 
@@ -54,20 +54,20 @@ internal class SamtykkeRepositoryTest {
 
     @Test
     fun `oppdater samtykke - to ganger`() {
-        val samtykke = Samtykke(aktoerId1, yesterday, true, false)
+        val samtykke = Samtykke(foedselsnummer, yesterday, personalia = true, utdanning = false)
         samtykkeRepository.oppdaterSamtykke(samtykke)
 
-        val hentet = samtykkeRepository.hentSamtykke(aktoerId1)
+        val hentet = samtykkeRepository.hentSamtykke(foedselsnummer)
 
         assertEquals(samtykke.foedselsnummer, hentet?.foedselsnummer)
         assertEquals(samtykke.sistEndret, hentet?.sistEndret)
         assertEquals(samtykke.personalia, hentet?.personalia)
         assertEquals(samtykke.utdanning, hentet?.utdanning)
 
-        val samtykkeOppdatert = Samtykke(aktoerId1, now, false, true)
+        val samtykkeOppdatert = Samtykke(foedselsnummer, now, personalia = false, utdanning = true)
         samtykkeRepository.oppdaterSamtykke(samtykkeOppdatert)
 
-        val hentetOppdatert  = samtykkeRepository.hentSamtykke(aktoerId1)
+        val hentetOppdatert  = samtykkeRepository.hentSamtykke(foedselsnummer)
 
         assertEquals(samtykkeOppdatert.foedselsnummer, hentetOppdatert?.foedselsnummer)
         assertEquals(samtykkeOppdatert.sistEndret, hentetOppdatert?.sistEndret)

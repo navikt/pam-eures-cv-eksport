@@ -14,20 +14,22 @@ class SamtykkeController(
         val log: Logger = LoggerFactory.getLogger(SamtykkeController::class.java)
     }
 
-    @Get("/{foedselsnummer}", produces = [ "application/json" ])
-    fun hentSamtykke(foedselsnummer: String)
-            = samtykkeService.hentSamtykke(foedselsnummer)
-            ?: HttpResponse.notFound<String>()
+    @Get("/{foedselsnummer}", produces = ["application/json"])
+    fun hentSamtykke(foedselsnummer: String) =
+            samtykkeService.hentSamtykke(foedselsnummer)
+                    ?: HttpResponse.notFound<String>()
 
 
     @Post("/{foedselsnummer}")
-    fun oppdaterSamtykke(@Body samtykke: Samtykke) : String {
+    fun oppdaterSamtykke(@Body samtykke: Samtykke): HttpResponse<String> {
         samtykkeService.oppdaterSamtykke(samtykke)
-        return HttpResponse.ok("OK").toString()
+        return HttpResponse.ok("OK")
     }
 
-    @Delete("/{foedselsnummer}", produces = [ "application/json" ])
-    fun slettSamtykke(foedselsnummer: String)
-            = samtykkeService.slettSamtykke(foedselsnummer)
+    @Delete("/{foedselsnummer}", produces = ["application/json"])
+    fun slettSamtykke(foedselsnummer: String): HttpResponse<String> {
+        samtykkeService.slettSamtykke(foedselsnummer)
+        return HttpResponse.ok("OK")
+    }
 
 }

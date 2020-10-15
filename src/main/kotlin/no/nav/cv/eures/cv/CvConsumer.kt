@@ -4,6 +4,7 @@ import io.micronaut.context.annotation.Value
 import io.micronaut.scheduling.annotation.Scheduled
 import no.nav.arbeid.cv.avro.Melding
 import no.nav.arbeid.cv.avro.Meldingstype
+import no.nav.cv.eures.cv.RawCV.Companion.RecordType.*
 import org.apache.avro.io.DecoderFactory
 import org.apache.avro.specific.SpecificDatumReader
 import org.slf4j.LoggerFactory
@@ -35,17 +36,18 @@ class CvConsumer(
         val log: Logger = LoggerFactory.getLogger(CvConsumer::class.java)
     }
 
-    @Scheduled(fixedDelay = "300ms")
+    @Scheduled(fixedDelay = "5s")
     fun cron() {
         // TODO: Fiks slik at denne ikke kjører under testing
-
-        // log.info("cron() starter")
-
         process(consumer)
     }
 
     /**
-     *
+     * This function is in charge of three things.
+     * 1) If a record exists and the 'underOppfoelging' flag is false it updates the record.
+     * 2) If a record exists with the 'underOppfoelging' flag set to true and the update has
+     *    no 'oppfolgingsinformasjon', the record is flagged for deletion.
+     * 3) If no record exists, it creates a new one.
      */
     private fun Melding.createOrUpdateRawCvRecord(rawAvroBase64: String): RawCV =
             cvRepository.hentCvByAktoerId(aktoerId)?.let { rawCvRecord ->
@@ -56,7 +58,7 @@ class CvConsumer(
                         sistEndret = ZonedDateTime.now(),
                         rawAvro = rawAvroBase64,
                         underOppfoelging = (oppfolgingsinformasjon != null),
-                        meldingstype = meldingstype
+                        meldingstype = UPDATE
                     )
                 }
             }?: RawCV.create(
@@ -65,14 +67,13 @@ class CvConsumer(
                     sistEndret = ZonedDateTime.now(),
                     rawAvro = rawAvroBase64,
                     underOppfoelging = (oppfolgingsinformasjon != null),
-                    meldingstype = meldingstype
+                    meldingstype = CREATE
             )
 
     private fun Melding.delete(): RawCV? = cvRepository.hentCvByAktoerId(aktoerId)?.update(
             sistEndret = ZonedDateTime.now(),
-            rawAvro = "",
             underOppfoelging = false,
-            meldingstype = Meldingstype.SLETT
+            meldingstype = DELETE
     )
 
     private fun Melding.toRawCV(rawAvroBase64: String): RawCV? = when (meldingstype) {
@@ -124,7 +125,9 @@ class CvConsumer(
             // https://stackoverflow.com/questions/41997415/why-calls-to-seektobeginning-and-seektoend-apis-of-kafka-hang-forever
             consumer.poll(Duration.ofSeconds(1))
 
-            // TODO Er dette virkelig starten, eller kun per partisjon? Dokumentasjonen sier at dette søker tilbake til begynnelsen av "partitions your consumer is currently assigned to"
+            // TODO Er dette virkelig starten, eller kun per partisjon?
+            //  Dokumentasjonen sier at dette søker tilbake til begynnelsen
+            //  av "partitions your consumer is currently assigned to"
             consumer.seekToBeginning(consumer.assignment())
         }
     }
