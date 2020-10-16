@@ -38,6 +38,7 @@ class CvConsumer(
 
     @Scheduled(fixedDelay = "5s")
     fun cron() {
+        log.debug("Poller kafka")
         // TODO: Fiks slik at denne ikke kjører under testing
         process(consumer)
     }
@@ -91,6 +92,7 @@ class CvConsumer(
 
     fun process(consumer: Consumer<String, ByteArray>) {
         val endredeCVer = concurrencyLock.withLock { consumer.poll(Duration.ofSeconds(1)) }
+                .also { log.debug("Polled - got ${it.count()} messages") }
 
         endredeCVer.count().let {
             if (it > 0) log.info("Fikk $it CVer")
