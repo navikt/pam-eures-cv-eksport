@@ -21,7 +21,7 @@ kafka:
     protocol: SASL_SSL
   sasl:
     jaas:
-      config: no.nav.pam.matchindexer.config.NaisLoginModule required;
+      config: 'org.apache.kafka.common.security.plain.PlainLoginModule required username=${KAFKA_USER} password=${KAFKA_PWD};'
     mechanism: PLAIN
   ssl:
     truststore:
