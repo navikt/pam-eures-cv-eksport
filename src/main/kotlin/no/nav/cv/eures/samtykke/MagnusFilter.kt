@@ -19,7 +19,7 @@ import org.reactivestreams.Publisher
 import org.slf4j.LoggerFactory
 import javax.inject.Singleton
 
-@Filter("/internal/**")
+// @Filter("/internal/**")
 class MagnusFilter(
         private val authService: AuthService
 ) : HttpServerFilter {
