@@ -91,6 +91,9 @@ class CvConsumer(
 
     fun process(consumer: Consumer<String, ByteArray>) {
         val endredeCVer = concurrencyLock.withLock { consumer.poll(Duration.ofSeconds(1)) }
+                .also{
+                    log.debug("Fikk ${it.count()} meldinger.")
+                }
 
         endredeCVer.count().let {
             if (it > 0) log.info("Fikk $it CVer")
