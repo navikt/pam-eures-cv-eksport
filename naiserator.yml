@@ -40,6 +40,8 @@ spec:
         databases:
           - name: pam-eures-cv-eksport
             envVarPrefix: DB
+  kafka:
+    pool: {{ kafka_pool }}
   prometheus:
     enabled: true
     path: /pam-eures-cv-eksport/prometheus
