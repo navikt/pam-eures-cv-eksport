@@ -140,6 +140,7 @@ class CvConsumer(
         props["value.deserializer"] = ByteArrayDeserializer::class.java
         props["max.poll.records"] = 200
         props["fetch.max.bytes"] = 10 * 1024
+        props["auto.offset.reset"] = "earliest"
         val consumer = KafkaConsumer<String, ByteArray>(props)
         consumer.subscribe(listOf(topic))
         return consumer
