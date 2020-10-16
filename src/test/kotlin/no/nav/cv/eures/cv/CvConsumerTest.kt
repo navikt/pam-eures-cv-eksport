@@ -1,6 +1,7 @@
 package no.nav.cv.eures.cv
 
 import io.micronaut.test.annotation.MicronautTest
+import no.nav.arbeid.cv.avro.Melding
 import org.apache.kafka.clients.consumer.ConsumerRecord
 import org.apache.kafka.clients.consumer.MockConsumer
 import org.apache.kafka.clients.consumer.OffsetResetStrategy
@@ -11,7 +12,7 @@ import org.junit.jupiter.api.Test
 import java.util.*
 import javax.inject.Inject
 
-
+// TODO - Fix tests
 @MicronautTest
 class CvConsumerTest {
 
@@ -43,12 +44,12 @@ class CvConsumerTest {
     fun `mottar en og en cv - lagres riktig`() {
         var offset = 0L
 
-        consumer.schedulePollTask { consumer.addRecord(record(offset++, testData.aktoerId1, testData.rawAvro1)) }
+        consumer.schedulePollTask { consumer.addRecord(record(offset++, testData.aktoerId1, testData.melding1)) }
         cvConsumer.process(consumer)
 
         assertTrue(sjekkAktor(testData.aktoerId1, testData.rawAvro1Base64))
 
-        consumer.addRecord(record(offset++, testData.aktoerId2, testData.rawAvro2))
+        consumer.addRecord(record(offset++, testData.aktoerId2, testData.melding2))
         cvConsumer.process(consumer)
 
         assertTrue(sjekkAktor(testData.aktoerId1, testData.rawAvro1Base64))
@@ -60,8 +61,8 @@ class CvConsumerTest {
         var offset = 0L
 
         consumer.schedulePollTask {
-            consumer.addRecord(record(offset++, testData.aktoerId1, testData.rawAvro1))
-            consumer.addRecord(record(offset++, testData.aktoerId2, testData.rawAvro2))
+            consumer.addRecord(record(offset++, testData.aktoerId1, testData.melding1))
+            consumer.addRecord(record(offset++, testData.aktoerId2, testData.melding2))
         }
         cvConsumer.process(consumer)
 
@@ -96,13 +97,13 @@ class CvConsumerTest {
 //    }
 
     private fun sjekkAktor(aktorId: String, rawAvroBase64: String) : Boolean {
-        val hentet = cvRepository.hentCv(aktorId)
+        val hentet = cvRepository.hentCvByAktoerId(aktorId)
 
         return hentet != null
                 && hentet.aktoerId == aktorId
                 && hentet.rawAvro == rawAvroBase64
     }
 
-    private fun record(offset: Long, aktorId: String, melding:String)
+    private fun record(offset: Long, aktorId: String, melding: Melding)
     = ConsumerRecord<String, ByteArray>(TOPIC, PARTITION, offset, aktorId, melding.toByteArray())
 }

@@ -1,7 +1,7 @@
 package no.nav.cv.eures.samtykke
 
 import io.micronaut.spring.tx.annotation.Transactional
-import no.nav.cv.eures.cv.CvConsumer
+import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import java.time.ZonedDateTime
 import javax.inject.Singleton
@@ -9,9 +9,11 @@ import javax.persistence.*
 
 interface SamtykkeRepository {
 
-    fun hentSamtykke(aktoerId: String) : Samtykke?
-    fun slettSamtykke(aktoerId: String) : Int
+    fun hentSamtykke(foedselsnummer: String) : Samtykke?
+    fun hentSamtykkeUtenNaaverendeXml(foedselsnummer: List<String>) : List<SamtykkeEntity>
+    fun slettSamtykke(foedselsnummer: String) : Int
     fun oppdaterSamtykke(samtykke: Samtykke)
+
 }
 
 @Singleton
@@ -21,54 +23,70 @@ private open class JpaSamtykkeRepository(
     private val serieMedWhitespace = Regex("(\\s+)")
 
     companion object {
-        val log = LoggerFactory.getLogger(SamtykkeRepository::class.java)
+        val log: Logger = LoggerFactory.getLogger(SamtykkeRepository::class.java)
     }
 
     private val hentSamtykke =
             """
                 SELECT * FROM SAMTYKKE
-                WHERE AKTOER_ID = :aktoerId
+                WHERE FOEDSELSNUMMER = :foedselsnummer
             """.replace(serieMedWhitespace, " ")
 
     @Transactional(readOnly = true)
-    override fun hentSamtykke(aktoerId: String)
+    override fun hentSamtykke(foedselsnummer: String)
             = entityManager.createNativeQuery(hentSamtykke, SamtykkeEntity::class.java)
-                .setParameter("aktoerId", aktoerId)
+                .setParameter("foedselsnummer", foedselsnummer)
                 .resultList
                 .map { it as SamtykkeEntity }
                 .map { it.toSamtykke() }
                 .firstOrNull()
 
+    private val hentSamtykkeUtenNaavaerendeXmlQuery =
+            """
+                SELECT * FROM SAMTYKKE
+                WHERE FOEDSELSNUMMER IN (:foedselsnummer)
+                AND NOT EXISTS(
+                    SELECT * FROM CV_XML 
+                    WHERE SAMTYKKE.FOEDSELSNUMMER = CV_XML.FOEDSELSNUMMER
+                )
+            """.replace(serieMedWhitespace, " ")
+
+    @Transactional(readOnly = true)
+    override fun hentSamtykkeUtenNaaverendeXml(foedselsnummer: List<String>)
+            = entityManager.createNativeQuery(hentSamtykkeUtenNaavaerendeXmlQuery, SamtykkeEntity::class.java)
+            .setParameter("foedselsnummer", foedselsnummer)
+            .resultList
+            .map { it as SamtykkeEntity }
 
     private val slettSamtykke =
             """
-                DELETE FROM SAMTYKKE
-                WHERE AKTOER_ID = :aktoerId
+                DELETE SamtykkeEntity se
+                WHERE se.foedselsnummer = :foedselsnummer
             """.replace(serieMedWhitespace, " ")
 
     @Transactional
-    override fun slettSamtykke(aktoerId: String)
+    override fun slettSamtykke(foedselsnummer: String)
             = entityManager.createQuery(slettSamtykke)
-                .setParameter("aktoerId", aktoerId)
+                .setParameter("foedselsnummer", foedselsnummer)
                 .executeUpdate()
 
     @Transactional
     override fun oppdaterSamtykke(samtykke: Samtykke) {
-        slettSamtykke(samtykke.aktoerId)
+        slettSamtykke(samtykke.foedselsnummer)
         entityManager.persist(SamtykkeEntity.from(samtykke))
     }
 }
 
 @Entity
 @Table(name = "SAMTYKKE")
-class SamtykkeEntity() {
+class SamtykkeEntity {
     @Id
     @Column(name = "ID")
     @GeneratedValue(generator = "SAMTYKKE_SEQ")
     private var id: Long? = null
 
-    @Column(name = "AKTOER_ID", nullable = false, unique = true)
-    lateinit var aktoerId: String
+    @Column(name = "FOEDSELSNUMMER", nullable = false, unique = true)
+    lateinit var foedselsnummer: String
 
     @Column(name = "SIST_ENDRET", nullable = false)
     var sistEndret: ZonedDateTime = ZonedDateTime.now()
@@ -108,7 +126,7 @@ class SamtykkeEntity() {
 
 
     fun toSamtykke() = Samtykke(
-            aktoerId = aktoerId,
+            foedselsnummer = foedselsnummer,
             sistEndret = sistEndret,
             personalia = personalia,
             utdanning = utdanning,
@@ -126,7 +144,8 @@ class SamtykkeEntity() {
     companion object {
         fun from(samtykke: Samtykke): SamtykkeEntity {
             val samtykkeEntity = SamtykkeEntity()
-            samtykkeEntity.aktoerId = samtykke.aktoerId
+            // TODO - Remove from DTO
+            samtykkeEntity.foedselsnummer = samtykke.foedselsnummer
             samtykkeEntity.sistEndret = samtykke.sistEndret
             samtykkeEntity.personalia = samtykke.personalia
             samtykkeEntity.utdanning = samtykke.utdanning
