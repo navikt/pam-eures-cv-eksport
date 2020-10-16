@@ -35,7 +35,6 @@ class SamtykkeControllerTest(
     fun cvRecordRetriever(): CvRecordRetriever = mockk(relaxed = true)
 
     @Test
-    @Disabled("Disabled for å bygge på GCP")
     fun `oppdater og hent samtykke`() {
 
         val samtykke = Samtykke(aktoerId1, now, personalia = true, utdanning = true)

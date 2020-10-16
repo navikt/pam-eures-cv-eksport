@@ -9,7 +9,6 @@ import java.time.ZonedDateTime
 import javax.inject.Inject
 
 @MicronautTest
-@Disabled("Disabled for å bygge på GCP")
 internal class SamtykkeRepositoryTest {
     val aktoerId1 = "dummy"
     val aktoerId2 = "dummy2"
