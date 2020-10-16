@@ -39,6 +39,7 @@ class CvConsumer(
     @Scheduled(fixedDelay = "5s")
     fun cron() {
         // TODO: Fiks slik at denne ikke kjører under testing
+        log.debug("Poller kafka - dev-fss")
         process(consumer)
     }
 
