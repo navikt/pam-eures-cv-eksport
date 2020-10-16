@@ -14,7 +14,7 @@ kafka:
   topics:
     consumers:
       cv_endret:  ${KAFKA_CONSUMER_TOPIC_CV_ENDRET}
-      group_id: "pam-cv-eures-cv-eksport-v2"
+      group_id: "pam-cv-eures-cv-eksport-v3"
   health:
     enabled: false
   security:
