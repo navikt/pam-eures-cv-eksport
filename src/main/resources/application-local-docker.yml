@@ -1,4 +1,11 @@
 kafka:
+  consumers:
+    pam-eures-cv-eksport-testing-01:
+      key:
+        deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value:
+        deserializer: org.apache.kafka.common.serialization.ByteArrayDeserializer
+
   bootstrap:
     servers:
       - ${KAFKA_HOST:localhost}:9092
@@ -12,7 +19,7 @@ kafka:
   sasl:
     jaas:
       config:
-    mechanism:
+    mechanism: PLAIN
   ssl:
     truststore:
       location:
