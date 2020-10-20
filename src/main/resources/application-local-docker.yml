@@ -1,11 +1,14 @@
 kafka:
+  max:
+    poll:
+      records: 200
+  reset-offset: false
   consumers:
     pam-eures-cv-eksport-testing-01:
       key:
         deserializer: org.apache.kafka.common.serialization.StringDeserializer
       value:
         deserializer: org.apache.kafka.common.serialization.ByteArrayDeserializer
-
   bootstrap:
     servers:
       - ${KAFKA_HOST:localhost}:9092
@@ -15,15 +18,15 @@ kafka:
   health:
     enabled: false
   security:
-    protocol:
+    protocol: PLAINTEXT
   sasl:
     jaas:
-      config:
+      config: ''
     mechanism: PLAIN
   ssl:
     truststore:
-      location:
-      password:
+      location: ''
+      password: ''
   schema.registry.url: http://${KAFKA_HOST:localhost}:8081
 
 datasources:
