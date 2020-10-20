@@ -11,7 +11,7 @@ kafka:
       records: 200
   reset-offset: false
   consumers:
-    pam-eures-cv-eksport-testing-01:
+    pam-eures-cv-eksport-v1:
       key:
         deserializer: org.apache.kafka.common.serialization.StringDeserializer
       value:
@@ -31,7 +31,7 @@ kafka:
     protocol: SASL_SSL
   sasl:
     jaas:
-      config: 'org.apache.kafka.common.security.plain.PlainLoginModule required username=${KAFKA_SERVICE_USER} password=${KAFKA_SERVICE_PASSWORD};'
+      config: 'org.apache.kafka.common.security.plain.PlainLoginModule required username=${KAFKA_USER} password=${KAFKA_PWD};'
     mechanism: PLAIN
   ssl:
     truststore:

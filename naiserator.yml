@@ -27,9 +27,9 @@ spec:
       memory: 256Mi
   vault:
     enabled: true
-    paths:
-      - kvPath: {{ servicebruker_cv_eksport }}
-        mountPath: /serviceuser/kafka/cveksport/
+    # paths:
+    #  - kvPath: {{ servicebruker_cv_eksport }}
+    #    mountPath: /serviceuser/kafka/cveksport/
   webproxy: false
   prometheus:
     enabled: true
