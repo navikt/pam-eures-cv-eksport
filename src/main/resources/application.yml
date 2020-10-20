@@ -6,6 +6,16 @@ micronaut:
     port: 9030
 
 kafka:
+  max:
+    poll:
+      records: 200
+  reset-offset: false
+  consumers:
+    pam-eures-cv-eksport-testing-01:
+      key:
+        deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value:
+        deserializer: org.apache.kafka.common.serialization.ByteArrayDeserializer
   bootstrap:
     servers:
       - 10.183.160.26:8443
