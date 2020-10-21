@@ -2,7 +2,7 @@ kafka:
   max:
     poll:
       records: 200
-  reset-offset: true
+  reset-offset: false
   consumers:
     pam-eures-cv-eksport-v1:
       key:
