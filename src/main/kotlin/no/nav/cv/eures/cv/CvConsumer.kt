@@ -40,7 +40,7 @@ class CvConsumer(
     fun seekToBeginning() = consumer.seekToBeginning(partitions)
 
     override fun onPartitionsRevoked(partitions: MutableCollection<TopicPartition>?) {
-        TODO("Not yet implemented")
+        // No-op
     }
 
     override fun onPartitionsAssigned(partitions: MutableCollection<TopicPartition>?) {
