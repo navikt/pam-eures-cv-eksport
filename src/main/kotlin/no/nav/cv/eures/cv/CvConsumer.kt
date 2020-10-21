@@ -61,6 +61,8 @@ class CvConsumer(
         processMessages(record)
     }
 
+    private fun String?.foedselsnummerOrNull() = this?.let { if (this != "-") this else null }
+
     /**
      * This function is in charge of three things.
      * 1) If a record exists and the 'underOppfoelging' flag is false it updates the record.
@@ -82,7 +84,9 @@ class CvConsumer(
                 }
             }?: RawCV.create(
                     aktoerId = aktoerId,
-                    foedselsnummer = opprettCv?.cv?.fodselsnummer ?: endreCv?.cv?.fodselsnummer ?: "-",
+                    foedselsnummer = opprettCv?.cv?.fodselsnummer?.foedselsnummerOrNull()
+                            ?: endreCv?.cv?.fodselsnummer?.foedselsnummerOrNull()
+                            ?: "AID-$aktoerId",
                     sistEndret = ZonedDateTime.now(),
                     rawAvro = rawAvroBase64,
                     underOppfoelging = (oppfolgingsinformasjon != null),
