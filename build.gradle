@@ -24,7 +24,7 @@ dependencies {
     implementation "org.jetbrains.kotlin:kotlin-reflect:${kotlinVersion}"
     implementation "javax.annotation:javax.annotation-api"
     implementation "org.apache.avro:avro:${avroVersion}"
-    implementation "org.apache.kafka:kafka-clients"
+    //implementation "org.apache.kafka:kafka-clients"
     implementation "no.nav:vault-jdbc:latest.release"
     implementation "net.logstash.logback:logstash-logback-encoder:6.2"
 
@@ -46,6 +46,9 @@ dependencies {
     implementation "io.micronaut.configuration:micronaut-flyway"
     implementation "io.micronaut:micronaut-http-server-netty"
     implementation "io.micronaut:micronaut-http-client"
+
+    implementation "io.micronaut.kafka:micronaut-kafka:2.0.0"
+
 
     kapt platform("io.micronaut:micronaut-bom:$micronautVersion")
     kapt "io.micronaut:micronaut-inject-java"

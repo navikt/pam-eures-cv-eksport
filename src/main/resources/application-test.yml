@@ -1,7 +1,21 @@
 kafka:
+  reset-offset: false
   topics:
     consumers:
       cv_endret:  "test-topic"
+  security:
+    protocol: PLAINTEXT
+  sasl:
+    jaas:
+      config: ''
+    mechanism: PLAIN
+  ssl:
+    truststore:
+      location: ''
+      password: ''
+  schema:
+    registry:
+      url: http://${KAFKA_HOST:localhost}:8081
 
 datasources:
   default:
