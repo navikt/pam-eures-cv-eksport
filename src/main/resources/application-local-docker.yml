@@ -2,9 +2,9 @@ kafka:
   max:
     poll:
       records: 200
-  reset-offset: false
+  reset-offset: true
   consumers:
-    pam-eures-cv-eksport-testing-01:
+    pam-eures-cv-eksport-v1:
       key:
         deserializer: org.apache.kafka.common.serialization.StringDeserializer
       value:

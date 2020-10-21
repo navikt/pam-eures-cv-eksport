@@ -20,7 +20,7 @@ import java.time.ZonedDateTime
 import java.util.*
 
 @KafkaListener(
-        groupId = "pam-eures-cv-eksport-testing-01",
+        groupId = "pam-eures-cv-eksport-v1",
         offsetReset = OffsetReset.EARLIEST,
         batch = true
 )
