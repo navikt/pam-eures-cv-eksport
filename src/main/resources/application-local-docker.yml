@@ -4,7 +4,7 @@ kafka:
       records: 200
   reset-offset: false
   consumers:
-    pam-eures-cv-eksport-testing-01:
+    pam-eures-cv-eksport-v1:
       key:
         deserializer: org.apache.kafka.common.serialization.StringDeserializer
       value:

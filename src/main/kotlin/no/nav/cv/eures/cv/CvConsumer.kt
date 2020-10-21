@@ -20,7 +20,7 @@ import java.time.ZonedDateTime
 import java.util.*
 
 @KafkaListener(
-        groupId = "pam-eures-cv-eksport-testing-01",
+        groupId = "pam-eures-cv-eksport-v1",
         offsetReset = OffsetReset.EARLIEST,
         batch = true
 )
@@ -40,7 +40,7 @@ class CvConsumer(
     fun seekToBeginning() = consumer.seekToBeginning(partitions)
 
     override fun onPartitionsRevoked(partitions: MutableCollection<TopicPartition>?) {
-        TODO("Not yet implemented")
+        // No-op
     }
 
     override fun onPartitionsAssigned(partitions: MutableCollection<TopicPartition>?) {
@@ -60,6 +60,8 @@ class CvConsumer(
     ) {
         processMessages(record)
     }
+
+    private fun String?.foedselsnummerOrNull() = this?.let { if (this != "-") this else null }
 
     /**
      * This function is in charge of three things.
@@ -82,7 +84,9 @@ class CvConsumer(
                 }
             }?: RawCV.create(
                     aktoerId = aktoerId,
-                    foedselsnummer = opprettCv?.cv?.fodselsnummer ?: endreCv?.cv?.fodselsnummer ?: "-",
+                    foedselsnummer = opprettCv?.cv?.fodselsnummer?.foedselsnummerOrNull()
+                            ?: endreCv?.cv?.fodselsnummer?.foedselsnummerOrNull()
+                            ?: "AID-$aktoerId",
                     sistEndret = ZonedDateTime.now(),
                     rawAvro = rawAvroBase64,
                     underOppfoelging = (oppfolgingsinformasjon != null),

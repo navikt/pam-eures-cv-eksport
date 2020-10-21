@@ -24,7 +24,6 @@ kafka:
   topics:
     consumers:
       cv_endret:  ${KAFKA_CONSUMER_TOPIC_CV_ENDRET}
-      group_id: "pam-cv-eures-cv-eksport-v4"
   health:
     enabled: false
   security:
