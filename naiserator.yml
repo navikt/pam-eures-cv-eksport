@@ -32,7 +32,7 @@ spec:
 #        mountPath: /serviceuser/kafka/cveksport/
   webproxy: false
   envFrom:
-    - secret: pam-import-api-env-secret
+    - secret: pam-eures-cv-eksport-secret
   gcp:
     sqlInstances:
       - type: POSTGRES_11
