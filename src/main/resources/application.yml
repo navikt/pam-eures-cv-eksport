@@ -23,7 +23,7 @@ kafka:
       - 10.183.32.48:8443
   topics:
     consumers:
-      cv_endret:  ${KAFKA_CONSUMER_TOPIC_CV_ENDRET}
+      cv_endret: ${KAFKA_CONSUMER_TOPIC_CV_ENDRET}
   health:
     enabled: false
   security:
