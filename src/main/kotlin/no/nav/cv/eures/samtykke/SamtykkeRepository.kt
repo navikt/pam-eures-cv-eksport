@@ -12,7 +12,7 @@ interface SamtykkeRepository {
     fun hentSamtykke(foedselsnummer: String) : Samtykke?
     fun hentSamtykkeUtenNaaverendeXml(foedselsnummer: List<String>) : List<SamtykkeEntity>
     fun slettSamtykke(foedselsnummer: String) : Int
-    fun oppdaterSamtykke(samtykke: Samtykke)
+    fun oppdaterSamtykke(foedselsnummer: String, samtykke: Samtykke)
 
 }
 
@@ -62,6 +62,7 @@ private open class JpaSamtykkeRepository(
             """
                 DELETE SamtykkeEntity se
                 WHERE se.foedselsnummer = :foedselsnummer
+                OR se.foedselsnummer like '%:foedselsnummer'
             """.replace(serieMedWhitespace, " ")
 
     @Transactional
@@ -71,9 +72,9 @@ private open class JpaSamtykkeRepository(
                 .executeUpdate()
 
     @Transactional
-    override fun oppdaterSamtykke(samtykke: Samtykke) {
-        slettSamtykke(samtykke.foedselsnummer)
-        entityManager.persist(SamtykkeEntity.from(samtykke))
+    override fun oppdaterSamtykke(foedselsnummer: String, samtykke: Samtykke) {
+        slettSamtykke(foedselsnummer)
+        entityManager.persist(SamtykkeEntity.from(foedselsnummer, samtykke))
     }
 }
 
@@ -126,7 +127,6 @@ class SamtykkeEntity {
 
 
     fun toSamtykke() = Samtykke(
-            foedselsnummer = foedselsnummer,
             sistEndret = sistEndret,
             personalia = personalia,
             utdanning = utdanning,
@@ -142,10 +142,9 @@ class SamtykkeEntity {
     )
 
     companion object {
-        fun from(samtykke: Samtykke): SamtykkeEntity {
+        fun from(foedselsnummer: String, samtykke: Samtykke): SamtykkeEntity {
             val samtykkeEntity = SamtykkeEntity()
-            // TODO - Remove from DTO
-            samtykkeEntity.foedselsnummer = samtykke.foedselsnummer
+            samtykkeEntity.foedselsnummer = foedselsnummer
             samtykkeEntity.sistEndret = samtykke.sistEndret
             samtykkeEntity.personalia = samtykke.personalia
             samtykkeEntity.utdanning = samtykke.utdanning
