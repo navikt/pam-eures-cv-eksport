@@ -35,6 +35,8 @@ spec:
     sqlInstances:
       - type: POSTGRES_11
         diskAutoresize: true
+        diskType: SSD
+        highAvailability: true
         databases:
           - name: pam-eures-cv-eksport
             envVarPrefix: DB
