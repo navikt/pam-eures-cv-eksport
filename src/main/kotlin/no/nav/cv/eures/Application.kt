@@ -6,6 +6,8 @@ object Application {
 
     @JvmStatic
     fun main(args: Array<String>) {
+
+        Thread.sleep(15_000)
         Micronaut.build()
                 .packages("no.nav.cv")
                 .mainClass(Application.javaClass)
