@@ -25,12 +25,10 @@ spec:
     requests:
       cpu: 200m
       memory: 256Mi
-#  vault:
-#    enabled: true
-#    paths:
-#      - kvPath: {{ servicebruker_cv_eksport }}
-#        mountPath: /serviceuser/kafka/cveksport/
-  webproxy: false
+  accessPolicy:
+    inbound:
+      rules:
+        - application: pam-eures-cv-eksport-proxy
   envFrom:
     - secret: pam-eures-cv-eksport-secret
   gcp:
@@ -48,11 +46,5 @@ spec:
       value: {{ kafka_consumer_topic_cv_endret }}
     - name: DB_DRIVER
       value: 'org.postgresql.Driver'
-#    - name: JDBC_URL
-#      value: {{ jdbc_url }}
-#    - name: DB_VAULT_PATH
-#      value: {{ db_vault_path }}
-#    - name: DB_VAULT_USERNAME
-#      value: {{ db_vault_username }}
   ingresses:
     - {{ ingress }}
