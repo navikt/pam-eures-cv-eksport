@@ -16,5 +16,5 @@ data class CandidatePerson(
         val genderCode: GenderCode,
 
         @JacksonXmlElementWrapper(useWrapping = false)
-        val primaryLanguageCode: List<LanguageCodeISO639_1_2002_Aplpha2>
+        val primaryLanguageCode: List<String>
 )
