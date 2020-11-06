@@ -13,6 +13,7 @@ class CandidateProfileConverter(
             executiveSummary = cv.sammendrag,
             employmentHistory = EmploymentHistoryConverter(cv, samtykke).toXmlRepresentation(),
             educationHistory = EducationHistoryConverter(cv, samtykke).toXmlRepresentation(),
-            licenses = LicensesConverter(cv, samtykke).toXmlRepresentation()
+            licenses = LicensesConverter(cv, samtykke).toXmlRepresentation(),
+            personQualifications = PersonQualificationsConverter(cv, samtykke).toXmlRepresentation()
     )
 }
