@@ -43,8 +43,8 @@ data class Communication(
         @JacksonXmlProperty(localName = "oa:DialNumber")
         val dialNumber: String? = null,
 
-        @JacksonXmlProperty(localName = "oa:Uri")
-        val URI: String? = null
+        @JacksonXmlProperty(localName = "oa:URI")
+        val uri: String? = null
 
 ) {
     companion object {
@@ -86,7 +86,7 @@ data class Communication(
                 comList.add(
                         Communication(
                                 channelCode = ChannelCode.Email,
-                                URI = email
+                                uri = email
                         ))
 
 
@@ -94,7 +94,7 @@ data class Communication(
                 comList.add(
                         Communication(
                                 channelCode = ChannelCode.InstantMessage,
-                                URI = instantMessage
+                                uri = instantMessage
                         ))
 
 
@@ -102,7 +102,7 @@ data class Communication(
                 comList.add(
                         Communication(
                                 channelCode = ChannelCode.Web,
-                                URI = web
+                                uri = web
                         ))
 
             return comList
