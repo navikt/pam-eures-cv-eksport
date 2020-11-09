@@ -27,10 +27,7 @@ class CandidatePersonConverter(
                 primaryLanguageCode = cv.spraakferdigheter.toLanguages())
     }
 
-    private fun List<Spraakferdighet>.toLanguages() = mapNotNull { it.iso3kode.toIso639_1() }
-
-    // TODO Implement ISO639-3 to ISO693-1 conversion
-    private fun String.toIso639_1() = LanguageConverter.fromIso3ToIso1(this)
+    private fun List<Spraakferdighet>.toLanguages() = mapNotNull { LanguageConverter.fromIso3ToIso1(it.iso3kode) }
 
     private fun String.toIso3166_1a2CountryCode() = this
 
