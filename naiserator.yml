@@ -25,11 +25,7 @@ spec:
     requests:
       cpu: 200m
       memory: 256Mi
-#  vault:
-#    enabled: true
-#    paths:
-#      - kvPath: {{ servicebruker_cv_eksport }}
-#        mountPath: /serviceuser/kafka/cveksport/
+
   webproxy: false
   envFrom:
     - secret: pam-eures-cv-eksport-secret
