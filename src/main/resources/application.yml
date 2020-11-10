@@ -9,7 +9,7 @@ kafka:
   max:
     poll:
       records: 200
-  reset-offset: false
+  reset-offset: true
   consumers:
     pam-eures-cv-eksport-v1:
       key:
@@ -23,7 +23,7 @@ kafka:
       - 10.183.32.48:8443
   topics:
     consumers:
-      cv_endret:  ${KAFKA_CONSUMER_TOPIC_CV_ENDRET}
+      cv_endret: ${KAFKA_CONSUMER_TOPIC_CV_ENDRET}
   health:
     enabled: false
   security:
@@ -57,22 +57,22 @@ jpa:
           auto: none
         show_sql: false
 
+
 datasources:
   default:
-    minimumIdle: 0
-    maximumPoolSize: 4
-    idleTimeout: 10001
-    maxLifetime: 30001
+    url: jdbc:postgresql://${DB_HOST}:${DB_PORT}/${DB_DATABASE}
+    driverClassName: ${DB_DRIVER:org.h2.Driver}
+    username: ${DB_USERNAME:sa}
+    password: ${DB_PASSWORD:''}
+    maximum-pool-size: 2
+    minimum-idle: 0
+    pool-name: default
     connectionTestQuery: "select 1"
-    jdbcUrl: ${JDBC_URL:`jdbc:postgresql://localhost:5432/pam-eures-cv-eksport`}
-    driverClassName: 'org.postgresql.Driver'
 
 flyway:
   datasources:
     default:
       locations: classpath:db
-      initSql:
-        - 'SET ROLE "pam-eures-cv-eksport-admin"'
 
 jackson:
   serializationInclusion: ALWAYS

@@ -1,5 +1,6 @@
 {
   "servicebruker_cv_eksport": "/serviceuser/data/prod/srvpamcveures",
 
+  "kafka_pool": "nav-prod",
   "kafka_consumer_topic_cv_endret":"arbeid-pam-cv-endret-v5-p"
 }

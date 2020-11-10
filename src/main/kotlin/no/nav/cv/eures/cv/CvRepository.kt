@@ -67,6 +67,8 @@ private open class JpaCvRepository(
                 WHERE PROSESSERT = FALSE 
             """.replace(serieMedWhitespace, " ")
 
+    // TODO : Kan ikke dette ende med race conditions mellom to podder?
+
     @Transactional(readOnly = true)
     override fun hentUprosesserteCver(): List<RawCV> =
             entityManager.createNativeQuery(hentUprosesserteCver, RawCV::class.java)

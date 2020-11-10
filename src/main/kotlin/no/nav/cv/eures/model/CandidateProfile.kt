@@ -8,6 +8,7 @@ data class CandidateProfile(
         val languageCode: String = "en",
         val executiveSummary: String = "",
         val employmentHistory: EmploymentHistory? = null,
-        val educationHistory: EducationHistory? = null
-
+        val educationHistory: EducationHistory? = null,
+        val licenses: Licenses? = null,
+        val personQualifications: PersonQualifications? = null
 )
