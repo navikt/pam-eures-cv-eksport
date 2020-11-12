@@ -11,17 +11,14 @@ class NationalityConverterTest {
     @Disabled // TODO : Fix XY codes
     @Test
     fun `all nationality records in database - maps to ISO code`() {
-        extractFromDatabase.forEach { record ->
+        extractedFromDatabase10Nov2020.forEach { record ->
             val iso = NationalityConverter.getIsoCode(record)
-            //        ?: println("Database record $record maps to null")
 
             assertNotNull(iso)
         }
     }
 
-
-
-    private val extractFromDatabase = listOf(
+    private val extractedFromDatabase10Nov2020 = listOf(
         "SD",
         "US",
         "SG",
@@ -69,7 +66,7 @@ class NationalityConverterTest {
         "GE",
         "SU",
         "Brasil",
-        "XY",
+        //"XY", // Don't know how to handle these yet. Might be old entries from Arena, but cannot check due to Utvikler Image being down
         "EG",
         "LR",
         "Syria",
@@ -198,7 +195,7 @@ class NationalityConverterTest {
         "LV",
         "CD",
         "PT",
-        "XX",
+        // "XX", // Not accepted by EURES at this stage
         "IE",
         "GY",
         "ZA",
@@ -342,7 +339,7 @@ class NationalityConverterTest {
         "Panama",
         "Bosnia-Hercegovina",
         "Estland",
-        "Statsløs",
+        //"Statsløs", // Maps to XX but not accepted by Eures at this stage
         "Thailand",
         "Portugal",
         "Colombia",
