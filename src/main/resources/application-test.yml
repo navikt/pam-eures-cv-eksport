@@ -1,5 +1,4 @@
 kafka:
-  reset-offset: false
   topics:
     consumers:
       cv_endret:  "test-topic"
