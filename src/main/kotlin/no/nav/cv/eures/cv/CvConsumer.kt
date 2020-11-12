@@ -1,19 +1,14 @@
 package no.nav.cv.eures.cv
 
-import io.micronaut.configuration.kafka.ConsumerAware
 import io.micronaut.configuration.kafka.annotation.KafkaListener
 import io.micronaut.configuration.kafka.annotation.OffsetReset
 import io.micronaut.configuration.kafka.annotation.Topic
-import io.micronaut.context.annotation.Value
 import no.nav.arbeid.cv.avro.Melding
 import no.nav.arbeid.cv.avro.Meldingstype
 import no.nav.cv.eures.cv.RawCV.Companion.RecordType.*
 import org.apache.avro.io.DecoderFactory
 import org.apache.avro.specific.SpecificDatumReader
-import org.apache.kafka.clients.consumer.Consumer
-import org.apache.kafka.clients.consumer.ConsumerRebalanceListener
 import org.apache.kafka.clients.consumer.ConsumerRecord
-import org.apache.kafka.common.TopicPartition
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import java.time.ZonedDateTime
@@ -26,32 +21,10 @@ import java.util.*
 )
 class CvConsumer(
         private val cvRepository: CvRepository
-) : ConsumerRebalanceListener, ConsumerAware<String, ByteArray> {
+) {
 
     companion object {
         val log: Logger = LoggerFactory.getLogger(CvConsumer::class.java)
-    }
-
-    @Value("\${kafka.reset-offset}")
-    private lateinit var resetKafkaOffset: String
-    lateinit var consumer: Consumer<String, ByteArray>
-    private var partitions: MutableCollection<TopicPartition>? = null
-
-    fun seekToBeginning() = consumer.seekToBeginning(partitions)
-
-    override fun onPartitionsRevoked(partitions: MutableCollection<TopicPartition>?) {
-        // No-op
-    }
-
-    override fun onPartitionsAssigned(partitions: MutableCollection<TopicPartition>?) {
-        this.partitions = partitions
-        if (resetKafkaOffset.toBoolean()) {
-            consumer.seekToBeginning(partitions)
-        }
-    }
-
-    override fun setKafkaConsumer(consumer: Consumer<String, ByteArray>) {
-        this.consumer = consumer
     }
 
     @Topic("\${kafka.topics.consumers.cv_endret}")
