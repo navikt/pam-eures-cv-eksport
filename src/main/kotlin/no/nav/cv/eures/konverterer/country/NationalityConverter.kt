@@ -29,13 +29,12 @@ object NationalityConverter {
 
         // Some hardcoded fixes
         i2s["SF"] = "Finland".toUpperCase() // Listed in Wikipedia as reserved for Finland until 2012, but we still have records with this code
+        s2i["NORSK"] = "NO" // pam-cv-api produces kafka test messages with 'Norsk' instead of 'Norge' in the nationality field
 
         /* Not accepted by EURES at this stage
         i2s["XX"] = "STATSLØS" // Stateless persons
         s2i["STATSLØS"] = "XX" // According to https://en.wikipedia.org/wiki/ISO_3166-1_alpha-3 (2020.11.10)
         */
-
-        s2i["NORSK"] = "NO" // pam-cv-api produces kafka test messages with 'Norsk' instead of 'Norway' in the nationality field
 
         val uri = javaClass.classLoader.getResource(filename)?.toURI()
                 ?: throw Exception("File '$filename' gives null")
