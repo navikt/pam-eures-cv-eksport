@@ -31,5 +31,6 @@ class CandidatePersonConverter(
     private fun List<Spraakferdighet>.toLanguages() = mapNotNull { LanguageConverter.fromIso3ToIso1(it.iso3kode) }
 
     private fun String.toIso3166_1a2CountryCode() = NationalityConverter.getIsoCode(this)
+            ?: throw Exception("Cannot find nationality code for $this CvId : ${cv.cvId}") // TODO : Is this Aktør ID?
 
 }
