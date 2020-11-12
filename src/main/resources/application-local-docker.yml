@@ -31,11 +31,11 @@ kafka:
 
 datasources:
   default:
-    url: "jdbc:postgresql://localhost:5432/test_db"
+    url: "jdbc:postgresql://localhost:5432/pam-eures-cv-eksport"
     connectionTestQuery: "select 1"
     driverClassName: 'org.postgresql.Driver'
-    username: testuser
-    password: testpassword
+    username: pam-eures-cv-eksport-admin
+    password:
 
 flyway:
   datasources:

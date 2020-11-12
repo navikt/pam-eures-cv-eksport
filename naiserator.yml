@@ -25,7 +25,10 @@ spec:
     requests:
       cpu: 200m
       memory: 256Mi
-
+  accessPolicy:
+    inbound:
+      rules:
+        - application: pam-eures-cv-eksport-proxy
   webproxy: false
   envFrom:
     - secret: pam-eures-cv-eksport-secret
@@ -33,6 +36,8 @@ spec:
     sqlInstances:
       - type: POSTGRES_11
         diskAutoresize: true
+        diskType: SSD
+        highAvailability: true
         databases:
           - name: pam-eures-cv-eksport
             envVarPrefix: DB
@@ -44,11 +49,5 @@ spec:
       value: {{ kafka_consumer_topic_cv_endret }}
     - name: DB_DRIVER
       value: 'org.postgresql.Driver'
-#    - name: JDBC_URL
-#      value: {{ jdbc_url }}
-#    - name: DB_VAULT_PATH
-#      value: {{ db_vault_path }}
-#    - name: DB_VAULT_USERNAME
-#      value: {{ db_vault_username }}
   ingresses:
     - {{ ingress }}
