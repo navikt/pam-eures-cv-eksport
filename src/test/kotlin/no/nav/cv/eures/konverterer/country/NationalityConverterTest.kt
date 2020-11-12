@@ -8,7 +8,6 @@ import org.junit.jupiter.api.Test
 @MicronautTest
 class NationalityConverterTest {
 
-    @Disabled // TODO : Fix XY codes
     @Test
     fun `all nationality records in database - maps to ISO code`() {
         extractedFromDatabase10Nov2020.forEach { record ->
