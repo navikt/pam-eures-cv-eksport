@@ -8,6 +8,7 @@ on:
       - "CODEOWNERS"
     branches:
       - master
+      - tokenx
 jobs:
   security:
     runs-on: ubuntu-latest

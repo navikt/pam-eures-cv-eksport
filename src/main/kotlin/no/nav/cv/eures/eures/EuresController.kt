@@ -4,9 +4,12 @@ import io.micronaut.http.annotation.Body
 import io.micronaut.http.annotation.Controller
 import io.micronaut.http.annotation.Get
 import io.micronaut.http.annotation.Post
+import io.micronaut.security.annotation.Secured
+import io.micronaut.security.rules.SecurityRule
 import no.nav.cv.eures.model.Converters.toUtcZonedDateTime
 
 @Controller("input/api/cv/v1.0")
+@Secured(SecurityRule.IS_ANONYMOUS)
 class EuresController(
         private val euresService: EuresService
 ) {

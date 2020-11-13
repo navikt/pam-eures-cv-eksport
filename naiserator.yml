@@ -51,3 +51,5 @@ spec:
       value: 'org.postgresql.Driver'
   ingresses:
     - {{ ingress }}
+  tokenx:
+    enabled: true

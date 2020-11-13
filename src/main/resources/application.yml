@@ -5,6 +5,13 @@ micronaut:
     context-path: /pam-eures-cv-eksport
     port: 9030
 
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: ${AAD_ISSUER_URI}/v2.0
+          #The client_id of this application
+          accepted-audience: ${CLIENT_ID}, api://${CLIENT_ID}
 kafka:
   max:
     poll:
