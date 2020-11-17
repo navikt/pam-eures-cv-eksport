@@ -65,3 +65,10 @@ eures:
   # base 64 encoded version of default value of token below - for use in local testing with curl or postman or similar:
   # RVVSRVMgc3VwZXIgdGVzdHNlY3JldA==
   token: ${EURES_TOKEN:EURES super testsecret}
+
+janzz:
+  authorization:
+    token: ${JANZZ_AUTH_TOKEN}
+  labels:
+    host: https://www.janzz.jobs
+    resultLimit: 200

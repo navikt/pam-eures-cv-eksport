@@ -27,3 +27,7 @@ spring:
     baseline-on-migrate: true
     locations:
       - "classpath:db"
+
+janzz:
+  authorization:
+    token: ${JANZZ_AUTH_TOKEN:123}
