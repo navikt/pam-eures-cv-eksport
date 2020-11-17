@@ -1,6 +1,7 @@
 package no.nav.cv.eures.konverterer
 
 import no.nav.arbeid.cv.avro.Cv
+import no.nav.arbeid.cv.avro.Jobbprofil
 import no.nav.arbeid.cv.avro.Melding
 import no.nav.arbeid.cv.avro.Meldingstype
 import no.nav.cv.eures.cv.CvRepository
@@ -42,9 +43,9 @@ open class CvConverterService(
         return datumReader.read(null, decoder)
     }
 
-    private fun Melding.cv(): Cv? = when (meldingstype) {
-        Meldingstype.OPPRETT -> opprettCv.cv
-        Meldingstype.ENDRE -> endreCv.cv
+    private fun Melding.cvAndProfile(): Pair<Cv?, Jobbprofil?>? = when (meldingstype) {
+        Meldingstype.OPPRETT -> Pair(opprettCv.cv, opprettJobbprofil.jobbprofil)
+        Meldingstype.ENDRE -> Pair(endreCv.cv, endreJobbprofil.jobbprofil)
         else -> null
     }
 
@@ -89,14 +90,17 @@ open class CvConverterService(
     fun convertToXml(foedselsnummer: String): Pair<String, String>? {
         val record = cvRepository.hentCvByFoedselsnummer(foedselsnummer) ?: return null
         return record.toMelding()
-                ?.cv()
-                ?.let { cv ->
+                ?.cvAndProfile()
+                ?.let { (cv, profile) ->
 
-                    log.debug("Firstname : ${cv.fornavn}")
+                    log.debug("Got CV Firstname: ${cv?.fornavn} Profile ID: ${profile?.jobbprofilId}")
+
+                    if(cv == null || profile == null)
+                        return@let null
 
                     samtykkeRepository.hentSamtykke(foedselsnummer)
                             ?.run {
-                                val candidate = CandidateConverter(cv, this).toXmlRepresentation()
+                                val candidate = CandidateConverter(cv, profile,this).toXmlRepresentation()
                                 return@let Pair(cv.arenaKandidatnr, XmlSerializer.serialize(candidate))
                             }
                 }
