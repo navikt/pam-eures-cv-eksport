@@ -12,11 +12,11 @@ import no.nav.cv.eures.eures.dto.GetDetails.CandidateDetail.Status.ACTIVE
 import no.nav.cv.eures.eures.dto.GetDetails.CandidateDetail.Status.CLOSED
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
+import org.springframework.stereotype.Component
 import java.sql.Timestamp
 import java.time.ZonedDateTime
-import javax.inject.Singleton
 
-@Singleton
+@Component
 class EuresService(
         private val cvXmlRepository: CvXmlRepository
 ) {

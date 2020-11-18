@@ -1,11 +1,12 @@
 package no.nav.cv.eures.samtykke
 
-import com.auth0.jwt.JWT
-import io.micronaut.http.HttpResponse
-import io.micronaut.http.HttpStatus
-import io.micronaut.http.annotation.*
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
+import org.springframework.http.ResponseEntity
+import org.springframework.stereotype.Controller
+import org.springframework.web.bind.annotation.DeleteMapping
+import org.springframework.web.bind.annotation.GetMapping
+import org.springframework.web.bind.annotation.PostMapping
 
 @Controller("samtykke")
 class SamtykkeController(
@@ -16,38 +17,25 @@ class SamtykkeController(
     }
 
     // TODO - Actual verification of token, this is just a temporary unwrapping.
-    @Get(produces = ["application/json"])
-    fun hentSamtykke(@Header("Authorization") bearerToken: String) =
-            bearerToken.decode()?.let {
-                samtykkeService.hentSamtykke(it)
-                    ?: HttpResponse.notFound<String>()
-            }
+    @GetMapping(produces = ["application/json"])
+    fun hentSamtykke() = samtykkeService.hentSamtykke(extractFnr())
+            ?: ResponseEntity.notFound()
 
 
-    @Post(produces = ["application/json"])
+    @PostMapping(produces = ["application/json"])
     fun oppdaterSamtykke(
-            @Header("Authorization") bearerToken: String,
-            @Body samtykke: Samtykke
-    ): HttpResponse<Samtykke> {
-        bearerToken.decode()?.let {
-            samtykkeService.oppdaterSamtykke(it, samtykke)
-            return HttpResponse.ok()
-        }
-        return HttpResponse.notFound()
+            samtykke: Samtykke
+    ): ResponseEntity<Samtykke> {
+        samtykkeService.oppdaterSamtykke(extractFnr(), samtykke)
+        return ResponseEntity.ok(samtykke)
     }
 
-    @Delete(produces = ["application/json"])
-    fun slettSamtykke(@Header("Authorization") bearerToken: String): HttpResponse<String> {
-        bearerToken.decode()?.let {
-            samtykkeService.slettSamtykke(it)
-            return HttpResponse.ok("OK")
-        }
-        return HttpResponse.notFound()
+    @DeleteMapping(produces = ["application/json"])
+    fun slettSamtykke(): ResponseEntity<String> {
+        samtykkeService.slettSamtykke(extractFnr())
+        return ResponseEntity.ok("OK")
     }
 
-    private fun String?.decode(): String? = this?.let {
-        val token = it.split(" ")[1]
-        JWT.decode(token).subject
-    }
+    private fun extractFnr(): String = "dummy"
 
 }

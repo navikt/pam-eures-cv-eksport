@@ -1,16 +1,20 @@
 package no.nav.cv.eures.xml
 
-import io.micronaut.test.annotation.MicronautTest
 import org.junit.jupiter.api.Disabled
 import no.nav.cv.eures.konverterer.CvConverterService
 import org.junit.jupiter.api.Test
+import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.boot.test.context.SpringBootTest
+import org.springframework.test.context.ActiveProfiles
 import java.io.File
 
 // TODO - Enable test again
-@MicronautTest
-class XmlSerializerTest(
-        private val cvConverterService: CvConverterService
-) {
+@SpringBootTest
+@ActiveProfiles("test")
+class XmlSerializerTest {
+
+    @Autowired
+    lateinit var cvConverterService: CvConverterService
 
     @Test
     @Disabled

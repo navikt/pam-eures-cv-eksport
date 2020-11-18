@@ -1,34 +1,45 @@
-kafka:
-  reset-offset: false
-  topics:
-    consumers:
-      cv_endret:  "test-topic"
-  security:
-    protocol: PLAINTEXT
-  sasl:
-    jaas:
-      config: ''
-    mechanism: PLAIN
-  ssl:
-    truststore:
-      location: ''
-      password: ''
-  schema:
-    registry:
-      url: http://${KAFKA_HOST:localhost}:8081
+#kafka:
+#  reset-offset: false
+#  topics:
+#    consumers:
+#      cv_endret:  "test-topic"
+#  security:
+#    protocol: PLAINTEXT
+#  sasl:
+#    jaas:
+#      config: ''
+#    mechanism: PLAIN
+#  ssl:
+#    truststore:
+#      location: ''
+#      password: ''
+#  schema:
+#    registry:
+#      url: http://${KAFKA_HOST:localhost}:8081
 
-datasources:
-  default:
+spring:
+  kafka:
+    properties:
+      sasl:
+        mechanism: PLAIN
+        jaas:
+          config: ''
+      schema:
+        registry:
+          url: http://${KAFKA_HOST:localhost}:8081
+      security:
+        protocol: PLAINTEXT
+  datasource:
+    driverClassName: 'org.h2.Driver'
     url: 'jdbc:h2:mem:pam_eures_cv_eksport;MODE=PostgreSQL;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE'
     username: 'sa'
     password: ''
-    driverClassName: 'org.h2.Driver'
-
-flyway:
-  datasources:
-    default:
-      locations: classpath:db
-      initSql:
-        - ''
-      connection-init-sqls:
-        - 'SET ROLE "pam-brukernotifikasjon-admin"'
+    hikari:
+      maximum-pool-size: 2
+      minimum-idle: 0
+      pool-name: default
+  flyway:
+    enabled: true
+    baseline-on-migrate: true
+    locations:
+      - "classpath:db"
