@@ -1,14 +1,14 @@
 package no.nav.cv.eures.nais
 
-import io.micronaut.http.annotation.Controller
-import io.micronaut.http.annotation.Get
+import org.springframework.stereotype.Controller
+import org.springframework.web.bind.annotation.GetMapping
 
 @Controller("/internal")
 class StatusController {
 
-    @Get("isAlive")
+    @GetMapping("isAlive")
     fun isAlive() = "OK"
 
-    @Get("isReady")
+    @GetMapping("isReady")
     fun isReady() = "OK"
 }

@@ -1,30 +1,35 @@
 package no.nav.cv.eures.eures
 
-import io.micronaut.http.HttpRequest
-import io.micronaut.http.client.RxHttpClient
-import io.micronaut.http.client.annotation.Client
-import io.micronaut.test.annotation.MicronautTest
 import no.nav.cv.eures.model.Converters.toUtcZonedDateTime
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.TestInstance
+import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.boot.test.context.SpringBootTest
+import org.springframework.test.context.ActiveProfiles
+import org.springframework.test.web.reactive.server.WebTestClient
 import java.time.ZoneId
 import java.time.ZonedDateTime
-import javax.inject.Inject
 
-@MicronautTest
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+@ActiveProfiles("test")
 class EuresControllerTest {
 
     companion object {
         const val EURES_REQUIRED_PING_CONSTANT = "Hello from Input API"
     }
 
-    @Inject
-    @field:Client("/pam-eures-cv-eksport/") lateinit var client: RxHttpClient
+    @Autowired
+    private lateinit var client: WebTestClient
 
     @Test
     fun `ping controller skal inkludere constant string i returnert verdi` () {
-        val request = HttpRequest.GET<String>("input/api/cv/v1.0/ping")
-        val body = client.toBlocking().retrieve(request)
+        val body = client
+                        .get()
+                        .uri("pam-eures-cv-eksport/input/api/cv/v1.0/ping")
+                        .exchange()
+                        .expectBody().returnResult().responseBodyContent
+                .let { String(it) }
         assertEquals(true, body.contains(EURES_REQUIRED_PING_CONSTANT))
     }
 

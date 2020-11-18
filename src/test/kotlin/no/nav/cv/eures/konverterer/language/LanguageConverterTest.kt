@@ -1,10 +1,12 @@
 package no.nav.cv.eures.konverterer.language
 
-import io.micronaut.test.annotation.MicronautTest
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
+import org.springframework.boot.test.context.SpringBootTest
+import org.springframework.test.context.ActiveProfiles
 
-@MicronautTest
+@SpringBootTest
+@ActiveProfiles("test")
 class LanguageConverterTest() {
 
     private val iso3Toiso1Mappings = mapOf(

@@ -1,9 +1,9 @@
 package no.nav.cv.eures.samtykke
 
 import no.nav.cv.eures.konverterer.CvConverterService
-import javax.inject.Singleton
+import org.springframework.stereotype.Service
 
-@Singleton
+@Service
 class SamtykkeService(
         private val samtykkeRepository: SamtykkeRepository,
         private val cvConverterService: CvConverterService

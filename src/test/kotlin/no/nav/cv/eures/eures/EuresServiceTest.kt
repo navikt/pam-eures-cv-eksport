@@ -1,6 +1,5 @@
 package no.nav.cv.eures.eures
 
-import io.micronaut.test.annotation.MicronautTest
 import no.nav.cv.eures.cv.CvXml
 import no.nav.cv.eures.cv.CvXmlRepository
 import no.nav.cv.eures.eures.dto.GetDetails.CandidateDetail.Status.ACTIVE
@@ -8,21 +7,28 @@ import no.nav.cv.eures.eures.dto.GetDetails.CandidateDetail.Status.CLOSED
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.BeforeAll
+import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
-import org.junit.jupiter.api.TestInstance
-import org.junit.jupiter.api.TestInstance.Lifecycle
 import org.junit.jupiter.api.assertAll
+import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.boot.jdbc.EmbeddedDatabaseConnection
+import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase
+import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest
+import org.springframework.boot.test.context.SpringBootTest
+import org.springframework.test.annotation.DirtiesContext
+import org.springframework.test.context.ActiveProfiles
 import java.time.ZonedDateTime
-import javax.inject.Inject
 
-@MicronautTest
-@TestInstance(Lifecycle.PER_CLASS)
+@SpringBootTest
+@ActiveProfiles("test")
+@AutoConfigureTestDatabase(connection = EmbeddedDatabaseConnection.H2)
+@DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
 class EuresServiceTest {
 
-    @Inject
+    @Autowired
     lateinit var euresService: EuresService
 
-    @Inject
+    @Autowired
     lateinit var cvXmlRepository: CvXmlRepository
 
     private var oneDayAgo = ZonedDateTime.now().minusDays(1)
@@ -34,7 +40,7 @@ class EuresServiceTest {
     )
 
 
-    @BeforeAll
+    @BeforeEach
     fun setUp() {
         testData().forEach { cvXmlRepository.save(it) }
     }
@@ -76,6 +82,7 @@ class EuresServiceTest {
     }
 
     @Test
+    @DirtiesContext
     fun `getDetails skal returnere korrekt status paa details`() {
         val details = euresService.getDetails(testData().map(CvXml::reference))
 
@@ -91,6 +98,7 @@ class EuresServiceTest {
     }
 
     @Test
+    @DirtiesContext
     fun `records skal endre type basert paa timestamps`() {
         var now = ZonedDateTime.now().minusHours(2)
         val candidate = cvXmlRepository.save(CvXml().update("PAM-4", "1234567893", now, now, null, xml = "SOME XML"))

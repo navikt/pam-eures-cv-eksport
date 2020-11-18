@@ -1,13 +1,17 @@
 plugins {
-    id "org.jetbrains.kotlin.jvm" version "1.3.72"
-    id "org.jetbrains.kotlin.kapt" version "1.3.72"
+    id "org.jetbrains.kotlin.jvm" version "1.4.10"
+    id "org.jetbrains.kotlin.plugin.spring" version "1.4.10"
+    id "org.jetbrains.kotlin.plugin.jpa" version "1.4.10"
+    //id "org.jetbrains.kotlin.kapt" version "1.3.72"
     id "org.jetbrains.kotlin.plugin.allopen" version "1.3.72"
-    id "com.github.johnrengelman.shadow" version "5.2.0"
     id "application"
+    id "org.springframework.boot" version "2.4.0"
+    id "io.spring.dependency-management" version "1.0.10.RELEASE"
 }
 
 version "0.1"
 group "no.nav.cv.eures"
+sourceCompatibility = '1.14'
 
 repositories {
     mavenCentral()
@@ -33,40 +37,63 @@ dependencies {
 
     implementation "no.nav.arbeid.pam:pam-cv-avro-cvmeldinger:46"
 
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+    testImplementation('org.springframework.boot:spring-boot-starter-test') {
+        exclude group: 'org.junit.vintage', module: 'junit-vintage-engine'
+    }
+    testImplementation('org.springframework.boot:spring-boot-starter-webflux')
+
     // SNYK fixes
     implementation "org.dom4j:dom4j:2.1.3"
     implementation "org.postgresql:postgresql:42.2.13"
     implementation "org.hibernate:hibernate-core:5.4.18.Final"
 
-    implementation platform("io.micronaut:micronaut-bom:$micronautVersion")
-    implementation "io.micronaut:micronaut-runtime"
-    implementation "io.micronaut.configuration:micronaut-hibernate-jpa"
-    implementation "io.micronaut.configuration:micronaut-hibernate-jpa-spring"
-    implementation "io.micronaut.configuration:micronaut-jdbc-hikari"
-    implementation "io.micronaut.configuration:micronaut-flyway"
-    implementation "io.micronaut:micronaut-http-server-netty"
-    implementation "io.micronaut:micronaut-http-client"
+    implementation("org.springframework.kafka:spring-kafka")
+    implementation("org.springframework.boot:spring-boot-starter-webflux")
+    implementation("org.projectreactor:reactor-spring:1.0.1.RELEASE")
 
-    implementation "io.micronaut.kafka:micronaut-kafka:2.0.0"
+    implementation("org.springframework.boot:spring-boot-starter-data-jpa")
+    implementation("org.springframework.boot:spring-boot-starter-mustache")
+    implementation("org.springframework.boot:spring-boot-starter-web")
+    implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
+    implementation("org.jetbrains.kotlin:kotlin-reflect")
+    implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
+    developmentOnly("org.springframework.boot:spring-boot-devtools")
+    runtimeOnly("com.h2database:h2")
+    testImplementation("org.springframework.boot:spring-boot-starter-test")
+
+
+//    implementation platform("io.micronaut:micronaut-bom:$micronautVersion")
+//    implementation "io.micronaut:micronaut-runtime"
+//    implementation "io.micronaut.configuration:micronaut-hibernate-jpa"
+//    implementation "io.micronaut.configuration:micronaut-hibernate-jpa-spring"
+//    implementation "io.micronaut.configuration:micronaut-jdbc-hikari"
+//    implementation "io.micronaut.configuration:micronaut-flyway"
+//    implementation "io.micronaut:micronaut-http-server-netty"
+//    implementation "io.micronaut:micronaut-http-client"
+//
+//    implementation "io.micronaut.kafka:micronaut-kafka:2.0.0"
 
     // TODO - Remove temporary use of jwt implementation
     implementation 'com.auth0:java-jwt:3.11.0'
 
-    kapt platform("io.micronaut:micronaut-bom:$micronautVersion")
-    kapt "io.micronaut:micronaut-inject-java"
-    kapt "io.micronaut:micronaut-validation"
-    kapt "javax.persistence:javax.persistence-api:2.2"
-    kaptTest platform("io.micronaut:micronaut-bom:$micronautVersion")
-    kaptTest "io.micronaut:micronaut-inject-java"
+    implementation "org.flywaydb:flyway-core"
+
+//    kapt platform("io.micronaut:micronaut-bom:$micronautVersion")
+//    kapt "io.micronaut:micronaut-inject-java"
+//    kapt "io.micronaut:micronaut-validation"
+//    kapt "javax.persistence:javax.persistence-api:2.2"
+//    kaptTest platform("io.micronaut:micronaut-bom:$micronautVersion")
+//    kaptTest "io.micronaut:micronaut-inject-java"
     runtimeOnly "com.fasterxml.jackson.module:jackson-module-kotlin:2.9.8"
     runtimeOnly "ch.qos.logback:logback-classic:1.2.3"
 
-    testImplementation platform("io.micronaut:micronaut-bom:$micronautVersion")
-    testImplementation "io.micronaut.test:micronaut-test-kotlintest"
+//    testImplementation platform("io.micronaut:micronaut-bom:$micronautVersion")
+//    testImplementation "io.micronaut.test:micronaut-test-kotlintest"
     testImplementation "io.mockk:mockk:1.9.3"
     testImplementation "io.kotlintest:kotlintest-runner-junit5:3.3.2"
     testImplementation "org.junit.jupiter:junit-jupiter:5.6.2"
-    testImplementation "io.micronaut.test:micronaut-test-junit5:1.1.3"
+//    testImplementation "io.micronaut.test:micronaut-test-junit5:1.1.3"
     testImplementation "com.h2database:h2"
 
     testCompile group: 'org.mockito', name: 'mockito-core', version: '3.5.13'
@@ -80,9 +107,9 @@ test {
     useJUnitPlatform()
 }
 
-allOpen {
-	annotation("io.micronaut.aop.Around")
-}
+//allOpen {
+//	annotation("io.micronaut.aop.Around")
+//}
 
 compileKotlin {
 	kotlinOptions {
@@ -99,16 +126,13 @@ compileTestKotlin {
 	}
 }
 
-shadowJar {
-    mergeServiceFiles()
-}
-
-tasks.withType(JavaExec) {
-    classpath += configurations.developmentOnly
-    if(System.getenv('RUN_LOCAL') != null)
-        jvmArgs('-noverify', '-XX:TieredStopAtLevel=1', '-Dcom.sun.management.jmxremote', '-Dmicronaut.environments=local')
-    else if (System.getenv('RUN_LOCAL_DOCKER') != null)
-        jvmArgs('-noverify', '-XX:TieredStopAtLevel=1', '-Dcom.sun.management.jmxremote', '-Dmicronaut.environments=local-docker')
-    else
-        jvmArgs('-noverify', '-XX:TieredStopAtLevel=1', '-Dcom.sun.management.jmxremote')
-}
+//
+//tasks.withType(JavaExec) {
+//    classpath += configurations.developmentOnly
+//    if(System.getenv('RUN_LOCAL') != null)
+//        jvmArgs('-noverify', '-XX:TieredStopAtLevel=1', '-Dcom.sun.management.jmxremote', '-Dmicronaut.environments=local')
+//    else if (System.getenv('RUN_LOCAL_DOCKER') != null)
+//        jvmArgs('-noverify', '-XX:TieredStopAtLevel=1', '-Dcom.sun.management.jmxremote', '-Dmicronaut.environments=local-docker')
+//    else
+//        jvmArgs('-noverify', '-XX:TieredStopAtLevel=1', '-Dcom.sun.management.jmxremote')
+//}

@@ -1,11 +1,13 @@
 package no.nav.cv.eures.konverterer.country
 
-import io.micronaut.test.annotation.MicronautTest
 import org.junit.jupiter.api.Assertions.assertNotNull
 import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.Test
+import org.springframework.boot.test.context.SpringBootTest
+import org.springframework.test.context.ActiveProfiles
 
-@MicronautTest
+@SpringBootTest
+@ActiveProfiles("test")
 class NationalityConverterTest {
 
     @Test

@@ -1,10 +1,10 @@
 package no.nav.cv.eures.cv
 
-import io.micronaut.spring.tx.annotation.Transactional
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
+import org.springframework.stereotype.Repository
+import org.springframework.transaction.annotation.Transactional
 import java.time.ZonedDateTime
-import javax.inject.Singleton
 import javax.persistence.*
 
 interface CvXmlRepository {
@@ -24,7 +24,7 @@ interface CvXmlRepository {
 }
 
 // TODO - No FNR logging
-@Singleton
+@Repository
 private open class JpaCvXMLRepository(
         @PersistenceContext private val entityManager: EntityManager
 ) : CvXmlRepository {

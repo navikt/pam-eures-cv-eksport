@@ -1,16 +1,15 @@
 package no.nav.cv.eures
 
-import io.micronaut.runtime.Micronaut
+import org.springframework.boot.Banner
+import org.springframework.boot.autoconfigure.SpringBootApplication
+import org.springframework.boot.runApplication
 
-object Application {
 
-    @JvmStatic
-    fun main(args: Array<String>) {
+@SpringBootApplication
+class Application
 
-        Thread.sleep(15_000)
-        Micronaut.build()
-                .packages("no.nav.cv")
-                .mainClass(Application.javaClass)
-                .start()
+fun main(args: Array<String>) {
+    runApplication<Application>(*args) {
+        setBannerMode(Banner.Mode.OFF)
     }
 }

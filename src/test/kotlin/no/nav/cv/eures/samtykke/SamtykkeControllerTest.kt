@@ -1,23 +1,24 @@
 package no.nav.cv.eures.samtykke
 
-import io.micronaut.http.HttpRequest
-import io.micronaut.http.client.RxHttpClient
-import io.micronaut.http.client.annotation.Client
-import io.micronaut.test.annotation.MicronautTest
-import io.micronaut.test.annotation.MockBean
+import com.fasterxml.jackson.databind.ObjectMapper
 import io.mockk.mockk
 import no.nav.cv.eures.konverterer.CvConverterService
 import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.Test
+import org.mockito.Mock
+import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.boot.test.context.SpringBootTest
+import org.springframework.boot.test.mock.mockito.MockBean
+import org.springframework.test.context.ActiveProfiles
+import org.springframework.test.web.reactive.server.WebTestClient
+import org.springframework.web.reactive.function.BodyInserters
 import java.time.ZoneId
 import java.time.ZonedDateTime
-import javax.inject.Inject
 
-@MicronautTest
-class SamtykkeControllerTest(
-        private val samtykkeRepository: SamtykkeRepository
-) {
+@SpringBootTest
+@ActiveProfiles("test")
+class SamtykkeControllerTest {
 
     private val aktoerId1 = "123"
     private val aktoerId2 = "321"
@@ -25,10 +26,16 @@ class SamtykkeControllerTest(
     private val now = ZonedDateTime.now()
     private val yesterday = now.minusDays(1)
 
-    @Inject @field:Client("/pam-eures-cv-eksport/") lateinit var client: RxHttpClient
+    private val client = WebTestClient
+            .bindToServer()
+            .baseUrl("http://localhost:9030/pam-eures-cv-eksport/")
+            .build()
 
-    @MockBean(CvConverterService::class)
-    fun konverterer(): CvConverterService = mockk(relaxed = true)
+    @Autowired
+    lateinit var samtykkeRepository: SamtykkeRepository
+
+    @MockBean
+    lateinit var konverterer: CvConverterService
 
 
     @Test
@@ -37,15 +44,22 @@ class SamtykkeControllerTest(
 
         val samtykke = Samtykke(now, personalia = true, utdanning = true)
 
-        val oppdaterRequest = HttpRequest.POST("samtykke/", samtykke)
-
-        val body = client.toBlocking().retrieve(oppdaterRequest)
+        val body = client
+                .post()
+                .uri("samtykke/")
+                .body(BodyInserters.fromValue(samtykke))
+                .exchange()
+                .expectBody().returnResult().responseBodyContent
+                .let { String(it) }
 
         assertEquals("OK",body)
 
-        val hentRequest = HttpRequest.GET<String>("samtykke/")
-
-        val hentet = client.toBlocking().retrieve(hentRequest, Samtykke::class.java)
+        val hentet = client
+                .get()
+                .uri("samtykke/")
+                .exchange()
+                .expectBody().returnResult().requestBodyContent
+                .let { ObjectMapper().readValue(it, Samtykke::class.java) }
 
         // TODO : Hvorfor tror databasen at den er UTC? --> Det er default for ZonedTimeDate
         assertEquals(now.withZoneSameInstant(ZoneId.of("UTC")), hentet?.sistEndret)

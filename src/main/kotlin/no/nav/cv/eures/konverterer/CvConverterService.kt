@@ -12,10 +12,10 @@ import org.apache.avro.io.DecoderFactory
 import org.apache.avro.specific.SpecificDatumReader
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
+import org.springframework.stereotype.Service
 import java.time.ZonedDateTime
-import javax.inject.Singleton
 
-@Singleton
+@Service
 open class CvConverterService(
         private val cvRepository: CvRepository,
         private val cvXmlRepository: CvXmlRepository,

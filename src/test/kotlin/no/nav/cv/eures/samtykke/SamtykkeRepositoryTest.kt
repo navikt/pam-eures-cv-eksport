@@ -1,21 +1,22 @@
 package no.nav.cv.eures.samtykke
 
-import io.micronaut.test.annotation.MicronautTest
 import org.junit.jupiter.api.Test
 
 import org.junit.jupiter.api.Assertions.*
-import org.junit.jupiter.api.Disabled
+import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.boot.test.context.SpringBootTest
+import org.springframework.test.context.ActiveProfiles
 import java.time.ZonedDateTime
-import javax.inject.Inject
 
-@MicronautTest
+@SpringBootTest
+@ActiveProfiles("test")
 internal class SamtykkeRepositoryTest {
     val foedselsnummer = "dummy"
     val foedselsnummer2 = "dummy2"
     val now = ZonedDateTime.now()
     val yesterday = ZonedDateTime.now().minusDays(1)
 
-    @Inject
+    @Autowired
     lateinit var samtykkeRepository: SamtykkeRepository
 
 

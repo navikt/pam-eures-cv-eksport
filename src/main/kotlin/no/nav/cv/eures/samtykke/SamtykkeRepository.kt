@@ -1,10 +1,10 @@
 package no.nav.cv.eures.samtykke
 
-import io.micronaut.spring.tx.annotation.Transactional
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
+import org.springframework.stereotype.Repository
+import org.springframework.transaction.annotation.Transactional
 import java.time.ZonedDateTime
-import javax.inject.Singleton
 import javax.persistence.*
 
 interface SamtykkeRepository {
@@ -16,7 +16,7 @@ interface SamtykkeRepository {
 
 }
 
-@Singleton
+@Repository
 private open class JpaSamtykkeRepository(
         @PersistenceContext private val entityManager: EntityManager
 ) : SamtykkeRepository {

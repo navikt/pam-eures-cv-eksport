@@ -1,9 +1,34 @@
-micronaut:
-  application:
-    name: eures-cv-eksport
-  server:
+server:
+  port: 9030
+  servlet:
     context-path: /pam-eures-cv-eksport
-    port: 9030
+
+spring:
+  kafka:
+    consumer:
+      group-id: pam-eures-cv-eksport-v1
+      auto-offset-reset: earliest
+  datasource:
+    driver-class-name: ${DB_DRIVER:org.postgresql.Driver}
+    url: jdbc:postgresql://${DB_HOST:localhost}:${DB_PORT:5432}/${DB_DATABASE:pam-eures-cv-eksport}
+    username: ${DB_USERNAME:pam-eures-cv-eksport-admin}
+    password: ${DB_PASSWORD:''}
+    hikari:
+      maximum-pool-size: 2
+      minimum-idle: 0
+      pool-name: default
+  flyway:
+    enabled: true
+    baseline-on-migrate: true
+    locations:
+      - "classpath:db"
+  jpa:
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
+    hibernate:
+      ddl-auto: none
+      dialect: org.hibernate.dialect.PostgreSQLDialect
+    show-sql: false
+
 
 kafka:
   max:
@@ -40,39 +65,6 @@ kafka:
 
 avro:
   schema.subject: "arbeid-pam-cv-endret-v2-dev-value"
-
-db:
-  vault:
-    path: ${DB_VAULT_PATH:`postgresql/preprod`}
-    username: ${DB_VAULT_USERNAME:`pam-eures-cv-eksport-admin`}
-
-jpa:
-  default:
-    packages-to-scan:
-      - 'no.nav.cv.eures.cv'
-      - 'no.nav.cv.eures.samtykke'
-    properties:
-      hibernate:
-        hbm2ddl:
-          auto: none
-        show_sql: false
-
-
-datasources:
-  default:
-    url: jdbc:postgresql://${DB_HOST}:${DB_PORT}/${DB_DATABASE}
-    driverClassName: ${DB_DRIVER:org.h2.Driver}
-    username: ${DB_USERNAME:sa}
-    password: ${DB_PASSWORD:''}
-    maximum-pool-size: 2
-    minimum-idle: 0
-    pool-name: default
-    connectionTestQuery: "select 1"
-
-flyway:
-  datasources:
-    default:
-      locations: classpath:db
 
 jackson:
   serializationInclusion: ALWAYS

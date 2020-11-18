@@ -1,7 +1,5 @@
 package no.nav.cv.eures.scheduled
 
-import io.micronaut.context.annotation.Requires
-import io.micronaut.scheduling.annotation.Scheduled
 import no.nav.cv.eures.cv.CvRepository
 import no.nav.cv.eures.cv.CvXmlRepository
 import no.nav.cv.eures.cv.RawCV
@@ -10,10 +8,12 @@ import no.nav.cv.eures.konverterer.CvConverterService
 import no.nav.cv.eures.samtykke.SamtykkeRepository
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
-import javax.inject.Singleton
+import org.springframework.context.annotation.Profile
+import org.springframework.scheduling.annotation.Scheduled
+import org.springframework.stereotype.Service
 
-@Requires(notEnv = ["test"])
-@Singleton
+@Profile("!test")
+@Service
 class MessageProcessor(
         private val cvRepository: CvRepository,
         private val cvXmlRepository: CvXmlRepository,
@@ -50,7 +50,7 @@ class MessageProcessor(
                     }
 
 
-    @Scheduled(fixedDelay = "5s")
+    @Scheduled(fixedDelay = 5000)
     fun process() = cvRepository.hentUprosesserteCver()
             .processRecords()
             .also { rawCvs ->
