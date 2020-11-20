@@ -1,4 +1,4 @@
-package no.nav.arbeid.cv.indexer.config
+package no.nav.cv.eures.cv
 
 import org.apache.kafka.common.serialization.ByteArrayDeserializer
 import org.apache.kafka.common.serialization.StringDeserializer
@@ -18,10 +18,10 @@ class KafkaConfig {
 
 
     companion object {
-        private val LOGGER = LoggerFactory.getLogger(KafkaConfig::class.java)
+        private val log = LoggerFactory.getLogger(KafkaConfig::class.java)
     }
 
-    @Bean
+    @Bean("kafkaListenerContainerFactory")
     fun kafkaListenerContainerFactory(): KafkaListenerContainerFactory<ConcurrentMessageListenerContainer<String, ByteArray>> {
         val factory = ConcurrentKafkaListenerContainerFactory<String, ByteArray>();
         factory.setConsumerFactory(consumerFactory());
