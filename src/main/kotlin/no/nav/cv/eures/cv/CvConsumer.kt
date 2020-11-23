@@ -102,7 +102,7 @@ class CvConsumer(
 
             rawCV?.run{
                 try {
-                    cvRepository.lagreCv(this)
+                    cvRepository.saveAndFlush(this)
                 } catch (e: Exception) {
                     log.error("Fikk exception ${e.message} under lagring av cv $this", e)
                 }

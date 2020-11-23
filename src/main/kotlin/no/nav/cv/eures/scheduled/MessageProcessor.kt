@@ -56,7 +56,7 @@ class MessageProcessor(
             .also { rawCvs ->
                 rawCvs.map { rawCv ->
                     rawCv.prosessert = true
-                    cvRepository.lagreCv(rawCv)
+                    cvRepository.saveAndFlush(rawCv)
                 }
                 if (rawCvs.isNotEmpty()) log.info("Prosesserte ${rawCvs.size} endringer")
             }
