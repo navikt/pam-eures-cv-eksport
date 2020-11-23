@@ -82,7 +82,7 @@ dependencies {
 
 test.classpath += configurations.developmentOnly
 
-mainClassName = "no.nav.cv.eures.Application"
+mainClassName = "no.nav.cv.eures.ApplicationKt"
 
 test {
     useJUnitPlatform()
