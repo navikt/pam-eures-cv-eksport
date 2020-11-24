@@ -43,7 +43,6 @@ dependencies {
     implementation "org.hibernate:hibernate-core:5.4.18.Final"
 
     implementation("org.springframework.kafka:spring-kafka")
-    implementation("org.springframework.boot:spring-boot-starter-webflux")
     implementation("org.projectreactor:reactor-spring:1.0.1.RELEASE")
 
     implementation("org.springframework.boot:spring-boot-starter-data-jpa")
@@ -53,8 +52,9 @@ dependencies {
     implementation("org.jetbrains.kotlin:kotlin-reflect")
     implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
     runtimeOnly("com.h2database:h2")
-    testImplementation("org.springframework.boot:spring-boot-starter-test")
-
+    testImplementation('org.springframework.boot:spring-boot-starter-test') {
+        exclude group: 'org.junit.vintage', module: 'junit-vintage-engine'
+    }
 
     // TODO - Remove temporary use of jwt implementation
     implementation 'com.auth0:java-jwt:3.11.0'

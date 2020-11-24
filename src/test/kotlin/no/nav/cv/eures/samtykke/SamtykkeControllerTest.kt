@@ -1,22 +1,21 @@
 package no.nav.cv.eures.samtykke
 
-import com.fasterxml.jackson.databind.ObjectMapper
-import io.mockk.mockk
 import no.nav.cv.eures.konverterer.CvConverterService
-import org.junit.jupiter.api.Assertions.*
+import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.Test
-import org.mockito.Mock
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.boot.test.mock.mockito.MockBean
+import org.springframework.boot.test.web.client.TestRestTemplate
+import org.springframework.boot.web.client.RestTemplateBuilder
+import org.springframework.boot.web.server.LocalServerPort
 import org.springframework.test.context.ActiveProfiles
-import org.springframework.test.web.reactive.server.WebTestClient
-import org.springframework.web.reactive.function.BodyInserters
 import java.time.ZoneId
 import java.time.ZonedDateTime
 
-@SpringBootTest
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @ActiveProfiles("test")
 class SamtykkeControllerTest {
 
@@ -26,11 +25,15 @@ class SamtykkeControllerTest {
     private val now = ZonedDateTime.now()
     private val yesterday = now.minusDays(1)
 
-    private val client = WebTestClient
-            .bindToServer()
-            .baseUrl("http://localhost:9030/pam-eures-cv-eksport/")
-            .build()
+    @LocalServerPort
+    private var randomServerPort = 0
+    private var baseUrl = ""
+    private val client = TestRestTemplate()
 
+    @BeforeEach
+    fun setup() {
+        baseUrl = "http://localhost:${randomServerPort}/pam-eures-cv-eksport/"
+    }
     @Autowired
     lateinit var samtykkeRepository: SamtykkeRepository
 
@@ -44,25 +47,14 @@ class SamtykkeControllerTest {
 
         val samtykke = Samtykke(now, personalia = true, utdanning = true)
 
-        val body = client
-                .post()
-                .uri("samtykke/")
-                .body(BodyInserters.fromValue(samtykke))
-                .exchange()
-                .expectBody().returnResult().responseBodyContent
-                .let { String(it) }
+        val body = client.postForObject("samtykke", samtykke, String::class.java)
 
         assertEquals("OK",body)
 
-        val hentet = client
-                .get()
-                .uri("samtykke/")
-                .exchange()
-                .expectBody().returnResult().requestBodyContent
-                .let { ObjectMapper().readValue(it, Samtykke::class.java) }
+        val hentet = client.getForEntity("samtykke", Samtykke::class.java).body
 
         // TODO : Hvorfor tror databasen at den er UTC? --> Det er default for ZonedTimeDate
-        assertEquals(now.withZoneSameInstant(ZoneId.of("UTC")), hentet?.sistEndret)
+        assertEquals(now.withZoneSameInstant(ZoneId.of("UTC")), hentet.sistEndret)
         assertEquals(true, hentet?.personalia)
         assertEquals(true, hentet?.utdanning)
     }

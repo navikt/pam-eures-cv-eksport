@@ -1,9 +1,11 @@
 package no.nav.cv.eures.nais
 
-import org.springframework.stereotype.Controller
 import org.springframework.web.bind.annotation.GetMapping
+import org.springframework.web.bind.annotation.RequestMapping
+import org.springframework.web.bind.annotation.RestController
 
-@Controller("/internal")
+@RestController
+@RequestMapping("/internal")
 class StatusController {
 
     @GetMapping("isAlive")
