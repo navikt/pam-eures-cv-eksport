@@ -24,7 +24,7 @@ class CvConsumer(
 
 
     @KafkaListener(
-            groupId = "pam-eures-cv-eksport-v2",
+            groupId = "pam-eures-cv-eksport-v3",
             topics = [ "\${kafka.topics.consumers.cv_endret}" ],
             properties = [
                 "auto.offset.reset:EARLIEST"
@@ -87,9 +87,9 @@ class CvConsumer(
     }
 
     private fun processMessages(endretCV: List<ConsumerRecord<String, ByteArray>>) {
-        if (endretCV.isNotEmpty()) {
+        //if (endretCV.isNotEmpty()) {
             log.debug("Fikk ${endretCV.size} meldinger.")
-        }
+        //}
 
 
         endretCV.forEach { melding ->
