@@ -12,6 +12,5 @@ class Application
 fun main(args: Array<String>) {
     runApplication<Application>(*args) {
         setBannerMode(Banner.Mode.OFF)
-        webApplicationType = WebApplicationType.NONE
     }
 }
