@@ -14,7 +14,7 @@
     <logger name="no.nav" level="debug"/>
     <logger name="org.apache.kafka" level="info"/>
 
-    <root level="info">
+    <root level="debug">
         <appender-ref ref="stdout_json" />
     </root>
 </configuration>

@@ -44,12 +44,6 @@ spring:
     baseline-on-migrate: true
     locations:
       - "classpath:db"
-  jpa:
-    database-platform: org.hibernate.dialect.PostgreSQLDialect
-    hibernate:
-      ddl-auto: none
-      dialect: org.hibernate.dialect.PostgreSQLDialect
-    show-sql: false
 
 kafka:
   topics:
