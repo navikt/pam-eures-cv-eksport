@@ -1,20 +1,20 @@
 <configuration>
 
-        <appender name="stdout_json" class="ch.qos.logback.core.ConsoleAppender">
-            <withJansi>true</withJansi>
-            <encoder>
-                <pattern>%cyan(%d{HH:mm:ss.SSS}) %gray([%thread]) %highlight(%-5level) %magenta(%logger{36}) - %msg%n</pattern>
-            </encoder>
-        </appender>
+<!--        <appender name="stdout_json" class="ch.qos.logback.core.ConsoleAppender">-->
+<!--            <withJansi>true</withJansi>-->
+<!--            <encoder>-->
+<!--                <pattern>%cyan(%d{HH:mm:ss.SSS}) %gray([%thread]) %highlight(%-5level) %magenta(%logger{36}) - %msg%n</pattern>-->
+<!--            </encoder>-->
+<!--        </appender>-->
 
-<!--    <appender name="stdout_json" class="ch.qos.logback.core.ConsoleAppender">-->
-<!--        <encoder class="net.logstash.logback.encoder.LogstashEncoder" />-->
-<!--    </appender>-->
+    <appender name="stdout_json" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder class="net.logstash.logback.encoder.LogstashEncoder" />
+    </appender>
 
     <logger name="no.nav" level="debug"/>
     <logger name="org.apache.kafka" level="info"/>
 
-    <root level="debug">
+    <root level="info">
         <appender-ref ref="stdout_json" />
     </root>
 </configuration>
