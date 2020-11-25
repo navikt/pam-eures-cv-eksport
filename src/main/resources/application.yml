@@ -7,9 +7,9 @@ spring:
   kafka:
     admin:
       ssl:
-        trust-store-location: file:${NAV_TRUSTSTORE_PATH}
-        trust-store-password: ${NAV_TRUSTSTORE_PASSWORD}
-    bootstrap-servers: ${KAFKA_BOOTSTRAP_SERVERS:`localhost:9092`}
+        trust-store-location: file:${NAV_TRUSTSTORE_PATH:''}
+        trust-store-password: ${NAV_TRUSTSTORE_PASSWORD:''}
+    bootstrap-servers: ${KAFKA_BOOTSTRAP_SERVERS:localhost:9092}
     consumer:
       group-id: pam-eures-cv-eksport-v3
       auto-offset-reset: earliest

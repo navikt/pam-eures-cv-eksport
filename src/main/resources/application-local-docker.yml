@@ -1,16 +1,7 @@
 spring:
   kafka:
-    admin:
-      ssl:
-        trust-store-location: ''
-        trust-store-password: ''
-    consumer:
-      group-id: pam-eures-cv-eksport-v3
-      auto-offset-reset: earliest
-      enable-auto-commit: true
-      # client-id: ${CONSUMER_CLIENTID}
-      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
-      value-deserializer: org.apache.kafka.common.serialization.ByteArrayDeserializer
+    bootstrap-servers:
+      - ${KAFKA_HOST:localhost}:9092
     properties:
       sasl:
         mechanism: PLAIN
@@ -22,30 +13,9 @@ spring:
       security:
         protocol: PLAINTEXT
 
-#kafka:
-#  consumers:
-#    pam-eures-cv-eksport-v1:
-#      key:
-#        deserializer: org.apache.kafka.common.serialization.StringDeserializer
-#      value:
-#        deserializer: org.apache.kafka.common.serialization.ByteArrayDeserializer
-#  bootstrap:
-#    servers:
-#      - ${KAFKA_HOST:localhost}:9092
-#  topics:
-#    consumers:
-#      cv_endret: "arbeid-pam-cv-endret-v2-dev"
-#  health:
-#    enabled: false
-#  security:
-#    protocol: PLAINTEXT
-#  sasl:
-#    jaas:
-#      config: ''
-#    mechanism: PLAIN
-#  ssl:
-#    truststore:
-#      location: ''
-#      password: ''
-#  schema.registry.url: http://${KAFKA_HOST:localhost}:8081
+kafka:
+  topics:
+    consumers:
+      cv_endret: "arbeid-pam-cv-endret-v2-dev"
+
 
