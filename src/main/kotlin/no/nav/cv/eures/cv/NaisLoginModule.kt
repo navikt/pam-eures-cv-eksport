@@ -15,11 +15,11 @@ class NaisLoginModule : LoginModule {
 
     override fun initialize(subject: Subject, callbackHandler: CallbackHandler,
                             sharedState: Map<String?, *>?, options: Map<String?, *>?) {
-        val username = System.getenv("KAFKA_USER")
+        val username = System.getenv("KAFKA_SERVICE_USER")
         if (username != null) {
             subject.publicCredentials.add(username)
         }
-        val password = System.getenv("KAFKA_PWD")
+        val password = System.getenv("KAFKA_SERVICE_PASSWORD")
         if (password != null) {
             subject.privateCredentials.add(password)
         }

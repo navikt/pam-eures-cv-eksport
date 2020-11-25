@@ -1,5 +1,4 @@
 {
-  "servicebruker_cv_eksport": "/serviceuser/data/prod/srvpamcveures",
   "kafka_bootstrap_servers": "a01apvl00145.adeo.no:8443,a01apvl00146.adeo.no:8443,a01apvl00147.adeo.no:8443,a01apvl00148.adeo.no:8443,a01apvl00149.adeo.no:8443,a01apvl00150.adeo.no:8443",
 
   "kafka_pool": "nav-prod",
