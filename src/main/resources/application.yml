@@ -24,7 +24,7 @@ spring:
       sasl:
         mechanism: PLAIN
         jaas:
-          config: no.nav.cv.eures.cv.NaisLoginModule
+          config: "no.nav.cv.eures.cv.NaisLoginModule required;"
       schema:
         registry:
           url: "http://kafka-schema-registry.tpa:8081"
@@ -48,7 +48,7 @@ spring:
 kafka:
   topics:
     consumers:
-      cv_endret: ${KAFKA_CONSUMER_TOPIC_CV_ENDRET}
+      cv_endret: ${KAFKA_CONSUMER_TOPIC_CV_ENDRET:arbeid-pam-cv-endret-v2-dev}
       # config: 'org.apache.kafka.common.security.plain.PlainLoginModule required username=${KAFKA_SERVICE_USER} password=${KAFKA_SERVICE_PASSWORD};'
 
 avro:

@@ -10,10 +10,12 @@ import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.kafka.annotation.KafkaListener
 import org.springframework.kafka.listener.BatchMessageListener
+import org.springframework.stereotype.Service
 import java.time.ZonedDateTime
 import java.util.*
 
 
+@Service
 class CvConsumer(
         private val cvRepository: CvRepository
 ) {
@@ -27,7 +29,7 @@ class CvConsumer(
             groupId = "pam-eures-cv-eksport-v3",
             topics = [ "\${kafka.topics.consumers.cv_endret}" ],
             properties = [
-                "auto.offset.reset:EARLIEST"
+                "auto.offset.reset:earliest"
             ]
     )
     fun receive(record: List<ConsumerRecord<String, ByteArray>>) {
