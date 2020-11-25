@@ -4,8 +4,6 @@ spring:
       ssl:
         trust-store-location: ''
         trust-store-password: ''
-    bootstrap-servers:
-      - ${KAFKA_HOST:localhost}:9092
     consumer:
       group-id: pam-eures-cv-eksport-v3
       auto-offset-reset: earliest
