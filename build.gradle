@@ -55,6 +55,7 @@ dependencies {
     testImplementation('org.springframework.boot:spring-boot-starter-test') {
         exclude group: 'org.junit.vintage', module: 'junit-vintage-engine'
     }
+    implementation "no.nav.security:token-validation-spring:${tokenSupportVersion}"
 
     // TODO - Remove temporary use of jwt implementation
     implementation 'com.auth0:java-jwt:3.11.0'
@@ -70,6 +71,7 @@ dependencies {
     testImplementation "com.h2database:h2"
 
     testCompile group: 'org.mockito', name: 'mockito-core', version: '3.5.13'
+
 }
 
 test.classpath += configurations.developmentOnly

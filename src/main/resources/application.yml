@@ -3,6 +3,13 @@ server:
   servlet:
     context-path: /pam-eures-cv-eksport
 
+no.nav.security.jwt:
+  issuer:
+    selvbetjening:
+      discoveryurl: ${LOGINSERVICE_IDPORTEN_DISCOVERY_URL}
+      accepted_audience: ${LOGINSERVICE_IDPORTEN_AUDIENCE}
+      cookie_name: selvbetjening-idtoken
+
 spring:
   kafka:
     admin:
