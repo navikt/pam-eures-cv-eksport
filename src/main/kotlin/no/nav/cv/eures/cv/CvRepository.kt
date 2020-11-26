@@ -1,89 +1,23 @@
 package no.nav.cv.eures.cv
 
-import io.micronaut.spring.tx.annotation.Transactional
-import org.slf4j.LoggerFactory
+import org.springframework.data.jpa.repository.JpaRepository
+import org.springframework.data.jpa.repository.Query
 import java.time.ZonedDateTime
 import java.util.*
-import javax.inject.Singleton
 import javax.persistence.*
 
+interface CvRepository : JpaRepository<RawCV, Long> {
 
-interface CvRepository {
-
-    fun lagreCv(rawCv: RawCV)
-
+    @Query("SELECT cv FROM RawCV cv WHERE cv.aktoerId = ?1")
     fun hentCvByAktoerId(aktoerId: String) : RawCV?
 
+    @Query("SELECT cv FROM RawCV cv WHERE cv.foedselsnummer = ?1")
     fun hentCvByFoedselsnummer(foedselsnummer: String) : RawCV?
 
+    @Query("SELECT cv FROM RawCV cv WHERE cv.prosessert = false")
     fun hentUprosesserteCver(): List<RawCV>
 }
 
-// TODO - No FNR logging
-@Singleton
-private open class JpaCvRepository(
-        @PersistenceContext private val entityManager: EntityManager
-) : CvRepository {
-    private val serieMedWhitespace = Regex("(\\s+)")
-
-    companion object {
-        val log = LoggerFactory.getLogger(JpaCvRepository::class.java)
-    }
-
-    private val hentCvByAktoerId =
-            """
-                SELECT * FROM CV_RAW
-                WHERE AKTOER_ID = :aktoerId
-            """.replace(serieMedWhitespace, " ")
-
-    @Transactional(readOnly = true)
-    override fun hentCvByAktoerId(aktoerId: String): RawCV? {
-        return entityManager.createNativeQuery(hentCvByAktoerId, RawCV::class.java)
-                .setParameter("aktoerId", aktoerId)
-                .resultList
-                .map { it as RawCV }
-                .firstOrNull()
-    }
-
-
-    private val hentCvByFoedselsnummer =
-            """
-                SELECT * FROM CV_RAW
-                WHERE FOEDSELSNUMMER = :foedselsnummer
-            """.replace(serieMedWhitespace, " ")
-
-    @Transactional(readOnly = true)
-    override fun hentCvByFoedselsnummer(foedselsnummer: String): RawCV? {
-        return entityManager.createNativeQuery(hentCvByFoedselsnummer, RawCV::class.java)
-                .setParameter("foedselsnummer", foedselsnummer)
-                .resultList
-                .map { it as RawCV }
-                .firstOrNull()
-    }
-
-    private val hentUprosesserteCver =
-            """
-                SELECT * FROM CV_RAW
-                WHERE PROSESSERT = FALSE 
-            """.replace(serieMedWhitespace, " ")
-
-    // TODO : Kan ikke dette ende med race conditions mellom to podder?
-
-    @Transactional(readOnly = true)
-    override fun hentUprosesserteCver(): List<RawCV> =
-            entityManager.createNativeQuery(hentUprosesserteCver, RawCV::class.java)
-                    .resultList
-                    .map { it as RawCV }
-
-    @Transactional
-    override fun lagreCv(rawCv: RawCV) {
-        log.info("Lagrer cv for ${rawCv.foedselsnummer}")
-        if(rawCv.rawAvro.length > 128_000)
-            throw Exception("Raw avro string for aktoer ${rawCv.foedselsnummer} is larger than the limit of 128_000 bytes")
-
-        entityManager.merge(rawCv)
-    }
-}
 
 
 

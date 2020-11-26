@@ -1,14 +1,15 @@
 package no.nav.cv.eures.konverterer
 
-import io.micronaut.http.annotation.Get
-import io.micronaut.http.client.annotation.Client
 import org.apache.avro.Schema
 import org.slf4j.LoggerFactory
+import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.beans.factory.annotation.Value
+import org.springframework.stereotype.Service
+import org.springframework.web.client.RestTemplate
 import java.nio.ByteBuffer
-import javax.inject.Singleton
 
-@Singleton
-class CvAvroSchema (private val schemaClient: CvAvroSchemaClient) {
+@Service
+class CvAvroSchema(private val schemaClient: CvAvroSchemaClient) {
 
     companion object {
         val log = LoggerFactory.getLogger(CvAvroSchema::class.java)
@@ -28,9 +29,16 @@ class CvAvroSchema (private val schemaClient: CvAvroSchemaClient) {
     }
 }
 
-@Client("\${kafka.schema.registry.url}")
-interface CvAvroSchemaClient {
+@Service
+class CvAvroSchemaClient(
+        @Value("\${spring.kafka.properties.schema.registry.url}") private val schemaRegistryUrl: String,
+        @Value("\${avro.schema.subject}") private val schemaSubject: String,
+        @Autowired private val client: RestTemplate
+) {
 
-    @Get("/subjects/\${avro.schema.subject}/versions/{version}/schema")
-    fun getSchema(version: Int): String
+    fun getSchema(version: Int): String {
+        val uri  = "${schemaRegistryUrl}/subjects/${schemaSubject}/versions/${version}/schema"
+        return client.getForObject(uri, String::class.java)!!
+
+    }
 }

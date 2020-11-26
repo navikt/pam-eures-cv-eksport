@@ -1,23 +1,23 @@
 package no.nav.cv.eures.samtykke
 
-import io.micronaut.http.HttpRequest
-import io.micronaut.http.client.RxHttpClient
-import io.micronaut.http.client.annotation.Client
-import io.micronaut.test.annotation.MicronautTest
-import io.micronaut.test.annotation.MockBean
-import io.mockk.mockk
 import no.nav.cv.eures.konverterer.CvConverterService
-import org.junit.jupiter.api.Assertions.*
+import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.Test
+import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.boot.test.context.SpringBootTest
+import org.springframework.boot.test.mock.mockito.MockBean
+import org.springframework.boot.test.web.client.TestRestTemplate
+import org.springframework.boot.web.client.RestTemplateBuilder
+import org.springframework.boot.web.server.LocalServerPort
+import org.springframework.test.context.ActiveProfiles
 import java.time.ZoneId
 import java.time.ZonedDateTime
-import javax.inject.Inject
 
-@MicronautTest
-class SamtykkeControllerTest(
-        private val samtykkeRepository: SamtykkeRepository
-) {
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+@ActiveProfiles("test")
+class SamtykkeControllerTest {
 
     private val aktoerId1 = "123"
     private val aktoerId2 = "321"
@@ -25,10 +25,20 @@ class SamtykkeControllerTest(
     private val now = ZonedDateTime.now()
     private val yesterday = now.minusDays(1)
 
-    @Inject @field:Client("/pam-eures-cv-eksport/") lateinit var client: RxHttpClient
+    @LocalServerPort
+    private var randomServerPort = 0
+    private var baseUrl = ""
+    private val client = TestRestTemplate()
 
-    @MockBean(CvConverterService::class)
-    fun konverterer(): CvConverterService = mockk(relaxed = true)
+    @BeforeEach
+    fun setup() {
+        baseUrl = "http://localhost:${randomServerPort}/pam-eures-cv-eksport/"
+    }
+    @Autowired
+    lateinit var samtykkeRepository: SamtykkeRepository
+
+    @MockBean
+    lateinit var konverterer: CvConverterService
 
 
     @Test
@@ -37,18 +47,14 @@ class SamtykkeControllerTest(
 
         val samtykke = Samtykke(now, personalia = true, utdanning = true)
 
-        val oppdaterRequest = HttpRequest.POST("samtykke/", samtykke)
-
-        val body = client.toBlocking().retrieve(oppdaterRequest)
+        val body = client.postForObject("samtykke", samtykke, String::class.java)
 
         assertEquals("OK",body)
 
-        val hentRequest = HttpRequest.GET<String>("samtykke/")
-
-        val hentet = client.toBlocking().retrieve(hentRequest, Samtykke::class.java)
+        val hentet = client.getForEntity("samtykke", Samtykke::class.java).body
 
         // TODO : Hvorfor tror databasen at den er UTC? --> Det er default for ZonedTimeDate
-        assertEquals(now.withZoneSameInstant(ZoneId.of("UTC")), hentet?.sistEndret)
+        assertEquals(now.withZoneSameInstant(ZoneId.of("UTC")), hentet.sistEndret)
         assertEquals(true, hentet?.personalia)
         assertEquals(true, hentet?.utdanning)
     }

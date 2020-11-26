@@ -1,78 +1,55 @@
-micronaut:
-  application:
-    name: eures-cv-eksport
-  server:
+server:
+  port: 9030
+  servlet:
     context-path: /pam-eures-cv-eksport
-    port: 9030
+
+spring:
+  kafka:
+    admin:
+      ssl:
+        trust-store-location: file:${NAV_TRUSTSTORE_PATH:''}
+        trust-store-password: ${NAV_TRUSTSTORE_PASSWORD:''}
+    bootstrap-servers: ${KAFKA_BOOTSTRAP_SERVERS:localhost:9092}
+    consumer:
+      group-id: pam-eures-cv-eksport-v3
+      auto-offset-reset: earliest
+      enable-auto-commit: true
+      # client-id: ${CONSUMER_CLIENTID}
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.apache.kafka.common.serialization.ByteArrayDeserializer
+    properties:
+      sasl:
+        mechanism: PLAIN
+        jaas:
+          config: no.nav.cv.eures.cv.NaisLoginModule required;
+      schema:
+        registry:
+          url: "http://kafka-schema-registry.tpa:8081"
+      security:
+        protocol: SASL_SSL
+  datasource:
+    driver-class-name: ${DB_DRIVER:org.postgresql.Driver}
+    url: jdbc:postgresql://${DB_HOST:localhost}:${DB_PORT:5432}/${DB_DATABASE:pam-eures-cv-eksport}
+    username: ${DB_USERNAME:pam-eures-cv-eksport-admin}
+    password: ${DB_PASSWORD:''}
+    hikari:
+      maximum-pool-size: 2
+      minimum-idle: 0
+      pool-name: default
+  flyway:
+    enabled: true
+    baseline-on-migrate: true
+    locations:
+      - "classpath:db"
 
 kafka:
-  max:
-    poll:
-      records: 200
-  reset-offset: false
-  consumers:
-    pam-eures-cv-eksport-v1:
-      key:
-        deserializer: org.apache.kafka.common.serialization.StringDeserializer
-      value:
-        deserializer: org.apache.kafka.common.serialization.ByteArrayDeserializer
-  bootstrap:
-    servers:
-      - 10.183.160.26:8443
-      - 10.183.32.47:8443
-      - 10.183.32.48:8443
   topics:
     consumers:
-      cv_endret: ${KAFKA_CONSUMER_TOPIC_CV_ENDRET}
-  health:
-    enabled: false
-  security:
-    protocol: SASL_SSL
-  sasl:
-    jaas:
-      config: 'org.apache.kafka.common.security.plain.PlainLoginModule required username=${KAFKA_SERVICE_USER} password=${KAFKA_SERVICE_PASSWORD};'
-    mechanism: PLAIN
-  ssl:
-    truststore:
-      location: ${NAV_TRUSTSTORE_PATH}
-      password: ${NAV_TRUSTSTORE_PASSWORD}
-  schema.registry.url: http://kafka-schema-registry.tpa:8081
+      cv_endret: ${KAFKA_CONSUMER_TOPIC_CV_ENDRET:arbeid-pam-cv-endret-v2-dev}
+      # config: 'org.apache.kafka.common.security.plain.PlainLoginModule required username=${KAFKA_SERVICE_USER} password=${KAFKA_SERVICE_PASSWORD};'
 
 avro:
   schema.subject: "arbeid-pam-cv-endret-v2-dev-value"
-
-db:
-  vault:
-    path: ${DB_VAULT_PATH:`postgresql/preprod`}
-    username: ${DB_VAULT_USERNAME:`pam-eures-cv-eksport-admin`}
-
-jpa:
-  default:
-    packages-to-scan:
-      - 'no.nav.cv.eures.cv'
-      - 'no.nav.cv.eures.samtykke'
-    properties:
-      hibernate:
-        hbm2ddl:
-          auto: none
-        show_sql: false
-
-
-datasources:
-  default:
-    url: jdbc:postgresql://${DB_HOST}:${DB_PORT}/${DB_DATABASE}
-    driverClassName: ${DB_DRIVER:org.h2.Driver}
-    username: ${DB_USERNAME:sa}
-    password: ${DB_PASSWORD:''}
-    maximum-pool-size: 2
-    minimum-idle: 0
-    pool-name: default
-    connectionTestQuery: "select 1"
-
-flyway:
-  datasources:
-    default:
-      locations: classpath:db
 
 jackson:
   serializationInclusion: ALWAYS

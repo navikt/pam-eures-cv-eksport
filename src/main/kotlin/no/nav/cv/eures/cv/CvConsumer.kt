@@ -1,63 +1,39 @@
 package no.nav.cv.eures.cv
 
-import io.micronaut.configuration.kafka.ConsumerAware
-import io.micronaut.configuration.kafka.annotation.KafkaListener
-import io.micronaut.configuration.kafka.annotation.OffsetReset
-import io.micronaut.configuration.kafka.annotation.Topic
-import io.micronaut.context.annotation.Value
 import no.nav.arbeid.cv.avro.Melding
 import no.nav.arbeid.cv.avro.Meldingstype
 import no.nav.cv.eures.cv.RawCV.Companion.RecordType.*
 import org.apache.avro.io.DecoderFactory
 import org.apache.avro.specific.SpecificDatumReader
-import org.apache.kafka.clients.consumer.Consumer
-import org.apache.kafka.clients.consumer.ConsumerRebalanceListener
 import org.apache.kafka.clients.consumer.ConsumerRecord
-import org.apache.kafka.common.TopicPartition
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
+import org.springframework.kafka.annotation.KafkaListener
+import org.springframework.kafka.listener.BatchMessageListener
+import org.springframework.stereotype.Service
 import java.time.ZonedDateTime
 import java.util.*
 
-@KafkaListener(
-        groupId = "pam-eures-cv-eksport-v1",
-        offsetReset = OffsetReset.EARLIEST,
-        batch = true
-)
+
+@Service
 class CvConsumer(
         private val cvRepository: CvRepository
-) : ConsumerRebalanceListener, ConsumerAware<String, ByteArray> {
+) {
 
     companion object {
         val log: Logger = LoggerFactory.getLogger(CvConsumer::class.java)
     }
 
-    @Value("\${kafka.reset-offset}")
-    private lateinit var resetKafkaOffset: String
-    lateinit var consumer: Consumer<String, ByteArray>
-    private var partitions: MutableCollection<TopicPartition>? = null
 
-    fun seekToBeginning() = consumer.seekToBeginning(partitions)
+    @KafkaListener(
+            groupId = "pam-eures-cv-eksport-v3",
+            topics = [ "\${kafka.topics.consumers.cv_endret}" ],
+            properties = [
+                "auto.offset.reset:earliest"
+            ]
+    )
+    fun receive(record: List<ConsumerRecord<String, ByteArray>>) {
 
-    override fun onPartitionsRevoked(partitions: MutableCollection<TopicPartition>?) {
-        // No-op
-    }
-
-    override fun onPartitionsAssigned(partitions: MutableCollection<TopicPartition>?) {
-        this.partitions = partitions
-        if (resetKafkaOffset.toBoolean()) {
-            consumer.seekToBeginning(partitions)
-        }
-    }
-
-    override fun setKafkaConsumer(consumer: Consumer<String, ByteArray>) {
-        this.consumer = consumer
-    }
-
-    @Topic("\${kafka.topics.consumers.cv_endret}")
-    fun receive(
-            record: List<ConsumerRecord<String, ByteArray>>
-    ) {
         processMessages(record)
     }
 
@@ -113,12 +89,13 @@ class CvConsumer(
     }
 
     private fun processMessages(endretCV: List<ConsumerRecord<String, ByteArray>>) {
-        if (endretCV.isNotEmpty()) {
+        //if (endretCV.isNotEmpty()) {
             log.debug("Fikk ${endretCV.size} meldinger.")
-        }
+        //}
 
 
         endretCV.forEach { melding ->
+            log.debug("Behandler melding ${melding.key()}")
             val meldingValue = melding.value()
             val rawAvroBase64 = Base64.getEncoder().encodeToString(meldingValue)
             val rawCV = meldingValue
@@ -127,7 +104,7 @@ class CvConsumer(
 
             rawCV?.run{
                 try {
-                    cvRepository.lagreCv(this)
+                    cvRepository.saveAndFlush(this)
                 } catch (e: Exception) {
                     log.error("Fikk exception ${e.message} under lagring av cv $this", e)
                 }

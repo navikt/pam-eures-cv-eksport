@@ -1,46 +1,21 @@
-kafka:
-  max:
-    poll:
-      records: 200
-  reset-offset: false
-  consumers:
-    pam-eures-cv-eksport-v1:
-      key:
-        deserializer: org.apache.kafka.common.serialization.StringDeserializer
-      value:
-        deserializer: org.apache.kafka.common.serialization.ByteArrayDeserializer
-  bootstrap:
-    servers:
+spring:
+  kafka:
+    bootstrap-servers:
       - ${KAFKA_HOST:localhost}:9092
+    properties:
+      sasl:
+        mechanism: PLAIN
+        jaas:
+          config: ''
+      schema:
+        registry:
+          url: http://${KAFKA_HOST:localhost}:8081
+      security:
+        protocol: PLAINTEXT
+
+kafka:
   topics:
     consumers:
       cv_endret: "arbeid-pam-cv-endret-v2-dev"
-  health:
-    enabled: false
-  security:
-    protocol: PLAINTEXT
-  sasl:
-    jaas:
-      config: ''
-    mechanism: PLAIN
-  ssl:
-    truststore:
-      location: ''
-      password: ''
-  schema.registry.url: http://${KAFKA_HOST:localhost}:8081
 
-datasources:
-  default:
-    url: "jdbc:postgresql://localhost:5432/pam-eures-cv-eksport"
-    connectionTestQuery: "select 1"
-    driverClassName: 'org.postgresql.Driver'
-    username: pam-eures-cv-eksport-admin
-    password:
-
-flyway:
-  datasources:
-    default:
-      locations: classpath:db
-      initSql:
-        - 'SET ROLE "testuser"'
 

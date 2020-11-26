@@ -1,14 +1,21 @@
 package no.nav.cv.eures.cv
 
-import io.micronaut.test.annotation.MicronautTest
 import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.Test
-import javax.inject.Inject
+import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.boot.jdbc.EmbeddedDatabaseConnection
+import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase
+import org.springframework.boot.test.context.SpringBootTest
+import org.springframework.test.annotation.DirtiesContext
+import org.springframework.test.context.ActiveProfiles
 
-@MicronautTest
+@SpringBootTest
+@ActiveProfiles("test")
+@AutoConfigureTestDatabase(connection = EmbeddedDatabaseConnection.H2)
+@DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
 class CvRepositoryTest {
 
-    @Inject
+    @Autowired
     lateinit var cvRepository: CvRepository
 
     private val testData = CvTestData()
@@ -18,7 +25,7 @@ class CvRepositoryTest {
         val cv = RawCV.create(testData.aktoerId1, testData.foedselsnummer1,
                 testData.now, testData.rawAvro1Base64, false, RawCV.Companion.RecordType.CREATE)
 
-        cvRepository.lagreCv(cv)
+        cvRepository.saveAndFlush(cv)
 
         val hentet = cvRepository.hentCvByFoedselsnummer(testData.foedselsnummer1)
 
@@ -35,8 +42,8 @@ class CvRepositoryTest {
         val cv2 = RawCV.create(testData.aktoerId2, testData.foedselsnummer2,
                 testData.yesterday, testData.rawAvro2Base64, false, RawCV.Companion.RecordType.CREATE)
 
-        cvRepository.lagreCv(cv1)
-        cvRepository.lagreCv(cv2)
+        cvRepository.saveAndFlush(cv1)
+        cvRepository.saveAndFlush(cv2)
 
         val hentet1 = cvRepository.hentCvByFoedselsnummer(testData.foedselsnummer1)
 
@@ -58,14 +65,14 @@ class CvRepositoryTest {
         val cv1 = RawCV.create(testData.aktoerId1, testData.foedselsnummer1,
                 testData.now, testData.rawAvro1Base64, false, RawCV.Companion.RecordType.CREATE)
 
-        cvRepository.lagreCv(cv1)
+        cvRepository.saveAndFlush(cv1)
 
         val cv2 = cvRepository.hentCvByFoedselsnummer(testData.foedselsnummer1)
                 ?.update(testData.aktoerId1, testData.foedselsnummer1, testData.now, testData.rawAvro2Base64,
                     testData.underOppfoelging, RawCV.Companion.RecordType.UPDATE)
 
         assertNotNull(cv2)
-        cvRepository.lagreCv(cv2!!)
+        cvRepository.saveAndFlush(cv2!!)
 
         val hentet2 = cvRepository.hentCvByFoedselsnummer(testData.foedselsnummer1)
 

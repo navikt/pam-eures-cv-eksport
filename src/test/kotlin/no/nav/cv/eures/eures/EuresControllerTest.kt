@@ -1,31 +1,39 @@
 package no.nav.cv.eures.eures
 
-import io.micronaut.http.HttpRequest
-import io.micronaut.http.client.RxHttpClient
-import io.micronaut.http.client.annotation.Client
-import io.micronaut.test.annotation.MicronautTest
 import no.nav.cv.eures.model.Converters.toUtcZonedDateTime
 import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
+import org.springframework.boot.test.context.SpringBootTest
+import org.springframework.boot.test.web.client.TestRestTemplate
+import org.springframework.boot.web.server.LocalServerPort
+import org.springframework.test.context.ActiveProfiles
 import java.time.ZoneId
 import java.time.ZonedDateTime
-import javax.inject.Inject
 
-@MicronautTest
+
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+@ActiveProfiles("test")
 class EuresControllerTest {
 
     companion object {
         const val EURES_REQUIRED_PING_CONSTANT = "Hello from Input API"
     }
 
-    @Inject
-    @field:Client("/pam-eures-cv-eksport/") lateinit var client: RxHttpClient
+    @LocalServerPort
+    private var randomServerPort = 0
+    private var baseUrl = ""
+    private val client = TestRestTemplate()
+
+    @BeforeEach
+    fun setup() {
+        baseUrl = "http://localhost:${randomServerPort}/pam-eures-cv-eksport/"
+    }
 
     @Test
     fun `ping controller skal inkludere constant string i returnert verdi` () {
-        val request = HttpRequest.GET<String>("input/api/cv/v1.0/ping")
-        val body = client.toBlocking().retrieve(request)
-        assertEquals(true, body.contains(EURES_REQUIRED_PING_CONSTANT))
+        val body = client.getForEntity("${baseUrl}input/api/cv/v1.0/ping", String::class.java).body
+        assertEquals(true, body?.contains(EURES_REQUIRED_PING_CONSTANT))
     }
 
     @Test
