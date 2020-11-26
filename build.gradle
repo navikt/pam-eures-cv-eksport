@@ -101,13 +101,10 @@ compileTestKotlin {
 	}
 }
 
-//
-//tasks.withType(JavaExec) {
-//    classpath += configurations.developmentOnly
-//    if(System.getenv('RUN_LOCAL') != null)
-//        jvmArgs('-noverify', '-XX:TieredStopAtLevel=1', '-Dcom.sun.management.jmxremote', '-Dmicronaut.environments=local')
-//    else if (System.getenv('RUN_LOCAL_DOCKER') != null)
-//        jvmArgs('-noverify', '-XX:TieredStopAtLevel=1', '-Dcom.sun.management.jmxremote', '-Dmicronaut.environments=local-docker')
-//    else
-//        jvmArgs('-noverify', '-XX:TieredStopAtLevel=1', '-Dcom.sun.management.jmxremote')
-//}
+tasks.withType(JavaExec) {
+    classpath += configurations.developmentOnly
+    if (System.getenv('RUN_LOCAL') != null)
+        jvmArgs('-noverify', '-XX:TieredStopAtLevel=1', '-Dcom.sun.management.jmxremote', '-Dspring.profiles.active=prod')
+    else
+        jvmArgs('-noverify', '-XX:TieredStopAtLevel=1', '-Dcom.sun.management.jmxremote')
+}
