@@ -1,6 +1,7 @@
 package no.nav.cv.eures.eures
 
 import no.nav.cv.eures.model.Converters.toUtcZonedDateTime
+import no.nav.security.token.support.core.api.Unprotected
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestMapping
@@ -8,6 +9,7 @@ import org.springframework.web.bind.annotation.RestController
 
 @RestController
 @RequestMapping("input/api/cv/v1.0")
+@Unprotected
 class EuresController(
         private val euresService: EuresService
 ) {
