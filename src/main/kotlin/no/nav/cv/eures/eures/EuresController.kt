@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
 
 @RestController
-@RequestMapping("input/api/cv/v1.0")
+@RequestMapping("\${eures.uri-part}/\${eures.uri-suffix}")
 class EuresController(
         private val euresService: EuresService
 ) {
