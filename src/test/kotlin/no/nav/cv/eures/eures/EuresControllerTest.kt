@@ -1,12 +1,14 @@
 package no.nav.cv.eures.eures
 
 import no.nav.cv.eures.model.Converters.toUtcZonedDateTime
+import no.nav.security.token.support.test.spring.TokenGeneratorConfiguration
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.boot.test.web.client.TestRestTemplate
 import org.springframework.boot.web.server.LocalServerPort
+import org.springframework.context.annotation.Import
 import org.springframework.test.context.ActiveProfiles
 import java.time.ZoneId
 import java.time.ZonedDateTime
@@ -14,6 +16,7 @@ import java.time.ZonedDateTime
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @ActiveProfiles("test")
+@Import(TokenGeneratorConfiguration::class)
 class EuresControllerTest {
 
     companion object {
