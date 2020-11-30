@@ -1,15 +1,18 @@
 package no.nav.cv.eures.samtykke
 
+import no.nav.security.token.support.test.spring.TokenGeneratorConfiguration
 import org.junit.jupiter.api.Test
 
 import org.junit.jupiter.api.Assertions.*
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
+import org.springframework.context.annotation.Import
 import org.springframework.test.context.ActiveProfiles
 import java.time.ZonedDateTime
 
 @SpringBootTest
 @ActiveProfiles("test")
+@Import(TokenGeneratorConfiguration::class)
 internal class SamtykkeRepositoryTest {
     val foedselsnummer = "dummy"
     val foedselsnummer2 = "dummy2"

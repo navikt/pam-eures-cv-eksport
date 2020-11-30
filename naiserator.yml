@@ -32,6 +32,7 @@ spec:
   webproxy: false
   envFrom:
     - secret: pam-eures-cv-eksport-secret
+    - configmap: loginservice-idporten
   gcp:
     sqlInstances:
       - type: POSTGRES_11
