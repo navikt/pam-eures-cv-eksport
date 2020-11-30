@@ -8,6 +8,10 @@ import org.junit.jupiter.api.Test
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.boot.test.web.client.TestRestTemplate
 import org.springframework.boot.web.server.LocalServerPort
+import org.springframework.http.HttpEntity
+import org.springframework.http.HttpHeaders
+import org.springframework.http.HttpMethod
+import org.springframework.http.HttpStatus
 import org.springframework.context.annotation.Import
 import org.springframework.test.context.ActiveProfiles
 import java.time.ZoneId
@@ -21,6 +25,8 @@ class EuresControllerTest {
 
     companion object {
         const val EURES_REQUIRED_PING_CONSTANT = "Hello from Input API"
+        const val VALID_TEST_TOKEN = "123"
+        const val INVALID_TEST_TOKEN = "456"
     }
 
     @LocalServerPort
@@ -35,7 +41,12 @@ class EuresControllerTest {
 
     @Test
     fun `ping controller skal inkludere constant string i returnert verdi` () {
-        val body = client.getForEntity("${baseUrl}input/api/cv/v1.0/ping", String::class.java).body
+        val body = client.exchange(
+                "${baseUrl}input/api/cv/v1.0/ping",
+                HttpMethod.GET,
+                HttpEntity<Any>(headerWithToken(VALID_TEST_TOKEN)),
+                String::class.java)
+                .body
         assertEquals(true, body?.contains(EURES_REQUIRED_PING_CONSTANT))
     }
 
@@ -48,6 +59,32 @@ class EuresControllerTest {
                 ZonedDateTime.of(1988, 1, 17, 2, 45, 0, 0, ZoneId.of("Europe/Oslo"))
                         .withZoneSameInstant(ZoneId.of("UTC"))
         )
+    }
+    
+    @Test
+    fun `kall uten token avvises` () {
+        val response = client.exchange(
+                "${baseUrl}input/api/cv/v1.0/ping",
+                HttpMethod.GET,
+                HttpEntity<Any>(headerWithToken(INVALID_TEST_TOKEN)),
+                String::class.java)
+        assertEquals(HttpStatus.UNAUTHORIZED, response.statusCode)
+    }
+
+    @Test
+    fun `kall med ugyldig token avvises` () {
+        val response = client.exchange(
+                "${baseUrl}input/api/cv/v1.0/ping",
+                HttpMethod.GET,
+                HttpEntity<Any>(HttpHeaders()),
+                String::class.java)
+        assertEquals(HttpStatus.UNAUTHORIZED, response.statusCode)
+    }
+
+    fun headerWithToken(token: String): HttpHeaders {
+        val headers = HttpHeaders()
+        headers.setBearerAuth(token)
+        return headers
     }
 
 }
