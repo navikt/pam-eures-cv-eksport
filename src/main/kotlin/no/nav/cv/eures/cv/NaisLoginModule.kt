@@ -22,7 +22,7 @@ class NaisLoginModule : LoginModule {
         log.info("Initialising kafka with user: $username")
         if (username != null) {
 
-            subject.publicCredentials.add(username)
+            subject.publicCredentials.add(username.strip())
         }
         val password = System.getenv("KAFKA_SERVICE_PASSWORD")
         log.info("Continuing intializing kafka ${password?.strip()?.length ?: "null"}")
