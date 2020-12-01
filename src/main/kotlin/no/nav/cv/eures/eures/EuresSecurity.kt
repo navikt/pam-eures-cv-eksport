@@ -9,6 +9,7 @@ import org.springframework.web.filter.OncePerRequestFilter
 import org.springframework.web.method.HandlerMethod
 import org.springframework.web.servlet.HandlerAdapter
 import org.springframework.web.servlet.HandlerInterceptor
+import org.springframework.web.servlet.resource.ResourceHttpRequestHandler
 import javax.servlet.FilterChain
 import javax.servlet.http.HttpServletRequest
 import javax.servlet.http.HttpServletResponse
@@ -19,6 +20,8 @@ class EuresSecurityHandler(
     private val log: Logger = LoggerFactory.getLogger(EuresSecurityHandler::class.java)
 
     override fun preHandle(request: HttpServletRequest, response: HttpServletResponse, handler: Any): Boolean {
+        if (handler !is HandlerMethod)
+            return true
 
         val handlerMethod = handler as HandlerMethod
 

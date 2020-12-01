@@ -28,6 +28,7 @@ class CvConsumer(
     @KafkaListener(
             groupId = "pam-eures-cv-eksport-v3",
             topics = [ "\${kafka.topics.consumers.cv_endret}" ],
+            containerFactory = "kafkaContainerFactory",
             properties = [
                 "auto.offset.reset:earliest"
             ]
