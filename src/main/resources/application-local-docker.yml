@@ -1,5 +1,8 @@
 spring:
   kafka:
+    ssl:
+      trust-store-location:
+      trust-store-password:
     bootstrap-servers:
       - ${KAFKA_HOST:localhost}:9092
     properties:

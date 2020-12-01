@@ -25,7 +25,7 @@ class NaisLoginModule : LoginModule {
             subject.publicCredentials.add(username)
         }
         val password = System.getenv("KAFKA_SERVICE_PASSWORD")
-        log.info("Continuing intializing kafka ${password.length}")
+        log.info("Continuing intializing kafka ${password?.length ?: "null"}")
         if (password != null) {
             subject.privateCredentials.add(password)
         }
