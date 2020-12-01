@@ -1,5 +1,0 @@
-profile: service
-defaultPackage: no.nav.cv
----
-testFramework: kotlintest
-sourceLanguage: kotlin
