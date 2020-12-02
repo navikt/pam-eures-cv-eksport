@@ -4,5 +4,5 @@
   "kafka_pool": "nav-dev",
   "kafka_consumer_topic_cv_endret":"arbeid-pam-cv-endret-v4-q0",
 
-  "ingress": "https://pam-eures-cv-eksport.dev.adeo.no"
+  "ingress":  "https://arbeidsplassen.dev.nav.no/eures-cv-eksport"
 }

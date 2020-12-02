@@ -29,7 +29,7 @@ spec:
     inbound:
       rules:
         - application: pam-eures-cv-eksport-proxy
-        - application: pam-cv
+        - application: pam-personbruker
   webproxy: false
   envFrom:
     - secret: pam-eures-cv-eksport-secret
