@@ -91,12 +91,12 @@ class CvConsumer(
 
     private fun processMessages(endretCV: List<ConsumerRecord<String, ByteArray>>) {
         //if (endretCV.isNotEmpty()) {
-            log.debug("Fikk ${endretCV.size} meldinger.")
+        //    log.debug("Fikk ${endretCV.size} meldinger.")
         //}
 
 
         endretCV.forEach { melding ->
-            log.debug("Behandler melding ${melding.key()}")
+            //log.debug("Behandler melding ${melding.key()}")
             val meldingValue = melding.value()
             val rawAvroBase64 = Base64.getEncoder().encodeToString(meldingValue)
             val rawCV = meldingValue
