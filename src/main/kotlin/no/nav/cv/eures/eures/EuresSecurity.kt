@@ -31,6 +31,7 @@ class EuresSecurityHandler(
         if (request.extractToken()?.equals(ourToken) == true)
             return true
 
+        log.debug("Invalid or missing token on call to EuresController. Returning 401 UNAUTHORIZED")
         response.status = HttpStatus.UNAUTHORIZED.value()
         return false
 
