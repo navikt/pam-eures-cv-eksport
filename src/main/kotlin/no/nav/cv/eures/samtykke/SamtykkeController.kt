@@ -16,8 +16,7 @@ import org.springframework.web.bind.annotation.RequestMapping
 
 @Controller
 @RequestMapping("samtykke")
-//@ProtectedWithClaims(issuer = "selvbetjening")
-@Unprotected
+@ProtectedWithClaims(issuer = "selvbetjening")
 class SamtykkeController(
         private val samtykkeService: SamtykkeService,
         private val innloggetbrukerService: InnloggetBrukerService
