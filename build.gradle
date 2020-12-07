@@ -58,6 +58,8 @@ dependencies {
     }
 
     implementation "no.nav.security:token-validation-spring:${tokenSupportVersion}"
+    implementation "com.nimbusds:nimbus-jose-jwt:8.20"
+    implementation "net.minidev:json-smart:2.3"
     testImplementation "no.nav.security:token-validation-test-support:${tokenSupportVersion}"
 
     // TODO - Remove temporary use of jwt implementation
