@@ -1,6 +1,7 @@
 package no.nav.cv.eures.samtykke
 
 import no.nav.security.token.support.core.api.ProtectedWithClaims
+import no.nav.security.token.support.core.api.Unprotected
 import no.nav.security.token.support.core.context.TokenValidationContextHolder
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
@@ -15,7 +16,8 @@ import org.springframework.web.bind.annotation.RequestMapping
 
 @Controller
 @RequestMapping("samtykke")
-@ProtectedWithClaims(issuer = "selvbetjening")
+//@ProtectedWithClaims(issuer = "selvbetjening")
+@Unprotected
 class SamtykkeController(
         private val samtykkeService: SamtykkeService,
         private val innloggetbrukerService: InnloggetBrukerService
