@@ -14,5 +14,7 @@ data class Samtykke(
         val andreGodkjenninger: Boolean = false,
         val kurs: Boolean = false,
         val spraak: Boolean = false,
-        val sammendrag: Boolean = false
+        val sammendrag: Boolean = false,
+        val land: List<String> = listOf()
 )
+

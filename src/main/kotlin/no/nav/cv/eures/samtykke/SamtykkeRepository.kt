@@ -1,5 +1,7 @@
 package no.nav.cv.eures.samtykke
 
+import com.fasterxml.jackson.core.type.TypeReference
+import com.fasterxml.jackson.databind.ObjectMapper
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Repository
@@ -125,6 +127,9 @@ class SamtykkeEntity {
     @Column(name = "SAMMENDRAG", nullable = false)
     var sammendrag: Boolean = false
 
+    @Column(name = "LAND", nullable = false)
+    var land: String = "[]"
+
 
     fun toSamtykke() = Samtykke(
             sistEndret = sistEndret,
@@ -138,10 +143,13 @@ class SamtykkeEntity {
             andreGodkjenninger = andreGodkjenninger,
             kurs = kurs,
             spraak = spraak,
-            sammendrag = sammendrag
+            sammendrag = sammendrag,
+            land = objectMapper.readValue(land, object: TypeReference<List<String>>() {})
     )
 
     companion object {
+        val objectMapper = ObjectMapper()
+
         fun from(foedselsnummer: String, samtykke: Samtykke): SamtykkeEntity {
             val samtykkeEntity = SamtykkeEntity()
             samtykkeEntity.foedselsnummer = foedselsnummer
@@ -157,6 +165,8 @@ class SamtykkeEntity {
             samtykkeEntity.kurs = samtykke.kurs
             samtykkeEntity.spraak = samtykke.spraak
             samtykkeEntity.sammendrag = samtykke.sammendrag
+            samtykkeEntity.land = objectMapper.writeValueAsString(samtykke.land)
+
             return samtykkeEntity
         }
     }
