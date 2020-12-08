@@ -17,3 +17,4 @@ data class Samtykke(
         val sammendrag: Boolean = false,
         val land: List<String> = listOf()
 )
+

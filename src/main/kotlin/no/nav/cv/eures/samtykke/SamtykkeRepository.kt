@@ -1,5 +1,7 @@
 package no.nav.cv.eures.samtykke
 
+import com.fasterxml.jackson.core.type.TypeReference
+import com.fasterxml.jackson.databind.ObjectMapper
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Repository
@@ -125,10 +127,8 @@ class SamtykkeEntity {
     @Column(name = "SAMMENDRAG", nullable = false)
     var sammendrag: Boolean = false
 
-    // TODO - Should we wipe the DB and make this not nullable?
-    //  Doesn't give much value otherwise
-    @Column(name = "LAND", nullable = true)
-    var land: String = ""
+    @Column(name = "LAND", nullable = false)
+    var land: String = "[]"
 
 
     fun toSamtykke() = Samtykke(
@@ -144,10 +144,12 @@ class SamtykkeEntity {
             kurs = kurs,
             spraak = spraak,
             sammendrag = sammendrag,
-            land = land.split(";")
+            land = objectMapper.readValue(land, object: TypeReference<List<String>>() {})
     )
 
     companion object {
+        val objectMapper = ObjectMapper()
+
         fun from(foedselsnummer: String, samtykke: Samtykke): SamtykkeEntity {
             val samtykkeEntity = SamtykkeEntity()
             samtykkeEntity.foedselsnummer = foedselsnummer
@@ -163,7 +165,8 @@ class SamtykkeEntity {
             samtykkeEntity.kurs = samtykke.kurs
             samtykkeEntity.spraak = samtykke.spraak
             samtykkeEntity.sammendrag = samtykke.sammendrag
-            samtykkeEntity.land = samtykke.land.joinToString(";")
+            samtykkeEntity.land = objectMapper.writeValueAsString(samtykke.land)
+
             return samtykkeEntity
         }
     }
