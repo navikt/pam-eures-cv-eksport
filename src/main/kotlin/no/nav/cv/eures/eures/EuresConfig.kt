@@ -7,7 +7,7 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer
 
 @Configuration
 class EuresConfig(
-        @Value("\${eures.token}") private val ourToken: String
+        @Value("\${eures.token}") private val ourToken: ByteArray
 ) : WebMvcConfigurer {
 
     override fun addInterceptors(registry: InterceptorRegistry) {

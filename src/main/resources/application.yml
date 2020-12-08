@@ -62,6 +62,6 @@ jackson:
   serializationInclusion: ALWAYS
 
 eures:
-  token: ${EURES_TOKEN:123}
-  uri-part: "eu-endpoint"
-  uri-suffix: "input/api/cv/v1.0"
+  # base 64 encoded version of default value of token below - for use in local testing with curl or postman or similar:
+  # RVVSRVMgc3VwZXIgdGVzdHNlY3JldA==
+  token: ${EURES_TOKEN:EURES super testsecret}

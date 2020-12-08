@@ -10,12 +10,13 @@ import org.springframework.web.method.HandlerMethod
 import org.springframework.web.servlet.HandlerAdapter
 import org.springframework.web.servlet.HandlerInterceptor
 import org.springframework.web.servlet.resource.ResourceHttpRequestHandler
+import java.util.*
 import javax.servlet.FilterChain
 import javax.servlet.http.HttpServletRequest
 import javax.servlet.http.HttpServletResponse
 
 class EuresSecurityHandler(
-        private val ourToken: String
+        private val ourToken: ByteArray
 ) : HandlerInterceptor {
     private val log: Logger = LoggerFactory.getLogger(EuresSecurityHandler::class.java)
 
@@ -28,7 +29,7 @@ class EuresSecurityHandler(
         if (handlerMethod.bean !is EuresController)
             return true
 
-        if (request.extractToken()?.equals(ourToken) == true)
+        if (request.hasToken() && request.token contentEquals ourToken )
             return true
 
         log.debug("Invalid or missing token on call to EuresController. Returning 401 UNAUTHORIZED")
@@ -37,6 +38,13 @@ class EuresSecurityHandler(
 
     }
 
-    fun HttpServletRequest.extractToken(): String? = getHeader("Authorization")?.split(' ')?.get(1)
+    val HttpServletRequest.token
+        get() = getHeader("Authorization")
+                ?.split(' ')
+                ?.get(1)
+                ?.let { Base64.getDecoder().decode(it) }
+
+    fun HttpServletRequest.hasToken() = token != null
+
 
 }

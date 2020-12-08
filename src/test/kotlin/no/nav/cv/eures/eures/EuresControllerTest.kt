@@ -25,8 +25,8 @@ class EuresControllerTest {
 
     companion object {
         const val EURES_REQUIRED_PING_CONSTANT = "Hello from Input API"
-        const val VALID_TEST_TOKEN = "123"
-        const val INVALID_TEST_TOKEN = "456"
+        const val VALID_TEST_TOKEN_BASE64 = "RVVSRVMgc3VwZXIgdGVzdHNlY3JldA=="
+        const val INVALID_TEST_TOKEN = "SU5WQUxJRF9URVNUX1RPS0VOCg=="
     }
 
     @LocalServerPort
@@ -44,7 +44,7 @@ class EuresControllerTest {
         val body = client.exchange(
                 "${baseUrl}input/api/cv/v1.0/ping",
                 HttpMethod.GET,
-                HttpEntity<Any>(headerWithToken(VALID_TEST_TOKEN)),
+                HttpEntity<Any>(headerWithToken(VALID_TEST_TOKEN_BASE64)),
                 String::class.java)
                 .body
         assertEquals(true, body?.contains(EURES_REQUIRED_PING_CONSTANT))
@@ -66,7 +66,7 @@ class EuresControllerTest {
         val response = client.exchange(
                 "${baseUrl}input/api/cv/v1.0/ping",
                 HttpMethod.GET,
-                HttpEntity<Any>(headerWithToken(INVALID_TEST_TOKEN)),
+                HttpEntity<Any>(HttpHeaders()),
                 String::class.java)
         assertEquals(HttpStatus.UNAUTHORIZED, response.statusCode)
     }
@@ -76,7 +76,7 @@ class EuresControllerTest {
         val response = client.exchange(
                 "${baseUrl}input/api/cv/v1.0/ping",
                 HttpMethod.GET,
-                HttpEntity<Any>(HttpHeaders()),
+                HttpEntity<Any>(headerWithToken(INVALID_TEST_TOKEN)),
                 String::class.java)
         assertEquals(HttpStatus.UNAUTHORIZED, response.statusCode)
     }
