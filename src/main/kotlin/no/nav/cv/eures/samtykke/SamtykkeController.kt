@@ -11,7 +11,8 @@ import org.springframework.stereotype.Component
 import org.springframework.stereotype.Controller
 import org.springframework.web.bind.annotation.*
 
-@RestController("samtykke")
+@RestController
+@RequestMapping("samtykke")
 @ProtectedWithClaims(issuer = "selvbetjening")
 class SamtykkeController(
         private val samtykkeService: SamtykkeService,
