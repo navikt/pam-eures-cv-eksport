@@ -1,14 +1,11 @@
 package no.nav.cv.eures.samtykke
 
 import no.nav.security.token.support.core.api.ProtectedWithClaims
-import no.nav.security.token.support.core.api.Unprotected
 import no.nav.security.token.support.core.context.TokenValidationContextHolder
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
-import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.ResponseEntity
 import org.springframework.stereotype.Component
-import org.springframework.stereotype.Controller
 import org.springframework.web.bind.annotation.*
 
 @RestController
@@ -24,12 +21,13 @@ class SamtykkeController(
 
     @GetMapping(produces = ["application/json"])
     fun hentSamtykke() = samtykkeService.hentSamtykke(extractFnr())
-            ?: ResponseEntity.notFound()
+            ?.let{ ResponseEntity.ok(it) }
+            ?: ResponseEntity.notFound().build()
 
 
     @PostMapping(produces = ["application/json"])
     fun oppdaterSamtykke(
-            samtykke: Samtykke
+            @RequestBody samtykke: Samtykke
     ): ResponseEntity<Samtykke> {
         samtykkeService.oppdaterSamtykke(extractFnr(), samtykke)
         return ResponseEntity.ok(samtykke)
