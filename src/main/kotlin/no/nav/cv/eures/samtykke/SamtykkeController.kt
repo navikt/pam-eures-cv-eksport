@@ -9,13 +9,9 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.ResponseEntity
 import org.springframework.stereotype.Component
 import org.springframework.stereotype.Controller
-import org.springframework.web.bind.annotation.DeleteMapping
-import org.springframework.web.bind.annotation.GetMapping
-import org.springframework.web.bind.annotation.PostMapping
-import org.springframework.web.bind.annotation.RequestMapping
+import org.springframework.web.bind.annotation.*
 
-@Controller
-@RequestMapping("samtykke")
+@RestController("samtykke")
 @ProtectedWithClaims(issuer = "selvbetjening")
 class SamtykkeController(
         private val samtykkeService: SamtykkeService,
@@ -25,7 +21,6 @@ class SamtykkeController(
         val log: Logger = LoggerFactory.getLogger(SamtykkeController::class.java)
     }
 
-    // TODO - Actual verification of token, this is just a temporary unwrapping.
     @GetMapping(produces = ["application/json"])
     fun hentSamtykke() = samtykkeService.hentSamtykke(extractFnr())
             ?: ResponseEntity.notFound()
