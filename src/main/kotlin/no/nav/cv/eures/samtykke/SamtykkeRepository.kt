@@ -125,6 +125,11 @@ class SamtykkeEntity {
     @Column(name = "SAMMENDRAG", nullable = false)
     var sammendrag: Boolean = false
 
+    // TODO - Should we wipe the DB and make this not nullable?
+    //  Doesn't give much value otherwise
+    @Column(name = "LAND", nullable = true)
+    var land: String = ""
+
 
     fun toSamtykke() = Samtykke(
             sistEndret = sistEndret,
@@ -138,7 +143,8 @@ class SamtykkeEntity {
             andreGodkjenninger = andreGodkjenninger,
             kurs = kurs,
             spraak = spraak,
-            sammendrag = sammendrag
+            sammendrag = sammendrag,
+            land = land.split(";")
     )
 
     companion object {
@@ -157,6 +163,7 @@ class SamtykkeEntity {
             samtykkeEntity.kurs = samtykke.kurs
             samtykkeEntity.spraak = samtykke.spraak
             samtykkeEntity.sammendrag = samtykke.sammendrag
+            samtykkeEntity.land = samtykke.land.joinToString(";")
             return samtykkeEntity
         }
     }
