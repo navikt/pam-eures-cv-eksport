@@ -25,7 +25,7 @@ class SamtykkeController(
     @GetMapping(produces = ["application/json"])
     fun hentSamtykke() = samtykkeService.hentSamtykke(extractFnr())
             ?.let{ ResponseEntity.ok(it) }
-            ?: ResponseEntity.notFound()
+            ?: ResponseEntity.notFound().build()
 
 
     @PostMapping(produces = ["application/json"])
