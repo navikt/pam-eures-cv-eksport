@@ -97,7 +97,7 @@ class CvConsumer(
         try {
 
             endretCV.forEach { melding ->
-                log.debug("Behandler melding ${melding.key()} ")
+                log.debug("Behandler melding ${melding.key()} (partition: ${melding.partition()} - offset ${melding.offset()}")
                 log.debug("Behandler melding ${melding.key()} - Størrelse: ${melding.value().size}")
                 val meldingValue = melding.value()
                 log.debug("base64 encoder melding")
