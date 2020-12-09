@@ -95,21 +95,27 @@ class CvConsumer(
         }
 
 
-        endretCV.forEach { melding ->
-            //log.debug("Behandler melding ${melding.key()}")
-            val meldingValue = melding.value()
-            val rawAvroBase64 = Base64.getEncoder().encodeToString(meldingValue)
-            val rawCV = meldingValue
-                    .toMelding()
-                    .toRawCV(rawAvroBase64)
+        try {
 
-            rawCV?.run{
-                try {
-                    cvRepository.saveAndFlush(this)
-                } catch (e: Exception) {
-                    log.error("Fikk exception ${e.message} under lagring av cv $this", e)
+            endretCV.forEach { melding ->
+                //log.debug("Behandler melding ${melding.key()}")
+                val meldingValue = melding.value()
+                val rawAvroBase64 = Base64.getEncoder().encodeToString(meldingValue)
+                val rawCV = meldingValue
+                        .toMelding()
+                        .toRawCV(rawAvroBase64)
+
+                rawCV?.run{
+                    try {
+                        cvRepository.saveAndFlush(this)
+                    } catch (e: Exception) {
+                        log.error("Fikk exception ${e.message} under lagring av cv $this", e)
+                    }
                 }
             }
+        } catch (e: Throwable) {
+            log.error("Feil under konsumering av melding", e)
+            throw e
         }
     }
 
