@@ -85,9 +85,10 @@ class CvConsumer(
     private fun ByteArray.toMelding(): Melding {
         val datumReader = SpecificDatumReader(Melding::class.java)
         log.info("Original message size: $size")
-        log.info("Slioced message size: ${slice(5 until size).toByteArray().size}")
+        log.info("Sliced message size: ${slice(5 until size).toByteArray().size}")
         val decoder = DecoderFactory.get().binaryDecoder(slice(5 until size).toByteArray(), null)
-        return datumReader.read(null, decoder)
+        log.info("Decoding to Melding object")
+        return datumReader.read(null, decoder).also { log.info("Dekoded meldingstype: ${it.meldingstype}") }
     }
 
     private fun processMessages(endretCV: List<ConsumerRecord<String, ByteArray>>) {
