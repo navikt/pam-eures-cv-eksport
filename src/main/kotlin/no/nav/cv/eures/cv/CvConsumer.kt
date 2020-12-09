@@ -28,13 +28,13 @@ class CvConsumer(
     @KafkaListener(
             groupId = "pam-eures-cv-eksport-v3",
             topics = [ "\${kafka.topics.consumers.cv_endret}" ],
-            containerFactory = "kafkaContainerFactory",
+            containerFactory = "cvMeldingContainerFactory",
             properties = [
                 "auto.offset.reset:earliest"
             ]
     )
     fun receive(record: List<ConsumerRecord<String, ByteArray>>) {
-
+        log.debug("Receiving cv melding message")
         processMessages(record)
     }
 
@@ -90,9 +90,9 @@ class CvConsumer(
     }
 
     private fun processMessages(endretCV: List<ConsumerRecord<String, ByteArray>>) {
-        //if (endretCV.isNotEmpty()) {
-        //    log.debug("Fikk ${endretCV.size} meldinger.")
-        //}
+        if (endretCV.isNotEmpty()) {
+            log.debug("Fikk ${endretCV.size} meldinger.")
+        }
 
 
         endretCV.forEach { melding ->
