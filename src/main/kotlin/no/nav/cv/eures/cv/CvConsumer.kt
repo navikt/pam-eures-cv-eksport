@@ -83,7 +83,9 @@ class CvConsumer(
     }
 
     private fun ByteArray.toMelding(): Melding {
-        val datumReader = SpecificDatumReader<Melding>(Melding::class.java)
+        val datumReader = SpecificDatumReader(Melding::class.java)
+        log.info("Original message size: $size")
+        log.info("Slioced message size: ${slice(5 until size).toByteArray().size}")
         val decoder = DecoderFactory.get().binaryDecoder(slice(5 until size).toByteArray(), null)
         return datumReader.read(null, decoder)
     }
@@ -97,12 +99,11 @@ class CvConsumer(
         try {
 
             endretCV.forEach { melding ->
-                log.debug("Behandler melding ${melding.key()} (partition: ${melding.partition()} - offset ${melding.offset()}")
-                log.debug("Behandler melding ${melding.key()} - Størrelse: ${melding.value().size}")
+                log.debug("Behandler melding ${melding.key()} (partition: ${melding.partition()} - offset ${melding.offset()} - størrelse: ${melding.value().size}")
                 val meldingValue = melding.value()
-                log.debug("base64 encoder melding")
+                //log.debug("base64 encoder melding")
                 val rawAvroBase64 = Base64.getEncoder().encodeToString(meldingValue)
-                log.debug("Konverterer til melding")
+                //log.debug("Konverterer til melding")
                 val rawCV = meldingValue
                         .toMelding()
                         .toRawCV(rawAvroBase64)
