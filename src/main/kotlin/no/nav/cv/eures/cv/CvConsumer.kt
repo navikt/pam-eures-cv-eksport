@@ -9,7 +9,6 @@ import org.apache.kafka.clients.consumer.ConsumerRecord
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.kafka.annotation.KafkaListener
-import org.springframework.kafka.listener.BatchMessageListener
 import org.springframework.stereotype.Service
 import java.time.ZonedDateTime
 import java.util.*
@@ -98,13 +97,16 @@ class CvConsumer(
         try {
 
             endretCV.forEach { melding ->
-                //log.debug("Behandler melding ${melding.key()}")
+                log.debug("Behandler melding ${melding.key()} ")
+                log.debug("Behandler melding ${melding.key()} - Størrelse: ${melding.value().size}")
                 val meldingValue = melding.value()
+                log.debug("base64 encoder melding")
                 val rawAvroBase64 = Base64.getEncoder().encodeToString(meldingValue)
+                log.debug("Konverterer til melding")
                 val rawCV = meldingValue
                         .toMelding()
                         .toRawCV(rawAvroBase64)
-
+                log.debug("Lagrer melding")
                 rawCV?.run{
                     try {
                         cvRepository.saveAndFlush(this)
