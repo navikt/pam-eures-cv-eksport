@@ -1,8 +1,11 @@
 package no.nav.cv.eures.cv
 
+import io.confluent.kafka.serializers.AvroSchemaUtils
 import no.nav.arbeid.cv.avro.Melding
 import no.nav.arbeid.cv.avro.Meldingstype
 import no.nav.cv.eures.cv.RawCV.Companion.RecordType.*
+import no.nav.cv.eures.konverterer.CvAvroSchema
+import org.apache.avro.SchemaCompatibility
 import org.apache.avro.io.DecoderFactory
 import org.apache.avro.specific.SpecificDatumReader
 import org.apache.kafka.clients.consumer.ConsumerRecord
@@ -16,7 +19,8 @@ import java.util.*
 
 @Service
 class CvConsumer(
-        private val cvRepository: CvRepository
+        private val cvRepository: CvRepository,
+        private val cvAvroSchema: CvAvroSchema
 ) {
 
     companion object {
@@ -86,6 +90,14 @@ class CvConsumer(
         val datumReader = SpecificDatumReader(Melding::class.java)
         val decoder = DecoderFactory.get().binaryDecoder(slice(5 until size).toByteArray(), null)
         log.info("Decoding to Melding object -> \n\n ${String(slice(5 until size).toByteArray())} \n\n")
+
+        val messageSchema = cvAvroSchema.getSchema(this)
+
+        val comp1 = SchemaCompatibility.checkReaderWriterCompatibility(datumReader.schema, messageSchema)
+        log.info("Schema compability (reader, message) - ${comp1.result.compatibility}")
+
+        val comp2 = SchemaCompatibility.checkReaderWriterCompatibility(messageSchema, datumReader.schema)
+        log.info("Schema compability (message, reader) - ${comp2.result.compatibility}")
         return datumReader.read(null, decoder).also { log.info("Dekoded meldingstype: ${it.meldingstype}") }
     }
 

@@ -15,7 +15,10 @@ sourceCompatibility = '1.14'
 repositories {
     mavenCentral()
     maven { url "https://jcenter.bintray.com" }
-    maven { url "https://github-package-registry-mirror.gc.nav.no/cached/maven-release" }}
+    maven { url "https://github-package-registry-mirror.gc.nav.no/cached/maven-release" }
+    maven { url "http://packages.confluent.io/maven"}
+}
+
 
 configurations {
     // for dependencies that are needed for development only
@@ -56,6 +59,8 @@ dependencies {
     testImplementation('org.springframework.boot:spring-boot-starter-test') {
         exclude group: 'org.junit.vintage', module: 'junit-vintage-engine'
     }
+
+    implementation 'io.confluent:kafka-avro-serializer:5.3.0'
 
     implementation "no.nav.security:token-validation-spring:${tokenSupportVersion}"
     implementation "com.nimbusds:nimbus-jose-jwt:8.20"

@@ -7,6 +7,8 @@ import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Service
 import org.springframework.web.client.RestTemplate
 import java.nio.ByteBuffer
+import java.util.concurrent.ConcurrentHashMap
+
 
 @Service
 class CvAvroSchema(private val schemaClient: CvAvroSchemaClient) {
@@ -15,17 +17,23 @@ class CvAvroSchema(private val schemaClient: CvAvroSchemaClient) {
         val log = LoggerFactory.getLogger(CvAvroSchema::class.java)
     }
 
+    val schemas = ConcurrentHashMap<Int, Schema>()
+
     fun getSchema(wireBytes: ByteArray): Schema {
 
         // https://docs.confluent.io/current/schema-registry/serdes-develop/index.html#messages-wire-format
         val schemaVersioBuffer = ByteBuffer.wrap(wireBytes.slice(1..4).toByteArray())
         val schemaVersion = schemaVersioBuffer.getInt(0)
+        log.debug("Schema version $schemaVersion")
 
-        val jsonSchema = schemaClient.getSchema(schemaVersion)
+        return schemas.getOrPut(schemaVersion) {
+            val jsonSchema = schemaClient.getSchema(schemaVersion)
 
-        log.debug("SCHEMA version $schemaVersion: $jsonSchema")
+            log.debug("SCHEMA version $schemaVersion: $jsonSchema")
 
-        return Schema.Parser().parse(jsonSchema)
+            return Schema.Parser().parse(jsonSchema)
+        }
+
     }
 }
 
