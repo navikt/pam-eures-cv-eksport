@@ -112,7 +112,6 @@ class CvConsumer(
                 val rawCV = meldingValue
                         .toMelding()
                         .toRawCV(rawAvroBase64)
-                log.debug("Lagrer melding")
                 rawCV?.run{
                     try {
                         cvRepository.saveAndFlush(this)
