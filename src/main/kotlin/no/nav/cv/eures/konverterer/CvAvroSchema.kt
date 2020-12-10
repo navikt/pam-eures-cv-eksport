@@ -49,7 +49,8 @@ class CvAvroSchemaClient(
     }
 
     fun getSchema(version: Int): String {
-        val uri  = "${schemaRegistryUrl}/subjects/${schemaSubject}/versions/${version}/schema"
+        //val uri  = "${schemaRegistryUrl}/subjects/${schemaSubject}/versions/${version}/schema"
+        val uri  = "${schemaRegistryUrl}/schemas/${version}"
         log.debug("Fetching schema: ${uri}")
         return client.getForObject(uri, String::class.java)!!
 
