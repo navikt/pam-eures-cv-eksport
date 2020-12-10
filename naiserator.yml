@@ -26,6 +26,9 @@ spec:
       cpu: 200m
       memory: 256Mi
   accessPolicy:
+    outbound:
+      rules:
+        - host: {{ kafka_schema_registry }}
     inbound:
       rules:
         - application: pam-eures-cv-eksport-proxy
@@ -54,5 +57,7 @@ spec:
       value: {{ kafka_bootstrap_servers }}
     - name: DB_DRIVER
       value: 'org.postgresql.Driver'
+    - name: KAFKA_SCHEMA_REGISTRY
+      value: {{ kafka_schema_registry }}
   ingresses:
     - {{ ingress }}

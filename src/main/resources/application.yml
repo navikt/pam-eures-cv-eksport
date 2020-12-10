@@ -31,7 +31,7 @@ spring:
           config: no.nav.cv.eures.cv.NaisLoginModule required;
       schema:
         registry:
-          url: "http://kafka-schema-registry.tpa:8081"
+          url: https://${KAFKA_SCHEMA_REGISTRY:localhost:8081}
       security:
         protocol: SASL_SSL
   datasource:
