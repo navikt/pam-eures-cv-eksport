@@ -27,7 +27,7 @@ spec:
       memory: 256Mi
   accessPolicy:
     outbound:
-      rules:
+      external:
         - host: {{ kafka_schema_registry }}
     inbound:
       rules:
