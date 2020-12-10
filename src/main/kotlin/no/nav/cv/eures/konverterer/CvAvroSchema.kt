@@ -24,7 +24,7 @@ class CvAvroSchema(private val schemaClient: CvAvroSchemaClient) {
         // https://docs.confluent.io/current/schema-registry/serdes-develop/index.html#messages-wire-format
         val schemaVersioBuffer = ByteBuffer.wrap(wireBytes.slice(1..4).toByteArray())
         val schemaVersion = schemaVersioBuffer.getInt(0)
-        log.debug("Schema version $schemaVersion")
+        log.debug("Schema version $schemaVersion (${schemaVersioBuffer[0]} ${schemaVersioBuffer[1]} ${schemaVersioBuffer[2]} ${schemaVersioBuffer[3]})")
 
         return schemas.getOrPut(schemaVersion) {
             val jsonSchema = schemaClient.getSchema(schemaVersion)
@@ -44,8 +44,14 @@ class CvAvroSchemaClient(
         @Autowired private val client: RestTemplate
 ) {
 
+    companion object {
+        val log = LoggerFactory.getLogger(CvAvroSchemaClient::class.java)
+    }
+
     fun getSchema(version: Int): String {
-        val uri  = "${schemaRegistryUrl}/subjects/${schemaSubject}/versions/${version}/schema"
+        //val uri  = "${schemaRegistryUrl}/subjects/${schemaSubject}/versions/${version}/schema"
+        val uri  = "${schemaRegistryUrl}/schemas/ids/${version}"
+        log.debug("Fetching schema: ${uri}")
         return client.getForObject(uri, String::class.java)!!
 
     }

@@ -1,11 +1,9 @@
 package no.nav.cv.eures.cv
 
-import io.confluent.kafka.serializers.AvroSchemaUtils
 import no.nav.arbeid.cv.avro.Melding
 import no.nav.arbeid.cv.avro.Meldingstype
 import no.nav.cv.eures.cv.RawCV.Companion.RecordType.*
 import no.nav.cv.eures.konverterer.CvAvroSchema
-import org.apache.avro.SchemaCompatibility
 import org.apache.avro.io.DecoderFactory
 import org.apache.avro.specific.SpecificDatumReader
 import org.apache.kafka.clients.consumer.ConsumerRecord
@@ -89,16 +87,16 @@ class CvConsumer(
     private fun ByteArray.toMelding(): Melding {
         val datumReader = SpecificDatumReader(Melding::class.java)
         val decoder = DecoderFactory.get().binaryDecoder(slice(5 until size).toByteArray(), null)
-        log.info("Decoding to Melding object -> \n\n ${String(slice(5 until size).toByteArray())} \n\n")
-
-        val messageSchema = cvAvroSchema.getSchema(this)
-
-        val comp1 = SchemaCompatibility.checkReaderWriterCompatibility(datumReader.schema, messageSchema)
-        log.info("Schema compability (reader, message) - ${comp1.result.compatibility}")
-
-        val comp2 = SchemaCompatibility.checkReaderWriterCompatibility(messageSchema, datumReader.schema)
-        log.info("Schema compability (message, reader) - ${comp2.result.compatibility}")
-        return datumReader.read(null, decoder).also { log.info("Dekoded meldingstype: ${it.meldingstype}") }
+//        log.info("Decoding to Melding object -> \n\n ${String(slice(5 until size).toByteArray())} \n\n")
+//
+//        val messageSchema = cvAvroSchema.getSchema(this)
+//
+//        val comp1 = SchemaCompatibility.checkReaderWriterCompatibility(datumReader.schema, messageSchema)
+//        log.info("Schema compability (reader, message) - ${comp1.result.compatibility}")
+//
+//        val comp2 = SchemaCompatibility.checkReaderWriterCompatibility(messageSchema, datumReader.schema)
+//        log.info("Schema compability (message, reader) - ${comp2.result.compatibility}")
+        return datumReader.read(null, decoder)
     }
 
     private fun processMessages(endretCV: List<ConsumerRecord<String, ByteArray>>) {
@@ -106,19 +104,14 @@ class CvConsumer(
             log.debug("Fikk ${endretCV.size} meldinger.")
         }
 
+        endretCV.forEach { melding ->
+            try {
 
-        try {
-
-            endretCV.forEach { melding ->
-                log.debug("Behandler melding ${melding.key()} (partition: ${melding.partition()} - offset ${melding.offset()} - størrelse: ${melding.value().size}")
                 val meldingValue = melding.value()
-                //log.debug("base64 encoder melding")
                 val rawAvroBase64 = Base64.getEncoder().encodeToString(meldingValue)
-                //log.debug("Konverterer til melding")
                 val rawCV = meldingValue
                         .toMelding()
                         .toRawCV(rawAvroBase64)
-                log.debug("Lagrer melding")
                 rawCV?.run{
                     try {
                         cvRepository.saveAndFlush(this)
@@ -126,10 +119,9 @@ class CvConsumer(
                         log.error("Fikk exception ${e.message} under lagring av cv $this", e)
                     }
                 }
+            } catch (e: Exception) {
+                log.error("Klarte ikke behandkle kafkamelding ${melding.key()} (partition: ${melding.partition()} - offset ${melding.offset()} - størrelse: ${melding.value().size}", e)
             }
-        } catch (e: Throwable) {
-            log.error("Feil under konsumering av melding", e)
-            throw e
         }
     }
 
