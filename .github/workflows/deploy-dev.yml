@@ -8,7 +8,7 @@ on:
       - "CODEOWNERS"
     branches:
       - master
-      - springify
+      - kafka_debug
 jobs:
   security:
     runs-on: ubuntu-latest
