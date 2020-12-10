@@ -56,7 +56,7 @@ kafka:
       # config: 'org.apache.kafka.common.security.plain.PlainLoginModule required username=${KAFKA_SERVICE_USER} password=${KAFKA_SERVICE_PASSWORD};'
 
 avro:
-  schema.subject: "arbeid-pam-cv-endret-v2-dev-value"
+  schema.subject: ${KAFKA_CONSUMER_TOPIC_CV_ENDRET:arbeid-pam-cv-endret-v2-dev}-value
 
 jackson:
   serializationInclusion: ALWAYS
