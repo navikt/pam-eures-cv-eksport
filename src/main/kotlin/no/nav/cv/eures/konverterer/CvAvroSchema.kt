@@ -44,8 +44,13 @@ class CvAvroSchemaClient(
         @Autowired private val client: RestTemplate
 ) {
 
+    companion object {
+        val log = LoggerFactory.getLogger(CvAvroSchemaClient::class.java)
+    }
+
     fun getSchema(version: Int): String {
         val uri  = "${schemaRegistryUrl}/subjects/${schemaSubject}/versions/${version}/schema"
+        log.debug("Fetching schema: ${uri}")
         return client.getForObject(uri, String::class.java)!!
 
     }
