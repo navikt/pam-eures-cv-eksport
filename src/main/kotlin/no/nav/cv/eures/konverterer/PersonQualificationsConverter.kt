@@ -28,13 +28,11 @@ class PersonQualificationsConverter (
         if(samtykke.annenErfaring)
             qualifications.addAll(cv.annenErfaring.toEsco())
 
-        if(samtykke.annenErfaring)
-            qualifications.addAll(listOf("Mekanisk montering", "Rørleggerarbeid").toEsco())
-
-
         if(samtykke.fagbrev)
             qualifications.addAll(cv.fagdokumentasjon.toEsco())
 
+        if(samtykke.annenErfaring)
+            qualifications.addAll(profile.kompetanser.toEsco())
 
         return PersonQualifications(qualifications)
     }
