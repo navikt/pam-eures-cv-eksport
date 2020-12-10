@@ -27,8 +27,8 @@ class CvConsumer(
 
 
     @KafkaListener(
-            groupId = "pam-eures-cv-eksport-v3",
-            topics = [ "\${kafka.topics.consumers.cv_endret}" ],
+            groupId = "pam-eures-cv-eksport-v4",
+            topics = ["\${kafka.topics.consumers.cv_endret}"],
             containerFactory = "cvMeldingContainerFactory",
             properties = [
                 "auto.offset.reset:earliest"
@@ -39,7 +39,11 @@ class CvConsumer(
         processMessages(record)
     }
 
-    private fun String?.foedselsnummerOrNull() = this?.let { if (this != "-") this else null }
+    private fun String.foedselsnummerOrNull(): String? {
+        if (this == "-") return null
+
+        return this
+    }
 
     /**
      * This function is in charge of three things.
@@ -48,28 +52,49 @@ class CvConsumer(
      *    no 'oppfolgingsinformasjon', the record is flagged for deletion.
      * 3) If no record exists, it creates a new one.
      */
-    private fun Melding.createOrUpdateRawCvRecord(rawAvroBase64: String): RawCV =
-            cvRepository.hentCvByAktoerId(aktoerId)?.let { rawCvRecord ->
-                if (rawCvRecord.underOppfoelging && oppfolgingsinformasjon == null) {
-                    delete()
-                } else {
-                    rawCvRecord.update(
+    private fun Melding.createOrUpdateRawCvRecord(rawAvroBase64: String) {
+
+        val foedselsnummer = extractFoedselsnummer()
+
+        if (foedselsnummer == null) {
+            // TODO ta vekk logging av aktørid i prod
+            log.warn("Kafkamelding mangler fødselsnummer - hopper over den ($aktoerId)")
+            return
+        }
+
+        val existing = cvRepository.hentCvByFoedselsnummer(foedselsnummer)
+
+        if(existing != null) {
+            if (existing.underOppfoelging && oppfolgingsinformasjon == null) {
+                delete()
+            } else {
+                existing.update(
                         sistEndret = ZonedDateTime.now(),
                         rawAvro = rawAvroBase64,
                         underOppfoelging = (oppfolgingsinformasjon != null),
                         meldingstype = UPDATE
-                    )
-                }
-            }?: RawCV.create(
+                )
+            }
+        } else {
+            val newRawCv = RawCV.create(
                     aktoerId = aktoerId,
-                    foedselsnummer = opprettCv?.cv?.fodselsnummer?.foedselsnummerOrNull()
-                            ?: endreCv?.cv?.fodselsnummer?.foedselsnummerOrNull()
-                            ?: "AID-$aktoerId",
+                    foedselsnummer = foedselsnummer,
                     sistEndret = ZonedDateTime.now(),
                     rawAvro = rawAvroBase64,
                     underOppfoelging = (oppfolgingsinformasjon != null),
                     meldingstype = CREATE
             )
+
+            try {
+                cvRepository.saveAndFlush(newRawCv)
+            } catch (e: Exception) {
+                log.error("Fikk exception ${e.message} under lagring av cv $this", e)
+            }
+        }
+    }
+
+    private fun Melding.extractFoedselsnummer() = opprettCv?.cv?.fodselsnummer?.foedselsnummerOrNull()
+            ?: endreCv?.cv?.fodselsnummer?.foedselsnummerOrNull()
 
     private fun Melding.delete(): RawCV? = cvRepository.hentCvByAktoerId(aktoerId)?.update(
             sistEndret = ZonedDateTime.now(),
@@ -77,25 +102,20 @@ class CvConsumer(
             meldingstype = DELETE
     )
 
-    private fun Melding.toRawCV(rawAvroBase64: String): RawCV? = when (meldingstype) {
-        Meldingstype.OPPRETT -> createOrUpdateRawCvRecord(rawAvroBase64)
-        Meldingstype.ENDRE -> createOrUpdateRawCvRecord(rawAvroBase64)
-        Meldingstype.SLETT -> delete()
-        null -> throw Exception("Invalid meldingstype: null")
+    private fun Melding.createUpdateOrDelete(rawAvroBase64: String) {
+
+        when (meldingstype) {
+            Meldingstype.OPPRETT -> createOrUpdateRawCvRecord(rawAvroBase64)
+            Meldingstype.ENDRE -> createOrUpdateRawCvRecord(rawAvroBase64)
+            Meldingstype.SLETT -> delete()
+            null -> throw Exception("Invalid meldingstype: null")
+        }
+
     }
 
     private fun ByteArray.toMelding(): Melding {
         val datumReader = SpecificDatumReader(Melding::class.java)
         val decoder = DecoderFactory.get().binaryDecoder(slice(5 until size).toByteArray(), null)
-//        log.info("Decoding to Melding object -> \n\n ${String(slice(5 until size).toByteArray())} \n\n")
-//
-//        val messageSchema = cvAvroSchema.getSchema(this)
-//
-//        val comp1 = SchemaCompatibility.checkReaderWriterCompatibility(datumReader.schema, messageSchema)
-//        log.info("Schema compability (reader, message) - ${comp1.result.compatibility}")
-//
-//        val comp2 = SchemaCompatibility.checkReaderWriterCompatibility(messageSchema, datumReader.schema)
-//        log.info("Schema compability (message, reader) - ${comp2.result.compatibility}")
         return datumReader.read(null, decoder)
     }
 
@@ -109,16 +129,7 @@ class CvConsumer(
 
                 val meldingValue = melding.value()
                 val rawAvroBase64 = Base64.getEncoder().encodeToString(meldingValue)
-                val rawCV = meldingValue
-                        .toMelding()
-                        .toRawCV(rawAvroBase64)
-                rawCV?.run{
-                    try {
-                        cvRepository.saveAndFlush(this)
-                    } catch (e: Exception) {
-                        log.error("Fikk exception ${e.message} under lagring av cv $this", e)
-                    }
-                }
+                meldingValue.toMelding().createUpdateOrDelete(rawAvroBase64)
             } catch (e: Exception) {
                 log.error("Klarte ikke behandkle kafkamelding ${melding.key()} (partition: ${melding.partition()} - offset ${melding.offset()} - størrelse: ${melding.value().size}", e)
             }

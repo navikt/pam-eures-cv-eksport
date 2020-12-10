@@ -8,7 +8,6 @@ on:
       - "CODEOWNERS"
     branches:
       - master
-      - kafka_debug
 jobs:
   security:
     runs-on: ubuntu-latest
