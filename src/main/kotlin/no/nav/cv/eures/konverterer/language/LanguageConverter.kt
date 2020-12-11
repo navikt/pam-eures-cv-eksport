@@ -1,6 +1,8 @@
 package no.nav.cv.eures.konverterer.language
 
+import java.io.BufferedReader
 import java.io.File
+import java.io.InputStreamReader
 
 
 /**
@@ -22,12 +24,11 @@ object LanguageConverter {
     private fun loadLanguages() : Map<String, String> {
         val mapping = mutableMapOf<String, String>()
 
-        val uri = javaClass.classLoader.getResource(filename)?.toURI()
-                ?: throw Exception("File '$filename' gives null")
+        val inputStream = LanguageConverter::class.java.classLoader.getResourceAsStream(filename)
 
-        val file = File(uri)
+        val reader = BufferedReader(InputStreamReader(inputStream!!))
 
-        val lines = file.readLines()
+        val lines = reader.readLines()
 
         for(line in lines.subList(1, lines.size)) {
             val columns = line.split("\t")
