@@ -3,7 +3,9 @@ package no.nav.cv.eures.konverterer.country
 
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
+import java.io.BufferedReader
 import java.io.File
+import java.io.InputStreamReader
 
 
 /**
@@ -36,12 +38,12 @@ object NationalityConverter {
         s2i["STATSLØS"] = "XX" // According to https://en.wikipedia.org/wiki/ISO_3166-1_alpha-3 (2020.11.10)
         */
 
-        val uri = NationalityConverter::class.java.classLoader.getResource(filename)?.toURI()
-                ?: throw Exception("File '$filename' gives null")
 
-        val file = File(uri)
+        val inputStream = NationalityConverter::class.java.classLoader.getResourceAsStream(filename)
 
-        for(line in file.readLines()) {
+        val reader = BufferedReader(InputStreamReader(inputStream!!))
+
+        for(line in reader.readLines()) {
             val columns = line.split(";")
 
             val iso = columns[0].toUpperCase()
