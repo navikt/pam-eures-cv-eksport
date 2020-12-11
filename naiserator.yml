@@ -49,7 +49,7 @@ spec:
             envVarPrefix: DB
   prometheus:
     enabled: true
-    path: /pam-eures-cv-eksport/prometheus
+    path: /pam-eures-cv-eksport/actuator/prometheus
   env:
     - name: KAFKA_CONSUMER_TOPIC_CV_ENDRET
       value: {{ kafka_consumer_topic_cv_endret }}
