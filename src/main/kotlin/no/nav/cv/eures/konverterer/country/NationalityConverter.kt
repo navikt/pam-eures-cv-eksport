@@ -18,7 +18,7 @@ import java.io.File
 object NationalityConverter {
     val log: Logger = LoggerFactory.getLogger(this::class.java)
 
-    private val filename = "converting/landkoder.csv"
+    private val filename = "landkoder.csv"
 
     private val isoToString: Map<String, String>
     private val stringToIso: Map<String, String>
@@ -36,7 +36,7 @@ object NationalityConverter {
         s2i["STATSLØS"] = "XX" // According to https://en.wikipedia.org/wiki/ISO_3166-1_alpha-3 (2020.11.10)
         */
 
-        val uri = javaClass.classLoader.getResource(filename)?.toURI()
+        val uri = NationalityConverter::class.java.classLoader.getResource(filename)?.toURI()
                 ?: throw Exception("File '$filename' gives null")
 
         val file = File(uri)

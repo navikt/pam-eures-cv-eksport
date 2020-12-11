@@ -13,7 +13,7 @@ import java.io.File
 
 
 object LanguageConverter {
-    private val filename = "converting/iso-639-3.tab.txt"
+    private val filename = "iso-639-3.tab.txt"
 
     private val iso3ToIso2Map by lazy { loadLanguages() }
 
