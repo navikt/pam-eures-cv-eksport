@@ -4,7 +4,6 @@ server:
     context-path: /pam-eures-cv-eksport
 
 no.nav.security.jwt:
-  issuers: selvbetjening
   issuer:
     selvbetjening:
       discoveryurl: ${LOGINSERVICE_IDPORTEN_DISCOVERY_URL:http://metadata}
@@ -49,6 +48,7 @@ spring:
     locations:
       - "classpath:db"
 
+
 kafka:
   topics:
     consumers:
@@ -68,7 +68,17 @@ eures:
 
 janzz:
   authorization:
-    token: ${JANZZ_AUTH_TOKEN}
+    token: ${JANZZ_AUTH_TOKEN:dumytoken}
   labels:
     host: https://www.janzz.jobs
     resultLimit: 200
+
+management:
+  endpoint:
+    prometheus:
+      enabled: true
+  endpoints:
+    web:
+      exposure:
+        include: prometheus
+    enabled-by-default: false

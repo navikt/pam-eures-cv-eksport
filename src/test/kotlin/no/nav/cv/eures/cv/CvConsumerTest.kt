@@ -1,5 +1,6 @@
 package no.nav.cv.eures.cv
 
+import io.micrometer.core.instrument.simple.SimpleMeterRegistry
 import no.nav.arbeid.cv.avro.Melding
 import no.nav.cv.eures.konverterer.CvAvroSchema
 import no.nav.security.token.support.test.spring.TokenGeneratorConfiguration
@@ -31,7 +32,7 @@ class CvConsumerTest {
     @Autowired
     private lateinit var cvRepository: CvRepository
 
-    private val cvAvroSchema: CvAvroSchema = Mockito.mock(CvAvroSchema::class.java)
+    private val meterRegistry = SimpleMeterRegistry()
     private val testData = CvTestData()
 
     private val TOPIC = "test-topic"
@@ -39,8 +40,7 @@ class CvConsumerTest {
 
     @BeforeEach
     fun setup() {
-        cvConsumer = CvConsumer(cvRepository, cvAvroSchema)
-        Mockito.`when`(cvAvroSchema.getSchema(anyObject())).thenReturn(Melding.getClassSchema())
+        cvConsumer = CvConsumer(cvRepository, meterRegistry)
     }
 
     @Test

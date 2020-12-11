@@ -62,6 +62,9 @@ dependencies {
         exclude group: 'org.junit.vintage', module: 'junit-vintage-engine'
     }
 
+    implementation 'org.springframework.boot:spring-boot-starter-actuator'
+    implementation 'io.micrometer:micrometer-registry-prometheus:1.6.2'
+
     implementation 'io.confluent:kafka-avro-serializer:5.3.0'
 
     implementation "no.nav.security:token-validation-spring:${tokenSupportVersion}"

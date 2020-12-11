@@ -1,9 +1,10 @@
 package no.nav.cv.eures.cv
 
+import io.micrometer.core.instrument.MeterRegistry
+import io.micrometer.core.instrument.Tag
 import no.nav.arbeid.cv.avro.Melding
 import no.nav.arbeid.cv.avro.Meldingstype
 import no.nav.cv.eures.cv.RawCV.Companion.RecordType.*
-import no.nav.cv.eures.konverterer.CvAvroSchema
 import org.apache.avro.io.DecoderFactory
 import org.apache.avro.specific.SpecificDatumReader
 import org.apache.kafka.clients.consumer.ConsumerRecord
@@ -18,7 +19,7 @@ import java.util.*
 @Service
 class CvConsumer(
         private val cvRepository: CvRepository,
-        private val cvAvroSchema: CvAvroSchema
+        private val meterRegistry: MeterRegistry
 ) {
 
     companion object {
@@ -103,6 +104,8 @@ class CvConsumer(
     )
 
     private fun Melding.createUpdateOrDelete(rawAvroBase64: String) {
+        meterRegistry.counter("cv.endring.mottatt",
+                "meldingstype", meldingstype.name)
 
         when (meldingstype) {
             Meldingstype.OPPRETT -> createOrUpdateRawCvRecord(rawAvroBase64)
