@@ -16,7 +16,7 @@ data class GetDetails(
             val content: String? = null
     ) {
         val source: String = "NAV"
-        val contentFormatVersion: String = "1.0"
+        val contentFormatVersion: String = "1.3"
 
         enum class Status {
             CLOSED, ACTIVE
