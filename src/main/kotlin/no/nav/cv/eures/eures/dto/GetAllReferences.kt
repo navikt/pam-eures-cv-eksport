@@ -10,7 +10,7 @@ data class GetAllReferences(
 
     data class Reference(
             val reference: String,
-            val creationTimeStamp: Long,
+            val creationTimestamp: Long,
             val lastModificationTimestamp: Long
     ) {
         val source: String = "NAV"
@@ -18,7 +18,7 @@ data class GetAllReferences(
 
         constructor(cv: CvXml) : this(
                 reference = cv.reference,
-                creationTimeStamp = cv.opprettet.toInstant().atOffset(ZoneOffset.UTC).toInstant().toEpochMilli(),
+                creationTimestamp = cv.opprettet.toInstant().atOffset(ZoneOffset.UTC).toInstant().toEpochMilli(),
                 lastModificationTimestamp = cv.sistEndret.toInstant().atOffset(ZoneOffset.UTC).toInstant().toEpochMilli()
         )
     }
