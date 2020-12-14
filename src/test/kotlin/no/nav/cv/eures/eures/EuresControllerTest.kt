@@ -1,6 +1,5 @@
 package no.nav.cv.eures.eures
 
-import no.nav.cv.eures.model.Converters.toUtcZonedDateTime
 import no.nav.security.token.support.test.spring.TokenGeneratorConfiguration
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.BeforeEach
@@ -8,14 +7,12 @@ import org.junit.jupiter.api.Test
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.boot.test.web.client.TestRestTemplate
 import org.springframework.boot.web.server.LocalServerPort
+import org.springframework.context.annotation.Import
 import org.springframework.http.HttpEntity
 import org.springframework.http.HttpHeaders
 import org.springframework.http.HttpMethod
 import org.springframework.http.HttpStatus
-import org.springframework.context.annotation.Import
 import org.springframework.test.context.ActiveProfiles
-import java.time.ZoneId
-import java.time.ZonedDateTime
 
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
@@ -50,16 +47,6 @@ class EuresControllerTest {
         assertEquals(true, body?.contains(EURES_REQUIRED_PING_CONSTANT))
     }
 
-    @Test
-    fun `konvertering av long til UTC ZonedDateTime skal vaere korrekt` () {
-        // 01/17/1988 02:45:00 UTC+1
-        val long = 569382300000
-        assertEquals(
-                long.toUtcZonedDateTime(),
-                ZonedDateTime.of(1988, 1, 17, 2, 45, 0, 0, ZoneId.of("Europe/Oslo"))
-                        .withZoneSameInstant(ZoneId.of("UTC"))
-        )
-    }
     
     @Test
     fun `kall uten token avvises` () {

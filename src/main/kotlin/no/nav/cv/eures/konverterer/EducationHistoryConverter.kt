@@ -19,6 +19,7 @@ class EducationHistoryConverter(
         false -> ikkeSamtykket
     }
 
+    // TODO støtte null i fra-tidpsunkt
     private fun List<Utdannelse>.toEducationList()
             = map { EducationOrganizationAttendance(
             organizationName = it.laerested,

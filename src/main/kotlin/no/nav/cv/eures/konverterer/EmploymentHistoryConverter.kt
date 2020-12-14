@@ -17,23 +17,25 @@ class EmploymentHistoryConverter (
         false -> ikkeSamtykket
     }
 
+    // TODO støtte null i fra-tidpsunkt
     fun List<Arbeidserfaring>.toEmploymentList()
             = map {
         EmployerHistory(
                 organizationName = it.arbeidsgiver,
                 employmentPeriod = AttendancePeriod(
                         it.fraTidspunkt.toFormattedDateTime(),
-                        it.tilTidspunkt.toFormattedDateTime()
+                        it.tilTidspunkt?.toFormattedDateTime()
                 ),
                 positionHistory = it.toPositionHistory())
     }
 
+    // TODO støtte null i fra-tidpsunkt
     fun Arbeidserfaring.toPositionHistory()
             = listOf(PositionHistory(
             positionTitle = stillingstittel ?: stillingstittelFritekst, // TODO Skal dette være friktekstfeltet?
             employmentPeriod = AttendancePeriod(
                     fraTidspunkt.toFormattedDateTime(),
-                    tilTidspunkt.toFormattedDateTime()
+                    tilTidspunkt?.toFormattedDateTime()
             )))
 }
 

@@ -26,7 +26,7 @@ import java.time.ZonedDateTime
 @AutoConfigureTestDatabase(connection = EmbeddedDatabaseConnection.H2)
 @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
 @Import(TokenGeneratorConfiguration::class)
-class EuresServiceTest {
+class EuresServiceIntegrationTest {
 
     @Autowired
     lateinit var euresService: EuresService

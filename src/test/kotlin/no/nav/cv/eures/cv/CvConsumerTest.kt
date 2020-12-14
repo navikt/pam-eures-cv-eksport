@@ -6,9 +6,11 @@ import no.nav.cv.eures.konverterer.CvAvroSchema
 import no.nav.security.token.support.test.spring.TokenGeneratorConfiguration
 import org.apache.avro.SchemaBuilder
 import org.apache.kafka.clients.consumer.ConsumerRecord
+import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
+import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers
 import org.mockito.Mockito
 import org.springframework.beans.factory.annotation.Autowired
@@ -20,23 +22,19 @@ import org.springframework.context.annotation.Import
 import org.springframework.test.annotation.DirtiesContext
 import org.springframework.test.context.ActiveProfiles
 
-@SpringBootTest
-@ActiveProfiles("test")
-@AutoConfigureTestDatabase(connection = EmbeddedDatabaseConnection.H2)
-@DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
-@Import(TokenGeneratorConfiguration::class)
 class CvConsumerTest {
 
     private lateinit var cvConsumer : CvConsumer
 
-    @Autowired
-    private lateinit var cvRepository: CvRepository
+    private val cvRepository = Mockito.mock(CvRepository::class.java)
 
     private val meterRegistry = SimpleMeterRegistry()
     private val testData = CvTestData()
 
     private val TOPIC = "test-topic"
     private val PARTITION = 0
+
+    val meldingCaptor = ArgumentCaptor.forClass(RawCV::class.java)
 
     @BeforeEach
     fun setup() {
@@ -46,13 +44,12 @@ class CvConsumerTest {
     @Test
     fun `mottar en og en cv - lagres riktig`() {
         cvConsumer.receive(listOf(record(0, testData.aktoerId1, testData.melding1)))
-
-        assertTrue(sjekkAktor(testData.aktoerId1, testData.rawAvro1Base64))
-
         cvConsumer.receive(listOf(record(1, testData.aktoerId2, testData.melding2)))
 
-        assertTrue(sjekkAktor(testData.aktoerId1, testData.rawAvro1Base64))
-        assertTrue(sjekkAktor(testData.aktoerId2, testData.rawAvro2Base64))
+        Mockito.verify(cvRepository, Mockito.times(2)).saveAndFlush(meldingCaptor.capture())
+
+        assertEquals(testData.foedselsnummer1, meldingCaptor.allValues[0].foedselsnummer)
+        assertEquals(testData.foedselsnummer2, meldingCaptor.allValues[1].foedselsnummer)
     }
 
     @Test
@@ -64,23 +61,14 @@ class CvConsumerTest {
             record(offset++, testData.aktoerId2, testData.melding2)
         ))
 
-        assertTrue(sjekkAktor(testData.aktoerId1, testData.rawAvro1Base64))
-        assertTrue(sjekkAktor(testData.aktoerId2, testData.rawAvro2Base64))
-    }
+        Mockito.verify(cvRepository, Mockito.times(2)).saveAndFlush(meldingCaptor.capture())
 
-    private fun sjekkAktor(aktorId: String, rawAvroBase64: String) : Boolean {
-        val hentet = cvRepository.hentCvByAktoerId(aktorId)
-
-        return hentet != null
-                && hentet.aktoerId == aktorId
-                && hentet.rawAvro == rawAvroBase64
+        assertEquals(testData.foedselsnummer1, meldingCaptor.allValues[0].foedselsnummer)
+        assertEquals(testData.foedselsnummer2, meldingCaptor.allValues[1].foedselsnummer)
     }
 
     private fun record(offset: Long, aktorId: String, melding: Melding)
     = ConsumerRecord<String, ByteArray>(TOPIC, PARTITION, offset, aktorId, melding.toByteArray())
 
-
-    // Kotlin mockito hack
-    private fun <T> anyObject(): T = Mockito.anyObject<T>()
 
 }
