@@ -2,10 +2,7 @@ package no.nav.cv.eures.eures
 
 import no.nav.cv.eures.model.Converters.toUtcZonedDateTime
 import no.nav.security.token.support.core.api.Unprotected
-import org.springframework.web.bind.annotation.GetMapping
-import org.springframework.web.bind.annotation.PostMapping
-import org.springframework.web.bind.annotation.RequestMapping
-import org.springframework.web.bind.annotation.RestController
+import org.springframework.web.bind.annotation.*
 
 @RestController
 @RequestMapping("input/api/cv/v1.0")
@@ -26,7 +23,7 @@ class EuresController(
             euresService.getChangedReferences(modificationTimestamp.toUtcZonedDateTime())
 
     @PostMapping("getDetails", consumes = ["application/json"], produces = ["application/json"])
-    fun getDetails(references: List<String>) =
+    fun getDetails(@RequestBody references: List<String>) =
             euresService.getDetails(references)
 
 }
