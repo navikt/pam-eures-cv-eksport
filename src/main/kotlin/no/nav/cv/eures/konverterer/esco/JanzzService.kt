@@ -7,6 +7,7 @@ import no.nav.cv.eures.konverterer.esco.dto.CachedEscoMapping
 import no.nav.cv.eures.konverterer.esco.dto.JanzzEscoMapping
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
+import org.springframework.beans.factory.InitializingBean
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.scheduling.annotation.Scheduled
 import org.springframework.stereotype.Service
@@ -20,9 +21,16 @@ class JanzzService (
 
         @Value("\${janzz.authorization.token}") private val token: String,
         @Value("\${janzz.labels.resultLimit}") private val resultLimit: String
-) {
+) : InitializingBean {
 
+    companion object {
+        private lateinit var instance : JanzzService
+        fun instance() = instance
+    }
 
+    override fun afterPropertiesSet() {
+        instance = this
+    }
 
     private val log: Logger = LoggerFactory.getLogger(JanzzService::class.java)
     private val objectMapper = ObjectMapper().registerModule(KotlinModule())

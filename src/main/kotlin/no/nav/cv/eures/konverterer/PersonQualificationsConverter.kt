@@ -15,12 +15,10 @@ import org.springframework.beans.factory.annotation.Autowired
 class PersonQualificationsConverter (
         private val cv: Cv,
         private val profile: Jobbprofil,
-        private val samtykke: Samtykke
+        private val samtykke: Samtykke,
+        private val janzzService: JanzzService = JanzzService.instance()
 ) {
     private val log: Logger = LoggerFactory.getLogger(PersonQualificationsConverter::class.java)
-
-    @Autowired
-    private lateinit var janzzService: JanzzService
 
     fun toXmlRepresentation() : PersonQualifications {
         val qualifications = mutableListOf<PersonCompetency>()
