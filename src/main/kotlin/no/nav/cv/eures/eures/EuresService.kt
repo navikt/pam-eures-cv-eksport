@@ -14,6 +14,7 @@ import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Component
 import java.sql.Timestamp
+import java.time.ZoneOffset
 import java.time.ZonedDateTime
 
 @Component
@@ -54,8 +55,8 @@ class EuresService(
                 val map = mutableMapOf<String, CandidateDetail>()
                 listOf(created, modified).flatten().forEach { cv ->
                     map[cv.reference] = CandidateDetail(
-                            creationTimestamp = Timestamp.from(cv.opprettet.toInstant()),
-                            lastModificationTimestamp = Timestamp.from(cv.sistEndret.toInstant()),
+                            creationTimestamp = cv.opprettet.toInstant().atOffset(ZoneOffset.UTC).toInstant().toEpochMilli(),
+                            lastModificationTimestamp = cv.sistEndret.toInstant().atOffset(ZoneOffset.UTC).toInstant().toEpochMilli(),
                             reference = cv.reference,
                             status = ACTIVE,
                             content = cv.xml
@@ -64,7 +65,7 @@ class EuresService(
 
                 closed.forEach { cv ->
                     map[cv.reference] = CandidateDetail(
-                            closingTimestamp = Timestamp.from(cv.slettet?.toInstant()),
+                            closingTimestamp = cv.slettet?.toInstant()?.atOffset(ZoneOffset.UTC)?.toInstant()?.toEpochMilli(),
                             reference = cv.reference,
                             status = CLOSED
                     )

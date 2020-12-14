@@ -8,9 +8,9 @@ data class GetDetails(
 ) {
     @JsonInclude(JsonInclude.Include.NON_NULL)
     data class CandidateDetail(
-            val creationTimestamp: Timestamp? = null,
-            val lastModificationTimestamp: Timestamp? = null,
-            val closingTimestamp: Timestamp? = null,
+            val creationTimestamp: Long? = null,
+            val lastModificationTimestamp: Long? = null,
+            val closingTimestamp: Long? = null,
             val reference: String,
             val status: Status,
             val content: String? = null
