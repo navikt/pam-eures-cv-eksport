@@ -23,13 +23,13 @@ class PersonQualificationsConverter (
     fun toXmlRepresentation() : PersonQualifications {
         val qualifications = mutableListOf<PersonCompetency>()
 
-        if(samtykke.annenErfaring)
+        if(samtykke.annenErfaring && cv.annenErfaring != null)
             qualifications.addAll(cv.annenErfaring.toEsco())
 
-        if(samtykke.fagbrev)
+        if(samtykke.fagbrev && cv.fagdokumentasjon != null)
             qualifications.addAll(cv.fagdokumentasjon.toEsco())
 
-        if(samtykke.annenErfaring)
+        if(samtykke.annenErfaring && profile.kompetanser != null)
             qualifications.addAll(profile.kompetanser.toEsco())
 
         return PersonQualifications(qualifications)
