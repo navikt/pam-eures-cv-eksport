@@ -68,6 +68,12 @@ class CvConsumer(
         if(existing != null) {
             if (existing.underOppfoelging && oppfolgingsinformasjon == null) {
                 delete()
+
+                try {
+                    cvRepository.saveAndFlush(existing)
+                } catch (e: Exception) {
+                    log.error("Fikk exception ${e.message} under sletting av cv $this", e)
+                }
             } else {
                 existing.update(
                         sistEndret = ZonedDateTime.now(),
@@ -75,6 +81,12 @@ class CvConsumer(
                         underOppfoelging = (oppfolgingsinformasjon != null),
                         meldingstype = UPDATE
                 )
+
+                try {
+                    cvRepository.saveAndFlush(existing)
+                } catch (e: Exception) {
+                    log.error("Fikk exception ${e.message} under oppdatring av cv $this", e)
+                }
             }
         } else {
             val newRawCv = RawCV.create(
