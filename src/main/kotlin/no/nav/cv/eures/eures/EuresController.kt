@@ -19,7 +19,7 @@ class EuresController(
             euresService.getAllReferences()
 
     @GetMapping("getChanges/{modificationTimestamp}", produces = ["application/json"])
-    fun getChanges(modificationTimestamp: Long) =
+    fun getChanges(@PathVariable("modificationTimestamp") modificationTimestamp: Long) =
             euresService.getChangedReferences(modificationTimestamp.toUtcZonedDateTime())
 
     @PostMapping("getDetails", consumes = ["application/json"], produces = ["application/json"])

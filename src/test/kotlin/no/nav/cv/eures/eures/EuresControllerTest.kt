@@ -37,6 +37,16 @@ class EuresControllerTest {
     }
 
     @Test
+    fun `call to fetch changes` () {
+        val response = client.exchange(
+                "${baseUrl}input/api/cv/v1.0/getChanges/1607963578952",
+                HttpMethod.GET,
+                HttpEntity<Any>(headerWithToken(VALID_TEST_TOKEN_BASE64)),
+                String::class.java)
+        assertEquals(HttpStatus.OK, response.statusCode)
+    }
+
+    @Test
     fun `call to fetch details` () {
         val captor = ArgumentCaptor.forClass(List::class.java)
         val requestBody = """ ["FD100003", "FD1234123"] """
