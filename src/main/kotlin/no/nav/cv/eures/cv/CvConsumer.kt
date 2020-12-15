@@ -59,7 +59,7 @@ class CvConsumer(
 
         if (foedselsnummer == null) {
             // TODO ta vekk logging av aktørid i prod
-            log.warn("Kafkamelding mangler fødselsnummer - hopper over den ($aktoerId)")
+            log.warn("Kafkamelding mangler fødselsnummer - hopper over den ($aktoerId) - Meldingstype: $meldingstype. [ endretCv: $endreCv, endretCv.cv: ${endreCv?.cv},  opprettCv: $opprettCv, opprettCv.cv: ${opprettCv?.cv} ]")
             return
         }
 
