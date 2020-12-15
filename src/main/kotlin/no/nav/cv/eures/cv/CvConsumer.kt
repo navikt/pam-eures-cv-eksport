@@ -67,6 +67,7 @@ class CvConsumer(
 
         if(existing != null) {
             if (existing.underOppfoelging && oppfolgingsinformasjon == null) {
+                log.debug("Deleting")
                 delete()
 
                 try {
@@ -75,6 +76,7 @@ class CvConsumer(
                     log.error("Fikk exception ${e.message} under sletting av cv $this", e)
                 }
             } else {
+                log.debug("Updating")
                 existing.update(
                         sistEndret = ZonedDateTime.now(),
                         rawAvro = rawAvroBase64,
@@ -89,6 +91,7 @@ class CvConsumer(
                 }
             }
         } else {
+            log.debug("inserting")
             val newRawCv = RawCV.create(
                     aktoerId = aktoerId,
                     foedselsnummer = foedselsnummer,
