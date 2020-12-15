@@ -106,7 +106,7 @@ class CvConsumer(
     private fun Melding.createUpdateOrDelete(rawAvroBase64: String) {
         meterRegistry.counter("cv.endring.mottatt",
                 "meldingstype", meldingstype.name)
-
+        log.debug("id: Meldingstype: ${meldingstype.name} - $aktoerId, OpprettCv: $opprettCv, EndreCv: $endreCv, SlettCv: $slettCv, OpprettJobbprofil: $opprettJobbprofil, EndreJobbprofil: $endreJobbprofil, SlettJobbprofil: $slettJobbprofil, Oppfolgingsinformasjon: $oppfolgingsinformasjon, ")
         when (meldingstype) {
             Meldingstype.OPPRETT -> createOrUpdateRawCvRecord(rawAvroBase64)
             Meldingstype.ENDRE -> createOrUpdateRawCvRecord(rawAvroBase64)
