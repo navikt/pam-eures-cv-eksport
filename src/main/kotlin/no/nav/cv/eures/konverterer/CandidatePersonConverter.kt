@@ -51,7 +51,7 @@ class CandidatePersonConverter(
     private fun List<Spraakferdighet>.toLanguages() : List<String> {
         val languages = mapNotNull { LanguageConverter.fromIso3ToIso1(it.iso3kode) }
         if (languages.isEmpty()) log.warn("Missing at least one language for CvId : \"${cv.cvId}\"")
-        return languages
+        return if(samtykke.spraak) languages else listOf()
     }
 
     private fun String.toIso3166_1a2CountryCode(): String {
