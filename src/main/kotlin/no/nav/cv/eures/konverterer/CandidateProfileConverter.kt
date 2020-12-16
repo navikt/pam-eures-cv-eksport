@@ -12,7 +12,7 @@ class CandidateProfileConverter(
 ) {
     fun toXmlRepresentation()
             = CandidateProfile(
-            executiveSummary = cv.sammendrag,
+            executiveSummary = if(samtykke.sammendrag) cv.sammendrag else "",
             employmentHistory = EmploymentHistoryConverter(cv, samtykke).toXmlRepresentation(),
             educationHistory = EducationHistoryConverter(cv, samtykke).toXmlRepresentation(),
             licenses = LicensesConverter(cv, samtykke).toXmlRepresentation(),
