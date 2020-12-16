@@ -17,6 +17,8 @@ spring:
       trust-store-password: ${NAV_TRUSTSTORE_PASSWORD}
     bootstrap-servers: ${KAFKA_BOOTSTRAP_SERVERS:localhost:9092}
     consumer:
+      group-id: pam-eures-cv-eksport-v4
+      auto-offset-reset: earliest
       enable-auto-commit: true
       key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
       value-deserializer: org.apache.kafka.common.serialization.ByteArrayDeserializer
