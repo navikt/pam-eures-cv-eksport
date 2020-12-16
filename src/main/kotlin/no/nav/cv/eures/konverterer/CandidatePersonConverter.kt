@@ -26,7 +26,7 @@ class CandidatePersonConverter(
                             familyName = ""
                     ),
                     communication = listOf(),
-                    residencyCountryCode = cv.land,
+                    residencyCountryCode = cv.land ?: "",
                     nationalityCode = listOf(cv.nasjonalitet.toIso3166_1a2CountryCode()),
                     birthDate = "",
                     genderCode = GenderCode.NotSpecified,
@@ -40,7 +40,7 @@ class CandidatePersonConverter(
 
                 communication = Communication.buildList(telephone = cv.telefon, email = cv.epost),
 
-                residencyCountryCode = cv.land,
+                residencyCountryCode = cv.land ?: "",
                 nationalityCode = listOf(cv.nasjonalitet.toIso3166_1a2CountryCode()),
                 birthDate = cv.foedselsdato.toString(),
                 genderCode = GenderCode.NotSpecified, // TODO : Vi har vel ikke kjønn?
