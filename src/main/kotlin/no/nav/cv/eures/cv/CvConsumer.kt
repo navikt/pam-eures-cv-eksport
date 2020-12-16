@@ -28,7 +28,7 @@ class CvConsumer(
 
 
     @KafkaListener(
-            groupId = "pam-eures-cv-eksport-v4",
+            groupId = "pam-eures-cv-eksport-v5",
             topics = ["\${kafka.topics.consumers.cv_endret}"],
             containerFactory = "cvMeldingContainerFactory",
             properties = [
