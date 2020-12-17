@@ -120,8 +120,5 @@ compileTestKotlin {
 
 tasks.withType(JavaExec) {
     classpath += test.classpath
-    if (System.getenv('RUN_LOCAL') != null)
-        jvmArgs('-noverify', '-XX:TieredStopAtLevel=1', '-Dcom.sun.management.jmxremote', '-Dspring.profiles.active=local-docker')
-    else
-        jvmArgs('-noverify', '-XX:TieredStopAtLevel=1', '-Dcom.sun.management.jmxremote')
+    jvmArgs('-noverify', '-XX:TieredStopAtLevel=1', '-Dcom.sun.management.jmxremote')
 }

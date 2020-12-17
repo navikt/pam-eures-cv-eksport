@@ -1,30 +1,52 @@
 
-### Oppsett på Mac
-`brew install postresql`
+## For å kjøre appen lokalt
 
-Og start med `postgres -D /usr/local/var/postgres`.
+Det kreves at enkelte ting kjører på PC
+1. Postgres med applikasjonens database, pam-eures-cv-eksport
+1. Kafka-oppsett fra CV. Se nedenfor 
 
-Opprett databasen `pam-eures-cv-eksport` med tilhørende bruker `pam-eures-cv-eksport-admin` i din favoritt PSQL klient 
-på localhost.
+### Kommandolinje
+`gradle run`
 
-### For å kjøre appen lokalt
+Dette kjører opp appen vha gradle. Da puttes også src/test/* på classpath. Der finnes det en logback-test.xml som gjør
+logging litt hyggeligere. I tillegg finnes no.nav.security:token-validation-test-support på test-class-path, slik at man
+kan teste endepunktene også 
 
-`RUN_LOCAL=true gradle run`
+### Intellij
+Bruk IntelliJ sin gradle-plugin, og velg Tasks -> application -> run. Da får man de
+nødvendige ting (no.nav.security:token-validation-test-support) på classpathen
 
-RUN_LOCAL plukkes opp i `gradle.build` og sender med `-Dmicronaut.environments=local` som parameter til java.
-Dette plukkes igjen opp i  `DataSourceFactory.kt` og disabler Hikari og Vault integrasjonen.
+## Oppsett av database første gang
+Opprett database med applikasjonens defaultbruker 
 
+STart med å installere og starte postgresserveren - hvis det ikke allerede er på plass
+* Installere: `brew install postresql`
+* Start postgres-server og la den gå. For eksempel ved `postgres -D /usr/local/var/postgres`
 
-### Kafka
+Opprett bruker `pam-eures-cv-eksport` uten passord, og database `pam-eures-cv-eksport` som eies av denne brukeren i din 
+favorittklient.
+Eksempler ved postgres' kommandolinje-verktøy
+* `createuser -e pam-eures-cv-eksport`
+* `createdb --owner=pam-eures-cv-eksport pam-eures-cv-eksport`.
 
-Ved lokal kjøring kobler appen til env variabelen KAFKA_HOST på port 9092 (`application-local.yml`). Her kan man bruke 
-`pam-cv-api` sin Kafka VM og bruke nevnte app sine syntetiske test data for å ha noen meldinger å konsumere. Sjekk 
-readme i CV API for instruksjoner.
+### Oppstart senere
+Sørg for at samme postgres kjører `postgres -D /usr/local/var/postgres`.
 
-### XML test mapping
+Hvis du har behov for å koble på databasen å sjekke ting manuelt, så kan det også gjøres i favorittklienten din
+* Eksempel med psql `psql --user=pam-eures-cv-eksport -d pam-eures-cv-eksport`
+
+## Kafka
+Kan starte dockerimage med pam-cv-api's kafka-topic vha `pam-cv-api/migrering/src/test/resources/cv-pipeline.sh up`
+Den starter kafka med broker på `localhost:9091`, og schema registry på `localhost:8081` Dette
+er defaultverdier i appen
+
+Her kan man bruke  `pam-cv-api` sin Kafka VM og bruke nevnte app sine syntetiske test data for å ha noen meldinger 
+å konsumere. Sjekk README i CV API for instruksjoner.
+
+## XML test mapping
 I `Konverterer.kt` finnes det en `testing()` funksjon (kjøres automagisk) som dumper XML for en hardkodet syntetisk 
 aktør til en fil ved navn cv_UUID.xml
 
-### XML Validator
+## XML Validator
 https://webgate.acceptance.ec.europa.eu/eures/eures-tools/debug-tool/page/main#/validator-tool
 (Brukernavn og passord i vault for team-pam)

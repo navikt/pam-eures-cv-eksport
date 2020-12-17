@@ -1,18 +1,5 @@
-no.nav.security.jwt.issuer:
-  selvbetjening:
-    cookie_name: localhost-idtoken
 spring:
-  kafka:
-    properties:
-      sasl:
-        mechanism: PLAIN
-        jaas:
-          config: ''
-      schema:
-        registry:
-          url: http://${KAFKA_HOST:localhost}:8081
-      security:
-        protocol: PLAINTEXT
+
   datasource:
     driverClassName: 'org.h2.Driver'
     url: 'jdbc:h2:mem:pam_eures_cv_eksport;MODE=PostgreSQL;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE'
@@ -22,12 +9,7 @@ spring:
       maximum-pool-size: 2
       minimum-idle: 0
       pool-name: default
-  flyway:
-    enabled: true
-    baseline-on-migrate: true
-    locations:
-      - "classpath:db"
+no.nav.security.jwt.issuer:
+  selvbetjening:
+    cookie_name: localhost-idtoken
 
-janzz:
-  authorization:
-    token: ${JANZZ_AUTH_TOKEN:123}
