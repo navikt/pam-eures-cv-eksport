@@ -12,7 +12,6 @@ import java.io.File
 
 // TODO - Enable test again
 //@SpringBootTest
-//@ActiveProfiles("test")
 class XmlSerializerTest {
 
     @Autowired
