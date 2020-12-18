@@ -33,6 +33,7 @@ data class EducationLevelCode(
         val code: String
 
 )
+/* TODO Denne ser ubrukt ut. Kommenterer den ut intill videre
 enum class EducationLevelCodeEnum(code: Int) {
     EarlyChildhood(0),
     Primary(1),
@@ -44,4 +45,5 @@ enum class EducationLevelCodeEnum(code: Int) {
     Masters(7),
     Doctoral(8)
 }
+*/
 

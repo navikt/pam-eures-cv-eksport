@@ -22,12 +22,12 @@ class NaisLoginModule : LoginModule {
         log.info("Initialising kafka with user: $username")
         if (username != null) {
 
-            subject.publicCredentials.add(username.strip())
+            subject.publicCredentials.add(username)
         }
         val password = System.getenv("KAFKA_SERVICE_PASSWORD")
-        log.info("Continuing intializing kafka ${password?.strip()?.length ?: "null"}")
+        log.info("Continuing intializing kafka ${password?.length ?: "null"}")
         if (password != null) {
-            subject.privateCredentials.add(password.strip())
+            subject.privateCredentials.add(password)
         }
     }
 

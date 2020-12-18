@@ -24,9 +24,7 @@ class EuresSecurityHandler(
         if (handler !is HandlerMethod)
             return true
 
-        val handlerMethod = handler as HandlerMethod
-
-        if (handlerMethod.bean !is EuresController)
+        if (handler.bean !is EuresController)
             return true
 
         if (request.hasToken() && request.token contentEquals ourToken )

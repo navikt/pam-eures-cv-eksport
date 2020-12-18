@@ -48,7 +48,6 @@ class EuresControllerTest {
 
     @Test
     fun `call to fetch details` () {
-        val captor = ArgumentCaptor.forClass(List::class.java)
         val requestBody = """ ["FD100003", "FD1234123"] """
         val headers = headerWithToken(VALID_TEST_TOKEN_BASE64)
         headers.contentType = MediaType.APPLICATION_JSON

@@ -45,7 +45,7 @@ class CvConsumerTest {
 
         cvConsumer.receive(listOf(
             record(offset++, testData.aktoerId1, testData.melding1),
-            record(offset++, testData.aktoerId2, testData.melding2)
+            record(offset, testData.aktoerId2, testData.melding2)
         ))
 
         Mockito.verify(cvRepository, Mockito.times(2)).saveAndFlush(meldingCaptor.capture())

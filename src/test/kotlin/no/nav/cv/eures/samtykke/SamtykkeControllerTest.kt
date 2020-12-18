@@ -57,7 +57,7 @@ class SamtykkeControllerTest {
         val hentet = client.getForEntity("samtykke", Samtykke::class.java).body
 
         // TODO : Hvorfor tror databasen at den er UTC? --> Det er default for ZonedTimeDate
-        assertEquals(now.withZoneSameInstant(ZoneId.of("UTC")), hentet.sistEndret)
+        assertEquals(now.withZoneSameInstant(ZoneId.of("UTC")), hentet?.sistEndret)
         assertEquals(true, hentet?.personalia)
         assertEquals(true, hentet?.utdanning)
     }

@@ -25,6 +25,6 @@ class XmlSerializerTest {
         val xmlString = cvConverterService.convertToXml(aktorId)
 
         val filename = "cv_$aktorId.xml"
-        // File(filename).writeText(xmlString.second)
+        File(filename).writeText(xmlString!!.second)
     }
 }

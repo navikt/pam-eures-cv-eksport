@@ -17,7 +17,7 @@ import org.springframework.stereotype.Service
 import java.time.ZonedDateTime
 
 @Service
-open class CvConverterService(
+class CvConverterService(
         private val cvRepository: CvRepository,
         private val cvXmlRepository: CvXmlRepository,
         private val samtykkeRepository: SamtykkeRepository
@@ -51,14 +51,15 @@ open class CvConverterService(
 
     fun updateExisting(cvXml: CvXml?): CvXml? {
         val now = ZonedDateTime.now()
-        return cvXml?.let {
-            convertToXml(it.foedselsnummer)?.let { xml ->
-                it.sistEndret = now
-                it.slettet = null
-                it.xml = xml.second
-                return cvXmlRepository.save(it)
+
+        if(cvXml == null) return null
+
+        return convertToXml(cvXml.foedselsnummer)?.let { xml ->
+                cvXml.sistEndret = now
+                cvXml.slettet = null
+                cvXml.xml = xml.second
+                return cvXmlRepository.save(cvXml)
             }
-        }
     }
 
     fun createOrUpdate(foedselsnummer: String) {
