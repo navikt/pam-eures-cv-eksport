@@ -6,7 +6,7 @@ import no.nav.arbeid.cv.avro.Meldingstype
 import no.nav.arbeid.cv.avro.OpprettCv
 import org.apache.avro.io.EncoderFactory
 import org.apache.avro.specific.SpecificDatumWriter
-import org.apache.commons.io.output.ByteArrayOutputStream
+import java.io.ByteArrayOutputStream
 import java.time.Instant
 import java.time.LocalDate
 import java.time.ZonedDateTime
