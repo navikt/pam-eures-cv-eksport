@@ -46,6 +46,8 @@ spring:
     baseline-on-migrate: true
     locations:
       - "classpath:db"
+    connect-retries: 50
+
 
 
 kafka:
