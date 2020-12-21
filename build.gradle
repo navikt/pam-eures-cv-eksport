@@ -70,7 +70,7 @@ dependencies {
     // TODO - Remove temporary use of jwt implementation
     implementation 'com.auth0:java-jwt:3.11.0'
 
-    implementation "org.flywaydb:flyway-core"
+    implementation "org.flywaydb:flyway-core:6.4.4"
 
     runtimeOnly "com.fasterxml.jackson.module:jackson-module-kotlin:2.9.8"
     runtimeOnly "ch.qos.logback:logback-classic:1.2.3"
