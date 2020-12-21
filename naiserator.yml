@@ -10,10 +10,10 @@ spec:
   port: 9030
   liveness:
     path: /pam-eures-cv-eksport/internal/isAlive
-    initialDelay: 20
+    initialDelay: 60
   readiness:
     path: /pam-eures-cv-eksport/internal/isReady
-    initialDelay: 20
+    initialDelay: 60
   replicas:
     min: 1
     max: 1
