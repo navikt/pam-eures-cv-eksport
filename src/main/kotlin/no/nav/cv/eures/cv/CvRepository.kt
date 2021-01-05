@@ -16,6 +16,10 @@ interface CvRepository : JpaRepository<RawCV, Long> {
 
     @Query("SELECT cv FROM RawCV cv WHERE cv.prosessert = false")
     fun hentUprosesserteCver(): List<RawCV>
+
+    @Query("SELECT cv FROM RawCV cv WHERE cv.sistEndret < ?1")
+    fun hentGamleCver(time: ZonedDateTime): List<RawCV>
+
 }
 
 
