@@ -21,8 +21,8 @@ class PruneSamtykke(
         val log: Logger = LoggerFactory.getLogger(PruneSamtykke::class.java)
     }
 
-    // Once per hour (ms) 30 s for testing
-    @Scheduled(fixedDelay = 1000 * 30)
+    // Once a day (ms)
+    @Scheduled(fixedDelay = 1000 * 60 * 60 * 24)
     fun prune() = cvRepository.hentGamleCver(ZonedDateTime.now().minusYears(1))
             .onEach { rawCv ->
                 log.debug("Sletter cv og samtykke for gammel xml cv ${rawCv.aktoerId}")
