@@ -93,7 +93,4 @@ class JanzzService (
         log.info("Pruning ESCO JANZZ cache")
         janzzCacheRepository.pruneCache()
     }
-
-
 }
-
