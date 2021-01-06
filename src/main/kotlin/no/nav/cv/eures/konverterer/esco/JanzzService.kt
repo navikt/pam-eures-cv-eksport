@@ -88,7 +88,7 @@ class JanzzService (
             = janzzMappings.flatMap { outer -> outer.classifications.ESCO.map { esco -> CachedEscoMapping(outer.label, outer.conceptId.toString(), esco, ZonedDateTime.now()) } }
 
 
-    @Scheduled(fixedDelay = 1000 * 60)
+    @Scheduled(fixedDelay = 1000 * 60 * 60 * 24)
     fun pruneJanzzCache() {
         log.info("Pruning ESCO JANZZ cache")
         janzzCacheRepository.pruneCache()
