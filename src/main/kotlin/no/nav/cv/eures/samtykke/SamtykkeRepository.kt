@@ -15,6 +15,7 @@ interface SamtykkeRepository {
     fun hentSamtykkeUtenNaaverendeXml(foedselsnummer: List<String>) : List<SamtykkeEntity>
     fun slettSamtykke(foedselsnummer: String) : Int
     fun oppdaterSamtykke(foedselsnummer: String, samtykke: Samtykke)
+    fun finnFoedselsnumre() : List<String>
 
 }
 
@@ -56,9 +57,9 @@ private open class JpaSamtykkeRepository(
     @Transactional(readOnly = true)
     override fun hentSamtykkeUtenNaaverendeXml(foedselsnummer: List<String>)
             = entityManager.createNativeQuery(hentSamtykkeUtenNaavaerendeXmlQuery, SamtykkeEntity::class.java)
-            .setParameter("foedselsnummer", foedselsnummer)
-            .resultList
-            .map { it as SamtykkeEntity }
+                .setParameter("foedselsnummer", foedselsnummer)
+                .resultList
+                .map { it as SamtykkeEntity }
 
     private val slettSamtykke =
             """
@@ -78,6 +79,17 @@ private open class JpaSamtykkeRepository(
         slettSamtykke(foedselsnummer)
         entityManager.persist(SamtykkeEntity.from(foedselsnummer, samtykke))
     }
+
+    private val finnFoedselsnumre =
+            """
+                SELECT FOEDSELSNUMMER FROM SAMTYKKE
+            """.replace(serieMedWhitespace, " ")
+
+    @Transactional
+    override fun finnFoedselsnumre(): List<String>
+            = entityManager.createNativeQuery(finnFoedselsnumre, String::class.java)
+                .resultList
+                .map { it as String }
 }
 
 @Entity
