@@ -25,10 +25,11 @@ class XmlUpdater (
         log.info("Pruning ESCO JANZZ cache")
         janzzCacheRepository.pruneCache()
 
-        log.info("Regenerating origin rate XML")
 
         val foedselsnumre = samtykkeRepository.finnFoedselsnumre()
 
-        foedselsnumre.forEach { cvConverterService.createOrUpdate(it) }
+        foedselsnumre
+                .also { log.info("Regenerating ${it.size} origin rate XML") }
+                .forEach { cvConverterService.createOrUpdate(it) }
     }
 }
