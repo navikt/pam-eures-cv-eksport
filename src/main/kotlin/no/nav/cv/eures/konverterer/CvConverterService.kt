@@ -52,6 +52,8 @@ class CvConverterService(
     fun updateExisting(cvXml: CvXml?): CvXml? {
         val now = ZonedDateTime.now()
 
+        log.debug("Updating existing ${cvXml?.id}")
+
         if(cvXml == null) return null
 
         return convertToXml(cvXml.foedselsnummer)?.let { xml ->
