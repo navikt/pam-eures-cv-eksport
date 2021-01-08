@@ -143,9 +143,20 @@ class CvConsumer(
 
                 val meldingValue = melding.value()
                 val rawAvroBase64 = Base64.getEncoder().encodeToString(meldingValue)
-                meldingValue.toMelding().createUpdateOrDelete(rawAvroBase64)
+                try {
+                    val meldingTmp = meldingValue.toMelding()
+
+                    try {
+                        meldingTmp.createUpdateOrDelete(rawAvroBase64)
+                    } catch (e: Exception) {
+                        log.error("CREATE UPDATE DELETE Klarte ikke behandkle kafkamelding ${melding.key()} (partition: ${melding.partition()} - offset ${melding.offset()} - størrelse: ${melding.value().size}  StackTrace: ${e.stackTraceToString()}", e)
+                    }
+                } catch (e: Exception) {
+                    log.error("toMelding() Klarte ikke behandkle kafkamelding ${melding.key()} (partition: ${melding.partition()} - offset ${melding.offset()} - størrelse: ${melding.value().size}  StackTrace: ${e.stackTraceToString()}", e)
+                }
+
             } catch (e: Exception) {
-                log.error("Klarte ikke behandkle kafkamelding ${melding.key()} (partition: ${melding.partition()} - offset ${melding.offset()} - størrelse: ${melding.value().size}", e)
+                log.error("DECODE Klarte ikke behandkle kafkamelding ${melding.key()} (partition: ${melding.partition()} - offset ${melding.offset()} - størrelse: ${melding.value().size}  StackTrace: ${e.stackTraceToString()}", e)
             }
         }
     }
