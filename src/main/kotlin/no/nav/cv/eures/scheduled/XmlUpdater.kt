@@ -1,7 +1,11 @@
 package no.nav.cv.eures.scheduled
 
 import no.nav.cv.eures.konverterer.CvConverterService
+import no.nav.cv.eures.konverterer.esco.JanzzCacheRepository
+import no.nav.cv.eures.konverterer.esco.JanzzService
 import no.nav.cv.eures.samtykke.SamtykkeRepository
+import org.slf4j.Logger
+import org.slf4j.LoggerFactory
 import org.springframework.context.annotation.Profile
 import org.springframework.scheduling.annotation.Scheduled
 import org.springframework.stereotype.Service
@@ -10,11 +14,19 @@ import org.springframework.stereotype.Service
 @Service
 class XmlUpdater (
         private val cvConverterService: CvConverterService,
-        private val samtykkeRepository: SamtykkeRepository
+        private val samtykkeRepository: SamtykkeRepository,
+        private val janzzCacheRepository: JanzzCacheRepository
 ){
 
-    @Scheduled(fixedDelay = 1000 * 60 * 60 * 24)
+    private val log: Logger = LoggerFactory.getLogger(XmlUpdater::class.java)
+
+    @Scheduled(fixedDelay = 1000 * 60)
     fun updateXmlCv() {
+        log.info("Pruning ESCO JANZZ cache")
+        janzzCacheRepository.pruneCache()
+
+        log.info("Regenerating origin rate XML")
+
         val foedselsnumre = samtykkeRepository.finnFoedselsnumre()
 
         foedselsnumre.forEach { cvConverterService.createOrUpdate(it) }
