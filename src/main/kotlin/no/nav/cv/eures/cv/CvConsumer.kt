@@ -131,11 +131,10 @@ class CvConsumer(
         try {
             val datumReader = SpecificDatumReader(Melding::class.java)
             val businessPartOfMessage = slice(5 until size).toByteArray()
-            log.info("BusinessPart size: ${businessPartOfMessage.size}")
             val decoder = DecoderFactory.get().binaryDecoder(businessPartOfMessage, null)
             return datumReader.read(null, decoder)
         } catch (e: Exception) {
-            log.error("Klarte ikke decde kafka melding. Size: $size First five bytes: '${slice(0..5)}'", e)
+            log.error("Klarte ikke decde kafka melding. Size: $size", e)
             throw(e)
         }
     }
@@ -150,20 +149,10 @@ class CvConsumer(
 
                 val meldingValue = melding.value()
                 val rawAvroBase64 = Base64.getEncoder().encodeToString(meldingValue)
-                try {
-                    val meldingTmp = meldingValue.toMelding()
-
-                    try {
-                        meldingTmp.createUpdateOrDelete(rawAvroBase64)
-                    } catch (e: Exception) {
-                        log.error("CREATE UPDATE DELETE Klarte ikke behandkle kafkamelding ${melding.key()} (partition: ${melding.partition()} - offset ${melding.offset()} - størrelse: ${melding.value().size}  StackTrace: ${e.stackTraceToString()}", e)
-                    }
-                } catch (e: Exception) {
-                    log.error("toMelding() Klarte ikke behandkle kafkamelding ${melding.key()} (partition: ${melding.partition()} - offset ${melding.offset()} - størrelse: ${melding.value().size}  StackTrace: ${e.stackTraceToString()}", e)
-                }
+                meldingValue.toMelding().createUpdateOrDelete(rawAvroBase64)
 
             } catch (e: Exception) {
-                log.error("DECODE Klarte ikke behandkle kafkamelding ${melding.key()} (partition: ${melding.partition()} - offset ${melding.offset()} - størrelse: ${melding.value().size}  StackTrace: ${e.stackTraceToString()}", e)
+                log.error("Klarte ikke behandle kafkamelding ${melding.key()} (partition: ${melding.partition()} - offset ${melding.offset()} - størrelse: ${melding.value().size}  StackTrace: ${e.stackTraceToString()}", e)
             }
         }
     }
