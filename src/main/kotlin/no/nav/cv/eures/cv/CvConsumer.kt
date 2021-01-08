@@ -128,9 +128,16 @@ class CvConsumer(
     }
 
     private fun ByteArray.toMelding(): Melding {
-        val datumReader = SpecificDatumReader(Melding::class.java)
-        val decoder = DecoderFactory.get().binaryDecoder(slice(5 until size).toByteArray(), null)
-        return datumReader.read(null, decoder)
+        try {
+            val datumReader = SpecificDatumReader(Melding::class.java)
+            val businessPartOfMessage = slice(5 until size).toByteArray()
+            log.info("BusinessPart size: ${businessPartOfMessage.size}")
+            val decoder = DecoderFactory.get().binaryDecoder(businessPartOfMessage, null)
+            return datumReader.read(null, decoder)
+        } catch (e: Exception) {
+            log.error("Klarte ikke decde kafka melding. Size: $size First five bytes: '${slice(0..5)}'", e)
+            throw(e)
+        }
     }
 
     private fun processMessages(endretCV: List<ConsumerRecord<String, ByteArray>>) {
