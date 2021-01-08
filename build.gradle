@@ -34,7 +34,7 @@ dependencies {
     implementation "com.fasterxml.jackson.module:jackson-module-kotlin:2.11.+"
     implementation "com.fasterxml.jackson.dataformat:jackson-dataformat-xml"
 
-    implementation "no.nav.arbeid.pam:pam-cv-avro-cvmeldinger:46"
+    implementation "no.nav.arbeid.pam:pam-cv-avro-cvmeldinger:50"
 
     // SNYK fixes
     implementation "org.dom4j:dom4j:2.1.3"
