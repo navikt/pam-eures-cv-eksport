@@ -2,7 +2,6 @@ package no.nav.cv.eures.scheduled
 
 import no.nav.cv.eures.konverterer.CvConverterService
 import no.nav.cv.eures.konverterer.esco.JanzzCacheRepository
-import no.nav.cv.eures.konverterer.esco.JanzzService
 import no.nav.cv.eures.samtykke.SamtykkeRepository
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
@@ -24,7 +23,6 @@ class XmlUpdater (
     fun updateXmlCv() {
         log.info("Pruning ESCO JANZZ cache")
         janzzCacheRepository.pruneCache()
-
 
         val foedselsnumre = samtykkeRepository.finnFoedselsnumre()
 
