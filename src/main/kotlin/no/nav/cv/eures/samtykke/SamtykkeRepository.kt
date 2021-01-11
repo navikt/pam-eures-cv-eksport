@@ -13,10 +13,10 @@ interface SamtykkeRepository {
 
     fun hentSamtykke(foedselsnummer: String) : Samtykke?
     fun hentSamtykkeUtenNaaverendeXml(foedselsnummer: List<String>) : List<SamtykkeEntity>
+    fun hentAntallSamtykker() : Int
     fun slettSamtykke(foedselsnummer: String) : Int
     fun oppdaterSamtykke(foedselsnummer: String, samtykke: Samtykke)
     fun finnFoedselsnumre() : List<String>
-
 }
 
 @Repository
@@ -61,6 +61,16 @@ private open class JpaSamtykkeRepository(
                 .resultList
                 .map { it as SamtykkeEntity }
 
+    private val hentAntallSamtykker =
+            """
+                SELECT COUNT(*) FROM SAMTYKKE
+            """.replace(serieMedWhitespace, " ")
+
+    @Transactional
+    override fun hentAntallSamtykker() : Int
+            = entityManager.createNativeQuery(hentAntallSamtykker, Int::class.java)
+            .firstResult
+
     private val slettSamtykke =
             """
                 DELETE SamtykkeEntity se
@@ -87,7 +97,7 @@ private open class JpaSamtykkeRepository(
 
     @Transactional
     override fun finnFoedselsnumre(): List<String>
-            = entityManager.createNativeQuery(finnFoedselsnumre, String::class.java)
+            = entityManager.createNativeQuery(finnFoedselsnumre)
                 .resultList
                 .map { it as String }
 }

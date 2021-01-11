@@ -21,6 +21,8 @@ interface CvRepository : JpaRepository<RawCV, Long> {
             "WHERE cv.sistEndret < ?1 AND cvXml.slettet IS NULL")
     fun hentGamleCver(time: ZonedDateTime): List<RawCV>
 
+    @Query("SELECT COUNT(*) FROM CV_RAW", nativeQuery = true)
+    fun fetchCountRawCvs() : Long
 }
 
 

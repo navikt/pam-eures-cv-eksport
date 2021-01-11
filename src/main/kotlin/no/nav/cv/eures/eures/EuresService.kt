@@ -33,6 +33,8 @@ class EuresService(
                 return@let Triple(created, modified, closed)
             }
 
+    fun getAll() = cvXmlRepository.fetchAll().partitionCvs()
+
     fun getAllReferences() = cvXmlRepository.fetchAllActive()
             .map { Reference(it) }
             .let { GetAllReferences(it) }
