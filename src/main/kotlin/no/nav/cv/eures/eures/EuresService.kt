@@ -44,9 +44,9 @@ class EuresService(
             .partitionCvs()
             .also { (created, modified, closed) ->
                 log.info("EURES Controller has these changed references: \n" +
-                        "${created.size} created : ${created.joinToString { it.reference + "," }}\n" +
-                        "${modified.size} modified : ${modified.joinToString { it.reference + "," }}\n" +
-                        "${closed.size} closed : ${closed.joinToString { it.reference + "," }}")
+                        "${created.size} created : ${created.joinToString { it.reference }}\n" +
+                        "${modified.size} modified : ${modified.joinToString { it.reference }}\n" +
+                        "${closed.size} closed : ${closed.joinToString { it.reference }}")
             }
             .let { (created, modified, closed) ->
                 return@let GetChangedReferences(
