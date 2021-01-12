@@ -55,7 +55,8 @@ class CvConsumer(
 
         if (foedselsnummer == null) {
             // TODO ta vekk logging av aktørid i prod
-            log.warn("Kafkamelding mangler fødselsnummer - hopper over den ($aktoerId) - Meldingstype: $meldingstype.")// [ endretCv: $endreCv, endretCv.cv: ${endreCv?.cv},  opprettCv: $opprettCv, opprettCv.cv: ${opprettCv?.cv} ]")
+            log.warn("Kafkamelding mangler fødselsnummer - hopper over den ($aktoerId) - Meldingstype: $meldingstype.")
+            if(aktoerId == "1000071533503") log.info("Kafkamelding uten fødselsnummer [ endretCv: $endreCv, endretCv.cv: ${endreCv?.cv},  opprettCv: $opprettCv, opprettCv.cv: ${opprettCv?.cv} ]")
             return
         }
 
