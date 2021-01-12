@@ -31,15 +31,21 @@ class GenerateMetrics(
         log.info("$count samtykker er hentet")
 
         val countRaw = cvRepository.fetchCountRawCvs()
+        meterRegistry.gauge("cv.eures.eksport.antall.raw.total", count)
         log.info("$countRaw RawCV-er er hentet")
 
         val countExportable = cvXmlRepository.fetchAllActive().size
+        meterRegistry.gauge("cv.eures.eksport.antall.exportable.total", count)
         log.info("$countExportable eksporterbare CV-er er hentet")
 
         val countDeletable = cvXmlRepository.fetchCountDeletableCvs()
+        meterRegistry.gauge("cv.eures.eksport.antall.deletable.total", count)
         log.info("$countDeletable slettbare CV-er er hentet")
 
         val (created, modified, closed) = euresService.getAll()
+        meterRegistry.gauge("cv.eures.eksport.antall.euresService.created.total", count)
+        meterRegistry.gauge("cv.eures.eksport.antall.euresService.modified.total", count)
+        meterRegistry.gauge("cv.eures.eksport.antall.euresService.closed.total", count)
         log.info("${created.size} opprettet, ${modified.size} endret, ${closed.size} slettet")
     }
 }
