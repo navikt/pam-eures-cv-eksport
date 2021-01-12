@@ -23,7 +23,7 @@ class EuresService(
 ) {
 
     companion object {
-        val log: Logger= LoggerFactory.getLogger(EuresService::class.java)
+        val log: Logger = LoggerFactory.getLogger(EuresService::class.java)
     }
 
     private fun List<CvXml>.partitionCvs() = partition { it.slettet != null }
@@ -36,13 +36,19 @@ class EuresService(
     fun getAll() = cvXmlRepository.fetchAll().partitionCvs()
 
     fun getAllReferences() = cvXmlRepository.fetchAllActive()
+            .also { log.info("EURES Controller fetching all ${it.size} CVs ") }
             .map { Reference(it) }
             .let { GetAllReferences(it) }
 
     fun getChangedReferences(time: ZonedDateTime) = cvXmlRepository.fetchAllCvsAfterTimestamp(time)
             .partitionCvs()
-            .let {
-                val (created, modified, closed) = it
+            .also { (created, modified, closed) ->
+                log.info("EURES Controller has these changed references: \n" +
+                        "${created.size} created : ${created.joinToString { it.reference + "," }}\n" +
+                        "${modified.size} modified : ${modified.joinToString { it.reference + "," }}\n" +
+                        "${closed.size} closed : ${closed.joinToString { it.reference + "," }}")
+            }
+            .let { (created, modified, closed) ->
                 return@let GetChangedReferences(
                         createdReferences = created.map { cv -> ChangedReference(cv) },
                         modifiedReferences = modified.map { cv -> ChangedReference(cv) },
@@ -52,8 +58,11 @@ class EuresService(
 
     fun getDetails(references: List<String>) = cvXmlRepository.fetchAllCvsByReference(references)
             .partitionCvs()
-            .let {
-                val (created, modified, closed) = it
+            .also { (created, modified, closed) ->
+                log.info("EURES Controller getDetails for " +
+                        "${created.size} created, ${modified.size} modified, ${closed.size} closed CVs")
+            }
+            .let { (created, modified, closed) ->
                 val map = mutableMapOf<String, CandidateDetail>()
                 listOf(created, modified).flatten().forEach { cv ->
                     map[cv.reference] = CandidateDetail(

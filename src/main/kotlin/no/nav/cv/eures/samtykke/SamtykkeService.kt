@@ -17,7 +17,6 @@ class SamtykkeService(
         samtykkeRepository.slettSamtykke(foedselsnummer)
     }
 
-
     fun oppdaterSamtykke(foedselsnummer: String, samtykke: Samtykke) =
             samtykkeRepository.oppdaterSamtykke(foedselsnummer, samtykke)
                     .run { cvConverterService.createOrUpdate(foedselsnummer) }
