@@ -5,6 +5,7 @@ import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Repository
 import org.springframework.transaction.annotation.Transactional
+import java.math.BigInteger
 import java.time.ZonedDateTime
 import javax.persistence.*
 
@@ -15,6 +16,8 @@ interface JanzzCacheRepository {
 
     fun saveToCache(cachedEscoMappings: List<CachedEscoMapping>)
     fun pruneCache()
+
+    fun getCacheCount() : Long
 }
 
 @Repository
@@ -77,7 +80,15 @@ private class JpaJanzzCacheRepository(
                 .executeUpdate()
     }
 
+    private val getCacheCount =
+            """
+                SELECT COUNT(*) FROM ESCO_CACHE
+            """.replace(serieMedWhitespace, " ")
 
+    @Transactional
+    override fun getCacheCount(): Long
+            = (entityManager.createNativeQuery(getCacheCount)
+            .singleResult as BigInteger).toLong()
 }
 
 @Entity

@@ -6,6 +6,7 @@ import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Repository
 import org.springframework.transaction.annotation.Transactional
+import java.math.BigInteger
 import java.time.ZonedDateTime
 import javax.persistence.*
 
@@ -13,7 +14,7 @@ interface SamtykkeRepository {
 
     fun hentSamtykke(foedselsnummer: String) : Samtykke?
     fun hentSamtykkeUtenNaaverendeXml(foedselsnummer: List<String>) : List<SamtykkeEntity>
-    fun hentAntallSamtykker() : Int
+    fun hentAntallSamtykker() : Long
     fun slettSamtykke(foedselsnummer: String) : Int
     fun oppdaterSamtykke(foedselsnummer: String, samtykke: Samtykke)
     fun finnFoedselsnumre() : List<String>
@@ -67,9 +68,10 @@ private open class JpaSamtykkeRepository(
             """.replace(serieMedWhitespace, " ")
 
     @Transactional
-    override fun hentAntallSamtykker() : Int
-            = entityManager.createNativeQuery(hentAntallSamtykker, Int::class.java)
-            .firstResult
+    override fun hentAntallSamtykker() : Long
+            = (entityManager.createNativeQuery(hentAntallSamtykker)
+            .singleResult as BigInteger).toLong()
+
 
     private val slettSamtykke =
             """

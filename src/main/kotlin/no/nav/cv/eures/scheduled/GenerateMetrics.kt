@@ -4,6 +4,7 @@ import io.micrometer.core.instrument.MeterRegistry
 import no.nav.cv.eures.cv.CvRepository
 import no.nav.cv.eures.cv.CvXmlRepository
 import no.nav.cv.eures.eures.EuresService
+import no.nav.cv.eures.konverterer.esco.JanzzCacheRepository
 import no.nav.cv.eures.samtykke.SamtykkeRepository
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
@@ -18,7 +19,8 @@ class GenerateMetrics(
         private val samtykkeRepository: SamtykkeRepository,
         private val cvRepository: CvRepository,
         private val cvXmlRepository: CvXmlRepository,
-        private val euresService: EuresService
+        private val euresService: EuresService,
+        private val janzzCacheRepository: JanzzCacheRepository
 ) {
     companion object {
         val log: Logger = LoggerFactory.getLogger(GenerateMetrics::class.java)
@@ -47,5 +49,9 @@ class GenerateMetrics(
         meterRegistry.gauge("cv.eures.eksport.antall.euresService.modified.total", modified.size)
         meterRegistry.gauge("cv.eures.eksport.antall.euresService.closed.total", closed.size)
         log.info("${created.size} opprettet, ${modified.size} endret, ${closed.size} slettet")
+
+        val countEscoCache = janzzCacheRepository.getCacheCount()
+        meterRegistry.gauge("cv.eures.eksport.antall.escoCache.total", countEscoCache)
+        log.info("$countEscoCache linjer i ESCO cache")
     }
 }
