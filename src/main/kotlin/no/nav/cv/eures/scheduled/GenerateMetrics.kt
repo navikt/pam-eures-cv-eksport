@@ -30,28 +30,28 @@ class GenerateMetrics(
     fun count() {
         val count = samtykkeRepository.hentAntallSamtykker()
         meterRegistry.gauge("cv.eures.eksport.antall.samtykker.total", count)
-        log.info("$count samtykker er hentet")
+        log.info("Metric: $count samtykker er hentet")
 
         val countRaw = cvRepository.fetchCountRawCvs()
         meterRegistry.gauge("cv.eures.eksport.antall.raw.total", countRaw)
-        log.info("$countRaw RawCV-er er hentet")
+        log.info("Metric:$countRaw RawCV-er er hentet")
 
         val countExportable = cvXmlRepository.fetchAllActive().size
         meterRegistry.gauge("cv.eures.eksport.antall.exportable.total", countExportable)
-        log.info("$countExportable eksporterbare CV-er er hentet")
+        log.info("Metric:$countExportable eksporterbare CV-er er hentet")
 
         val countDeletable = cvXmlRepository.fetchCountDeletableCvs()
         meterRegistry.gauge("cv.eures.eksport.antall.deletable.total", countDeletable)
-        log.info("$countDeletable slettbare CV-er er hentet")
+        log.info("Metric:$countDeletable slettbare CV-er er hentet")
 
         val (created, modified, closed) = euresService.getAll()
         meterRegistry.gauge("cv.eures.eksport.antall.euresService.created.total", created.size)
         meterRegistry.gauge("cv.eures.eksport.antall.euresService.modified.total", modified.size)
         meterRegistry.gauge("cv.eures.eksport.antall.euresService.closed.total", closed.size)
-        log.info("${created.size} opprettet, ${modified.size} endret, ${closed.size} slettet")
+        log.info("Metric: ${created.size} opprettet, ${modified.size} endret, ${closed.size} slettet")
 
         val countEscoCache = janzzCacheRepository.getCacheCount()
         meterRegistry.gauge("cv.eures.eksport.antall.escoCache.total", countEscoCache)
-        log.info("$countEscoCache linjer i ESCO cache")
+        log.info("Metric: $countEscoCache linjer i ESCO cache")
     }
 }
