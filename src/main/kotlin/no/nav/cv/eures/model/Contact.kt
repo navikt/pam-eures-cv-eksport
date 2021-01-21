@@ -36,7 +36,7 @@ data class Name(
 
 // 4.6.4 and 4.9
 data class Communication(
-        val channelCode: ChannelCode,
+        val channelCode: ChannelCode? = null,
 
         val address: Address? = null,
 
@@ -54,7 +54,11 @@ data class Communication(
                 fax: String? = null,
                 email: String? = null,
                 instantMessage: String? = null,
-                web: String? = null
+                web: String? = null,
+                address: String? = null,
+                zipCode: String? = null,
+                city: String? = null,
+                countryCode: String?? = null
         ) : List<Communication> {
             val comList = mutableListOf<Communication>()
 
@@ -65,14 +69,12 @@ data class Communication(
                                 dialNumber = telephone
                         ))
 
-
             if(mobileTelephone != null)
                 comList.add(
                         Communication(
                                 channelCode = ChannelCode.MobileTelephone,
                                 dialNumber = mobileTelephone
                         ))
-
 
             if(fax != null)
                 comList.add(
@@ -81,14 +83,12 @@ data class Communication(
                                 dialNumber = fax
                         ))
 
-
             if(email != null)
                 comList.add(
                         Communication(
                                 channelCode = ChannelCode.Email,
                                 uri = email
                         ))
-
 
             if(instantMessage != null)
                 comList.add(
@@ -97,13 +97,28 @@ data class Communication(
                                 uri = instantMessage
                         ))
 
-
             if(web != null)
                 comList.add(
                         Communication(
                                 channelCode = ChannelCode.Web,
                                 uri = web
                         ))
+
+            if(address != null && zipCode != null && city != null && countryCode != null) {
+
+                // This is not implemented in the EURES XML specification at this stage (only in the word doc)
+                val addressLine = null//"$address, $zipCode $city, $countryCode"
+
+                comList.add(
+                        Communication(
+                                address = Address(
+                                        cityName = city,
+                                        countryCode = countryCode,
+                                        postalCode = zipCode,
+                                        addressLine = addressLine)
+                        )
+                )
+            }
 
             return comList
         }
@@ -122,10 +137,21 @@ enum class ChannelCode{
 
 // 4.9.4
 data class Address(
-        val cityName: String,
-        val countryCode: CountryCodeISO3166_Alpha_2,
-        val postalCode: PostalCode
-)
+        @JacksonXmlProperty(isAttribute = true, localName = "currentAddressIndicator")
+        val currentAddressIndicator: String = "true",
 
-// EURES_PostalCodes.gc  NUTS 2013
-enum class PostalCode {}
+        @JacksonXmlProperty(isAttribute = true, localName = "type")
+        val type: String = "Residence",
+
+        @JacksonXmlProperty(localName = "oa:CityName")
+        val cityName: String,
+
+        val countryCode: String,
+
+        @JacksonXmlProperty(localName = "oa:PostalCode")
+        val postalCode: String,
+
+        // This is not implemented in the EURES XML specification at this stage (only in the word doc)
+        @JacksonXmlProperty(localName = "oa:AddressLine")
+        val addressLine: String? = null
+)

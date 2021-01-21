@@ -38,7 +38,13 @@ class CandidatePersonConverter(
                         givenName = cv.fornavn,
                         familyName = cv.etternavn),
 
-                communication = Communication.buildList(telephone = cv.telefon, email = cv.epost),
+                communication = Communication.buildList(
+                        telephone = cv.telefon,
+                        email = cv.epost,
+                        address = cv.gateadresse,
+                        zipCode = cv.postnummer,
+                        city = cv.poststed,
+                        countryCode = cv.land?.toIso3166_1a2CountryCode()),
 
                 residencyCountryCode = cv.land ?: "",
                 nationalityCode = listOf(cv.nasjonalitet?.toIso3166_1a2CountryCode() ?: ""),
