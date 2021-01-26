@@ -1,30 +1,74 @@
 package no.nav.cv.eures.xml
 
-import org.junit.jupiter.api.Disabled
+import no.nav.cv.eures.cv.CvRepository
+import no.nav.cv.eures.cv.RawCV
 import no.nav.cv.eures.konverterer.CvConverterService
-import no.nav.security.token.support.test.spring.TokenGeneratorConfiguration
+import no.nav.cv.eures.samtykke.Samtykke
+import no.nav.cv.eures.samtykke.SamtykkeControllerTest
+import no.nav.cv.eures.samtykke.SamtykkeRepository
+import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.extension.ExtendWith
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
-import org.springframework.context.annotation.Import
-import org.springframework.test.context.ActiveProfiles
+import org.springframework.test.context.junit.jupiter.SpringExtension
 import java.io.File
+import java.time.ZonedDateTime
 
 // TODO - Enable test again
-//@SpringBootTest
+@SpringBootTest
+@ExtendWith(SpringExtension::class)
 class XmlSerializerTest {
 
     @Autowired
     lateinit var cvConverterService: CvConverterService
 
+    @Autowired
+    lateinit var cvRepository: CvRepository
+
+    @Autowired
+    lateinit var samtykkeRepository: SamtykkeRepository
+
+    
+    
     @Test
     @Disabled
     fun `produce xml document`() {
-        val aktorId = "10013106889"
+        val fnr = "01019012345"
 
-        val xmlString = cvConverterService.convertToXml(aktorId)
+        val rawAvroBase64 = File("$fnr-RawAvroBase64.txt").readText()
 
-        val filename = "cv_$aktorId.xml"
+        val newRawCv = RawCV.create(
+                aktoerId = fnr,
+                foedselsnummer = fnr,
+                sistEndret = ZonedDateTime.now(),
+                rawAvro = rawAvroBase64,
+                underOppfoelging = false,
+                meldingstype = RawCV.Companion.RecordType.CREATE
+        )
+
+        samtykkeRepository.oppdaterSamtykke(fnr,
+                Samtykke(
+                        personalia= true,
+                        utdanning= true,
+                        fagbrev= true,
+                        arbeidserfaring= true,
+                        annenErfaring= true,
+                        foererkort= true,
+                        lovregulerteYrker= true,
+                        andreGodkjenninger= true,
+                        kurs= true,
+                        spraak= true,
+                        sammendrag= true,
+                        land = listOf()
+                    ))
+
+       // cvRepository.saveAndFlush(newRawCv)
+
+
+        val xmlString = cvConverterService.convertToXml(fnr)
+
+        val filename = "cv_$fnr.xml"
         File(filename).writeText(xmlString!!.second)
     }
 }
