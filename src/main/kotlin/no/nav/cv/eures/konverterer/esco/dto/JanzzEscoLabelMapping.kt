@@ -2,9 +2,9 @@ package no.nav.cv.eures.konverterer.esco.dto
 
 import com.fasterxml.jackson.annotation.JsonProperty
 
-data class JanzzEscoMapping (
+data class JanzzEscoLabelMapping (
         @JsonProperty("classifications")
-        var classifications: JanzzEscoMappingClassification,
+        var classifications: JanzzEscoLabelMappingClassification,
 
         @JsonProperty("concept_id")
         var conceptId: Int,
@@ -14,7 +14,7 @@ data class JanzzEscoMapping (
 
 )
 
-data class JanzzEscoMappingClassification(
+data class JanzzEscoLabelMappingClassification(
         @JsonProperty("ESCO")
         var ESCO: Array<String>
 )

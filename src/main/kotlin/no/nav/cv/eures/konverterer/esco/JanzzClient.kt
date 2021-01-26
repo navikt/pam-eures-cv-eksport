@@ -44,4 +44,31 @@ class JanzzClient(
                 .bodyToMono(String::class.java)
                 .block()
     }
+
+    fun lookupConceptId (
+            authorization: String,
+            conceptId: String,
+            lang: String = "no",
+            CLASS_ESCO: String = "*",
+            output_classifications: String = "ESCO"
+    ): String? {
+        val client = WebClient
+                .builder()
+                .baseUrl(baseUrl)
+                .defaultHeader(HttpHeaders.AUTHORIZATION, authorization)
+                .build()
+
+        return client.get()
+                .uri { uriBuilder ->
+                    uriBuilder
+                            .path("/japi/concepts/$conceptId")
+                            .queryParam("lang", lang)
+                            .queryParam("CLASS_ESCO", CLASS_ESCO)
+                            .queryParam("output_classifications", output_classifications)
+                            .build()
+                }
+                .retrieve()
+                .bodyToMono(String::class.java)
+                .block()
+    }
 }
