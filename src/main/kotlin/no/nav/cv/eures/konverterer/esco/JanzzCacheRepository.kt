@@ -11,7 +11,8 @@ import javax.persistence.*
 
 
 interface JanzzCacheRepository {
-    fun fetchFromCache(term: String): List<CachedEscoMapping>
+    fun fetchFromCacheTerm(term: String): List<CachedEscoMapping>
+    fun fetchFromCacheConceptId(conceptId: String): List<CachedEscoMapping>
     fun fetchFromCacheGreedy(term: String): List<CachedEscoMapping>
 
     fun saveToCache(cachedEscoMappings: List<CachedEscoMapping>)
@@ -30,15 +31,28 @@ private class JpaJanzzCacheRepository(
         val log: Logger = LoggerFactory.getLogger(JanzzCacheRepository::class.java)
     }
 
-    private val fetchFromCache =
+    private val fetchFromCacheTerm =
             """
                 SELECT * FROM ESCO_CACHE
                 WHERE TERM = :searchTerm
             """.replace(serieMedWhitespace, " ")
 
     @Transactional(readOnly = true)
-    override fun fetchFromCache(term: String) = entityManager.createNativeQuery(fetchFromCache, EscoCacheEntity::class.java)
+    override fun fetchFromCacheTerm(term: String) = entityManager.createNativeQuery(fetchFromCacheTerm, EscoCacheEntity::class.java)
             .setParameter("searchTerm", term)
+            .resultList
+            .map { it as EscoCacheEntity }
+            .map { it.toCachedEscoMapping() }
+
+    private val fetchFromCacheConceptId =
+            """
+                SELECT * FROM ESCO_CACHE
+                WHERE CONCEPT_ID = :conceptId
+            """.replace(serieMedWhitespace, " ")
+
+    @Transactional(readOnly = true)
+    override fun fetchFromCacheConceptId(conceptId: String) = entityManager.createNativeQuery(fetchFromCacheConceptId, EscoCacheEntity::class.java)
+            .setParameter("conceptId", conceptId)
             .resultList
             .map { it as EscoCacheEntity }
             .map { it.toCachedEscoMapping() }

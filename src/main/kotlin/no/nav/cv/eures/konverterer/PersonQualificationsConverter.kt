@@ -1,9 +1,6 @@
 package no.nav.cv.eures.konverterer
 
-import no.nav.arbeid.cv.avro.AnnenErfaring
-import no.nav.arbeid.cv.avro.Cv
-import no.nav.arbeid.cv.avro.Fagdokumentasjon
-import no.nav.arbeid.cv.avro.Jobbprofil
+import no.nav.arbeid.cv.avro.*
 import no.nav.cv.eures.konverterer.esco.JanzzService
 import no.nav.cv.eures.model.PersonCompetency
 import no.nav.cv.eures.model.PersonQualifications
