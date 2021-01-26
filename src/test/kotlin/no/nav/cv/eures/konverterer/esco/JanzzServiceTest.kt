@@ -17,5 +17,8 @@ internal class JanzzServiceTest {
     fun `test search`() {
         println(janzzService.getEscoForCompetence("Programmering"))
         println(janzzService.getEscoForCompetence("Programmering"))
+
+        println(janzzService.getEscoForConceptId("22399"))
+        println(janzzService.getEscoForConceptId("22399"))
     }
 }

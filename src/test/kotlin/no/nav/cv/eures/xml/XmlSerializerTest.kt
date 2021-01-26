@@ -16,8 +16,8 @@ import java.io.File
 import java.time.ZonedDateTime
 
 // TODO - Enable test again
-@SpringBootTest
-@ExtendWith(SpringExtension::class)
+//@SpringBootTest
+//@ExtendWith(SpringExtension::class)
 class XmlSerializerTest {
 
     @Autowired
@@ -29,8 +29,7 @@ class XmlSerializerTest {
     @Autowired
     lateinit var samtykkeRepository: SamtykkeRepository
 
-    
-    
+
     @Test
     @Disabled
     fun `produce xml document`() {
