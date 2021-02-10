@@ -4,6 +4,11 @@
 Det kreves at enkelte ting kjører på PC
 1. Postgres med applikasjonens database, pam-eures-cv-eksport
 1. Kafka-oppsett fra CV. Se nedenfor 
+1. Mulighet for å få token på cookie lokalt.
+
+Disse tingene kan enkelt startes ved å starte docker-compose'n i 
+https://github.com/navikt/pam-cv-localhost. Det er da 
+det tjenestene `postgres` og `login som må startes 
 
 ### Kommandolinje
 `gradle run`
@@ -16,7 +21,7 @@ kan teste endepunktene også
 Bruk IntelliJ sin gradle-plugin, og velg Tasks -> application -> run. Da får man de
 nødvendige ting (no.nav.security:token-validation-test-support) på classpathen
 
-## Oppsett av database første gang
+## Oppsett av lokal database uten compose
 Opprett database med applikasjonens defaultbruker 
 
 STart med å installere og starte postgresserveren - hvis det ikke allerede er på plass
@@ -35,7 +40,7 @@ Sørg for at samme postgres kjører `postgres -D /usr/local/var/postgres`.
 Hvis du har behov for å koble på databasen å sjekke ting manuelt, så kan det også gjøres i favorittklienten din
 * Eksempel med psql `psql --user=pam-eures-cv-eksport -d pam-eures-cv-eksport`
 
-## Kafka
+## Syntetiske data på kafka
 Kan starte dockerimage med pam-cv-api's kafka-topic vha `pam-cv-api/migrering/src/test/resources/cv-pipeline.sh up`
 Den starter kafka med broker på `localhost:9091`, og schema registry på `localhost:8081` Dette
 er defaultverdier i appen

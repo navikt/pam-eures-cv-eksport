@@ -2,30 +2,24 @@ package no.nav.cv.eures.eures
 
 import no.nav.cv.eures.cv.CvXml
 import no.nav.cv.eures.cv.CvXmlRepository
-import no.nav.cv.eures.eures.dto.GetDetails.CandidateDetail.Status.ACTIVE
-import no.nav.cv.eures.eures.dto.GetDetails.CandidateDetail.Status.CLOSED
 import no.nav.cv.eures.samtykke.Samtykke
 import no.nav.cv.eures.samtykke.SamtykkeRepository
-import no.nav.security.token.support.test.spring.TokenGeneratorConfiguration
+import no.nav.security.token.support.spring.test.EnableMockOAuth2Server
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
-import org.junit.jupiter.api.assertAll
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.boot.jdbc.EmbeddedDatabaseConnection
-import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest
-import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.context.annotation.ComponentScan
 import org.springframework.context.annotation.FilterType
-import org.springframework.context.annotation.Import
 import org.springframework.stereotype.Repository
-import org.springframework.test.annotation.DirtiesContext
+import org.springframework.test.context.ActiveProfiles
 import java.time.ZonedDateTime
 
+@EnableMockOAuth2Server
 @DataJpaTest(includeFilters = [ComponentScan.Filter(type = FilterType.ANNOTATION, classes = [Repository::class])])
-@Import(TokenGeneratorConfiguration::class)
+@ActiveProfiles(profiles = [ "test"])
 class EuresRepositoryTest {
 
     @Autowired

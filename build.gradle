@@ -78,7 +78,9 @@ dependencies {
     testImplementation "org.junit.jupiter:junit-jupiter:5.6.2"
     testImplementation "com.h2database:h2"
     testImplementation 'org.mockito:mockito-core:3.5.13'
-    testImplementation "no.nav.security:token-validation-test-support:${tokenSupportVersion}"
+    testImplementation "no.nav.security:token-validation-spring-test:${tokenSupportVersion}"
+    testImplementation "com.squareup.okhttp3:mockwebserver:${okhttp3}"
+    testImplementation "com.squareup.okhttp3:okhttp:${okhttp3}"
     testImplementation "com.nhaarman.mockitokotlin2:mockito-kotlin:2.2.0"
 
 }
