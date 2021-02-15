@@ -1,6 +1,5 @@
 package no.nav.cv.eures.samtykke
 
-import no.nav.cv.eures.cv.CvXml
 import no.nav.cv.eures.konverterer.CvConverterService
 import org.springframework.stereotype.Service
 
