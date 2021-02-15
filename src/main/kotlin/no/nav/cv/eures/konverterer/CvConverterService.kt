@@ -1,5 +1,6 @@
 package no.nav.cv.eures.konverterer
 
+import io.micrometer.core.instrument.MeterRegistry
 import no.nav.arbeid.cv.avro.Cv
 import no.nav.arbeid.cv.avro.Jobbprofil
 import no.nav.arbeid.cv.avro.Melding
@@ -20,7 +21,8 @@ import java.time.ZonedDateTime
 class CvConverterService(
         private val cvRepository: CvRepository,
         private val cvXmlRepository: CvXmlRepository,
-        private val samtykkeRepository: SamtykkeRepository
+        private val samtykkeRepository: SamtykkeRepository,
+        private val meterRegistry: MeterRegistry
 ) {
 
     companion object {
@@ -54,41 +56,49 @@ class CvConverterService(
 
         log.debug("Updating existing ${cvXml?.id}")
 
-        if(cvXml == null) return null
+        if (cvXml == null) return null
 
         return convertToXml(cvXml.foedselsnummer)?.let { xml ->
-                cvXml.sistEndret = now
-                cvXml.slettet = null
-                cvXml.xml = xml.second
-                return cvXmlRepository.save(cvXml)
-            }
+            cvXml.sistEndret = now
+            cvXml.slettet = null
+            cvXml.xml = xml.second
+            return cvXmlRepository.save(cvXml)
+        }
     }
 
-    fun createOrUpdate(foedselsnummer: String) {
+    fun createNew(foedselsnummer: String) {
+        meterRegistry.counter("cv.eures.eksport.antall.samtykke.created").increment(1.0)
+
         val now = ZonedDateTime.now()
-        cvXmlRepository.fetch(foedselsnummer)
-                ?.let { updateExisting(it) }
-                ?: convertToXml(foedselsnummer)
-                        ?.let {
-                            cvXmlRepository.save(CvXml.create(
-                                    reference = it.first,
-                                    aktoerId = foedselsnummer,
-                                    opprettet = now,
-                                    sistEndret = now,
-                                    slettet = null,
-                                    xml = it.second
-                            ))
-                        }
+        convertToXml(foedselsnummer)
+                ?.let {
+                    cvXmlRepository.save(CvXml.create(
+                            reference = it.first,
+                            aktoerId = foedselsnummer,
+                            opprettet = now,
+                            sistEndret = now,
+                            slettet = null,
+                            xml = it.second
+                    ))
+                }
     }
 
-    fun delete(foedselsnummer: String): CvXml? =
-            cvXmlRepository.fetch(foedselsnummer)
-                    ?.let {
-                        it.slettet = it.slettet ?: ZonedDateTime.now()
-                        it.xml = ""
-                        samtykkeRepository.slettSamtykke(foedselsnummer)
-                        return@let cvXmlRepository.save(it)
-                    }
+    fun createOrUpdate(foedselsnummer: String) = cvXmlRepository.fetch(foedselsnummer)
+            ?.let { updateExisting(it) }
+            ?: createNew(foedselsnummer)
+
+
+    fun delete(foedselsnummer: String): CvXml? {
+        meterRegistry.counter("cv.eures.eksport.antall.samtykke.deleted").increment(1.0)
+
+        return cvXmlRepository.fetch(foedselsnummer)
+                ?.let {
+                    it.slettet = it.slettet ?: ZonedDateTime.now()
+                    it.xml = ""
+                    samtykkeRepository.slettSamtykke(foedselsnummer)
+                    return@let cvXmlRepository.save(it)
+                }
+    }
 
     fun convertToXml(foedselsnummer: String): Pair<String, String>? {
         val record = cvRepository.hentCvByFoedselsnummer(foedselsnummer) ?: return null
@@ -98,12 +108,12 @@ class CvConverterService(
 
                     log.debug("Got CV Firstname: ${cv?.fornavn} Profile ID: ${profile?.jobbprofilId}")
 
-                    if(cv == null || profile == null)
+                    if (cv == null || profile == null)
                         return@let null
 
                     samtykkeRepository.hentSamtykke(foedselsnummer)
                             ?.run {
-                                val candidate = CandidateConverter(cv, profile,this).toXmlRepresentation()
+                                val candidate = CandidateConverter(cv, profile, this).toXmlRepresentation()
                                 return@let Pair(cv.arenaKandidatnr, XmlSerializer.serialize(candidate))
                             }
                 }
