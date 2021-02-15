@@ -55,7 +55,9 @@ class CandidatePersonConverter(
     }
 
     private fun List<Spraakferdighet>.toLanguages() : List<String> {
-        val languages = mapNotNull { LanguageConverter.fromIso3ToIso1(it.iso3kode) }
+        val languages = mapNotNull {
+            it.iso3kode?.let { i3k -> LanguageConverter.fromIso3ToIso1(i3k) }
+        }
         if (languages.isEmpty()) log.warn("Missing at least one language for CvId : \"${cv.cvId}\"")
         return if(samtykke.spraak) languages else listOf()
     }
