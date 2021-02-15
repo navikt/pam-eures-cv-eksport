@@ -67,8 +67,6 @@ class CvConverterService(
     }
 
     fun createNew(foedselsnummer: String) {
-        meterRegistry.counter("cv.eures.eksport.antall.samtykke.created").increment(1.0)
-
         val now = ZonedDateTime.now()
         convertToXml(foedselsnummer)
                 ?.let {
@@ -88,17 +86,14 @@ class CvConverterService(
             ?: createNew(foedselsnummer)
 
 
-    fun delete(foedselsnummer: String): CvXml? {
-        meterRegistry.counter("cv.eures.eksport.antall.samtykke.deleted").increment(1.0)
+    fun delete(foedselsnummer: String): CvXml? = cvXmlRepository.fetch(foedselsnummer)
+            ?.let {
+                it.slettet = it.slettet ?: ZonedDateTime.now()
+                it.xml = ""
+                samtykkeRepository.slettSamtykke(foedselsnummer)
+                return@let cvXmlRepository.save(it)
+            }
 
-        return cvXmlRepository.fetch(foedselsnummer)
-                ?.let {
-                    it.slettet = it.slettet ?: ZonedDateTime.now()
-                    it.xml = ""
-                    samtykkeRepository.slettSamtykke(foedselsnummer)
-                    return@let cvXmlRepository.save(it)
-                }
-    }
 
     fun convertToXml(foedselsnummer: String): Pair<String, String>? {
         val record = cvRepository.hentCvByFoedselsnummer(foedselsnummer) ?: return null
