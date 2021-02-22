@@ -10,5 +10,6 @@ data class CandidateProfile(
         val employmentHistory: EmploymentHistory? = null,
         val educationHistory: EducationHistory? = null,
         val licenses: Licenses? = null,
+        val certifications: Certifications? = null,
         val personQualifications: PersonQualifications? = null
 )
