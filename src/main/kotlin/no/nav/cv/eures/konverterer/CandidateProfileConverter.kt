@@ -16,6 +16,7 @@ class CandidateProfileConverter(
             employmentHistory = EmploymentHistoryConverter(cv, samtykke).toXmlRepresentation(),
             educationHistory = EducationHistoryConverter(cv, samtykke).toXmlRepresentation(),
             licenses = LicensesConverter(cv, samtykke).toXmlRepresentation(),
+            certifications = CertificationConverter(cv, samtykke).toXmlRepresentation(),
             personQualifications = PersonQualificationsConverter(cv, profile, samtykke).toXmlRepresentation()
     )
 }
