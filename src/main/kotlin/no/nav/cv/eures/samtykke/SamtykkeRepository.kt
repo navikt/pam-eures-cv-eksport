@@ -139,6 +139,9 @@ class SamtykkeEntity {
     @Column(name = "LOVREGULERTE_YRKER", nullable = false)
     var lovregulerteYrker: Boolean = false
 
+    @Column(name = "OFFENTLIGE_GODKJENNINGER", nullable = false)
+    var offentligeGodkjenninger: Boolean = false
+
     @Column(name = "ANDRE_GODKJENNINGER", nullable = false)
     var andreGodkjenninger: Boolean = false
 
@@ -150,6 +153,9 @@ class SamtykkeEntity {
 
     @Column(name = "SAMMENDRAG", nullable = false)
     var sammendrag: Boolean = false
+
+    @Column(name = "KOMPETANSER", nullable = false)
+    var kompetanser: Boolean = false
 
     @Column(name = "LAND", nullable = false)
     var land: String = "[]"
@@ -164,10 +170,12 @@ class SamtykkeEntity {
             annenErfaring = annenErfaring,
             foererkort = foererkort,
             lovregulerteYrker = lovregulerteYrker,
+            offentligeGodkjenninger = offentligeGodkjenninger,
             andreGodkjenninger = andreGodkjenninger,
             kurs = kurs,
             spraak = spraak,
             sammendrag = sammendrag,
+            kompetanser = kompetanser,
             land = objectMapper.readValue(land, object: TypeReference<List<String>>() {})
     )
 
@@ -185,10 +193,12 @@ class SamtykkeEntity {
             samtykkeEntity.annenErfaring = samtykke.annenErfaring
             samtykkeEntity.foererkort = samtykke.foererkort
             samtykkeEntity.lovregulerteYrker = samtykke.lovregulerteYrker
+            samtykkeEntity.offentligeGodkjenninger = samtykke.offentligeGodkjenninger
             samtykkeEntity.andreGodkjenninger = samtykke.andreGodkjenninger
             samtykkeEntity.kurs = samtykke.kurs
             samtykkeEntity.spraak = samtykke.spraak
             samtykkeEntity.sammendrag = samtykke.sammendrag
+            samtykkeEntity.kompetanser = samtykke.kompetanser
             samtykkeEntity.land = objectMapper.writeValueAsString(samtykke.land)
 
             return samtykkeEntity

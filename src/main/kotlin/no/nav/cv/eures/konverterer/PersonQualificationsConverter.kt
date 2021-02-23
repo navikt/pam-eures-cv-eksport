@@ -26,7 +26,7 @@ class PersonQualificationsConverter (
         if(samtykke.fagbrev && cv.fagdokumentasjon != null)
             qualifications.addAll(cv.fagdokumentasjon.toEsco())
 
-        if(samtykke.annenErfaring && profile.kompetanser != null)
+        if(samtykke.kompetanser && profile.kompetanser != null)
             qualifications.addAll(profile.kompetanser.toEsco())
 
         return PersonQualifications(qualifications)

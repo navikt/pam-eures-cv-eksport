@@ -11,10 +11,13 @@ data class Samtykke(
         val annenErfaring: Boolean = false,
         val foererkort: Boolean = false,
         val lovregulerteYrker: Boolean = false,
+        val offentligeGodkjenninger: Boolean = false,
         val andreGodkjenninger: Boolean = false,
         val kurs: Boolean = false,
         val spraak: Boolean = false,
         val sammendrag: Boolean = false,
+        val kompetanser: Boolean = false,
+
         val land: List<String> = listOf()
 )
 
