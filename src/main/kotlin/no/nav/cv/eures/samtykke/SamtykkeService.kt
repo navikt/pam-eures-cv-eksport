@@ -1,6 +1,6 @@
 package no.nav.cv.eures.samtykke
 
-import io.micrometer.core.instrument.MeterRegistry
+import io.micrometer.influx.InfluxMeterRegistry
 import no.nav.cv.eures.konverterer.CvConverterService
 import org.springframework.stereotype.Service
 
@@ -8,7 +8,7 @@ import org.springframework.stereotype.Service
 class SamtykkeService(
         private val samtykkeRepository: SamtykkeRepository,
         private val cvConverterService: CvConverterService,
-        private val influxMeterRegistry: MeterRegistry
+        private val influxMeterRegistry: InfluxMeterRegistry
 ) {
     fun hentSamtykke(foedselsnummer: String): Samtykke? =
             samtykkeRepository.hentSamtykke(foedselsnummer)
