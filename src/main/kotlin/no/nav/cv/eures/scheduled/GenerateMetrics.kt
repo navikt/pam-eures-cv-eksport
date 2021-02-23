@@ -1,6 +1,7 @@
 package no.nav.cv.eures.scheduled
 
 import io.micrometer.core.instrument.MeterRegistry
+import io.micrometer.influx.InfluxMeterRegistry
 import no.nav.cv.eures.cv.CvRepository
 import no.nav.cv.eures.cv.CvXmlRepository
 import no.nav.cv.eures.eures.EuresService
@@ -16,11 +17,12 @@ import org.springframework.stereotype.Service
 @Service
 class GenerateMetrics(
         private val meterRegistry: MeterRegistry,
+        private val influxMeterRegistry: InfluxMeterRegistry,
         private val samtykkeRepository: SamtykkeRepository,
         private val cvRepository: CvRepository,
         private val cvXmlRepository: CvXmlRepository,
         private val euresService: EuresService,
-        private val janzzCacheRepository: JanzzCacheRepository
+        private val janzzCacheRepository: JanzzCacheRepository,
 ) {
     companion object {
         val log: Logger = LoggerFactory.getLogger(GenerateMetrics::class.java)
@@ -48,10 +50,15 @@ class GenerateMetrics(
         meterRegistry.gauge("cv.eures.eksport.antall.euresService.created.total", created.size)
         meterRegistry.gauge("cv.eures.eksport.antall.euresService.modified.total", modified.size)
         meterRegistry.gauge("cv.eures.eksport.antall.euresService.closed.total", closed.size)
+        influxMeterRegistry.gauge("cv.eures.eksport.antall.euresService.created.total", created.size)
+        influxMeterRegistry.gauge("cv.eures.eksport.antall.euresService.modified.total", modified.size)
+        influxMeterRegistry.gauge("cv.eures.eksport.antall.euresService.closed.total", closed.size)
         log.info("Metric: ${created.size} opprettet, ${modified.size} endret, ${closed.size} slettet")
 
         val countEscoCache = janzzCacheRepository.getCacheCount()
         meterRegistry.gauge("cv.eures.eksport.antall.escoCache.total", countEscoCache)
+        influxMeterRegistry.gauge("cv.eures.eksport.antall.escoCache.total", countEscoCache)
+
         log.info("Metric: $countEscoCache linjer i ESCO cache")
     }
 }
