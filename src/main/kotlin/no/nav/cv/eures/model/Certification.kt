@@ -12,7 +12,7 @@ data class Certification(
         val certificationName: String,
         val issuingAuthortity: IssuingAuthority,
         val firstIssuedDate: FormattedDateTime?,
-        val freeFormEffectivePeriod: FreeFormEffectivePeriod
+        val freeFormEffectivePeriod: FreeFormEffectivePeriod?
 )
 
 data class IssuingAuthority(

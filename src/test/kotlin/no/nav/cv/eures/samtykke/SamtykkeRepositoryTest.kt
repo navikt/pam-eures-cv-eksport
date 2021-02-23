@@ -26,7 +26,7 @@ internal class SamtykkeRepositoryTest {
 
     @Test
     fun `lagre og hente samtykke`() {
-        val samtykke = Samtykke(now, personalia = true, utdanning = false)
+        val samtykke = Samtykke(now, personalia = true, utdanning = false, kompetanser = true)
         samtykkeRepository.oppdaterSamtykke(foedselsnummer, samtykke)
 
         val hentet = samtykkeRepository.hentSamtykke(foedselsnummer)
@@ -34,6 +34,7 @@ internal class SamtykkeRepositoryTest {
         assertEquals(samtykke.sistEndret, hentet?.sistEndret)
         assertEquals(samtykke.personalia, hentet?.personalia)
         assertEquals(samtykke.utdanning, hentet?.utdanning)
+        assertEquals(samtykke.kompetanser, hentet?.kompetanser)
     }
 
     @Test
@@ -58,7 +59,7 @@ internal class SamtykkeRepositoryTest {
 
     @Test
     fun `oppdater samtykke - to ganger`() {
-        val samtykke = Samtykke(yesterday, personalia = true, utdanning = false)
+        val samtykke = Samtykke(yesterday, personalia = true, utdanning = false, offentligeGodkjenninger = true)
         samtykkeRepository.oppdaterSamtykke(foedselsnummer, samtykke)
 
         val hentet = samtykkeRepository.hentSamtykke(foedselsnummer)
@@ -66,8 +67,9 @@ internal class SamtykkeRepositoryTest {
         assertEquals(samtykke.sistEndret, hentet?.sistEndret)
         assertEquals(samtykke.personalia, hentet?.personalia)
         assertEquals(samtykke.utdanning, hentet?.utdanning)
+        assertEquals(samtykke.offentligeGodkjenninger, hentet?.offentligeGodkjenninger)
 
-        val samtykkeOppdatert = Samtykke(now, personalia = false, utdanning = true)
+        val samtykkeOppdatert = Samtykke(now, personalia = false, utdanning = true, offentligeGodkjenninger = false)
         samtykkeRepository.oppdaterSamtykke(foedselsnummer, samtykkeOppdatert)
 
         val hentetOppdatert  = samtykkeRepository.hentSamtykke(foedselsnummer)
@@ -75,5 +77,7 @@ internal class SamtykkeRepositoryTest {
         assertEquals(samtykkeOppdatert.sistEndret, hentetOppdatert?.sistEndret)
         assertEquals(samtykkeOppdatert.personalia, hentetOppdatert?.personalia)
         assertEquals(samtykkeOppdatert.utdanning, hentetOppdatert?.utdanning)
+        assertEquals(samtykke.offentligeGodkjenninger, hentet?.offentligeGodkjenninger)
+
     }
 }
