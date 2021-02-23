@@ -21,8 +21,7 @@ import java.time.ZonedDateTime
 class CvConverterService(
         private val cvRepository: CvRepository,
         private val cvXmlRepository: CvXmlRepository,
-        private val samtykkeRepository: SamtykkeRepository,
-        private val meterRegistry: MeterRegistry
+        private val samtykkeRepository: SamtykkeRepository
 ) {
 
     companion object {

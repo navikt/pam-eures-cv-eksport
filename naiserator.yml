@@ -50,6 +50,8 @@ spec:
   prometheus:
     enabled: true
     path: /pam-eures-cv-eksport/actuator/prometheus
+  elastic:
+    instance: 'pam-eures-cv-eksport'
   env:
     - name: KAFKA_CONSUMER_TOPIC_CV_ENDRET
       value: {{ kafka_consumer_topic_cv_endret }}
@@ -61,5 +63,7 @@ spec:
       value: {{ kafka_schema_registry }}
     - name: KAFKA_SECURITY_PROTOCOL
       value: SASL_SSL
+    - name: INFLUX_URI
+      value: {{ influx_uri }}
   ingresses:
     - {{ ingress }}
