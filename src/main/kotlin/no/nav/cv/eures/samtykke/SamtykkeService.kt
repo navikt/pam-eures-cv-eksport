@@ -20,8 +20,11 @@ class SamtykkeService(
             samtykkeRepository.hentSamtykke(foedselsnummer)
 
     fun slettSamtykke(foedselsnummer: String) {
+        val existing = samtykkeRepository.hentSamtykke(foedselsnummer)
+
         try {
-            meterRegistry.counter("cv.eures.eksport.samtykke.slettet").increment(1.0)
+            if(existing == null)
+                meterRegistry.counter("cv.eures.eksport.samtykke.slettet").increment(1.0)
         } catch (e: Exception) {
             log.warn("Got exception when trying to increase metric counter for deleted samtykke", e)
         }
