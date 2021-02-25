@@ -58,6 +58,7 @@ class CvConverterService(
         if (cvXml == null) return null
 
         return convertToXml(cvXml.foedselsnummer)?.let { xml ->
+            log.debug("Update Existing: Before save of ${xml.second.length} bytes of xml")
             cvXml.sistEndret = now
             cvXml.slettet = null
             cvXml.xml = xml.second
@@ -69,6 +70,7 @@ class CvConverterService(
         val now = ZonedDateTime.now()
         convertToXml(foedselsnummer)
                 ?.let {
+                    log.debug("Create New: Before save of ${it.second.length} bytes of xml")
                     cvXmlRepository.save(CvXml.create(
                             reference = it.first,
                             aktoerId = foedselsnummer,
