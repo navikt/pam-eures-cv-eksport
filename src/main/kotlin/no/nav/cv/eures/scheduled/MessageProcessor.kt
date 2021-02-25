@@ -34,6 +34,7 @@ class MessageProcessor(
                                     rawCvs
                                 },
                                 createdOrModified.let { rawCvs ->
+                                    log.debug("Inside createdOrModified for ${rawCvs.size} raw cvs")
                                     val foedselsnummer = rawCvs.map(RawCV::foedselsnummer)
 
                                     // Create new ones where Samtykke exists
