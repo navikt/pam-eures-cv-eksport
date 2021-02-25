@@ -10,9 +10,11 @@ class CandidateProfileConverter(
         private val profile: Jobbprofil,
         private val samtykke: Samtykke
 ) {
+    private val ikkeSamtykket = ""
+
     fun toXmlRepresentation()
             = CandidateProfile(
-            executiveSummary = if(samtykke.sammendrag) cv.sammendrag else "",
+            executiveSummary = if(samtykke.sammendrag) cv.sammendrag else ikkeSamtykket,
             employmentHistory = EmploymentHistoryConverter(cv, samtykke).toXmlRepresentation(),
             educationHistory = EducationHistoryConverter(cv, samtykke).toXmlRepresentation(),
             licenses = LicensesConverter(cv, samtykke).toXmlRepresentation(),
