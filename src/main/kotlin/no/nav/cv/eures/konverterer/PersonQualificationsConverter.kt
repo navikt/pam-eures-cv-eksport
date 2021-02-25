@@ -23,9 +23,6 @@ class PersonQualificationsConverter (
         if(samtykke.annenErfaring && cv.annenErfaring != null)
             qualifications.addAll(cv.annenErfaring.toEsco())
 
-        if(samtykke.fagbrev && cv.fagdokumentasjon != null) // TODO Move to Certifications, Gunn sjekker utsteder
-            qualifications.addAll(cv.fagdokumentasjon.toEsco())
-
         if(samtykke.kompetanser && profile.kompetanser != null)
             qualifications.addAll(profile.kompetanser.toEsco())
 

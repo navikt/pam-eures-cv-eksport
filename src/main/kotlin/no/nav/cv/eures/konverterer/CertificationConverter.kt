@@ -1,9 +1,6 @@
 package no.nav.cv.eures.konverterer
 
-import no.nav.arbeid.cv.avro.Cv
-import no.nav.arbeid.cv.avro.Godkjenning
-import no.nav.arbeid.cv.avro.Kurs
-import no.nav.arbeid.cv.avro.Sertifikat
+import no.nav.arbeid.cv.avro.*
 import no.nav.cv.eures.model.Certification
 import no.nav.cv.eures.model.Certifications
 import no.nav.cv.eures.model.FreeFormEffectivePeriod
@@ -28,11 +25,14 @@ class CertificationConverter(
         if (samtykke.kurs)
             certs.addAll(cv.kurs.toCertifications())
 
+        if(samtykke.fagbrev)
+            certs.addAll(cv.fagdokumentasjon.toCertifications())
+
         return if (certs.isEmpty()) null else Certifications(certs)
     }
 
     @JvmName("toCertificationsGodkjenning")
-    private fun List<Godkjenning>.toCertifications() = map {
+    private fun List<Godkjenning>.toCertifications() = mapNotNull {
         Certification(
                 certificationTypeCode = null, // TODO: Find out what certificationTypeCode should be
                 certificationName = it.tittel,
@@ -46,7 +46,7 @@ class CertificationConverter(
     }
 
     @JvmName("toCertificationsSertifikat")
-    private fun List<Sertifikat>.toCertifications() = map {
+    private fun List<Sertifikat>.toCertifications() = mapNotNull {
         Certification(
                 certificationTypeCode = null, // TODO: Find out what certificationTypeCode should be
                 certificationName = it.sertifikatnavn ?: it.sertifikatnavnFritekst,
@@ -60,12 +60,23 @@ class CertificationConverter(
     }
 
     @JvmName("toCertificationsKurs")
-    private fun List<Kurs>.toCertifications() = map {
+    private fun List<Kurs>.toCertifications() = mapNotNull {
         Certification(
                 certificationTypeCode = null, // TODO: Find out what certificationTypeCode should be
                 certificationName = it.tittel,
                 issuingAuthortity = IssuingAuthority(it.utsteder),
                 firstIssuedDate = it.tidspunkt.toFormattedDateTime(),
+                freeFormEffectivePeriod = null
+        )
+    }
+
+    @JvmName("toCertificationsFagdokumentasjon")
+    private fun List<Fagdokumentasjon>.toCertifications() = mapNotNull {
+        Certification(
+                certificationTypeCode = null, // TODO: Find out what certificationTypeCode should be
+                certificationName = it.tittel,
+                issuingAuthortity = IssuingAuthority("Yrkesopplæringsnemnd"),
+                firstIssuedDate = null,
                 freeFormEffectivePeriod = null
         )
     }
