@@ -35,19 +35,21 @@ class MessageProcessor(
                                 },
                                 createdOrModified.let { rawCvs ->
                                     log.debug("Inside createdOrModified for ${rawCvs.size} raw cvs")
-                                    val foedselsnummer = rawCvs.map(RawCV::foedselsnummer)
+                                    val chunks = rawCvs.chunked(1000)
+                                    for(chunk in chunks) {
+                                        val foedselsnummer = chunk.map(RawCV::foedselsnummer)
 
-                                    // Create new ones where Samtykke exists
-                                    samtykkeRepository.hentSamtykkeUtenNaaverendeXml(foedselsnummer)
-                                            .forEach { samtykke ->
-                                                log.debug("Inside hentSamtykkeUtenNaaverendeXml loop for $samtykke")
-                                                cvConverterService.createOrUpdate(samtykke.foedselsnummer)
-                                            }
+                                        // Create new ones where Samtykke exists
+                                        samtykkeRepository.hentSamtykkeUtenNaaverendeXml(foedselsnummer)
+                                                .forEach { samtykke ->
+                                                    log.debug("Inside hentSamtykkeUtenNaaverendeXml loop for $samtykke")
+                                                    cvConverterService.createOrUpdate(samtykke.foedselsnummer)
+                                                }
 
-                                    // Update existing ones
-                                    cvXmlRepository.fetchAllActiveCvsByFoedselsnummer(foedselsnummer)
-                                            .forEach { cvXml -> cvConverterService.updateExisting(cvXml) }
-
+                                        // Update existing ones
+                                        cvXmlRepository.fetchAllActiveCvsByFoedselsnummer(foedselsnummer)
+                                                .forEach { cvXml -> cvConverterService.updateExisting(cvXml) }
+                                    }
                                     rawCvs
                                 }
                         ).flatten()
