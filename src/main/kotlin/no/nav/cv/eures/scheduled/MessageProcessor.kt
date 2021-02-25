@@ -38,7 +38,10 @@ class MessageProcessor(
 
                                     // Create new ones where Samtykke exists
                                     samtykkeRepository.hentSamtykkeUtenNaaverendeXml(foedselsnummer)
-                                            .forEach { samtykke -> cvConverterService.createOrUpdate(samtykke.foedselsnummer) }
+                                            .forEach { samtykke ->
+                                                log.debug("Inside hentSamtykkeUtenNaaverendeXml loop for $samtykke")
+                                                cvConverterService.createOrUpdate(samtykke.foedselsnummer)
+                                            }
 
                                     // Update existing ones
                                     cvXmlRepository.fetchAllActiveCvsByFoedselsnummer(foedselsnummer)
