@@ -36,7 +36,7 @@ class EmploymentHistoryConverter(
                     fraTidspunkt.toFormattedDateTime(),
                     tilTidspunkt?.toFormattedDateTime()
             ),
-            jobCategoryCode = janzzKonseptid.toJobCategoryCode()
+            jobCategoryCode = janzzKonseptid?.toJobCategoryCode()
     ))
 
     private fun String.toJobCategoryCode(): JobCategoryCode? = janzzService.getEscoForConceptId(this)
