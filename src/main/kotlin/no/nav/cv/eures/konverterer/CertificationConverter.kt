@@ -51,10 +51,10 @@ class CertificationConverter(
                 certificationTypeCode = null, // TODO: Find out what certificationTypeCode should be
                 certificationName = it.sertifikatnavn ?: it.sertifikatnavnFritekst,
                 issuingAuthortity = IssuingAuthority(it.utsteder),
-                firstIssuedDate = it.gjennomfoert.toFormattedDateTime(),
+                firstIssuedDate = it.gjennomfoert?.toFormattedDateTime(),
                 freeFormEffectivePeriod = FreeFormEffectivePeriod(
                         startDate = null,
-                        endDate = it.utloeper.toFormattedDateTime()
+                        endDate = it.utloeper?.toFormattedDateTime()
                 )
         )
     }
@@ -65,7 +65,7 @@ class CertificationConverter(
                 certificationTypeCode = null, // TODO: Find out what certificationTypeCode should be
                 certificationName = it.tittel,
                 issuingAuthortity = IssuingAuthority(it.utsteder),
-                firstIssuedDate = it.tidspunkt.toFormattedDateTime(),
+                firstIssuedDate = it.tidspunkt?.toFormattedDateTime(),
                 freeFormEffectivePeriod = null
         )
     }
