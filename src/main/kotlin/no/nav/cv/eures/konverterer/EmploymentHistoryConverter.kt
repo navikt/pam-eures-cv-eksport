@@ -21,7 +21,7 @@ class EmploymentHistoryConverter(
     // TODO støtte null i fra-tidpsunkt
     fun List<Arbeidserfaring>.toEmploymentList() = map {
         EmployerHistory(
-                organizationName = it.arbeidsgiver,
+                organizationName = it?.arbeidsgiver ?: "",
                 employmentPeriod = AttendancePeriod(
                         it.fraTidspunkt.toFormattedDateTime(),
                         it.tilTidspunkt?.toFormattedDateTime()
