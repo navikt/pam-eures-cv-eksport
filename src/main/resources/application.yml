@@ -38,7 +38,7 @@ spring:
     username: ${DB_USERNAME:pam-eures-cv-eksport}
     password: ${DB_PASSWORD:}
     hikari:
-      maximum-pool-size: 2
+      maximum-pool-size: 10
       minimum-idle: 0
       pool-name: default
   flyway:
