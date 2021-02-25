@@ -28,31 +28,35 @@ class GenerateMetrics(
 
     @Scheduled (fixedDelay = 1000 * 60)
     fun count() {
-        val count = samtykkeRepository.hentAntallSamtykker()
-        meterRegistry.gauge("cv.eures.eksport.antall.samtykker.total", count)
-        log.info("Metric: $count samtykker er hentet")
+        try {
+            val count = samtykkeRepository.hentAntallSamtykker()
+            meterRegistry.gauge("cv.eures.eksport.antall.samtykker.total", count)
+            log.info("Metric: $count samtykker er hentet")
 
-        val countRaw = cvRepository.fetchCountRawCvs()
-        meterRegistry.gauge("cv.eures.eksport.antall.raw.total", countRaw)
-        log.info("Metric:$countRaw RawCV-er er hentet")
+            val countRaw = cvRepository.fetchCountRawCvs()
+            meterRegistry.gauge("cv.eures.eksport.antall.raw.total", countRaw)
+            log.info("Metric:$countRaw RawCV-er er hentet")
 
-        val countExportable = cvXmlRepository.fetchAllActive().size
-        meterRegistry.gauge("cv.eures.eksport.antall.exportable.total", countExportable)
-        log.info("Metric:$countExportable eksporterbare CV-er er hentet")
+            val countExportable = cvXmlRepository.fetchAllActive().size
+            meterRegistry.gauge("cv.eures.eksport.antall.exportable.total", countExportable)
+            log.info("Metric:$countExportable eksporterbare CV-er er hentet")
 
-        val countDeletable = cvXmlRepository.fetchCountDeletableCvs()
-        meterRegistry.gauge("cv.eures.eksport.antall.deletable.total", countDeletable)
-        log.info("Metric:$countDeletable slettbare CV-er er hentet")
+            val countDeletable = cvXmlRepository.fetchCountDeletableCvs()
+            meterRegistry.gauge("cv.eures.eksport.antall.deletable.total", countDeletable)
+            log.info("Metric:$countDeletable slettbare CV-er er hentet")
 
-        val (created, modified, closed) = euresService.getAll()
-        meterRegistry.gauge("cv.eures.eksport.antall.euresService.created.total", created.size)
-        meterRegistry.gauge("cv.eures.eksport.antall.euresService.modified.total", modified.size)
-        meterRegistry.gauge("cv.eures.eksport.antall.euresService.closed.total", closed.size)
-        log.info("Metric: ${created.size} opprettet, ${modified.size} endret, ${closed.size} slettet")
+            val (created, modified, closed) = euresService.getAll()
+            meterRegistry.gauge("cv.eures.eksport.antall.euresService.created.total", created.size)
+            meterRegistry.gauge("cv.eures.eksport.antall.euresService.modified.total", modified.size)
+            meterRegistry.gauge("cv.eures.eksport.antall.euresService.closed.total", closed.size)
+            log.info("Metric: ${created.size} opprettet, ${modified.size} endret, ${closed.size} slettet")
 
-        val countEscoCache = janzzCacheRepository.getCacheCount()
-        meterRegistry.gauge("cv.eures.eksport.antall.escoCache.total", countEscoCache)
-        log.info("Metric: $countEscoCache linjer i ESCO cache")
+            val countEscoCache = janzzCacheRepository.getCacheCount()
+            meterRegistry.gauge("cv.eures.eksport.antall.escoCache.total", countEscoCache)
+            log.info("Metric: $countEscoCache linjer i ESCO cache")
+        } catch (e: Exception) {
+            log.error("Error while generating metrics", e)
+        }
 
     }
 }
