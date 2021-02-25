@@ -19,10 +19,10 @@ class CertificationConverter(
     fun toXmlRepresentation(): Certifications? {
         val certs = mutableListOf<Certification>()
 
-        if (samtykke.andreGodkjenninger)
+        if (samtykke.offentligeGodkjenninger)
             certs.addAll(cv.godkjenninger.toCertifications())
 
-        if (samtykke.lovregulerteYrker)
+        if (samtykke.andreGodkjenninger)
             certs.addAll(cv.sertifikat.toCertifications())
 
         if (samtykke.kurs)
