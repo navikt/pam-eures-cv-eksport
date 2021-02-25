@@ -1,4 +1,4 @@
-FROM navikt/java:11
+FROM navikt/java:13
 
 ENV JAVA_OPTS="-Xms768m -Xmx1280m"
 
