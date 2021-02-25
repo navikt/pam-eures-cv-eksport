@@ -37,6 +37,7 @@ class MessageProcessor(
                                     log.debug("Inside createdOrModified for ${rawCvs.size} raw cvs")
                                     val chunks = rawCvs.chunked(1000)
                                     for(chunk in chunks) {
+                                        log.debug("Inside createdOrModified CHUNK for ${chunk.size} raw cvs")
                                         val foedselsnummer = chunk.map(RawCV::foedselsnummer)
 
                                         // Create new ones where Samtykke exists
