@@ -104,8 +104,7 @@ class CvConverterService(
 
                     log.debug("Got CV Firstname: ${cv?.fornavn} Profile ID: ${profile?.jobbprofilId}")
 
-                    if (cv == null || profile == null)
-                        return@let null
+                    cv ?: return@let null
 
                     samtykkeRepository.hentSamtykke(foedselsnummer)
                             ?.run {

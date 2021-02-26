@@ -7,7 +7,7 @@ import no.nav.cv.eures.samtykke.Samtykke
 
 class CandidateProfileConverter(
         private val cv: Cv,
-        private val profile: Jobbprofil,
+        private val profile: Jobbprofil?,
         private val samtykke: Samtykke
 ) {
     private val ikkeSamtykket = ""

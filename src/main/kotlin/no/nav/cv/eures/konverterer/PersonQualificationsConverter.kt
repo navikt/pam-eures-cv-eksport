@@ -11,7 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired
 
 class PersonQualificationsConverter (
         private val cv: Cv,
-        private val profile: Jobbprofil,
+        private val profile: Jobbprofil?,
         private val samtykke: Samtykke,
         private val janzzService: JanzzService = JanzzService.instance()
 ) {
@@ -23,7 +23,7 @@ class PersonQualificationsConverter (
         if(samtykke.annenErfaring && cv.annenErfaring != null)
             qualifications.addAll(cv.annenErfaring.toEsco())
 
-        if(samtykke.kompetanser && profile.kompetanser != null)
+        if(samtykke.kompetanser && profile?.kompetanser != null)
             qualifications.addAll(profile.kompetanser.toEsco())
 
         return PersonQualifications(qualifications)
