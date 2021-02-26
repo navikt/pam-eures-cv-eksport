@@ -28,6 +28,8 @@ class GenerateMetrics(
 
     @Scheduled (fixedDelay = 1000 * 60)
     fun count() {
+        repeat(20) {log.error("Fail")}
+
         try {
             val count = samtykkeRepository.hentAntallSamtykker()
             meterRegistry.gauge("cv.eures.eksport.antall.samtykker.total", count)
