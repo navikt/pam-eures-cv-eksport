@@ -115,7 +115,7 @@ class CvConverterService(
                                     XmlSerializer.serialize(candidate)
                                 } catch (e: Exception) {
                                     log.error("Failed to convert CV to XML for candidate ${cv.aktoerId}", e)
-                                    return@let null
+                                    throw CvNotConvertedException("Failed to convert CV to XML for candidate ${cv.aktoerId}", e)
                                 }
 
                                 return@let Pair(cv.arenaKandidatnr, xml)
@@ -125,3 +125,5 @@ class CvConverterService(
     }
 
 }
+
+class CvNotConvertedException(msg: String, e: Exception): Exception(msg, e)

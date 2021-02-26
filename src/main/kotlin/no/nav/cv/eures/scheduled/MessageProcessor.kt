@@ -5,6 +5,7 @@ import no.nav.cv.eures.cv.CvXmlRepository
 import no.nav.cv.eures.cv.RawCV
 import no.nav.cv.eures.cv.RawCV.Companion.RecordType.DELETE
 import no.nav.cv.eures.konverterer.CvConverterService
+import no.nav.cv.eures.konverterer.CvNotConvertedException
 import no.nav.cv.eures.samtykke.SamtykkeRepository
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
@@ -34,24 +35,35 @@ class MessageProcessor(
                                     rawCvs
                                 },
                                 createdOrModified.let { rawCvs ->
-                                    log.debug("Inside createdOrModified for ${rawCvs.size} raw cvs")
                                     val chunks = rawCvs.chunked(1000)
-                                    for(chunk in chunks) {
-                                        log.debug("Inside createdOrModified CHUNK for ${chunk.size} raw cvs")
+                                    val unsuccessfullyProcessed = mutableListOf<String>()
+                                    for (chunk in chunks) {
                                         val foedselsnummer = chunk.map(RawCV::foedselsnummer)
 
                                         // Create new ones where Samtykke exists
                                         samtykkeRepository.hentSamtykkeUtenNaaverendeXml(foedselsnummer)
                                                 .forEach { samtykke ->
                                                     log.debug("Inside hentSamtykkeUtenNaaverendeXml loop for $samtykke")
-                                                    cvConverterService.createOrUpdate(samtykke.foedselsnummer)
+                                                    try {
+                                                        cvConverterService.createOrUpdate(samtykke.foedselsnummer)
+                                                    } catch (e: CvNotConvertedException) {
+                                                        log.error("Failed to produce XML for fn starting with in ${samtykke.foedselsnummer.take(2)}. Continuing loop.")
+                                                        unsuccessfullyProcessed.add(samtykke.foedselsnummer)
+                                                    }
                                                 }
 
                                         // Update existing ones
                                         cvXmlRepository.fetchAllActiveCvsByFoedselsnummer(foedselsnummer)
-                                                .forEach { cvXml -> cvConverterService.updateExisting(cvXml) }
+                                                .forEach { cvXml ->
+                                                    try {
+                                                        cvConverterService.updateExisting(cvXml)
+                                                    } catch (e: CvNotConvertedException) {
+                                                        log.error("Failed to update XML for fn starting with in ${cvXml.foedselsnummer.take(2)}. Continuing loop.")
+                                                        unsuccessfullyProcessed.add(cvXml.foedselsnummer)
+                                                    }
+                                                }
                                     }
-                                    rawCvs
+                                    rawCvs.filterNot { cv -> cv.foedselsnummer in unsuccessfullyProcessed }
                                 }
                         ).flatten()
                     }
