@@ -39,6 +39,8 @@ class SamtykkeService(
         try {
             if(existing == null)
                 meterRegistry.counter("cv.eures.eksport.samtykke.opprettet").increment(1.0)
+            else
+                meterRegistry.counter("cv.eures.eksport.samtykke.oppdatert").increment(1.0)
         } catch (e: Exception) {
             log.warn("Got exception when trying to increase metric counter for created samtykke", e)
         }
