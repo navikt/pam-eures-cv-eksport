@@ -45,8 +45,8 @@ class CvConverterService(
     }
 
     private fun Melding.cvAndProfile(): Pair<Cv?, Jobbprofil?>? = when (meldingstype) {
-        Meldingstype.OPPRETT -> Pair(opprettCv.cv, opprettJobbprofil.jobbprofil)
-        Meldingstype.ENDRE -> Pair(endreCv.cv, endreJobbprofil.jobbprofil)
+        Meldingstype.OPPRETT -> Pair(opprettCv?.cv, opprettJobbprofil?.jobbprofil)
+        Meldingstype.ENDRE -> Pair(endreCv?.cv, endreJobbprofil?.jobbprofil)
         else -> null
     }
 
