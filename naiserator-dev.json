@@ -3,7 +3,7 @@
 
   "kafka_schema_registry": "kafka-schema-registry.nais-q.adeo.no",
 
-  "kafka_consumer_topic_cv_endret":"arbeid-pam-cv-endret-v5-dev",
+  "kafka_consumer_topic_cv_endret":"arbeid-pam-cv-endret-v6",
 
   "ingress":  "https://arbeidsplassen.dev.nav.no/pam-eures-cv-eksport",
 
