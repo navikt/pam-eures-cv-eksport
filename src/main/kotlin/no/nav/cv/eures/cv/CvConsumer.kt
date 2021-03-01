@@ -63,7 +63,7 @@ class CvConsumer(
 
         if(existing != null) {
             if (existing.underOppfoelging && oppfolgingsinformasjon == null) {
-                log.debug("Deleting")
+//                log.debug("Deleting")
                 delete()
 
                 try {
@@ -72,7 +72,7 @@ class CvConsumer(
                     log.error("Fikk exception ${e.message} under sletting av cv $this", e)
                 }
             } else {
-                log.debug("Updating")
+//                log.debug("Updating")
                 existing.update(
                         sistEndret = ZonedDateTime.now(),
                         rawAvro = rawAvroBase64,
@@ -87,7 +87,7 @@ class CvConsumer(
                 }
             }
         } else {
-            log.debug("inserting")
+//            log.debug("inserting")
             val newRawCv = RawCV.create(
                     aktoerId = aktoerId,
                     foedselsnummer = foedselsnummer,
@@ -144,7 +144,7 @@ class CvConsumer(
 
         endretCV.forEach { melding ->
             try {
-                log.debug("Processing kafka message with key ${melding.key()}")
+                //log.debug("Processing kafka message with key ${melding.key()}")
                 val meldingValue = melding.value()
                 val rawAvroBase64 = Base64.getEncoder().encodeToString(meldingValue)
                 meldingValue.toMelding().createUpdateOrDelete(rawAvroBase64)
