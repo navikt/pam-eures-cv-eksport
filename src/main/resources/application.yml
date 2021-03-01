@@ -36,7 +36,7 @@ spring:
     driver-class-name: ${DB_DRIVER:org.postgresql.Driver}
     url: jdbc:postgresql://${DB_HOST:localhost}:${DB_PORT:5432}/${DB_DATABASE:pam-eures-cv-eksport}
     username: ${DB_USERNAME:pam-eures-cv-eksport}
-    password: ${DB_PASSWORD:}
+    password: ${DB_PASSWORD:pam-eures-cv-eksport}
     hikari:
       maximum-pool-size: 10
       minimum-idle: 0
