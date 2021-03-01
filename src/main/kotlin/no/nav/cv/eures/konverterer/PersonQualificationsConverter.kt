@@ -17,7 +17,7 @@ class PersonQualificationsConverter (
 ) {
     private val log: Logger = LoggerFactory.getLogger(PersonQualificationsConverter::class.java)
 
-    fun toXmlRepresentation() : PersonQualifications {
+    fun toXmlRepresentation() : PersonQualifications? {
         val qualifications = mutableListOf<PersonCompetency>()
 
         if(samtykke.annenErfaring && cv.annenErfaring != null)
@@ -26,7 +26,7 @@ class PersonQualificationsConverter (
         if(samtykke.kompetanser && profile?.kompetanser != null)
             qualifications.addAll(profile.kompetanser.toEsco())
 
-        return PersonQualifications(qualifications)
+        return if(qualifications.isNotEmpty()) PersonQualifications(qualifications) else null
     }
 
     @JvmName("toEscoAnnenErfaring")
