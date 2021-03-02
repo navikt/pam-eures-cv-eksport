@@ -33,7 +33,7 @@ class SamtykkeController(
         return ResponseEntity.ok(samtykke)
     }
 
-    @DeleteMapping(produces = ["application/json"])
+    @DeleteMapping
     fun slettSamtykke(): ResponseEntity<String> {
         samtykkeService.slettSamtykke(extractFnr())
         return ResponseEntity.ok("OK")
