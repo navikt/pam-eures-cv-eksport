@@ -6,6 +6,8 @@ import no.nav.cv.eures.model.Certifications
 import no.nav.cv.eures.model.FreeFormEffectivePeriod
 import no.nav.cv.eures.model.IssuingAuthority
 import no.nav.cv.eures.samtykke.Samtykke
+import org.slf4j.Logger
+import org.slf4j.LoggerFactory
 
 class CertificationConverter(
         private val cv: Cv,
@@ -13,21 +15,67 @@ class CertificationConverter(
 ) {
     private val ikkeSamtykket = null
 
+    companion object {
+        val log: Logger = LoggerFactory.getLogger(CertificationConverter::class.java)
+    }
+
     fun toXmlRepresentation(): Certifications? {
         val certs = mutableListOf<Certification>()
 
-        if (samtykke.offentligeGodkjenninger)
-            certs.addAll(cv.godkjenninger.toCertifications())
+        val debug = cv.aktoerId.equals("2808968255357")
 
-        if (samtykke.andreGodkjenninger)
-            certs.addAll(cv.sertifikat.toCertifications())
+        if(debug) {
+            log.debug("CERTDEBUG: ${cv.aktoerId} with samtykke $samtykke")
 
-        if (samtykke.kurs)
-            certs.addAll(cv.kurs.toCertifications())
+            if (samtykke.offentligeGodkjenninger) {
+                val list = cv.godkjenninger.toCertifications()
+                list.forEach {
+                    log.debug("CERTDEBUG: OG : ${it.certificationName}")
+                }
+                certs.addAll(list)
+            }
 
-        if(samtykke.fagbrev)
-            certs.addAll(cv.fagdokumentasjon.toCertifications())
+            if (samtykke.andreGodkjenninger) {
+                val list = cv.sertifikat.toCertifications()
+                list.forEach {
+                    log.debug("CERTDEBUG: SE : ${it.certificationName}")
+                }
+                certs.addAll(list)
+            }
 
+
+            if (samtykke.kurs) {
+                val list = cv.kurs.toCertifications()
+                list.forEach {
+                    log.debug("CERTDEBUG: KU : ${it.certificationName}")
+                }
+                certs.addAll(list)
+
+            }
+
+            if (samtykke.fagbrev) {
+                val list = cv.fagdokumentasjon.toCertifications()
+                list.forEach {
+                    log.debug("CERTDEBUG: FB : ${it.certificationName}")
+                }
+                certs.addAll(list)
+
+            }
+
+        } else {
+
+            if (samtykke.offentligeGodkjenninger)
+                certs.addAll(cv.godkjenninger.toCertifications())
+
+            if (samtykke.andreGodkjenninger)
+                certs.addAll(cv.sertifikat.toCertifications())
+
+            if (samtykke.kurs)
+                certs.addAll(cv.kurs.toCertifications())
+
+            if (samtykke.fagbrev)
+                certs.addAll(cv.fagdokumentasjon.toCertifications())
+        }
         return if (certs.isEmpty()) null else Certifications(certs)
     }
 
