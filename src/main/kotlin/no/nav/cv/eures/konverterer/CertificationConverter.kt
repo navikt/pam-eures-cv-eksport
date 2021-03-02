@@ -138,7 +138,7 @@ class CertificationConverter(
                     Certification(
                             certificationTypeCode = null, // TODO: Find out what certificationTypeCode should be
                             certificationName = it.tittel,
-                            issuingAuthortity = IssuingAuthority("Yrkesopplæringsnemnd"),
+                            issuingAuthortity = IssuingAuthority(""),
                             firstIssuedDate = null,
                             freeFormEffectivePeriod = null
                     )
