@@ -46,7 +46,7 @@ class CandidatePersonConverter(
                         city = cv.poststed,
                         countryCode = cv.land?.toIso3166_1a2CountryCode()),
 
-                residencyCountryCode = cv.land ?: "",
+                residencyCountryCode = cv.land?.toIso3166_1a2CountryCode(), // May be null, but that seems to be OK
                 nationalityCode = listOf(cv.nasjonalitet?.toIso3166_1a2CountryCode() ?: ""),
                 birthDate = cv.foedselsdato.toString(),
                 genderCode = GenderCode.NotSpecified, // TODO : Vi har vel ikke kjønn?

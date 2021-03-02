@@ -8,7 +8,7 @@ data class CandidatePerson(
 
         @JacksonXmlElementWrapper(useWrapping = false)
         val communication: List<Communication>,
-        val residencyCountryCode: String,
+        val residencyCountryCode: String?,
 
         @JacksonXmlElementWrapper(useWrapping = false)
         val nationalityCode: List<String>,
