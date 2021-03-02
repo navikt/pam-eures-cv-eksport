@@ -53,13 +53,19 @@ class CertificationConverter(
 
             }
 
+            val (autorisasjon, fagbrev) = cv.fagdokumentasjon.toCertifications()
+
+            if (samtykke.offentligeGodkjenninger) {
+                autorisasjon.forEach {
+                    log.debug("CERTDEBUG: AUT : ${it.certificationName}")
+                }
+                certs.addAll(autorisasjon)
+            }
             if (samtykke.fagbrev) {
-                val list = cv.fagdokumentasjon.toCertifications()
-                list.forEach {
+                fagbrev.forEach {
                     log.debug("CERTDEBUG: FB : ${it.certificationName}")
                 }
-                certs.addAll(list)
-
+                certs.addAll(fagbrev)
             }
 
         } else {
@@ -73,8 +79,13 @@ class CertificationConverter(
             if (samtykke.kurs)
                 certs.addAll(cv.kurs.toCertifications())
 
+            val (autorisasjon, fagbrev) = cv.fagdokumentasjon.toCertifications()
+
+            if (samtykke.offentligeGodkjenninger)
+                certs.addAll(autorisasjon)
+
             if (samtykke.fagbrev)
-                certs.addAll(cv.fagdokumentasjon.toCertifications())
+                certs.addAll(fagbrev)
         }
         return if (certs.isEmpty()) null else Certifications(certs)
     }
@@ -119,13 +130,28 @@ class CertificationConverter(
     }
 
     @JvmName("toCertificationsFagdokumentasjon")
-    private fun List<Fagdokumentasjon>.toCertifications() = mapNotNull {
-        Certification(
-                certificationTypeCode = null, // TODO: Find out what certificationTypeCode should be
-                certificationName = it.tittel,
-                issuingAuthortity = IssuingAuthority("Yrkesopplæringsnemnd"),
-                firstIssuedDate = null,
-                freeFormEffectivePeriod = null
+    private fun List<Fagdokumentasjon>.toCertifications() : Pair<List<Certification>, List<Certification>> {
+        val (aut, fag) = partition { it.type == FagdokumentasjonType.AUTORISASJON }
+
+        return Pair(
+                aut.map {
+                    Certification(
+                            certificationTypeCode = null, // TODO: Find out what certificationTypeCode should be
+                            certificationName = it.tittel,
+                            issuingAuthortity = IssuingAuthority("Yrkesopplæringsnemnd"),
+                            firstIssuedDate = null,
+                            freeFormEffectivePeriod = null
+                    )
+                },
+                fag.map {
+                    Certification(
+                            certificationTypeCode = null, // TODO: Find out what certificationTypeCode should be
+                            certificationName = it.tittel,
+                            issuingAuthortity = IssuingAuthority("Yrkesopplæringsnemnd"),
+                            firstIssuedDate = null,
+                            freeFormEffectivePeriod = null
+                    )
+                }
         )
     }
 }
