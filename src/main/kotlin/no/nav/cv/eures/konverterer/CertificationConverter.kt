@@ -99,7 +99,7 @@ class CertificationConverter(
                 firstIssuedDate = it.gjennomfoert.toFormattedDateTime(),
                 freeFormEffectivePeriod = FreeFormEffectivePeriod(
                         startDate = null,
-                        endDate = it.utloeper.toFormattedDateTime()
+                        endDate = it.utloeper?.toFormattedDateTime()
                 )
         )
     }

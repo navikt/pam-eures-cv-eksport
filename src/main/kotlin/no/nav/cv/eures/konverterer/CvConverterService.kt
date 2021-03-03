@@ -1,6 +1,5 @@
 package no.nav.cv.eures.konverterer
 
-import io.micrometer.core.instrument.MeterRegistry
 import no.nav.arbeid.cv.avro.Cv
 import no.nav.arbeid.cv.avro.Jobbprofil
 import no.nav.arbeid.cv.avro.Melding
