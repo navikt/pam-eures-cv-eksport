@@ -27,8 +27,8 @@ class CandidatePersonConverter(
                             familyName = ""
                     ),
                     communication = listOf(),
-                    residencyCountryCode = cv.land ?: "",
-                    nationalityCode = listOf(cv.nasjonalitet?.toIso3166_1a2CountryCode() ?: ""),
+                    residencyCountryCode = cv.land?.toIso3166_1a2CountryCode(),
+                    nationalityCode = cv.nasjonalitet?.let { listOf(it.toIso3166_1a2CountryCode()) },
                     birthDate = "",
                     genderCode = GenderCode.NotSpecified,
                     primaryLanguageCode = cv.spraakferdigheter.toLanguages()
@@ -48,7 +48,7 @@ class CandidatePersonConverter(
                         countryCode = cv.land?.toIso3166_1a2CountryCode()),
 
                 residencyCountryCode = cv.land?.toIso3166_1a2CountryCode(), // May be null, but that seems to be OK
-                nationalityCode = listOf(cv.nasjonalitet?.toIso3166_1a2CountryCode() ?: ""),
+                nationalityCode =  cv.nasjonalitet?.let { listOf(it.toIso3166_1a2CountryCode()) },
                 birthDate = cv.foedselsdato.toString(),
                 genderCode = GenderCode.NotSpecified, // TODO : Vi har vel ikke kjønn?
                 primaryLanguageCode = cv.spraakferdigheter.toLanguages()

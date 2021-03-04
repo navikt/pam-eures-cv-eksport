@@ -11,7 +11,7 @@ data class CandidatePerson(
         val residencyCountryCode: String?,
 
         @JacksonXmlElementWrapper(useWrapping = false)
-        val nationalityCode: List<String>,
+        val nationalityCode: List<String>?,
         val birthDate: String,
         val genderCode: GenderCode,
 
