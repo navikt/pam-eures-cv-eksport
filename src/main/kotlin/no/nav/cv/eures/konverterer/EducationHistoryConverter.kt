@@ -27,6 +27,20 @@ class EducationHistoryConverter(
             attendancePeriod = AttendancePeriod(
                     it.fraTidspunkt.toFormattedDateTime(),
                     it.tilTidspunkt?.toFormattedDateTime()),
-            educationLevelCode = EducationLevelCode(code = it.nuskodeGrad.substring(0, 1))
+            educationLevelCode = EducationLevelCode(code = it.nuskodeGrad.substring(0, 1)),
+            educationDegree = it.nuskodeGrad?.toDegree()
     ) }
+
+    private fun String.toDegree() : EducationDegree? {
+        val nuskode = substring(0, 1)
+
+        return when(nuskode) {
+            "6" -> EducationDegree(degreeName = "Bachelor N", degreeTypeCode = "Bachelor TC")
+            "7" -> EducationDegree(degreeName = "Master N", degreeTypeCode = "Masters TC")
+            "8" -> EducationDegree(degreeName = "Doctoral N", degreeTypeCode = "Doctoral TC")
+            else -> null
+        }
+
+    }
+
 }

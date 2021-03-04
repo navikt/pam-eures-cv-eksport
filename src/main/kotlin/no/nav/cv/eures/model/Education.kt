@@ -15,7 +15,8 @@ data class EducationOrganizationAttendance(
         val organizationName: String,
         val programName: String,
         val educationLevelCode: EducationLevelCode,
-        val attendancePeriod: AttendancePeriod
+        val attendancePeriod: AttendancePeriod,
+        val educationDegree: EducationDegree?
 )
 
 // 4.28.12
@@ -33,6 +34,12 @@ data class EducationLevelCode(
         val code: String
 
 )
+
+data class EducationDegree(
+        val degreeName: String,
+        val degreeTypeCode: String
+)
+
 /* TODO Denne ser ubrukt ut. Kommenterer den ut intill videre
 enum class EducationLevelCodeEnum(code: Int) {
     EarlyChildhood(0),
