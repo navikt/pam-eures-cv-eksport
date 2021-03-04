@@ -144,7 +144,8 @@ class CvConsumer(
 
         endretCV.forEach { melding ->
             try {
-                //log.debug("Processing kafka message with key ${melding.key()}")
+                if(melding.key() == "2308808164824")
+                    log.debug("Processing kafka message with key ${melding.key()}")
                 val meldingValue = melding.value()
                 val rawAvroBase64 = Base64.getEncoder().encodeToString(meldingValue)
                 meldingValue.toMelding().createUpdateOrDelete(rawAvroBase64)
