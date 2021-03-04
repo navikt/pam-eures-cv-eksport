@@ -1,6 +1,7 @@
 package no.nav.cv.eures.konverterer
 
 import no.nav.arbeid.cv.avro.Cv
+import no.nav.arbeid.cv.avro.Ferdighetsnivaa
 import no.nav.arbeid.cv.avro.Spraakferdighet
 import no.nav.cv.eures.konverterer.country.NationalityConverter
 import no.nav.cv.eures.konverterer.language.LanguageConverter
@@ -57,8 +58,8 @@ class CandidatePersonConverter(
     private fun List<Spraakferdighet>.toLanguages() : List<String> {
         val ikkeSamtykket = listOf<String>()
 
-        val languages = mapNotNull {
-            it.iso3kode?.let { i3k -> LanguageConverter.fromIso3ToIso1(i3k) }
+        val languages = filter { it.muntlig == Ferdighetsnivaa.FOERSTESPRAAK || it.skriftlig == Ferdighetsnivaa.FOERSTESPRAAK }
+                .mapNotNull { it.iso3kode?.let { i3k -> LanguageConverter.fromIso3ToIso1(i3k) }
         }
         if (languages.isEmpty()) log.warn("Missing at least one language for CvId : \"${cv.cvId}\"")
         return if(samtykke.spraak) languages else ikkeSamtykket
