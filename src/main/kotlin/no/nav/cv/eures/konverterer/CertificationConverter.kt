@@ -39,7 +39,7 @@ class CertificationConverter(
         if (samtykke.fagbrev)
             certs.addAll(fagbrev)
 
-        return if (certs.isEmpty()) null else Certifications(certs)
+        return if (certs.isEmpty()) ikkeSamtykket else Certifications(certs)
     }
 
     @JvmName("toCertificationsGodkjenning")
