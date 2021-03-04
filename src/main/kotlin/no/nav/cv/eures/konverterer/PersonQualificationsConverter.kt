@@ -16,7 +16,6 @@ class PersonQualificationsConverter (
         private val samtykke: Samtykke,
         private val janzzService: JanzzService = JanzzService.instance()
 ) {
-    private val log: Logger = LoggerFactory.getLogger(PersonQualificationsConverter::class.java)
 
     fun toXmlRepresentation() : PersonQualifications? {
         val qualifications = mutableListOf<PersonCompetency>()
@@ -34,36 +33,23 @@ class PersonQualificationsConverter (
     }
 
     private fun List<Spraakferdighet>.toLanguages()  : List<PersonCompetency>
-            = also { log.info("Det er ${it.size} Spraakferdighet") }
-            .mapNotNull { spraak ->
+            = mapNotNull { spraak ->
                 val iso1 = spraak.iso3kode?.let { i3k -> LanguageConverter.fromIso3ToIso1(i3k) }
                         ?: return@mapNotNull null
 
-                PersonCompetency(competencyID = iso1, taxonomyID = "language") }
-            .also { log.info("Mappet til ${it.size} språkferdigheter") }
+                PersonCompetency(competencyID = iso1, taxonomyID = "language")
+            }
 
 
     @JvmName("toEscoAnnenErfaring")
     private fun List<AnnenErfaring>.toEsco() : List<PersonCompetency>
-            = also {log.info("Det er ${it.size} AnnenErfaring")}
-            .mapNotNull { erfaring -> erfaring.beskrivelse?.let {janzzService.getEscoForCompetence(it) } }
+            = mapNotNull { erfaring -> erfaring.beskrivelse?.let {janzzService.getEscoForCompetence(it) } }
             .flatten()
             .map { PersonCompetency(competencyID = it.esco, taxonomyID = "other") }
-            .also { log.info("AnnenErfaring returned ${it.size} ESCO codes") }
 
     @JvmName("toEscoKompetanser")
     private fun List<String>.toEsco() : List<PersonCompetency>
-            = also {log.info("Det er ${it.size} kompetanser")}
-            .map { janzzService.getEscoForCompetence(it) }
+            = map { janzzService.getEscoForCompetence(it) }
             .flatten()
             .map { PersonCompetency(competencyID = it.esco, taxonomyID = "other") }
-            .also { log.info("kompetanser returned ${it.size} ESCO codes") }
-
-    @JvmName("toEscoFagdokumentasjon")
-    private fun List<Fagdokumentasjon>.toEsco() : List<PersonCompetency>
-            =  also {log.info("Det er ${it.size} fagdokumentasjoner: $it")}
-            .mapNotNull { fag -> fag.tittel?.let {janzzService.getEscoForCompetence(it) } }
-            .flatten()
-            .map { PersonCompetency(competencyID = it.esco, taxonomyID = "other") }
-            .also { log.info("Fagdokumentasjon returned ${it.size} ESCO codes") }
 }
