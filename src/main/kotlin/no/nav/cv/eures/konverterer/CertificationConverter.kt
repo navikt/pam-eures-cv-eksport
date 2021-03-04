@@ -22,71 +22,23 @@ class CertificationConverter(
     fun toXmlRepresentation(): Certifications? {
         val certs = mutableListOf<Certification>()
 
-        val debug = cv.aktoerId.equals("2808968255357")
+        if (samtykke.offentligeGodkjenninger)
+            certs.addAll(cv.godkjenninger.toCertifications())
 
-        if(debug) {
-            log.debug("CERTDEBUG: ${cv.aktoerId} with samtykke $samtykke")
+        if (samtykke.andreGodkjenninger)
+            certs.addAll(cv.sertifikat.toCertifications())
 
-            if (samtykke.offentligeGodkjenninger) {
-                val list = cv.godkjenninger.toCertifications()
-                list.forEach {
-                    log.debug("CERTDEBUG: OG : ${it.certificationName}")
-                }
-                certs.addAll(list)
-            }
+        if (samtykke.kurs)
+            certs.addAll(cv.kurs.toCertifications())
 
-            if (samtykke.andreGodkjenninger) {
-                val list = cv.sertifikat.toCertifications()
-                list.forEach {
-                    log.debug("CERTDEBUG: SE : ${it.certificationName}")
-                }
-                certs.addAll(list)
-            }
+        val (autorisasjon, fagbrev) = cv.fagdokumentasjon.toCertifications()
 
+        if (samtykke.offentligeGodkjenninger)
+            certs.addAll(autorisasjon)
 
-            if (samtykke.kurs) {
-                val list = cv.kurs.toCertifications()
-                list.forEach {
-                    log.debug("CERTDEBUG: KU : ${it.certificationName}")
-                }
-                certs.addAll(list)
+        if (samtykke.fagbrev)
+            certs.addAll(fagbrev)
 
-            }
-
-            val (autorisasjon, fagbrev) = cv.fagdokumentasjon.toCertifications()
-
-            if (samtykke.offentligeGodkjenninger) {
-                autorisasjon.forEach {
-                    log.debug("CERTDEBUG: AUT : ${it.certificationName}")
-                }
-                certs.addAll(autorisasjon)
-            }
-            if (samtykke.fagbrev) {
-                fagbrev.forEach {
-                    log.debug("CERTDEBUG: FB : ${it.certificationName}")
-                }
-                certs.addAll(fagbrev)
-            }
-
-        } else {
-
-            if (samtykke.offentligeGodkjenninger)
-                certs.addAll(cv.godkjenninger.toCertifications())
-
-            if (samtykke.andreGodkjenninger)
-                certs.addAll(cv.sertifikat.toCertifications())
-
-            if (samtykke.kurs)
-                certs.addAll(cv.kurs.toCertifications())
-
-            val (autorisasjon, fagbrev) = cv.fagdokumentasjon.toCertifications()
-
-            if (samtykke.offentligeGodkjenninger)
-                certs.addAll(autorisasjon)
-
-            if (samtykke.fagbrev)
-                certs.addAll(fagbrev)
-        }
         return if (certs.isEmpty()) null else Certifications(certs)
     }
 
