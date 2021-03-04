@@ -27,20 +27,24 @@ class EducationHistoryConverter(
             attendancePeriod = AttendancePeriod(
                     it.fraTidspunkt.toFormattedDateTime(),
                     it.tilTidspunkt?.toFormattedDateTime()),
-            educationLevelCode = EducationLevelCode(code = it.nuskodeGrad.substring(0, 1)),
-            educationDegree = it.nuskodeGrad?.toDegree()
+            educationLevelCode = EducationLevelCode(code = it.nuskodeGrad.toEducationLevelCode()),
+            educationDegree = educationDegree(it.nuskodeGrad.toEducationLevelCode())
     ) }
 
-    private fun String.toDegree() : EducationDegree? {
-        val nuskode = substring(0, 1)
+    private fun String.toEducationLevelCode() = substring(0, 1)
 
-        return when(nuskode) {
-            "6" -> EducationDegree(degreeName = "Bachelor N", degreeTypeCode = "Bachelor TC")
-            "7" -> EducationDegree(degreeName = "Master N", degreeTypeCode = "Masters TC")
-            "8" -> EducationDegree(degreeName = "Doctoral N", degreeTypeCode = "Doctoral TC")
+    private fun educationDegree(code: String) : EducationDegree?
+        = when(code) {
+            "0" -> EducationDegree(degreeName = "EarlyChildhood", degreeTypeCode = "EarlyChildhood")
+            "1" -> EducationDegree(degreeName = "Primary", degreeTypeCode = "Primary")
+            "2" -> EducationDegree(degreeName = "LowerSecondary", degreeTypeCode = "LowerSecondary")
+            "3" -> EducationDegree(degreeName = "UpperSecondary", degreeTypeCode = "UpperSecondary")
+            "4" -> EducationDegree(degreeName = "PostSecondaryNonTertiary", degreeTypeCode = "PostSecondaryNonTertiary")
+            "5" -> EducationDegree(degreeName = "ShortCycleTertiary", degreeTypeCode = "ShortCycleTertiary")
+            "6" -> EducationDegree(degreeName = "Bachelor", degreeTypeCode = "Bachelor")
+            "7" -> EducationDegree(degreeName = "Master", degreeTypeCode = "Masters")
+            "8" -> EducationDegree(degreeName = "Doctoral", degreeTypeCode = "Doctoral")
             else -> null
         }
-
-    }
 
 }
