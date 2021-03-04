@@ -27,8 +27,7 @@ class LicensesConverter (
 
     fun Foererkort.toLicenses()
             = Licenses(klasse.map {
-                if(cv.aktoerId == "2308808164824")
-                    log.debug("FOERERKORT ${cv.aktoerId}: Mapping klasse ${it.klasse} and beskrivelse ${it.klasseBeskrivelse}")
+                log.debug("FOERERKORT ${cv.aktoerId}: Mapping klasse ${it.klasse} and beskrivelse ${it.klasseBeskrivelse}")
                 License(
                         licenseTypeCode = it.klasse,
                         licenseName = it.klasseBeskrivelse,
