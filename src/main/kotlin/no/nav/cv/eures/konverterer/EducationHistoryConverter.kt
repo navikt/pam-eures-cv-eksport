@@ -23,7 +23,7 @@ class EducationHistoryConverter(
     private fun List<Utdannelse>.toEducationList()
             = map { EducationOrganizationAttendance(
             organizationName = it.laerested,
-            programName = it.utdanningsretning,
+            programName = "${it.utdanningsretning} - ${it.beskrivelse}",
             attendancePeriod = AttendancePeriod(
                     it.fraTidspunkt.toFormattedDateTime(),
                     it.tilTidspunkt?.toFormattedDateTime()),
@@ -42,7 +42,7 @@ class EducationHistoryConverter(
             "4" -> EducationDegree(degreeName = "PostSecondaryNonTertiary", degreeTypeCode = "PostSecondaryNonTertiary")
             "5" -> EducationDegree(degreeName = "ShortCycleTertiary", degreeTypeCode = "ShortCycleTertiary")
             "6" -> EducationDegree(degreeName = "Bachelor", degreeTypeCode = "Bachelor")
-            "7" -> EducationDegree(degreeName = "Master", degreeTypeCode = "Masters")
+            "7" -> EducationDegree(degreeName = "Masters", degreeTypeCode = "Masters")
             "8" -> EducationDegree(degreeName = "Doctoral", degreeTypeCode = "Doctoral")
             else -> null
         }
