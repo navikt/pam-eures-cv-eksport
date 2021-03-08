@@ -37,11 +37,11 @@ class PersonQualificationsConverter (
     }
 
     private fun List<Spraakferdighet>.toLanguages()  : List<PersonCompetency>
-            = mapNotNull { spraak ->
-                val iso1 = spraak.iso3kode?.let { i3k -> LanguageConverter.fromIso3ToIso1(i3k) }
-                        ?: return@mapNotNull null
-
-                PersonCompetency(competencyID = iso1, taxonomyID = "language")
+            = onEach { if(debug) log.debug("${cv.aktoerId} QUAL has language $it") }
+            .mapNotNull { spraak ->
+                spraak.iso3kode
+                        ?.let { i3k -> LanguageConverter.fromIso3ToIso1(i3k) }
+                        ?.let { PersonCompetency(competencyID = it, taxonomyID = "language") }
             }
             .onEach { if(debug) log.debug("${cv.aktoerId} QUAL got language $it") }
 
