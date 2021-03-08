@@ -18,6 +18,7 @@ class LicensesConverter (
     companion object {
         val log: Logger = LoggerFactory.getLogger(CertificationConverter::class.java)
     }
+    val debug = cv.aktoerId in listOf("2308808164824", "2672989697496", "2503811631032")
 
     fun toXmlRepresentation()
             = when(samtykke.foererkort) {
@@ -27,7 +28,6 @@ class LicensesConverter (
 
     fun Foererkort.toLicenses()
             = Licenses(klasse.map {
-                log.debug("FOERERKORT ${cv.aktoerId}: Mapping klasse ${it.klasse} and beskrivelse ${it.klasseBeskrivelse}")
                 License(
                         licenseTypeCode = it.klasse,
                         licenseName = it.klasseBeskrivelse,
@@ -35,6 +35,8 @@ class LicensesConverter (
                                 startDate = it.fraTidspunkt?.toFormattedDateTime(),
                                 endDate = it.utloeper?.toFormattedDateTime()
                         )
-                ) })
+                ) }
+            .onEach { if(debug) log.debug("${cv.aktoerId} FOERKORT $it") }
+            )
 
 }

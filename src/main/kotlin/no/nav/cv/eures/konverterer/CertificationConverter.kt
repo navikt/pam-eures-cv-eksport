@@ -19,7 +19,13 @@ class CertificationConverter(
         val log: Logger = LoggerFactory.getLogger(CertificationConverter::class.java)
     }
 
+    val debug = cv.aktoerId in listOf("2308808164824", "2672989697496", "2503811631032")
+
+
     fun toXmlRepresentation(): Certifications? {
+        if(debug)
+            log.debug("${cv.aktoerId} CERT samtykke $samtykke")
+
         val certs = mutableListOf<Certification>()
 
         if (samtykke.offentligeGodkjenninger)
@@ -54,7 +60,7 @@ class CertificationConverter(
                         endDate = it.utloeper?.toFormattedDateTime()
                 )
         )
-    }
+    }.onEach { if(debug) log.debug("${cv.aktoerId} CERT Godkjenning $it") }
 
     @JvmName("toCertificationsSertifikat")
     private fun List<Sertifikat>.toCertifications() = mapNotNull {
@@ -68,7 +74,7 @@ class CertificationConverter(
                         endDate = it.utloeper?.toFormattedDateTime()
                 )
         )
-    }
+    }.onEach { if(debug) log.debug("${cv.aktoerId} CERT Sertifikat $it") }
 
     @JvmName("toCertificationsKurs")
     private fun List<Kurs>.toCertifications() = mapNotNull {
@@ -79,7 +85,7 @@ class CertificationConverter(
                 firstIssuedDate = it.tidspunkt?.toFormattedDateTime(),
                 freeFormEffectivePeriod = null
         )
-    }
+    }.onEach { if(debug) log.debug("${cv.aktoerId} CERT Kurs $it") }
 
     @JvmName("toCertificationsFagdokumentasjon")
     private fun List<Fagdokumentasjon>.toCertifications() : Pair<List<Certification>, List<Certification>> {
@@ -94,7 +100,7 @@ class CertificationConverter(
                             firstIssuedDate = null,
                             freeFormEffectivePeriod = null
                     )
-                },
+                }.onEach { if(debug) log.debug("${cv.aktoerId} CERT Autorisasjon $it") },
                 fag.map {
                     Certification(
                             certificationTypeCode = null, // TODO: Find out what certificationTypeCode should be
@@ -103,7 +109,7 @@ class CertificationConverter(
                             firstIssuedDate = null,
                             freeFormEffectivePeriod = null
                     )
-                }
+                }.onEach { if(debug) log.debug("${cv.aktoerId} CERT Fagbrev $it") }
         )
     }
 }

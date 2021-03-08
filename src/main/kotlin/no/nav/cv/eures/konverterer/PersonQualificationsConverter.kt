@@ -8,7 +8,6 @@ import no.nav.cv.eures.model.PersonQualifications
 import no.nav.cv.eures.samtykke.Samtykke
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
-import org.springframework.beans.factory.annotation.Autowired
 
 class PersonQualificationsConverter (
         private val cv: Cv,
@@ -16,6 +15,11 @@ class PersonQualificationsConverter (
         private val samtykke: Samtykke,
         private val janzzService: JanzzService = JanzzService.instance()
 ) {
+
+    companion object {
+        val log: Logger = LoggerFactory.getLogger(PersonQualificationsConverter::class.java)
+    }
+    val debug = cv.aktoerId in listOf("2308808164824", "2672989697496", "2503811631032")
 
     fun toXmlRepresentation() : PersonQualifications? {
         val qualifications = mutableListOf<PersonCompetency>()
@@ -39,17 +43,24 @@ class PersonQualificationsConverter (
 
                 PersonCompetency(competencyID = iso1, taxonomyID = "language")
             }
+            .onEach { if(debug) log.debug("${cv.aktoerId} QUAL got language $it") }
+
 
 
     @JvmName("toEscoAnnenErfaring")
     private fun List<AnnenErfaring>.toEsco() : List<PersonCompetency>
-            = mapNotNull { erfaring -> erfaring.beskrivelse?.let {janzzService.getEscoForCompetence(it) } }
+            = onEach { if(debug) log.debug("${cv.aktoerId} QUAL  got annen erfaring $it") }
+            .mapNotNull { erfaring -> erfaring.beskrivelse?.let {janzzService.getEscoForCompetence(it) } }
             .flatten()
             .map { PersonCompetency(competencyID = it.esco, taxonomyID = "other") }
+            .onEach { if(debug) log.debug("${cv.aktoerId} QUAL got mapped annen erfaring $it") }
 
     @JvmName("toEscoKompetanser")
     private fun List<String>.toEsco() : List<PersonCompetency>
-            = map { janzzService.getEscoForCompetence(it) }
+            = asSequence().onEach { if(debug) log.debug("${cv.aktoerId} QUAL got competance $it") }
+            .map { janzzService.getEscoForCompetence(it) }
             .flatten()
             .map { PersonCompetency(competencyID = it.esco, taxonomyID = "other") }
+            .onEach { if(debug) log.debug("${cv.aktoerId} QUAL got mapped competance $it") }.toList()
+
 }
