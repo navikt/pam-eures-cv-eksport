@@ -5,10 +5,15 @@ import org.junit.jupiter.api.Test
 
 import org.junit.jupiter.api.Assertions.*
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.boot.jdbc.EmbeddedDatabaseConnection
+import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase
 import org.springframework.boot.test.context.SpringBootTest
+import org.springframework.test.context.ActiveProfiles
 import java.time.ZonedDateTime
 
 @SpringBootTest
+@ActiveProfiles("test")
+@AutoConfigureTestDatabase(connection = EmbeddedDatabaseConnection.H2)
 internal class CvConverterServiceTest {
 
     @Autowired
@@ -16,8 +21,8 @@ internal class CvConverterServiceTest {
 
     @Test
     fun `Not changing checksum when xml is not changed`() {
+        val cvBefore = createCv("Ref 1", "Fnr 1")
 
-        val cvBefore = getCv("Aktoer Id 1")
         val checksumBefore = cvBefore.checksum
         val cvAfter = cvConverterService.updateIfChanged(cvBefore, xmlString1)
 
@@ -27,15 +32,15 @@ internal class CvConverterServiceTest {
 
     @Test
     fun `Updated checksum when xml is changed`() {
-        val cvBefore = getCv("Aktoer Id 2")
+        val cvBefore = createCv("Ref 2", "Fnr 2")
+
         val checksumBefore = cvBefore.checksum
+        val checksumAfter = cvConverterService.md5(xmlString2)
 
         val cvAfter = cvConverterService.updateIfChanged(cvBefore, xmlString2)
 
-        val checksum2 = cvConverterService.md5(xmlString2)
-
         assertNotEquals(checksumBefore, cvAfter.checksum)
-        assertEquals(checksum2, cvAfter.checksum)
+        assertEquals(checksumAfter, cvAfter.checksum)
         assertTrue(createdAt.isBefore(cvAfter.sistEndret))
     }
 
@@ -45,13 +50,13 @@ internal class CvConverterServiceTest {
     val xmlString1 = "XML String 1"
     val xmlString2 = "XML String 2"
 
-    fun getCv(aid: String) = CvXml.create(
-        reference = "Test",
-        aktoerId = aid,
-        opprettet = createdAt,
-        sistEndret = createdAt ,
-        slettet = null,
-        xml = xmlString1,
-        checksum = cvConverterService.md5(xmlString1)
+    private fun createCv(ref: String, fnr: String) = CvXml.create(
+            reference = ref,
+            foedselsnummer = fnr,
+            opprettet = createdAt,
+            sistEndret = createdAt,
+            slettet = null,
+            xml = xmlString1,
+            checksum = cvConverterService.md5(xmlString1)
     )
 }
