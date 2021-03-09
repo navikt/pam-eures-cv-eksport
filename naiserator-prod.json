@@ -5,7 +5,5 @@
 
   "kafka_consumer_topic_cv_endret":"arbeid-pam-cv-endret-v5-p",
 
-  "ingress":  "https://arbeidsplassen.nav.no/pam-eures-cv-eksport",
-
-  "influx_uri": "http://influx-teampam-nav-prod.aivencloud.com:26482"
+  "ingress":  "https://arbeidsplassen.nav.no/pam-eures-cv-eksport"
 }

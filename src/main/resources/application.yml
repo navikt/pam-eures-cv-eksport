@@ -74,13 +74,6 @@ janzz:
     resultLimit: 200
 
 management:
-  metrics:
-    export:
-      influx:
-        db: defaultdb
-        uri: ${INFLUX_URI:setme}
-        user-name: avnadmin
-        password: ${INFLUX_PASS:setme}
   endpoint:
     prometheus:
       enabled: true
