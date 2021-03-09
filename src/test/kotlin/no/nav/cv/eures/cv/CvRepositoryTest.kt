@@ -102,13 +102,13 @@ class CvRepositoryTest {
                 testData.rawAvro1Base64, false, RawCV.Companion.RecordType.CREATE)
 
         val nyXmlCv = CvXml.create("", testData.aktoerId1, testData.now, testData.now,
-                null, "")
+                null, "", "")
 
         val gammelCv = RawCV.create(testData.aktoerId2, testData.foedselsnummer2, testData.yesterday,
                 testData.rawAvro1Base64, false, RawCV.Companion.RecordType.CREATE)
 
         val gammelXmlCv = CvXml.create("", testData.aktoerId2, testData.yesterday, testData.yesterday,
-                null, "")
+                null, "", "")
 
         nyXmlCv.foedselsnummer = testData.foedselsnummer1
         gammelXmlCv.foedselsnummer = testData.foedselsnummer2
@@ -130,7 +130,7 @@ class CvRepositoryTest {
                 testData.rawAvro1Base64, false, RawCV.Companion.RecordType.CREATE)
 
         val xmlCv = CvXml.create("", testData.aktoerId1, testData.yesterday, testData.yesterday,
-                ZonedDateTime.now().minusHours(1), "")
+                ZonedDateTime.now().minusHours(1), "", "")
 
         xmlCv.foedselsnummer = testData.foedselsnummer1
 

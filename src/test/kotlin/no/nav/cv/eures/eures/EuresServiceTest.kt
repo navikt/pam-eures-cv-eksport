@@ -22,9 +22,9 @@ class EuresServiceTest {
     private var oneDayAgo = ZonedDateTime.now().minusDays(1)
 
     private fun testData() = listOf(
-            CvXml().update("PAM-1", "1234567890", oneDayAgo, oneDayAgo, null, xml = "SOME XML"),
-            CvXml().update("PAM-2", "1234567891", oneDayAgo, oneDayAgo.plusHours(12), null, xml = "SOME XML"),
-            CvXml().update("PAM-3", "1234567892", oneDayAgo, oneDayAgo.plusHours(12), oneDayAgo.plusDays(1), xml = "SOME XML")
+            CvXml().update("PAM-1", "1234567890", oneDayAgo, oneDayAgo, null, xml = "SOME XML", checksum = "SOME CHECKSUM"),
+            CvXml().update("PAM-2", "1234567891", oneDayAgo, oneDayAgo.plusHours(12), null, xml = "SOME XML", checksum = "SOME CHECKSUM"),
+            CvXml().update("PAM-3", "1234567892", oneDayAgo, oneDayAgo.plusHours(12), oneDayAgo.plusDays(1), xml = "SOME XML", checksum = "SOME CHECKSUM")
     )
 
     private val active = listOf(testData()[0], testData()[1])

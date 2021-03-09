@@ -15,6 +15,8 @@ import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
 import java.time.ZonedDateTime
+import java.math.BigInteger
+import java.security.MessageDigest
 
 @Service
 class CvConverterService(
@@ -50,33 +52,52 @@ class CvConverterService(
     }
 
     fun updateExisting(cvXml: CvXml?): CvXml? {
-        val now = ZonedDateTime.now()
-
         log.debug("Updating existing ${cvXml?.id}")
 
         if (cvXml == null) return null
 
-        return convertToXml(cvXml.foedselsnummer)?.let { xml ->
-            log.debug("Update Existing: Before save of ${xml.second.length} bytes of xml")
-            cvXml.sistEndret = now
-            cvXml.slettet = null
-            cvXml.xml = xml.second
-            return cvXmlRepository.save(cvXml)
+        return convertToXml(cvXml.foedselsnummer)
+                ?.let { (_, xml) -> updateIfChanged(cvXml, xml)}
+    }
+
+    fun updateIfChanged(cvXml: CvXml, newXml: String): CvXml {
+        val now = ZonedDateTime.now()
+
+        val newChecksum = md5(newXml)
+
+        if(cvXml.checksum == newChecksum) {
+            log.debug("${cvXml.id} not changed, not saving")
+            return cvXml
         }
+
+        log.debug("Update Existing: Saving ${newXml.length} bytes of xml with checksum $newChecksum")
+        cvXml.sistEndret = now
+        cvXml.slettet = null
+        cvXml.xml = newXml
+        cvXml.checksum = newChecksum
+        return cvXmlRepository.save(cvXml)
+
+    }
+
+    fun md5(input:String): String {
+        val md = MessageDigest.getInstance("MD5")
+        return BigInteger(1, md.digest(input.toByteArray())).toString(16).padStart(32, '0')
     }
 
     fun createNew(foedselsnummer: String) {
         val now = ZonedDateTime.now()
         convertToXml(foedselsnummer)
-                ?.let {
-                    log.debug("Create New: Before save of ${it.second.length} bytes of xml")
+                ?.let { (ref, xml) ->
+                    val checksum = md5(xml)
+                    log.debug("Create New: Before save of ${xml.length} bytes of xml with checksum $checksum")
                     cvXmlRepository.save(CvXml.create(
-                            reference = it.first,
+                            reference = ref,
                             aktoerId = foedselsnummer,
                             opprettet = now,
                             sistEndret = now,
                             slettet = null,
-                            xml = it.second
+                            xml = xml,
+                            checksum = checksum
                     ))
                 }
     }

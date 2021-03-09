@@ -37,9 +37,9 @@ class EuresServiceIntegrationTest {
     private var oneDayAgo = ZonedDateTime.now().minusDays(1)
 
     private fun testData() = listOf(
-            CvXml().update("PAM-1", "1234567890", oneDayAgo, oneDayAgo, null, xml = "SOME XML"),
-            CvXml().update("PAM-2", "1234567891", oneDayAgo, oneDayAgo.plusHours(12), null, xml = "SOME XML"),
-            CvXml().update("PAM-3", "1234567892", oneDayAgo, oneDayAgo.plusHours(12), oneDayAgo.plusDays(1), xml = "SOME XML")
+            CvXml().update("PAM-1", "1234567890", oneDayAgo, oneDayAgo, null, xml = "SOME XML", checksum = "SOME CHECKSUM"),
+            CvXml().update("PAM-2", "1234567891", oneDayAgo, oneDayAgo.plusHours(12), null, xml = "SOME XML", checksum = "SOME CHECKSUM"),
+            CvXml().update("PAM-3", "1234567892", oneDayAgo, oneDayAgo.plusHours(12), oneDayAgo.plusDays(1), xml = "SOME XML", checksum = "SOME CHECKSUM")
     )
 
     private val active = listOf(testData()[0], testData()[1])
@@ -54,18 +54,18 @@ class EuresServiceIntegrationTest {
     @DirtiesContext
     fun `records skal endre type basert paa timestamps`() {
         var now = ZonedDateTime.now().minusHours(2)
-        val candidate = cvXmlRepository.save(CvXml().update("PAM-4", "1234567893", now, now, null, xml = "SOME XML"))
+        val candidate = cvXmlRepository.save(CvXml().update("PAM-4", "1234567893", now, now, null, xml = "SOME XML", checksum = "SOME CHECKSUM"))
         assertEquals(1, euresService.getChangedReferences(now.minusSeconds(1)).createdReferences.size)
 
         now = ZonedDateTime.now().plusHours(1)
-        cvXmlRepository.save(candidate.update(candidate.reference, candidate.foedselsnummer, candidate.opprettet, now, null, "SOME UPDATED XML"))
+        cvXmlRepository.save(candidate.update(candidate.reference, candidate.foedselsnummer, candidate.opprettet, now, null, "SOME UPDATED XML", checksum = "SOME CHECKSUM"))
         val modified = euresService.getChangedReferences(now.minusMinutes(1))
         assertEquals(0, modified.createdReferences.size)
         assertEquals(1, modified.modifiedReferences.size)
         assertEquals(0, modified.closedReferences.size)
 
         now = ZonedDateTime.now().plusHours(1)
-        cvXmlRepository.save(candidate.update(candidate.reference, candidate.foedselsnummer, candidate.opprettet, now, now, "SOME UPDATED XML"))
+        cvXmlRepository.save(candidate.update(candidate.reference, candidate.foedselsnummer, candidate.opprettet, now, now, "SOME UPDATED XML", checksum = "SOME CHECKSUM"))
         val closed = euresService.getChangedReferences(now.minusMinutes(1))
         assertEquals(0, closed.createdReferences.size)
         assertEquals(0, closed.modifiedReferences.size)
