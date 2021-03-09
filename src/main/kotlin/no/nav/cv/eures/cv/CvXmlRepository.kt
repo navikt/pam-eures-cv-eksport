@@ -105,12 +105,12 @@ class CvXml {
     companion object {
         fun create(
                 reference: String,
-                aktoerId: String,
+                foedselsnummer: String,
                 opprettet: ZonedDateTime,
                 sistEndret: ZonedDateTime,
                 slettet: ZonedDateTime?,
                 xml: String,
                 checksum: String
-        ) = CvXml().update(reference, aktoerId, opprettet, sistEndret, slettet, xml, checksum)
+        ) = CvXml().update(reference, foedselsnummer, opprettet, sistEndret, slettet, xml, checksum)
     }
 }

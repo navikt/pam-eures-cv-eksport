@@ -92,7 +92,7 @@ class CvConverterService(
                     log.debug("Create New: Before save of ${xml.length} bytes of xml with checksum $checksum")
                     cvXmlRepository.save(CvXml.create(
                             reference = ref,
-                            aktoerId = foedselsnummer,
+                            foedselsnummer = foedselsnummer,
                             opprettet = now,
                             sistEndret = now,
                             slettet = null,
