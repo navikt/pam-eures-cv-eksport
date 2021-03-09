@@ -19,7 +19,7 @@ class XmlUpdater (
 
     private val log: Logger = LoggerFactory.getLogger(XmlUpdater::class.java)
 
-    @Scheduled(fixedDelay = 1000 * 60)
+    @Scheduled(cron = "0 0 4 * * *") // Reprocess all CVs at 04:00 in the night
     fun updateXmlCv() {
         log.info("Pruning ESCO JANZZ cache")
         janzzCacheRepository.pruneCache()
@@ -27,7 +27,7 @@ class XmlUpdater (
         val foedselsnumre = samtykkeRepository.finnFoedselsnumre()
 
         foedselsnumre
-                .also { log.info("Regenerating ${it.size} origin rate XML") }
+                .also { log.info("Regenerating ${it.size} XML CVs") }
                 .forEach { cvConverterService.createOrUpdate(it) }
     }
 }
