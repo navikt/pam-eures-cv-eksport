@@ -51,13 +51,18 @@ class JanzzService(
 
         // TODO As soon as Janzz finishes updating all their ESCO codes to the new format,
         // remove this check to be more future proof wrt url changes
+
+        // USING IT TO FILTER NEGATIVE CACHE HITS TOO
+
         // 69
         // 74 http://data.europa.eu/esco/occupation/303a1e34-cb16-4054-b323-81e5eec17397
         //
         return when {
             cachedEsco.isNotEmpty() -> cachedEsco
             else -> fetchAndSaveToCache(searchFor, lookup)
-        }.filter { it.esco.length == 69 || it.esco.length == 74 }
+        }
+                .filter { it.esco.length == 69 || it.esco.length == 74 }
+                .also {log.info("Esco of type $lookup for $searchFor returned ${it.size} filtered hits")}
 
     }
 
@@ -100,14 +105,22 @@ class JanzzService(
 
         log.info("Query for concept '$conceptId' yielded result $concept in $spentMillis ms")
 
-        return concept
+        val hits = concept
                 .classificationSet
                 .filter { it.classification == "ESCO" }
                 .map {CachedEscoMapping(
-                        concept.preferredLabel,
-                        concept.id.toString(),
-                        it.value, ZonedDateTime.now()
+                        term = concept.preferredLabel,
+                        conceptId = concept.id.toString(),
+                        esco = it.value,
+                        updated = ZonedDateTime.now()
                 )}
+
+        return if (hits.isNotEmpty()) hits
+        else listOf(CachedEscoMapping(
+                term = "",
+                conceptId = conceptId,
+                esco = "NO HIT",
+                updated = ZonedDateTime.now()))
     }
 
     private fun queryJanzzTerm(term: String): List<CachedEscoMapping> {
@@ -131,12 +144,22 @@ class JanzzService(
 
         log.info("Query for term '$term' yielded ${res.size} result(s) (limit $resultLimit) in $spentMillis ms")
 
-        return res.flatMap { outer ->
+        val hits =  res.flatMap { outer ->
             outer.classifications.ESCO.map { esco ->
-                CachedEscoMapping(outer.label,
-                        outer.conceptId.toString(), esco, ZonedDateTime.now())
+                CachedEscoMapping(
+                        term = outer.label,
+                        conceptId = outer.conceptId.toString(),
+                        esco = esco,
+                        updated = ZonedDateTime.now())
             }
         }
+
+        return if(hits.isNotEmpty()) hits
+        else listOf(CachedEscoMapping(
+                term = term,
+                conceptId = "",
+                esco = "NO HIT",
+                updated = ZonedDateTime.now()))
     }
 }
 
