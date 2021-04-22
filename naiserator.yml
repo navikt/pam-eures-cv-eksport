@@ -41,7 +41,7 @@ spec:
   gcp:
     sqlInstances:
       - type: POSTGRES_11
-        tier: db-custom-1-8000
+        tier: db-custom-1-8192
         diskAutoresize: true
         diskType: SSD
         highAvailability: true
