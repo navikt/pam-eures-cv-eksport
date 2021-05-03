@@ -88,6 +88,9 @@ class CvConsumer(
             }
         } else {
 //            log.debug("inserting")
+
+            cvRepository.deleteCvByAktorId(aktoerId)
+
             val newRawCv = RawCV.create(
                     aktoerId = aktoerId,
                     foedselsnummer = foedselsnummer,
