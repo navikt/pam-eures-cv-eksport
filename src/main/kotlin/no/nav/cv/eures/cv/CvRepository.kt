@@ -24,7 +24,7 @@ interface CvRepository : JpaRepository<RawCV, Long> {
     @Query("SELECT COUNT(*) FROM CV_RAW", nativeQuery = true)
     fun fetchCountRawCvs() : Long
 
-    @Query("DELETE cv FROM RawCV cv WHERE cv.aktoerId = ?1")
+    @Query("DELETE FROM RawCV cv WHERE cv.aktoerId = ?1")
     fun deleteCvByAktorId(aktoerId: String)
 }
 
