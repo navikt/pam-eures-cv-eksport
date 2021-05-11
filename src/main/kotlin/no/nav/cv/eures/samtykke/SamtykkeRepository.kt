@@ -14,6 +14,7 @@ interface SamtykkeRepository {
 
     fun hentSamtykke(foedselsnummer: String) : Samtykke?
     fun hentSamtykkeUtenNaaverendeXml(foedselsnummer: List<String>) : List<SamtykkeEntity>
+    fun hentGamleSamtykker(time: ZonedDateTime): List<SamtykkeEntity>
     fun hentAntallSamtykker() : Long
     fun slettSamtykke(foedselsnummer: String) : Int
     fun oppdaterSamtykke(foedselsnummer: String, samtykke: Samtykke)
@@ -61,6 +62,19 @@ private open class JpaSamtykkeRepository(
                 .setParameter("foedselsnummer", foedselsnummer)
                 .resultList
                 .map { it as SamtykkeEntity }
+
+    private val hentGamleSamtykkerQuery =
+        """
+            SELECT * FROM SAMTYKKE
+            WHERE SIST_ENDRET < :olderThan
+        """.replace(serieMedWhitespace, " ")
+
+    @Transactional
+    override fun hentGamleSamtykker(olderThan: ZonedDateTime): List<SamtykkeEntity> =
+        entityManager.createNativeQuery(hentGamleSamtykkerQuery, SamtykkeEntity::class.java)
+            .setParameter("olderThan", olderThan)
+            .resultList
+            .map { it as SamtykkeEntity }
 
     private val hentAntallSamtykker =
             """
