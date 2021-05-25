@@ -34,7 +34,7 @@ class GenerateMetrics(
 
             samtykkeRepository.hentAntallSamtykkerPerKategori()
                 .also {
-                    log.info("Got these categories and counts: ${it.map { (kategori, antall) -> "kategori: $antall" }.joinToString ( "," )}")
+                    log.info("Got these categories and counts: ${it.map { (kategori, antall) -> "$kategori: $antall" }.joinToString ( "," )}")
                 }
                 .forEach{(kategori, antall) ->
                     meterRegistry.gauge("cv.eures.eksport.antall.samtykker.${kategori.toLowerCase()}", antall)
