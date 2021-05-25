@@ -1,7 +1,9 @@
 package no.nav.cv.eures.cv
 
 import org.springframework.data.jpa.repository.JpaRepository
+import org.springframework.data.jpa.repository.Modifying
 import org.springframework.data.jpa.repository.Query
+import org.springframework.transaction.annotation.Transactional
 import java.time.ZonedDateTime
 import java.util.*
 import javax.persistence.*
@@ -24,6 +26,8 @@ interface CvRepository : JpaRepository<RawCV, Long> {
     @Query("SELECT COUNT(*) FROM CV_RAW", nativeQuery = true)
     fun fetchCountRawCvs() : Long
 
+    @Transactional
+    @Modifying
     @Query("DELETE FROM CV_RAW raw WHERE raw.AKTOER_ID = ?1", nativeQuery = true)
     fun deleteCvByAktorId(aktoerId: String)
 }
