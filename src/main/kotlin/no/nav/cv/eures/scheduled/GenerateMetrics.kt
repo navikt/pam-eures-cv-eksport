@@ -18,7 +18,6 @@ class GenerateMetrics(
         private val meterRegistry: MeterRegistry,
         private val samtykkeRepository: SamtykkeRepository,
         private val cvRepository: CvRepository,
-        private val cvXmlRepository: CvXmlRepository,
         private val euresService: EuresService,
         private val janzzCacheRepository: JanzzCacheRepository
 ) {
@@ -31,19 +30,19 @@ class GenerateMetrics(
         try {
             val count = samtykkeRepository.hentAntallSamtykker()
             meterRegistry.gauge("cv.eures.eksport.antall.samtykker.total", count)
-            log.info("Metric: $count samtykker er hentet")
+            log.info("Metric: $count samtykker er lagret i EURES databasen")
+
+            samtykkeRepository.hentAntallSamtykkerPerKategori()
+                .also {
+                    log.info("Got these categories and counts: ${it.map { (kategori, antall) -> "kategori: $antall" }.joinToString ( "," )}")
+                }
+                .forEach{(kategori, antall) ->
+                    meterRegistry.gauge("cv.eures.eksport.antall.samtykker.${kategori.toLowerCase()}", antall)
+                }
 
             val countRaw = cvRepository.fetchCountRawCvs()
             meterRegistry.gauge("cv.eures.eksport.antall.raw.total", countRaw)
-            log.info("Metric:$countRaw RawCV-er er hentet")
-
-            val countExportable = cvXmlRepository.fetchAllActive().size
-            meterRegistry.gauge("cv.eures.eksport.antall.exportable.total", countExportable)
-            log.info("Metric:$countExportable eksporterbare CV-er er hentet")
-
-            val countDeletable = cvXmlRepository.fetchCountDeletableCvs()
-            meterRegistry.gauge("cv.eures.eksport.antall.deletable.total", countDeletable)
-            log.info("Metric:$countDeletable slettbare CV-er er hentet")
+            log.info("Metric:$countRaw RawCV-er er lagret i EURES databsen")
 
             val (created, modified, closed) = euresService.getAll()
             meterRegistry.gauge("cv.eures.eksport.antall.euresService.created.total", created.size)

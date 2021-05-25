@@ -16,6 +16,7 @@ interface SamtykkeRepository {
     fun hentSamtykkeUtenNaaverendeXml(foedselsnummer: List<String>) : List<SamtykkeEntity>
     fun hentGamleSamtykker(time: ZonedDateTime): List<SamtykkeEntity>
     fun hentAntallSamtykker() : Long
+    fun hentAntallSamtykkerPerKategori(): Map<String, Long>
     fun slettSamtykke(foedselsnummer: String) : Int
     fun oppdaterSamtykke(foedselsnummer: String, samtykke: Samtykke)
     fun finnFoedselsnumre() : List<String>
@@ -85,6 +86,31 @@ private open class JpaSamtykkeRepository(
     override fun hentAntallSamtykker() : Long
             = (entityManager.createNativeQuery(hentAntallSamtykker)
             .singleResult as BigInteger).toLong()
+
+
+    @Transactional
+    override fun hentAntallSamtykkerPerKategori(): Map<String, Long> =
+        listOf(
+            "PERSONALIA",
+            "UTDANNING",
+            "FAGBREV",
+            "ARBEIDSERFARING",
+            "ANNEN_ERFARING",
+            "FOERERKORT",
+            "LOVREGULERTE_YRKER",
+            "OFFENTLIGE_GODKJENNINGER",
+            "ANDRE_GODKJENNINGER",
+            "KURS",
+            "SPRAAK",
+            "SAMMENDRAG",
+            "KOMPETANSER",
+            ).map { kategori ->
+                val query = "SELECT COUNT(*) FROM SAMTYKKE WHERE $kategori = true"
+                val antall = (entityManager.createNativeQuery(query)
+                    .singleResult as BigInteger).toLong()
+
+                Pair(kategori, antall)
+            }.toMap()
 
 
     private val slettSamtykke =

@@ -40,12 +40,6 @@ interface CvXmlRepository : JpaRepository<CvXml, Long> {
     @Query("SELECT cv FROM CvXml cv WHERE cv.sistEndret > ?1 or cv.slettet > ?1")
     fun fetchAllCvsAfterTimestamp(time: ZonedDateTime): List<CvXml>
 
-    @Query("SELECT COUNT(*) FROM CV_XML WHERE SLETTET IS NULL", nativeQuery = true)
-    fun fetchCountExportableCvs() : Long
-
-    @Query("SELECT COUNT(*) FROM CV_XML WHERE SLETTET IS NOT NULL", nativeQuery = true)
-    fun fetchCountDeletableCvs() : Long
-
 }
 
 
