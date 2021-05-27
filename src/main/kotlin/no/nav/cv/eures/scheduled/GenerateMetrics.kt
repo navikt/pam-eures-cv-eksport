@@ -11,6 +11,8 @@ import org.slf4j.LoggerFactory
 import org.springframework.context.annotation.Profile
 import org.springframework.scheduling.annotation.Scheduled
 import org.springframework.stereotype.Service
+import java.util.concurrent.atomic.AtomicInteger
+import java.util.concurrent.atomic.AtomicLong
 
 @Profile("!test")
 @Service
@@ -25,11 +27,25 @@ class GenerateMetrics(
         val log: Logger = LoggerFactory.getLogger(GenerateMetrics::class.java)
     }
 
+    val gauges = mutableMapOf<String, AtomicLong>()
+
+    private fun addOrUpdateGauge(name: String, value: Int)
+        = addOrUpdateGauge(name, value.toLong())
+
+    private fun addOrUpdateGauge(name: String, value: Long) {
+        gauges[name]?.set(value)
+            ?: addGauge(name, value)
+    }
+
+    private fun addGauge(name: String, value: Long) {
+        gauges[name] = meterRegistry.gauge(name, AtomicLong(value))
+    }
+
     @Scheduled (fixedDelay = 1000 * 60)
     fun count() {
         try {
             val count = samtykkeRepository.hentAntallSamtykker()
-            meterRegistry.gauge("cv.eures.eksport.antall.samtykker.total", count)
+            addOrUpdateGauge("cv.eures.eksport.antall.samtykker.total", count)
             log.info("Metric: $count samtykker er lagret i EURES databasen")
 
             samtykkeRepository.hentAntallSamtykkerPerKategori()
@@ -37,22 +53,24 @@ class GenerateMetrics(
                     log.info("Got these categories and counts: ${it.map { (kategori, antall) -> "$kategori: $antall" }.joinToString ( "," )}")
                 }
                 .forEach{(kategori, antall) ->
-                    meterRegistry.gauge("cv.eures.eksport.antall.samtykker.${kategori.toLowerCase()}", antall)
+                    val gaugeName = "cv.eures.eksport.antall.samtykker.${kategori.toLowerCase()}"
+                    addOrUpdateGauge(gaugeName, antall)
                 }
 
-            val countRaw = cvRepository.fetchCountRawCvs()
-            meterRegistry.gauge("cv.eures.eksport.antall.raw.total", countRaw)
-            log.info("Metric:$countRaw RawCV-er er lagret i EURES databsen")
-
             val (created, modified, closed) = euresService.getAll()
-            meterRegistry.gauge("cv.eures.eksport.antall.euresService.created.total", created.size)
-            meterRegistry.gauge("cv.eures.eksport.antall.euresService.modified.total", modified.size)
-            meterRegistry.gauge("cv.eures.eksport.antall.euresService.closed.total", closed.size)
+            addOrUpdateGauge("cv.eures.eksport.antall.euresService.created.total", created.size)
+            addOrUpdateGauge("cv.eures.eksport.antall.euresService.modified.total", modified.size)
+            addOrUpdateGauge("cv.eures.eksport.antall.euresService.closed.total", closed.size)
             log.info("Metric: ${created.size} opprettet, ${modified.size} endret, ${closed.size} slettet")
 
+            val countRaw = cvRepository.fetchCountRawCvs()
+            addOrUpdateGauge("cv.eures.eksport.antall.raw.total", countRaw)
+            log.info("Metric:$countRaw RawCV-er er lagret i EURES databsen")
+
             val countEscoCache = janzzCacheRepository.getCacheCount()
-            meterRegistry.gauge("cv.eures.eksport.antall.escoCache.total", countEscoCache)
+            addOrUpdateGauge("cv.eures.eksport.antall.escoCache.total", countEscoCache)
             log.info("Metric: $countEscoCache linjer i ESCO cache")
+
         } catch (e: Exception) {
             log.error("Error while generating metrics", e)
         }
