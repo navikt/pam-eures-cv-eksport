@@ -122,7 +122,7 @@ class CvConverterService(
                 ?.cvAndProfile()
                 ?.let { (cv, profile) ->
 
-                    log.debug("Got CV Firstname: ${cv?.fornavn} Profile ID: ${profile?.jobbprofilId}")
+                    log.debug("Got CV aktoerid: ${cv?.aktoerId} Profile ID: ${profile?.jobbprofilId}")
 
                     cv ?: return@let null
 
