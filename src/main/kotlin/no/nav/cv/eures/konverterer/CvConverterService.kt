@@ -128,9 +128,8 @@ class CvConverterService(
 
                     samtykkeRepository.hentSamtykke(foedselsnummer)
                             ?.run {
-                                val candidate = CandidateConverter(cv, profile, this).toXmlRepresentation()
-
                                 val xml = try {
+                                    val candidate = CandidateConverter(cv, profile, this).toXmlRepresentation()
                                     XmlSerializer.serialize(candidate)
                                 } catch (e: Exception) {
                                     log.error("Failed to convert CV to XML for candidate ${cv.aktoerId}", e)
