@@ -54,7 +54,7 @@ class CertificationConverter(
                 certificationTypeCode = null, // TODO: Find out what certificationTypeCode should be
                 certificationName = it.tittel,
                 issuingAuthortity = IssuingAuthority(it.utsteder),
-                firstIssuedDate = it.gjennomfoert.toFormattedDateTime(),
+                firstIssuedDate = it.gjennomfoert?.toFormattedDateTime(),
                 freeFormEffectivePeriod = FreeFormEffectivePeriod(
                         startDate = null,
                         endDate = it.utloeper?.toFormattedDateTime()
