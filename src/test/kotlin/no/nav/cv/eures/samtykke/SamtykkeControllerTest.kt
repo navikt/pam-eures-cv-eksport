@@ -1,7 +1,7 @@
 package no.nav.cv.eures.samtykke
 
 import no.nav.cv.eures.konverterer.CvConverterService
-import no.nav.security.token.support.test.spring.TokenGeneratorConfiguration
+import no.nav.security.token.support.spring.test.EnableMockOAuth2Server
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Disabled
@@ -19,7 +19,7 @@ import java.time.ZonedDateTime
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @ActiveProfiles("test")
-@Import(TokenGeneratorConfiguration::class)
+@EnableMockOAuth2Server
 class SamtykkeControllerTest {
 
     private val aktoerId1 = "123"
