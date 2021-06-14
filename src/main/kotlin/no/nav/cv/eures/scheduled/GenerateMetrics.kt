@@ -1,8 +1,10 @@
 package no.nav.cv.eures.scheduled
 
+import com.fasterxml.jackson.databind.ObjectMapper
+import com.fasterxml.jackson.module.kotlin.KotlinModule
+import com.fasterxml.jackson.module.kotlin.readValue
 import io.micrometer.core.instrument.MeterRegistry
 import no.nav.cv.eures.cv.CvRepository
-import no.nav.cv.eures.cv.CvXmlRepository
 import no.nav.cv.eures.eures.EuresService
 import no.nav.cv.eures.konverterer.esco.JanzzCacheRepository
 import no.nav.cv.eures.samtykke.SamtykkeRepository
@@ -11,7 +13,6 @@ import org.slf4j.LoggerFactory
 import org.springframework.context.annotation.Profile
 import org.springframework.scheduling.annotation.Scheduled
 import org.springframework.stereotype.Service
-import java.util.concurrent.atomic.AtomicInteger
 import java.util.concurrent.atomic.AtomicLong
 
 @Profile("!test")
@@ -26,6 +27,8 @@ class GenerateMetrics(
     companion object {
         val log: Logger = LoggerFactory.getLogger(GenerateMetrics::class.java)
     }
+
+    private val objectMapper = ObjectMapper().registerModule(KotlinModule())
 
     val gauges = mutableMapOf<String, AtomicLong>()
 
@@ -71,9 +74,20 @@ class GenerateMetrics(
             addOrUpdateGauge("cv.eures.eksport.antall.escoCache.total", countEscoCache)
             log.info("Metric: $countEscoCache linjer i ESCO cache")
 
+
+            extractCountries()
         } catch (e: Exception) {
             log.error("Error while generating metrics", e)
         }
 
     }
+
+    private fun extractCountries()
+          = samtykkeRepository
+            .hentAlleLand()
+            .map { json -> objectMapper.readValue<List<String>>(json) }
+            .flatten()
+            .groupingBy { it.first() }
+            .eachCount()
+            .also { log.debug("Country counter got $it") }
 }

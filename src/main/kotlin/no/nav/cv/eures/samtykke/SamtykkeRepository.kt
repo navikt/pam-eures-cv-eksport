@@ -20,6 +20,7 @@ interface SamtykkeRepository {
     fun slettSamtykke(foedselsnummer: String) : Int
     fun oppdaterSamtykke(foedselsnummer: String, samtykke: Samtykke)
     fun finnFoedselsnumre() : List<String>
+    fun hentAlleLand() : List<String>
 }
 
 @Repository
@@ -142,6 +143,17 @@ private open class JpaSamtykkeRepository(
             = entityManager.createNativeQuery(finnFoedselsnumre)
                 .resultList
                 .map { it as String }
+
+    private val hentAlleLand =
+            """
+                SELECT land from SAMTYKKE
+            """.replace(serieMedWhitespace, " ")
+
+    @Transactional
+    override fun hentAlleLand(): List<String>
+        = entityManager.createNativeQuery(hentAlleLand)
+        .resultList
+        .map { it as String }
 }
 
 @Entity
