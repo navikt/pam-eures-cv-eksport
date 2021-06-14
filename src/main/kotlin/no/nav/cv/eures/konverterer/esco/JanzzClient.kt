@@ -9,66 +9,71 @@ import org.springframework.web.reactive.function.client.WebClient
 
 @Service
 class JanzzClient(
-        @Value("\${janzz.labels.host}") private val baseUrl: String
+    @Value("\${janzz.labels.host}") private val baseUrl: String
 ) {
     private val log: Logger = LoggerFactory.getLogger(JanzzClient::class.java)
 
     fun search(
-            authorization: String,
-            query: String,
-            limit: String,
-            lang: String = "no",
-            branch: String = "skill",
-            CLASS_ESCO: String = "*",
-            output_classifications: String = "ESCO"
+        authorization: String,
+        query: String,
+        limit: String,
+        lang: String = "no",
+        branch: String = "skill",
+        CLASS_ESCO: String = "*",
+        output_classifications: String = "ESCO"
     ): String? {
         val client = WebClient
-                .builder()
-                .baseUrl(baseUrl)
-                .defaultHeader(HttpHeaders.AUTHORIZATION, authorization)
-                .build()
+            .builder()
+            .baseUrl(baseUrl)
+            .defaultHeader(HttpHeaders.AUTHORIZATION, authorization)
+            .build()
 
         return client.get()
-                .uri { uriBuilder ->
-                    uriBuilder
-                            .path("/japi/labels/")
-                            .queryParam("q", query)
-                            .queryParam("limit", limit)
-                            .queryParam("lang", lang)
-                            .queryParam("branch", branch)
-                            .queryParam("CLASS_ESCO", CLASS_ESCO)
-                            .queryParam("output_classifications", output_classifications)
-                            .build()
-                }
-                .retrieve()
-                .bodyToMono(String::class.java)
-                .block()
+            .uri { uriBuilder ->
+                uriBuilder
+                    .path("/japi/labels/")
+                    .queryParam("q", query)
+                    .queryParam("limit", limit)
+                    .queryParam("lang", lang)
+                    .queryParam("branch", branch)
+                    .queryParam("CLASS_ESCO", CLASS_ESCO)
+                    .queryParam("output_classifications", output_classifications)
+                    .build()
+            }
+            .retrieve()
+            .bodyToMono(String::class.java)
+            .block()
     }
 
-    fun lookupConceptId (
-            authorization: String,
-            conceptId: String,
-            lang: String = "no",
-            CLASS_ESCO: String = "*",
-            output_classifications: String = "ESCO"
+    fun lookupConceptId(
+        authorization: String,
+        conceptId: String,
+        lang: String = "no",
+        CLASS_ESCO: String = "*",
+        output_classifications: String = "ESCO"
     ): String? {
         val client = WebClient
-                .builder()
-                .baseUrl(baseUrl)
-                .defaultHeader(HttpHeaders.AUTHORIZATION, authorization)
-                .build()
+            .builder()
+            .baseUrl(baseUrl)
+            .defaultHeader(HttpHeaders.AUTHORIZATION, authorization)
+            .build()
 
-        return client.get()
+        return try {
+            client.get()
                 .uri { uriBuilder ->
                     uriBuilder
-                            .path("/japi/concepts/$conceptId")
-                            .queryParam("lang", lang)
-                            .queryParam("CLASS_ESCO", CLASS_ESCO)
-                            .queryParam("output_classifications", output_classifications)
-                            .build()
+                        .path("/japi/concepts/$conceptId")
+                        .queryParam("lang", lang)
+                        .queryParam("CLASS_ESCO", CLASS_ESCO)
+                        .queryParam("output_classifications", output_classifications)
+                        .build()
                 }
                 .retrieve()
                 .bodyToMono(String::class.java)
                 .block()
+        } catch (e: Exception) {
+            log.warn("Got exception while looking up concept id $conceptId")
+            null
+        }
     }
 }
