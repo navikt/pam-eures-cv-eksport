@@ -268,7 +268,7 @@ class NationalityConverterTest {
         "RS",
         "RU",
         "RW",
-        "Republikken Kina",
+        "Kina",
         "Romania",
         "Russland",
         "Rwanda",
