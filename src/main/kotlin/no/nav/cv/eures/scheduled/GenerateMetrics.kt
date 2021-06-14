@@ -87,7 +87,7 @@ class GenerateMetrics(
             .hentAlleLand()
             .map { json -> objectMapper.readValue<List<String>>(json) }
             .flatten()
-            .groupingBy { it.first() }
+            .groupingBy { it }
             .eachCount()
             .also { log.debug("Country counter got $it") }
 }
