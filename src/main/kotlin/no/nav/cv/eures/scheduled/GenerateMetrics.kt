@@ -44,7 +44,7 @@ class GenerateMetrics(
         gauges[name] = meterRegistry.gauge(name, AtomicLong(value))
     }
 
-    @Scheduled (fixedDelay = 1000 * 60)
+    @Scheduled (fixedDelay = 1000 * 60 * 5)
     fun count() {
         try {
             val count = samtykkeRepository.hentAntallSamtykker()
@@ -75,7 +75,13 @@ class GenerateMetrics(
             log.info("Metric: $countEscoCache linjer i ESCO cache")
 
 
+            val startTime = System.currentTimeMillis()
             extractCountries()
+            val spentTime = System.currentTimeMillis() - startTime
+
+            addOrUpdateGauge("cv.eures.eksport.time.spent.in.extract.countries", spentTime)
+
+
         } catch (e: Exception) {
             log.error("Error while generating metrics", e)
         }
@@ -90,4 +96,5 @@ class GenerateMetrics(
             .groupingBy { it }
             .eachCount()
             .also { log.debug("Country counter got $it") }
+            .onEach { (code, count) -> addOrUpdateGauge("cv.eures.eksport.antall.samtykker.$code", count) }
 }
