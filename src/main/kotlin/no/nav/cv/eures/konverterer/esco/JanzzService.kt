@@ -54,7 +54,7 @@ class JanzzService(
 
         // USING IT TO FILTER NEGATIVE CACHE HITS TOO
 
-        // 69
+        // 69 http://data.europa.eu/esco/skill/148fc290-6363-4b0a-90a6-fe2f998f2037
         // 74 http://data.europa.eu/esco/occupation/303a1e34-cb16-4054-b323-81e5eec17397
         //
         return when {
