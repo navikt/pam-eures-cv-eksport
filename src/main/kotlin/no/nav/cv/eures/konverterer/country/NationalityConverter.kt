@@ -14,6 +14,8 @@ import java.io.InputStreamReader
  * URL: https://kodeverk-web.dev.adeo.no/kodeverksoversikt/kodeverk/LandkoderISO2
  * Date: 2020.11.10 10:15 CET
  *
+ * Updated 2021.06.21 14:00 CEST with the same nation names as in CV-API
+ *
  * Eures wants ISO 3166-1 Alpha-2 based nationality codes
  */
 
