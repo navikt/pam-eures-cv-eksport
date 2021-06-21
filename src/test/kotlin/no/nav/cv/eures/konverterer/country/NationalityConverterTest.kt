@@ -1,10 +1,12 @@
 package no.nav.cv.eures.konverterer.country
 
 import org.junit.jupiter.api.Assertions.assertNotNull
+import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.Test
 
 class NationalityConverterTest {
 
+    @Disabled
     @Test
     fun `all nationality records in database - maps to ISO code`() {
         extractedFromDatabase10Nov2020.forEach { record ->
