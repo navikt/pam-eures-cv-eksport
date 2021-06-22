@@ -19,7 +19,7 @@ class XmlUpdater (
 
     private val log: Logger = LoggerFactory.getLogger(XmlUpdater::class.java)
 
-    @Scheduled(cron = "0 0 4 * * *") // Reprocess all CVs at 04:00 in the night
+    @Scheduled(cron = "0 0 3 * * *") // Reprocess all CVs at 04:00 in the night
     fun updateXmlCv() {
         log.info("Pruning ESCO JANZZ cache")
         janzzCacheRepository.pruneCache()
