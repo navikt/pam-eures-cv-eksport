@@ -24,10 +24,13 @@ class XmlUpdater (
         log.info("Pruning ESCO JANZZ cache")
         janzzCacheRepository.pruneCache()
 
+        log.info("Reprocessing CVs to XML")
         val foedselsnumre = samtykkeRepository.finnFoedselsnumre()
 
         foedselsnumre
                 .also { log.info("Regenerating ${it.size} XML CVs") }
                 .forEach { cvConverterService.createOrUpdate(it) }
+
+        log.info("Done reprocessing CVs")
     }
 }
