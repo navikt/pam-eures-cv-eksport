@@ -34,6 +34,7 @@ object NationalityConverter {
         // Some hardcoded fixes
         i2s["SF"] = "Finland".toUpperCase() // Listed in Wikipedia as reserved for Finland until 2012, but we still have records with this code
         s2i["NORSK"] = "NO" // pam-cv-api produces kafka test messages with 'Norsk' instead of 'Norge' in the nationality field
+        s2i["Republikken Kina"] = "CN" // pam-cv-api Has both "Kina" (from the kodeverk) and "Republikken Kina" in the database.
 
         /* Not accepted by EURES at this stage
         i2s["XX"] = "STATSLØS" // Stateless persons
