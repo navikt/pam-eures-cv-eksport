@@ -6,7 +6,6 @@ import org.junit.jupiter.api.Test
 
 class NationalityConverterTest {
 
-    @Disabled
     @Test
     fun `all nationality records in database - maps to ISO code`() {
         extractedFromDatabase10Nov2020.forEach { record ->
@@ -182,6 +181,7 @@ class NationalityConverterTest {
         "Kapp Verde",
         "Kazakhstan",
         "Kenya",
+        "Kina",
         "Kirgisistan",
         "Kongo, Den Demokr. Republ",
         "Kongo, Republikken",
@@ -270,7 +270,7 @@ class NationalityConverterTest {
         "RS",
         "RU",
         "RW",
-        "Kina",
+        "Republikken Kina",
         "Romania",
         "Russland",
         "Rwanda",

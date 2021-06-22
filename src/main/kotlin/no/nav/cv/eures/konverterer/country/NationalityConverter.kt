@@ -12,9 +12,11 @@ import java.io.InputStreamReader
  *
  * Nationality mapping file fetched from NAV Kodeverk
  * URL: https://kodeverk-web.dev.adeo.no/kodeverksoversikt/kodeverk/LandkoderISO2
- * Date: 2020.11.10 10:15 CET
+ * First fetch: 2020.11.10 10:15 CET
+ * Updated 2021.06.21 14:00 CEST with new country names from the same source.
  *
- * Updated 2021.06.21 14:00 CEST with the same nation names as in CV-API
+ * Suggested merge : diff -w --changed-group-format='%>' --unchanged-group-format='' landkoder.csv updated_landkoder.csv
+ * And then paste the result at the end of the landkoder file.
  *
  * Eures wants ISO 3166-1 Alpha-2 based nationality codes
  */
@@ -34,7 +36,6 @@ object NationalityConverter {
         // Some hardcoded fixes
         i2s["SF"] = "Finland".toUpperCase() // Listed in Wikipedia as reserved for Finland until 2012, but we still have records with this code
         s2i["NORSK"] = "NO" // pam-cv-api produces kafka test messages with 'Norsk' instead of 'Norge' in the nationality field
-        s2i["Republikken Kina"] = "CN" // pam-cv-api Has both "Kina" (from the kodeverk) and "Republikken Kina" in the database.
 
         /* Not accepted by EURES at this stage
         i2s["XX"] = "STATSLØS" // Stateless persons
@@ -52,11 +53,8 @@ object NationalityConverter {
             val iso = columns[0].toUpperCase()
             val str = columns[1].toUpperCase()
 
-            if(i2s.containsKey(iso))
-                throw Exception("Attempting to overwrite iso code $iso. Was: ${i2s[iso]} Now: $str")
-
-            if(s2i.containsKey(str))
-                throw Exception("Attempting to overwrite string code $str. Was: ${s2i[str]} Now: $iso")
+            // The latest versions of country names are in the end of the landskoder.csv file, so they'll overwrite the
+            // earlier versions
 
             i2s[iso] = str
             s2i[str] = iso
