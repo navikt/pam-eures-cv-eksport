@@ -27,9 +27,6 @@ class PersonQualificationsConverter (
         if(samtykke.spraak && cv.spraakferdigheter != null)
             qualifications.addAll(cv.spraakferdigheter.toLanguages())
 
-        if(samtykke.annenErfaring && cv.annenErfaring != null)
-            qualifications.addAll(cv.annenErfaring.toEsco())
-
         if(samtykke.kompetanser && profile?.kompetanser != null)
             qualifications.addAll(profile.kompetanser.toEsco())
 
@@ -44,16 +41,6 @@ class PersonQualificationsConverter (
                         ?.let { PersonCompetency(competencyID = it, taxonomyID = "language") }
             }
             .onEach { if(debug) log.debug("${cv.aktoerId} QUAL got language $it") }
-
-
-
-    @JvmName("toEscoAnnenErfaring")
-    private fun List<AnnenErfaring>.toEsco() : List<PersonCompetency>
-            = onEach { if(debug) log.debug("${cv.aktoerId} QUAL  got annen erfaring $it") }
-            .mapNotNull { erfaring -> erfaring.beskrivelse?.let {janzzService.getEscoForCompetence(it) } }
-            .flatten()
-            .map { PersonCompetency(competencyID = it.esco, taxonomyID = "other") }
-            .onEach { if(debug) log.debug("${cv.aktoerId} QUAL got mapped annen erfaring $it") }
 
     @JvmName("toEscoKompetanser")
     private fun List<String>.toEsco() : List<PersonCompetency>
