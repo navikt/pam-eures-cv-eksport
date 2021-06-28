@@ -50,6 +50,9 @@ class CertificationConverter(
 
     @JvmName("toCertificationsGodkjenning")
     private fun List<Godkjenning>.toCertifications() = mapNotNull {
+        it.tittel ?: return@mapNotNull null
+        it.utsteder ?: return@mapNotNull null
+
         Certification(
                 certificationTypeCode = null, // TODO: Find out what certificationTypeCode should be
                 certificationName = it.tittel,
@@ -64,6 +67,8 @@ class CertificationConverter(
 
     @JvmName("toCertificationsSertifikat")
     private fun List<Sertifikat>.toCertifications() = mapNotNull {
+        it.utsteder ?: return@mapNotNull null
+
         Certification(
                 certificationTypeCode = null, // TODO: Find out what certificationTypeCode should be
                 certificationName = it.sertifikatnavn ?: it.sertifikatnavnFritekst,
@@ -78,6 +83,9 @@ class CertificationConverter(
 
     @JvmName("toCertificationsKurs")
     private fun List<Kurs>.toCertifications() = mapNotNull {
+        it.tittel ?: return@mapNotNull null
+        it.utsteder ?: return@mapNotNull null
+
         Certification(
                 certificationTypeCode = null, // TODO: Find out what certificationTypeCode should be
                 certificationName = it.tittel,
