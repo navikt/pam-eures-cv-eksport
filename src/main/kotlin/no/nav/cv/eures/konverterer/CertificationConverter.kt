@@ -100,7 +100,8 @@ class CertificationConverter(
         val (aut, fag) = partition { it.type == FagdokumentasjonType.AUTORISASJON }
 
         return Pair(
-                aut.map {
+                aut.mapNotNull {
+                    it.tittel ?: return@mapNotNull null
                     Certification(
                             certificationTypeCode = null, // TODO: Find out what certificationTypeCode should be
                             certificationName = it.tittel,
@@ -109,7 +110,8 @@ class CertificationConverter(
                             freeFormEffectivePeriod = null
                     )
                 }.onEach { if(debug) log.debug("${cv.aktoerId} CERT Autorisasjon $it") },
-                fag.map {
+                fag.mapNotNull {
+                    it.tittel ?: return@mapNotNull null
                     Certification(
                             certificationTypeCode = null, // TODO: Find out what certificationTypeCode should be
                             certificationName = it.tittel,
