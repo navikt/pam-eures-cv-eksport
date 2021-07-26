@@ -110,16 +110,18 @@ class CertificationConverter(
                             freeFormEffectivePeriod = null
                     )
                 }.onEach { if(debug) log.debug("${cv.aktoerId} CERT Autorisasjon $it") },
-                fag.mapNotNull {
-                    it.tittel ?: return@mapNotNull null
-                    Certification(
-                            certificationTypeCode = null, // TODO: Find out what certificationTypeCode should be
-                            certificationName = it.tittel,
-                            issuingAuthortity = IssuingAuthority("Yrkesopplæringsnemnd"),
-                            firstIssuedDate = null,
-                            freeFormEffectivePeriod = null
-                    )
-                }.onEach { if(debug) log.debug("${cv.aktoerId} CERT Fagbrev $it") }
+
+                fag.mapNotNull { it.tittel }
+                    .map {
+                        tittel ->
+                        Certification(
+                                certificationTypeCode = null, // TODO: Find out what certificationTypeCode should be
+                                certificationName = tittel,
+                                issuingAuthortity = IssuingAuthority("Yrkesopplæringsnemnd"),
+                                firstIssuedDate = null,
+                                freeFormEffectivePeriod = null
+                        )
+                    }.onEach { if(debug) log.debug("${cv.aktoerId} CERT Fagbrev $it") }
         )
     }
 }
