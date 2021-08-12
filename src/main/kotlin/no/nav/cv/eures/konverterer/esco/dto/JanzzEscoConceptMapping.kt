@@ -11,15 +11,6 @@ data class JanzzEscoConceptMapping(
         @JsonProperty("preferred_label")
         var preferredLabel: String,
 
-        @JsonProperty("classification_set")
-        var classificationSet: List<JanzzEscoConceptClassSetMapping>,
-)
-
-@JsonIgnoreProperties(ignoreUnknown = true)
-data class JanzzEscoConceptClassSetMapping(
-        @JsonProperty("classification")
-        var classification: String,
-
-        @JsonProperty("val")
-        var value: String
+        @JsonProperty("classifications")
+        var classifications: JanzzEscoMappingClassification,
 )

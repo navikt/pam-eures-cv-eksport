@@ -4,7 +4,7 @@ import com.fasterxml.jackson.annotation.JsonProperty
 
 data class JanzzEscoLabelMapping (
         @JsonProperty("classifications")
-        var classifications: JanzzEscoLabelMappingClassification,
+        var classifications: JanzzEscoMappingClassification,
 
         @JsonProperty("concept_id")
         var conceptId: Int,
@@ -14,7 +14,7 @@ data class JanzzEscoLabelMapping (
 
 )
 
-data class JanzzEscoLabelMappingClassification(
+data class JanzzEscoMappingClassification(
         @JsonProperty("ESCO")
         var ESCO: Array<String>
 )

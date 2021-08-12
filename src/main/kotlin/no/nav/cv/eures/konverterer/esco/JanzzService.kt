@@ -37,15 +37,12 @@ class JanzzService(
     private val log: Logger = LoggerFactory.getLogger(JanzzService::class.java)
     private val objectMapper = ObjectMapper().registerModule(KotlinModule())
 
-    fun getEscoForConceptId(conceptId: String): List<CachedEscoMapping> = getEsco(conceptId, EscoLookup.LOOKUP_CONCEPT)
+    fun getEscoForConceptTitle(conceptTitle: String): List<CachedEscoMapping> = getEsco(conceptTitle, EscoLookup.LOOKUP_CONCEPT)
 
     fun getEscoForCompetence(term: String): List<CachedEscoMapping> = getEsco(term, EscoLookup.LOOKUP_TERM)
 
     private fun getEsco(searchFor: String, lookup: EscoLookup): List<CachedEscoMapping> {
-        val cachedEsco = when (lookup) {
-            EscoLookup.LOOKUP_CONCEPT -> janzzCacheRepository.fetchFromCacheConceptId(searchFor)
-            EscoLookup.LOOKUP_TERM -> janzzCacheRepository.fetchFromCacheTerm(searchFor)
-        }
+        val cachedEsco = janzzCacheRepository.fetchFromCacheTerm(searchFor)
 
         log.info("Cache for $lookup $searchFor contains ${cachedEsco.size} hits")
 
@@ -85,42 +82,47 @@ class JanzzService(
         return exactHits
     }
 
-    private fun queryJanzzConceptId(conceptId: String): List<CachedEscoMapping> {
+    private fun queryJanzzConceptId(conceptTitle: String): List<CachedEscoMapping> {
         val authorization = "token $token"
 
         val startMillis = System.currentTimeMillis()
 
-        val json = client.lookupConceptId(
+        val json = client.lookupConceptTitle(
                 authorization = authorization,
-                conceptId = conceptId)
+                conceptTitle = conceptTitle)
 
-        if (json == null) {
-            log.error("Janzz query for concept $conceptId returned null")
+        if (json == null || json.length < 3) {
+            log.error("Janzz query for concept $conceptTitle returned null or empty list")
             return listOf()
         }
 
         val spentMillis = System.currentTimeMillis() - startMillis
 
-        val concept = objectMapper.readValue<JanzzEscoConceptMapping>(json)
+        val concepts = objectMapper.readValue<Array<JanzzEscoConceptMapping>>(json)
 
-        log.info("Query for concept '$conceptId' yielded result $concept in $spentMillis ms")
+        log.info("Query for concept '$conceptTitle' yielded result $concepts in $spentMillis ms")
 
-        val hits = concept
-                .classificationSet
-                .filter { it.classification == "ESCO" }
-                .map {CachedEscoMapping(
-                        term = concept.preferredLabel,
-                        conceptId = concept.id.toString(),
-                        esco = it.value,
+        val hits = concepts
+            .flatMap { outer ->
+                outer.classifications
+                .ESCO
+                .map { url ->
+                    CachedEscoMapping(
+                        term = outer.preferredLabel,
+                        conceptId = outer.id.toString(),
+                        esco = url,
                         updated = ZonedDateTime.now()
-                )}
+                    )
+                }
+            }
 
-        return if (hits.isNotEmpty()) hits
-        else listOf(CachedEscoMapping(
-                term = "",
-                conceptId = conceptId,
+        return hits.ifEmpty {
+            listOf(CachedEscoMapping(
+                term = conceptTitle,
+                conceptId = "",
                 esco = "NO HIT",
                 updated = ZonedDateTime.now()))
+        }
     }
 
     private fun queryJanzzTerm(term: String): List<CachedEscoMapping> {

@@ -45,9 +45,9 @@ class JanzzClient(
             .block()
     }
 
-    fun lookupConceptId(
+    fun lookupConceptTitle(
         authorization: String,
-        conceptId: String,
+        conceptTitle: String,
         lang: String = "no",
         CLASS_ESCO: String = "*",
         output_classifications: String = "ESCO"
@@ -62,8 +62,15 @@ class JanzzClient(
             client.get()
                 .uri { uriBuilder ->
                     uriBuilder
-                        .path("/japi/concepts/$conceptId")
-                        .queryParam("lang", lang)
+                        .path("/japi/concepts")
+                        .queryParam("q", conceptTitle)
+                        .queryParam("branch", "occupation")
+                        .queryParam("exact_match", true)
+                        .queryParam("include_neverc", true)
+                        .queryParam("include_umbrella", true)
+                        .queryParam("normalized", true)
+                        .queryParam("output_lang", lang)
+                        .queryParam("search_lang", lang)
                         .queryParam("CLASS_ESCO", CLASS_ESCO)
                         .queryParam("output_classifications", output_classifications)
                         .build()
@@ -72,7 +79,7 @@ class JanzzClient(
                 .bodyToMono(String::class.java)
                 .block()
         } catch (e: Exception) {
-            log.warn("Got exception while looking up concept id $conceptId")
+            log.warn("Got exception while looking up concept id $conceptTitle")
             null
         }
     }

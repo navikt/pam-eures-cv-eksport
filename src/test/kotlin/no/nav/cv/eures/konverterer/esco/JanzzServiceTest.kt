@@ -8,16 +8,16 @@ import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabas
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.test.context.ActiveProfiles
 
-//@SpringBootTest
-//@ActiveProfiles("test")
-//@AutoConfigureTestDatabase(connection = EmbeddedDatabaseConnection.H2)
+@SpringBootTest
+@ActiveProfiles("test")
+@AutoConfigureTestDatabase(connection = EmbeddedDatabaseConnection.H2)
 internal class JanzzServiceTest {
     @Autowired
     private lateinit var janzzService: JanzzService
 
     // Hard to test towards Janzz since their data is evolving, but this gives us the ability to check manually
     @Test
-    @Disabled
+//    @Disabled
     fun `test search`() {
         println(janzzService.getEscoForCompetence("Programmering"))
         println(janzzService.getEscoForCompetence("Programmering"))
@@ -25,7 +25,7 @@ internal class JanzzServiceTest {
         println(janzzService.getEscoForCompetence("NO HIT"))
         println(janzzService.getEscoForCompetence("NO HIT"))
 
-        println(janzzService.getEscoForConceptId("22399"))
-        println(janzzService.getEscoForConceptId("22399"))
+        println(janzzService.getEscoForConceptTitle("Førstestyrmann"))
+        println(janzzService.getEscoForConceptTitle("Førstestyrmann"))
     }
 }
