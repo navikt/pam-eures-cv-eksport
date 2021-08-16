@@ -93,7 +93,12 @@ class JanzzService(
 
         if (json == null || json.length < 3) {
             log.error("Janzz query for concept $conceptTitle returned null or empty list")
-            return listOf()
+            return listOf(CachedEscoMapping(
+                    term = conceptTitle,
+                    conceptId = "",
+                    esco = "NO HIT",
+                    updated = ZonedDateTime.now()))
+
         }
 
         val spentMillis = System.currentTimeMillis() - startMillis
@@ -137,7 +142,11 @@ class JanzzService(
 
         if (json == null) {
             log.error("Janzz query for term $term returned null")
-            return listOf()
+            return listOf(CachedEscoMapping(
+                term = term,
+                conceptId = "",
+                esco = "NO HIT",
+                updated = ZonedDateTime.now()))
         }
 
         val spentMillis = System.currentTimeMillis() - startMillis
@@ -156,12 +165,13 @@ class JanzzService(
             }
         }
 
-        return if(hits.isNotEmpty()) hits
-        else listOf(CachedEscoMapping(
+        return hits.ifEmpty {
+            listOf(CachedEscoMapping(
                 term = term,
                 conceptId = "",
                 esco = "NO HIT",
                 updated = ZonedDateTime.now()))
+        }
     }
 }
 
