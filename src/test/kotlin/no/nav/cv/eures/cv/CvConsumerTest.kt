@@ -55,7 +55,7 @@ class CvConsumerTest {
     }
 
     private fun record(offset: Long, aktorId: String, melding: Melding)
-    = ConsumerRecord<String, ByteArray>(TOPIC, PARTITION, offset, aktorId, melding.toByteArray())
+    = ConsumerRecord<String, ByteArray>(TOPIC, PARTITION, offset, aktorId, ByteArray(2) + melding.toByteArray())
 
 
 }

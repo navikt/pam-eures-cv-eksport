@@ -133,7 +133,10 @@ class CvConsumer(
     private fun ByteArray.toMelding(): Melding {
         try {
             val datumReader = SpecificDatumReader(Melding::class.java)
-            val businessPartOfMessage = slice(5 until size).toByteArray()
+
+            // NOTE: The newest AVRO version prefixes 6 bytes instead of 4
+            // TODO - Figure out if there's away to avoid this.
+            val businessPartOfMessage = slice(7 until size).toByteArray()
             val decoder = DecoderFactory.get().binaryDecoder(businessPartOfMessage, null)
             return datumReader.read(null, decoder)
         } catch (e: Exception) {
