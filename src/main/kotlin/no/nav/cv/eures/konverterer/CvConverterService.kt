@@ -4,10 +4,7 @@ import no.nav.arbeid.cv.avro.Cv
 import no.nav.arbeid.cv.avro.Jobbprofil
 import no.nav.arbeid.cv.avro.Melding
 import no.nav.arbeid.cv.avro.Meldingstype
-import no.nav.cv.eures.cv.CvRepository
-import no.nav.cv.eures.cv.CvXml
-import no.nav.cv.eures.cv.CvXmlRepository
-import no.nav.cv.eures.cv.RawCV
+import no.nav.cv.eures.cv.*
 import no.nav.cv.eures.samtykke.SamtykkeRepository
 import org.apache.avro.io.DecoderFactory
 import org.apache.avro.specific.SpecificDatumReader
@@ -30,20 +27,40 @@ class CvConverterService(
     }
 
 
+    // This is definitely not the best solution, but unfortunately
+    // it's the only one I see for handling both avro versions without
+    // ending up in situations where we re-index things and get errors
+    // until we finish processing the first part of the topic.
     private fun RawCV.toMelding(): Melding? {
         val wireBytes = getWireBytes()
 
         if (wireBytes.isEmpty()) return null
 
-        val avroBytes = wireBytes.slice(5 until wireBytes.size).toByteArray()
-
-        log.info("There is ${avroBytes.size} avro bytes for $foedselsnummer")
-
-        val datumReader = SpecificDatumReader<Melding>(Melding::class.java)
-        val decoder = DecoderFactory.get().binaryDecoder(avroBytes, null)
-
-        return datumReader.read(null, decoder)
+        return try {
+            wireBytes.readDatum()
+        } catch (e: Exception) {
+            wireBytes.readDatum(5)
+        } catch (e: Exception) {
+            CvConsumer.log.error("Klarte ikke decde kafka melding. Size: ${wireBytes.size}", e)
+            throw(e)
+        }
     }
+
+    private fun ByteArray.readDatum(avroPrefixByteSize: Int = 7): Melding {
+        try {
+            // NOTE: The newest AVRO version prefixes 6 bytes instead of 4
+            // TODO - Figure out if there's away to avoid this.
+            val businessPartOfMessage = slice(avroPrefixByteSize until size).toByteArray()
+
+            val datumReader = SpecificDatumReader(Melding::class.java)
+            val decoder = DecoderFactory.get().binaryDecoder(businessPartOfMessage, null)
+            return datumReader.read(null, decoder)
+        } catch (e: Exception) {
+            CvConsumer.log.warn("Klarte ikke å deserialisere avromeldingen med versjon prefiks på: $avroPrefixByteSize bytes", e)
+            throw e
+        }
+    }
+
 
     private fun Melding.cvAndProfile(): Pair<Cv?, Jobbprofil?>? = when (meldingstype) {
         Meldingstype.OPPRETT -> Pair(opprettCv?.cv, opprettJobbprofil?.jobbprofil)
