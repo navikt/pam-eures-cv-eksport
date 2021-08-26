@@ -157,7 +157,7 @@ class CvConsumer(
             val decoder = DecoderFactory.get().binaryDecoder(businessPartOfMessage, null)
             return datumReader.read(null, decoder)
         } catch (e: Exception) {
-            log.error("Klarte ikke å deserialisere avromeldingen med versjon prefiks på: $avroPrefixByteSize bytes", e)
+            log.warn("Klarte ikke å deserialisere avromeldingen med versjon prefiks på: $avroPrefixByteSize bytes", e)
             throw e
         }
     }
