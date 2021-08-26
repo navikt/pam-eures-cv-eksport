@@ -5,6 +5,7 @@ import io.micrometer.core.instrument.Tag
 import no.nav.arbeid.cv.avro.Melding
 import no.nav.arbeid.cv.avro.Meldingstype
 import no.nav.cv.eures.cv.RawCV.Companion.RecordType.*
+import org.apache.avro.AvroRuntimeException
 import org.apache.avro.io.DecoderFactory
 import org.apache.avro.specific.SpecificDatumReader
 import org.apache.kafka.clients.consumer.ConsumerRecord
@@ -130,18 +131,34 @@ class CvConsumer(
 
     }
 
+    // This is definitely not the best solution, but unfortunately
+    // it's the only one I see for handling both avro versions without
+    // ending up in situations where we re-index things and get errors
+    // until we finish processing the first part of the topic.
     private fun ByteArray.toMelding(): Melding {
+        return try {
+            readDatum()
+        } catch (e: Exception) {
+            readDatum(5)
+        } catch (e: Exception) {
+            log.error("Klarte ikke decde kafka melding. Size: $size", e)
+            throw(e)
+        }
+    }
+
+    private fun ByteArray.readDatum(avroPrefixByteSize: Int = 7): Melding {
         try {
             val datumReader = SpecificDatumReader(Melding::class.java)
 
             // NOTE: The newest AVRO version prefixes 6 bytes instead of 4
             // TODO - Figure out if there's away to avoid this.
-            val businessPartOfMessage = slice(7 until size).toByteArray()
+            val businessPartOfMessage = slice(avroPrefixByteSize until size).toByteArray()
+
             val decoder = DecoderFactory.get().binaryDecoder(businessPartOfMessage, null)
             return datumReader.read(null, decoder)
         } catch (e: Exception) {
-            log.error("Klarte ikke decde kafka melding. Size: $size", e)
-            throw(e)
+            log.error("Klarte ikke å deserialisere avromeldingen med versjon prefiks på: $avroPrefixByteSize bytes", e)
+            throw e
         }
     }
 
