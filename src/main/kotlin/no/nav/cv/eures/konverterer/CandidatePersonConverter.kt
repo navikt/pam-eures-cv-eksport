@@ -28,7 +28,7 @@ class CandidatePersonConverter(
                     ),
                     communication = listOf(),
                     residencyCountryCode = cv.land?.toIso3166_1a2CountryCode(),
-                    nationalityCode = cv.nasjonalitet?.let { listOf(it.toIso3166_1a2CountryCode()) },
+                    nationalityCode = null, // quick fix issues 14. sept 2021 cv.nasjonalitet?.let { listOf(it.toIso3166_1a2CountryCode()) },
                     birthDate = "",
                     genderCode = GenderCode.NotSpecified,
                     primaryLanguageCode = cv.spraakferdigheter.toLanguages()
