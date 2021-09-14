@@ -22,6 +22,8 @@ class SamtykkeService(
     fun slettSamtykke(foedselsnummer: String) {
         val existing = samtykkeRepository.hentSamtykke(foedselsnummer)
 
+        log.info("Sletter samtykke for ${foedselsnummer.take(1)}.........${foedselsnummer.takeLast(1)}")
+
         try {
             if(existing != null)
                 meterRegistry.counter("cv.eures.eksport.samtykke.slettet").increment(1.0)
@@ -35,6 +37,8 @@ class SamtykkeService(
 
     fun oppdaterSamtykke(foedselsnummer: String, samtykke: Samtykke) {
         val existing = samtykkeRepository.hentSamtykke(foedselsnummer)
+
+        log.info("Oppdaterer samtykke for ${foedselsnummer.take(1)}.........${foedselsnummer.takeLast(1)} : $samtykke")
 
         try {
             if(existing == null)
