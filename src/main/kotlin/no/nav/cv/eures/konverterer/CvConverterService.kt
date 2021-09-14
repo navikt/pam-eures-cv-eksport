@@ -6,6 +6,7 @@ import no.nav.arbeid.cv.avro.Melding
 import no.nav.arbeid.cv.avro.Meldingstype
 import no.nav.cv.eures.cv.*
 import no.nav.cv.eures.samtykke.SamtykkeRepository
+import no.nav.cv.eures.samtykke.SamtykkeService
 import org.apache.avro.io.DecoderFactory
 import org.apache.avro.specific.SpecificDatumReader
 import org.slf4j.Logger
@@ -41,7 +42,7 @@ class CvConverterService(
         } catch (e: Exception) {
             wireBytes.readDatum(5)
         } catch (e: Exception) {
-            CvConsumer.log.error("Klarte ikke decde kafka melding. Size: ${wireBytes.size}", e)
+            CvConsumer.log.error("Klarte ikke decode kafka melding. Size: ${wireBytes.size}", e)
             throw(e)
         }
     }
@@ -134,7 +135,11 @@ class CvConverterService(
 
 
     fun convertToXml(foedselsnummer: String): Pair<String, String>? {
-        val record = cvRepository.hentCvByFoedselsnummer(foedselsnummer) ?: return null
+        val record = cvRepository.hentCvByFoedselsnummer(foedselsnummer)
+            ?: run {
+                log.info("Trying to convert XML for ${foedselsnummer.take(1)}.........${foedselsnummer.takeLast(1)} but got nothing from raw cv repo ")
+                return null
+            }
         return record.toMelding()
                 ?.cvAndProfile()
                 ?.let { (cv, profile) ->
@@ -156,6 +161,11 @@ class CvConverterService(
                                 return@let Pair(cv.arenaKandidatnr, xml)
                             }
                 }
+            ?: run {
+                log.info("Trying to convert XML for ${foedselsnummer.take(1)}.........${foedselsnummer.takeLast(1)} but got null from melding.cvAndProfile() ")
+                null
+            }
+
 
     }
 
