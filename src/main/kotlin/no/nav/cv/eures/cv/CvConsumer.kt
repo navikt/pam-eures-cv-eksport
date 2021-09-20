@@ -163,12 +163,11 @@ class CvConsumer(
     }
 
     private fun processMessages(endretCV: List<ConsumerRecord<String, ByteArray>>) {
-        log.debug("Fikk ${endretCV.size} meldinger fra Kafka.")
+        log.debug("Fikk ${endretCV.size} meldinger fra CV endret Kafka.")
 
         endretCV.forEach { melding ->
             try {
-                if(melding.key() == "2308808164824")
-                    log.debug("Processing kafka message with key ${melding.key()}")
+                log.debug("Processing kafka message with key ${melding.key()}")
                 val meldingValue = melding.value()
                 val rawAvroBase64 = Base64.getEncoder().encodeToString(meldingValue)
                 meldingValue.toMelding().createUpdateOrDelete(rawAvroBase64)
