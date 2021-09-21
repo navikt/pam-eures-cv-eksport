@@ -64,7 +64,7 @@ class CvConsumer(
 
         if(existing != null) {
             if (existing.underOppfoelging && oppfolgingsinformasjon == null) {
-//                log.debug("Deleting")
+                log.debug("Deleting")
                 delete()
 
                 try {
@@ -73,7 +73,7 @@ class CvConsumer(
                     log.error("Fikk exception ${e.message} under sletting av cv $this", e)
                 }
             } else {
-//                log.debug("Updating")
+                log.debug("Updating")
                 existing.update(
                         sistEndret = ZonedDateTime.now(),
                         rawAvro = rawAvroBase64,
@@ -88,7 +88,7 @@ class CvConsumer(
                 }
             }
         } else {
-//            log.debug("inserting")
+log.debug("inserting")
 
             cvRepository.deleteCvByAktorId(aktoerId)
 
@@ -121,7 +121,7 @@ class CvConsumer(
     private fun Melding.createUpdateOrDelete(rawAvroBase64: String) {
         meterRegistry.counter("cv.endring.mottatt",
                 "meldingstype", meldingstype.name)
-        //log.debug("id: Meldingstype: ${meldingstype.name} - $aktoerId, OpprettCv: $opprettCv, EndreCv: $endreCv, SlettCv: $slettCv, OpprettJobbprofil: $opprettJobbprofil, EndreJobbprofil: $endreJobbprofil, SlettJobbprofil: $slettJobbprofil, Oppfolgingsinformasjon: $oppfolgingsinformasjon, ")
+        log.debug("id: Meldingstype: ${meldingstype.name} - $aktoerId") //, OpprettCv: $opprettCv, EndreCv: $endreCv, SlettCv: $slettCv, OpprettJobbprofil: $opprettJobbprofil, EndreJobbprofil: $endreJobbprofil, SlettJobbprofil: $slettJobbprofil, Oppfolgingsinformasjon: $oppfolgingsinformasjon, ")
         when (meldingstype) {
             Meldingstype.OPPRETT -> createOrUpdateRawCvRecord(rawAvroBase64)
             Meldingstype.ENDRE -> createOrUpdateRawCvRecord(rawAvroBase64)
