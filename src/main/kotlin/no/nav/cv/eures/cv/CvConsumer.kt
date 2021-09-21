@@ -139,6 +139,7 @@ log.debug("inserting")
         return try {
             readDatum()
         } catch (e: Exception) {
+            log.warn("Failed to decode kafka message in the first try, retrying", e)
             readDatum(5)
         } catch (e: Exception) {
             log.error("Klarte ikke decde kafka melding. Size: $size", e)
