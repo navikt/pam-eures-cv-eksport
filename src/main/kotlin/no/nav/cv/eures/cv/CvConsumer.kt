@@ -140,14 +140,14 @@ log.debug("inserting")
             readDatum()
         } catch (e: Exception) {
             log.warn("Failed to decode kafka message in the first try, retrying", e)
-            readDatum(5)
+            readDatum(7)
         } catch (e: Exception) {
             log.error("Klarte ikke decde kafka melding. Size: $size", e)
             throw(e)
         }
     }
 
-    private fun ByteArray.readDatum(avroPrefixByteSize: Int = 7): Melding {
+    private fun ByteArray.readDatum(avroPrefixByteSize: Int = 5): Melding {
         try {
             val datumReader = SpecificDatumReader(Melding::class.java)
 
