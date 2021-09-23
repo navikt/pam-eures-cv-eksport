@@ -7,6 +7,7 @@ import no.nav.arbeid.cv.avro.Meldingstype
 import no.nav.cv.eures.cv.*
 import no.nav.cv.eures.samtykke.SamtykkeRepository
 import no.nav.cv.eures.samtykke.SamtykkeService
+import no.nav.cv.eures.util.toMelding
 import org.apache.avro.io.DecoderFactory
 import org.apache.avro.specific.SpecificDatumReader
 import org.slf4j.Logger
@@ -37,31 +38,8 @@ class CvConverterService(
 
         if (wireBytes.isEmpty()) return null
 
-        return try {
-            wireBytes.readDatum()
-        } catch (e: Exception) {
-            wireBytes.readDatum(5)
-        } catch (e: Exception) {
-            CvConsumer.log.error("Klarte ikke decode kafka melding. Size: ${wireBytes.size}", e)
-            throw(e)
-        }
+        return wireBytes.toMelding(aktoerId)
     }
-
-    private fun ByteArray.readDatum(avroPrefixByteSize: Int = 7): Melding {
-        try {
-            // NOTE: The newest AVRO version prefixes 6 bytes instead of 4
-            // TODO - Figure out if there's away to avoid this.
-            val businessPartOfMessage = slice(avroPrefixByteSize until size).toByteArray()
-
-            val datumReader = SpecificDatumReader(Melding::class.java)
-            val decoder = DecoderFactory.get().binaryDecoder(businessPartOfMessage, null)
-            return datumReader.read(null, decoder)
-        } catch (e: Exception) {
-            CvConsumer.log.warn("Klarte ikke å deserialisere avromeldingen med versjon prefiks på: $avroPrefixByteSize bytes", e)
-            throw e
-        }
-    }
-
 
     private fun Melding.cvAndProfile(): Pair<Cv?, Jobbprofil?>? = when (meldingstype) {
         Meldingstype.OPPRETT -> Pair(opprettCv?.cv, opprettJobbprofil?.jobbprofil)

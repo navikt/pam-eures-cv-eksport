@@ -5,6 +5,7 @@ import io.micrometer.core.instrument.Tag
 import no.nav.arbeid.cv.avro.Melding
 import no.nav.arbeid.cv.avro.Meldingstype
 import no.nav.cv.eures.cv.RawCV.Companion.RecordType.*
+import no.nav.cv.eures.util.toMelding
 import org.apache.avro.AvroRuntimeException
 import org.apache.avro.io.DecoderFactory
 import org.apache.avro.specific.SpecificDatumReader
@@ -131,37 +132,6 @@ log.debug("inserting")
 
     }
 
-    // This is definitely not the best solution, but unfortunately
-    // it's the only one I see for handling both avro versions without
-    // ending up in situations where we re-index things and get errors
-    // until we finish processing the first part of the topic.
-    private fun ByteArray.toMelding(): Melding {
-        return try {
-            readDatum()
-        } catch (e: Exception) {
-            log.warn("Failed to decode kafka message in the first try, retrying", e)
-            readDatum(7)
-        } catch (e: Exception) {
-            log.error("Klarte ikke decde kafka melding. Size: $size", e)
-            throw(e)
-        }
-    }
-
-    private fun ByteArray.readDatum(avroPrefixByteSize: Int = 5): Melding {
-        try {
-            val datumReader = SpecificDatumReader(Melding::class.java)
-
-            // NOTE: The newest AVRO version prefixes 6 bytes instead of 4
-            // TODO - Figure out if there's away to avoid this.
-            val businessPartOfMessage = slice(avroPrefixByteSize until size).toByteArray()
-
-            val decoder = DecoderFactory.get().binaryDecoder(businessPartOfMessage, null)
-            return datumReader.read(null, decoder)
-        } catch (e: Exception) {
-            log.warn("Klarte ikke å deserialisere avromeldingen med versjon prefiks på: $avroPrefixByteSize bytes", e)
-            throw e
-        }
-    }
 
     private fun processMessages(endretCV: List<ConsumerRecord<String, ByteArray>>) {
         log.debug("Fikk ${endretCV.size} meldinger fra CV endret Kafka.")
@@ -171,7 +141,7 @@ log.debug("inserting")
                 log.debug("Processing kafka message with key ${melding.key()}")
                 val meldingValue = melding.value()
                 val rawAvroBase64 = Base64.getEncoder().encodeToString(meldingValue)
-                meldingValue.toMelding().createUpdateOrDelete(rawAvroBase64)
+                meldingValue.toMelding(melding.key()).createUpdateOrDelete(rawAvroBase64)
 
             } catch (e: Exception) {
                 log.error("Klarte ikke behandle kafkamelding ${melding.key()} (partition: ${melding.partition()} - offset ${melding.offset()} - størrelse: ${melding.value().size}  StackTrace: ${e.stackTraceToString()}", e)
