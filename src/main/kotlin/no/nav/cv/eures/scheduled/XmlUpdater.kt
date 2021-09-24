@@ -28,7 +28,13 @@ class XmlUpdater (
 
         foedselsnumre
                 .also { log.info("Regenerating ${it.size} XML CVs") }
-                .forEach { cvConverterService.createOrUpdate(it) }
+                .forEach {
+                    try {
+                        cvConverterService.createOrUpdate(it)
+                    } catch (e: Exception) {
+                        log.warn("Failed to reprocess CV for ${it.take(1)}.........${it.takeLast(1)}: ${e.message}", e)
+                    }
+                }
 
         log.info("Done reprocessing CVs")
     }
