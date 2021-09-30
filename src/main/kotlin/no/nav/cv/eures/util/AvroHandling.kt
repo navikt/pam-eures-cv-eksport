@@ -11,43 +11,36 @@ import org.slf4j.LoggerFactory
 class AvroHandling {
 }
 
-// Julian:
-// This is definitely not the best solution, but unfortunately
-// it's the only one I see for handling both avro versions without
-// ending up in situations where we re-index things and get errors
-// until we finish processing the first part of the topic.
+fun List<Byte>.toHex(): String = joinToString(separator = "") { eachByte -> "%02x".format(eachByte) }
+
 fun ByteArray.toMelding(aktorId: String): Melding {
     val log = LoggerFactory.getLogger(AvroHandling::class.java)
 
-    // NOTE: The newest AVRO version prefixes 6 bytes instead of 4
+    val avroPrefixByteSize = 5 // Byte 0 is magic byte, bytes 1-4 is avro schema version - BEWARE OF VERSION
 
     return try {
-        readDatum(aktorId = aktorId, avroPrefixByteSize = 5)
-    } catch (e: Exception) {
-        log.warn("Failed to decode kafka message for $aktorId in the first try, retrying. Size: $size", e)
-        readDatum(aktorId = aktorId, avroPrefixByteSize = 7)
-    } catch (e: Exception) {
-        log.error("Klarte ikke decode kafka melding for $aktorId. Size: $size", e)
-        throw(e)
-    }
-}
+        if(size < avroPrefixByteSize)
+            throw Exception("Trying to decode a message of only $size bytes, with a prefix of $avroPrefixByteSize")
 
-private fun ByteArray.readDatum(aktorId: String, avroPrefixByteSize: Int): Melding {
-    val log = LoggerFactory.getLogger(AvroHandling::class.java)
+        val compatibleAvroVersion = "Ox00000000"
+        val messageAvroVersion = slice(1..4).toHex()
 
-    if(size < avroPrefixByteSize)
-        throw Exception("Trying to decode a message of only $size bytes, with a prefix of $avroPrefixByteSize")
+        if(!messageAvroVersion.equals(compatibleAvroVersion)) {
+            val e = Exception("Trying to decode a message with the wrong avrfo version! Version is $messageAvroVersion, but should be $compatibleAvroVersion")
+            log.error("Unable to decode avro message", e)
+            throw e
+        }
 
-    try {
         val datumReader = SpecificDatumReader(Melding::class.java)
 
         // TODO - Figure out if there's away to avoid this.
         val businessPartOfMessage = slice(avroPrefixByteSize until size).toByteArray()
 
         val decoder = DecoderFactory.get().binaryDecoder(businessPartOfMessage, null)
-        return datumReader.read(null, decoder)
+
+        datumReader.read(null, decoder)
     } catch (e: Exception) {
-        log.warn("Klarte ikke å deserialisere avromeldingen til $aktorId med versjon prefiks på: $avroPrefixByteSize bytes og total størrelse: $size", e)
-        throw e
+        log.error("Klarte ikke decode kafka melding for $aktorId. Size: $size", e)
+        throw(e)
     }
 }
