@@ -34,9 +34,8 @@ class CvConsumer(
             containerFactory = "cvMeldingContainerFactory",
     )
     fun receive(record: List<ConsumerRecord<String, ByteArray>>) {
-//        log.debug("Receiving cv melding message")
-//        processMessages(record)
-        log.warn("CV IMPORT DISABLED")
+        log.debug("Receiving cv melding message")
+        processMessages(record)
     }
 
     private fun String.foedselsnummerOrNull(): String? {

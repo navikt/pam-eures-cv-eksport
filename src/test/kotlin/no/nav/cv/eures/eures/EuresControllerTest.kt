@@ -3,6 +3,7 @@ package no.nav.cv.eures.eures
 import no.nav.security.token.support.test.spring.TokenGeneratorConfiguration
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.BeforeEach
+import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.Test
 import org.mockito.ArgumentCaptor
 import org.mockito.Mockito
@@ -20,7 +21,7 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers
 import org.springframework.web.reactive.function.client.WebClient
 
-
+@Disabled
 @WebMvcTest(EuresController::class)
 @ActiveProfiles("test")
 @Import(TokenGeneratorConfiguration::class)

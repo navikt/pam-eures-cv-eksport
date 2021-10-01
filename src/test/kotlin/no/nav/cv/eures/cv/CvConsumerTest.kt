@@ -10,7 +10,6 @@ import org.junit.jupiter.api.Test
 import org.mockito.ArgumentCaptor
 import org.mockito.Mockito
 
-@Disabled
 class CvConsumerTest {
 
     private lateinit var cvConsumer : CvConsumer
