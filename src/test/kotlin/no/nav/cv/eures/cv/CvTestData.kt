@@ -38,7 +38,7 @@ fun Melding.toByteArray(): ByteArray = ByteArrayOutputStream().let { out ->
         SpecificDatumWriter<Melding>(Melding.getClassSchema()).write(this, encoder)
         encoder.flush()
         out.close()
-        byteArrayOf(0,0,0,0,0) + out.toByteArray()
+        byteArrayOf(0x0,0x0,0x0,0x3,0x1F) + out.toByteArray()
     }
 }
 
