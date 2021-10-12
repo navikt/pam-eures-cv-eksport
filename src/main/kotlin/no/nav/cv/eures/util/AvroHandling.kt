@@ -27,7 +27,7 @@ fun ByteArray.toMelding(aktorId: String): Melding {
 
         if(!messageAvroVersion.equals(compatibleAvroVersion)) {
             val e = Exception("Trying to decode a message with the wrong avro version! Version is $messageAvroVersion, but should be $compatibleAvroVersion")
-            log.error("Unable to decode avro message", e)
+            //log.error("Unable to decode avro message", e)
             throw e
         }
 

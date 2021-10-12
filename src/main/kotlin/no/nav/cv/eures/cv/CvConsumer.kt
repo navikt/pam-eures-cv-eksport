@@ -144,7 +144,7 @@ log.debug("inserting")
                 meldingValue.toMelding(melding.key()).createUpdateOrDelete(rawAvroBase64)
 
             } catch (e: Exception) {
-                log.error("Klarte ikke behandle kafkamelding ${melding.key()} (partition: ${melding.partition()} - offset ${melding.offset()} - størrelse: ${melding.value().size}  StackTrace: ${e.stackTraceToString()}", e)
+                log.warn("Klarte ikke behandle kafkamelding ${melding.key()} (partition: ${melding.partition()} - offset ${melding.offset()} - størrelse: ${melding.value().size}  StackTrace: ${e.stackTraceToString()}", e)
             }
         }
     }
