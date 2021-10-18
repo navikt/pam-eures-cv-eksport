@@ -1,19 +1,17 @@
 package no.nav.cv.eures.cv
 
 import io.micrometer.core.instrument.MeterRegistry
-import io.micrometer.core.instrument.Tag
 import no.nav.arbeid.cv.avro.Melding
 import no.nav.arbeid.cv.avro.Meldingstype
 import no.nav.cv.eures.cv.RawCV.Companion.RecordType.*
 import no.nav.cv.eures.util.toMelding
-import org.apache.avro.AvroRuntimeException
-import org.apache.avro.io.DecoderFactory
-import org.apache.avro.specific.SpecificDatumReader
 import org.apache.kafka.clients.consumer.ConsumerRecord
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.kafka.annotation.KafkaListener
 import org.springframework.stereotype.Service
+import java.text.DateFormat
+import java.text.SimpleDateFormat
 import java.time.ZonedDateTime
 import java.util.*
 
@@ -138,7 +136,10 @@ class CvConsumer(
 
         endretCV.forEach { melding ->
             try {
-                log.debug("Processing kafka message with key ${melding.key()}")
+                val df: DateFormat = SimpleDateFormat("yyyy-MM-dd HH:mm")
+                val timestamp = df.format(Date(melding.timestamp()))
+
+                log.debug("Processing kafka message with key ${melding.key()} with timestamp $timestamp")
                 val meldingValue = melding.value()
                 val rawAvroBase64 = Base64.getEncoder().encodeToString(meldingValue)
                 meldingValue.toMelding(melding.key()).createUpdateOrDelete(rawAvroBase64)
