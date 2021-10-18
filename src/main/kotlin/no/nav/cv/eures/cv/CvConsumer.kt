@@ -65,7 +65,7 @@ class CvConsumer(
 
         if(existing != null) {
             if (existing.underOppfoelging && oppfolgingsinformasjon == null) {
-                log.debug("Deleting")
+                log.debug("Deleting ${existing.aktoerId} due to not being 'under oppfølging' anymore")
                 delete()
 
                 try {
@@ -74,7 +74,7 @@ class CvConsumer(
                     log.error("Fikk exception ${e.message} under sletting av cv $this", e)
                 }
             } else {
-                log.debug("Updating")
+                log.debug("Updating ${existing.aktoerId}")
                 existing.update(
                         sistEndret = ZonedDateTime.now(),
                         rawAvro = rawAvroBase64,
@@ -89,7 +89,7 @@ class CvConsumer(
                 }
             }
         } else {
-log.debug("inserting")
+            log.debug("inserting new record for $aktoerId")
 
             cvRepository.deleteCvByAktorId(aktoerId)
 
