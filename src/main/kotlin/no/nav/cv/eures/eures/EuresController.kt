@@ -18,12 +18,12 @@ class EuresController(
     fun getAll() =
             euresService.getAllReferences()
 
-//    @GetMapping("getChanges/{modificationTimestamp}", produces = ["application/json"])
-//    fun getChanges(@PathVariable("modificationTimestamp") modificationTimestamp: Long) =
-//            euresService.getChangedReferences(modificationTimestamp.toUtcZonedDateTime())
-//
-//    @PostMapping("getDetails", consumes = ["application/json"], produces = ["application/json"])
-//    fun getDetails(@RequestBody references: List<String>) =
-//            euresService.getDetails(references)
+    @GetMapping("getChanges/{modificationTimestamp}", produces = ["application/json"])
+    fun getChanges(@PathVariable("modificationTimestamp") modificationTimestamp: Long) =
+            euresService.getChangedReferences(modificationTimestamp.toUtcZonedDateTime())
+
+    @PostMapping("getDetails", consumes = ["application/json"], produces = ["application/json"])
+    fun getDetails(@RequestBody references: List<String>) =
+            euresService.getDetails(references)
 
 }
