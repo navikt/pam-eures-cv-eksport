@@ -21,7 +21,7 @@ fun ByteArray.toMelding(aktorId: String): Melding {
         if(size < avroPrefixByteSize)
             throw Exception("Trying to decode a message of only $size bytes, with a prefix of $avroPrefixByteSize")
 
-        val compatibleAvroVersion = System.getenv("AVRO_VERSION_52_HEX")
+        val compatibleAvroVersion = System.getenv("AVRO_VERSION_FIFTYTWO_HEX")
             ?: "0000031f"
 
 
