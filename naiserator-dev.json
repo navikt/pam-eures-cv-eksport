@@ -7,5 +7,7 @@
 
   "kafka_consumer_topic_cv_endret":"arbeid-pam-cv-endret-v6",
 
-  "ingress":  "https://arbeidsplassen.dev.nav.no/pam-eures-cv-eksport"
+  "ingress":  "https://arbeidsplassen.dev.nav.no/pam-eures-cv-eksport",
+
+  "avro_version_52_hex": "0000031f"
 }

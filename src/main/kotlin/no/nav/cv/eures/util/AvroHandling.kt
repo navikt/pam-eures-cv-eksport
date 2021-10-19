@@ -8,8 +8,7 @@ import org.apache.avro.specific.SpecificDatumReader
 import org.slf4j.LoggerFactory
 
 
-class AvroHandling {
-}
+class AvroHandling
 
 fun List<Byte>.toHex(): String = joinToString(separator = "") { eachByte -> "%02x".format(eachByte) }
 
@@ -22,7 +21,10 @@ fun ByteArray.toMelding(aktorId: String): Melding {
         if(size < avroPrefixByteSize)
             throw Exception("Trying to decode a message of only $size bytes, with a prefix of $avroPrefixByteSize")
 
-        val compatibleAvroVersion = "0000031f"
+        val compatibleAvroVersion = System.getenv("AVRO_VERSION_52_HEX")
+            ?: "0000031f"
+
+
         val messageAvroVersion = slice(1..4).toHex()
 
         if(!messageAvroVersion.equals(compatibleAvroVersion)) {

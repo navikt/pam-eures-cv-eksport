@@ -136,7 +136,10 @@ class CvConsumer(
 
         endretCV.forEach { melding ->
             try {
-                log.debug("Processing kafka message with key ${melding.key()}")
+                val df: DateFormat = SimpleDateFormat("yyyy-MM-dd HH:mm")
+                val isoDate = df.format(Date(melding.timestamp()))
+
+                log.debug("Processing kafka message with key ${melding.key()} with timestamp $isoDate")
                 val meldingValue = melding.value()
                 val rawAvroBase64 = Base64.getEncoder().encodeToString(meldingValue)
                 meldingValue.toMelding(melding.key()).createUpdateOrDelete(rawAvroBase64)
