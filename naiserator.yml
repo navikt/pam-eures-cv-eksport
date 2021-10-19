@@ -63,6 +63,6 @@ spec:
     - name: KAFKA_SECURITY_PROTOCOL
       value: SASL_SSL
     - name: AVRO_VERSION_FIFTYTWO_HEX
-      value: {{ avro_version_52_hex }}
+      value: {{ avro_version_fiftytwo_hex }}
   ingresses:
     - {{ ingress }}
