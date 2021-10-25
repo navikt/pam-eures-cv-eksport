@@ -64,8 +64,11 @@ class CvConsumer(
         if(existing != null) {
             if (existing.underOppfoelging && oppfolgingsinformasjon == null) {
                 log.debug("Deleting ${existing.aktoerId} due to not being 'under oppfølging' anymore")
-                delete()
-
+                existing.update(
+                    sistEndret = ZonedDateTime.now(),
+                    underOppfoelging = false,
+                    meldingstype = DELETE
+                )
                 try {
                     cvRepository.saveAndFlush(existing)
                 } catch (e: Exception) {
@@ -114,8 +117,8 @@ class CvConsumer(
     private fun Melding.delete(): RawCV? = cvRepository.hentCvByAktoerId(aktoerId)?.update(
             sistEndret = ZonedDateTime.now(),
             underOppfoelging = false,
-            meldingstype = DELETE
-    )
+            meldingstype = DELETE)
+        ?.let { cvRepository.saveAndFlush(it) }
 
     private fun Melding.createUpdateOrDelete(rawAvroBase64: String) {
         meterRegistry.counter("cv.endring.mottatt",
