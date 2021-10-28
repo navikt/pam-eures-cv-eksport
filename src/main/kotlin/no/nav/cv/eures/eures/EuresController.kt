@@ -23,28 +23,15 @@ class EuresController(
     @GetMapping("getAll", produces = ["application/json"])
     fun getAll() =
         euresService.getAllReferences()
-            .also { log.info("EURES connecting to getAll(), returning ${it.allReferences.size} references") }
 
     @GetMapping("getChanges/{modificationTimestamp}", produces = ["application/json"])
     fun getChanges(@PathVariable("modificationTimestamp") modificationTimestamp: Long) =
         euresService.getChangedReferences(modificationTimestamp.toUtcZonedDateTime())
-            .also {
-                log.info(
-                    "EURES connecting to getChanges() with argument ${modificationTimestamp.toUtcZonedDateTime()}," +
-                            " returning ${it.createdReferences.size} createdReferences" +
-                            " returning ${it.modifiedReferences.size} modifiedReferences" +
-                            " returning ${it.closedReferences.size} closedReferences"
-                )
-            }
+
 
     @PostMapping("getDetails", consumes = ["application/json"], produces = ["application/json"])
     fun getDetails(@RequestBody references: List<String>) =
         euresService.getDetails(references)
-            .also {
-                log.info(
-                    "EURES connecting to getDetails() with ${references.size} references as argument," +
-                            " returning ${it.details.size} details"
-                )
-            }
+
 
 }
