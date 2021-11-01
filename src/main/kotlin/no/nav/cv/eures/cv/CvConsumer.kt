@@ -4,6 +4,7 @@ import io.micrometer.core.instrument.MeterRegistry
 import no.nav.arbeid.cv.avro.Melding
 import no.nav.arbeid.cv.avro.Meldingstype
 import no.nav.cv.eures.cv.RawCV.Companion.RecordType.*
+import no.nav.cv.eures.samtykke.SamtykkeService
 import no.nav.cv.eures.util.toMelding
 import org.apache.kafka.clients.consumer.ConsumerRecord
 import org.slf4j.Logger
@@ -19,6 +20,7 @@ import java.util.*
 @Service
 class CvConsumer(
         private val cvRepository: CvRepository,
+        private val samtykkeService: SamtykkeService,
         private val meterRegistry: MeterRegistry
 ) {
 
@@ -64,13 +66,10 @@ class CvConsumer(
         if(existing != null) {
             if (existing.underOppfoelging && oppfolgingsinformasjon == null) {
                 log.debug("Deleting ${existing.aktoerId} due to not being 'under oppfølging' anymore")
-                existing.update(
-                    sistEndret = ZonedDateTime.now(),
-                    underOppfoelging = false,
-                    meldingstype = DELETE
-                )
+
+                // By deleting samtykke we also mark the XML CV for deletion
                 try {
-                    cvRepository.saveAndFlush(existing)
+                    samtykkeService.slettSamtykke(foedselsnummer)
                 } catch (e: Exception) {
                     log.error("Fikk exception ${e.message} under sletting av cv $this", e)
                 }
