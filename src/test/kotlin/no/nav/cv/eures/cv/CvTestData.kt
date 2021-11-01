@@ -1,9 +1,6 @@
 package no.nav.cv.eures.cv
 
-import no.nav.arbeid.cv.avro.Cv
-import no.nav.arbeid.cv.avro.Melding
-import no.nav.arbeid.cv.avro.Meldingstype
-import no.nav.arbeid.cv.avro.OpprettCv
+import no.nav.arbeid.cv.avro.*
 import org.apache.avro.io.EncoderFactory
 import org.apache.avro.specific.SpecificDatumWriter
 import java.io.ByteArrayOutputStream
@@ -70,6 +67,21 @@ data class CvTestData(
                 .build(),
 
         val melding2: Melding = Melding.newBuilder()
+                .setAktoerId(aktoerId2)
+                .setOpprettCv(OpprettCv(cv2))
+                .setMeldingstype(Meldingstype.OPPRETT)
+                .setSistEndret(yesterday.toInstant())
+                .build(),
+
+        val meldingMedOppfolgingsinformasjon: Melding = Melding.newBuilder()
+                .setAktoerId(aktoerId1)
+                .setOpprettCv(OpprettCv(cv1))
+                .setMeldingstype(Meldingstype.OPPRETT)
+                .setSistEndret(now.toInstant())
+                .setOppfolgingsinformasjon(Oppfolgingsinformasjon("",false,"","","","",false,false,false,listOf()))
+                .build(),
+
+        val meldingUtenOppfolgingsinformasjo: Melding = Melding.newBuilder()
                 .setAktoerId(aktoerId2)
                 .setOpprettCv(OpprettCv(cv2))
                 .setMeldingstype(Meldingstype.OPPRETT)
