@@ -2,6 +2,8 @@ package no.nav.cv.eures.samtykke
 
 import io.micrometer.core.instrument.MeterRegistry
 import no.nav.cv.eures.cv.CvRepository
+import no.nav.cv.eures.cv.CvXml
+import no.nav.cv.eures.cv.CvXmlRepository
 import no.nav.cv.eures.konverterer.CvConverterService
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
@@ -12,6 +14,7 @@ class SamtykkeService(
         private val samtykkeRepository: SamtykkeRepository,
         private val cvConverterService: CvConverterService,
         private val cvRepository: CvRepository,
+        private val cvXmlRepository: CvXmlRepository,
         private val meterRegistry: MeterRegistry
 ) {
     companion object {
@@ -54,6 +57,10 @@ class SamtykkeService(
         samtykkeRepository.oppdaterSamtykke(foedselsnummer, samtykke)
                 .run { cvConverterService.createOrUpdate(foedselsnummer) }
 
+        undeleteCvXml(foedselsnummer)
+    }
+
+    private fun undeleteCvXml(foedselsnummer: String) {
         try {
             log.info("Merker CV for oppdatering ${foedselsnummer.take(1)}.........${foedselsnummer.takeLast(1)} etter oppdatert samtykke")
 
@@ -66,9 +73,18 @@ class SamtykkeService(
                     log.warn("Fant ingen eksisterende RAW CV for ${foedselsnummer.take(1)}.........${foedselsnummer.takeLast(1)}")
                 }
 
+            cvXmlRepository.fetch(foedselsnummer)
+                ?.let { cvXml ->
+                    cvXml.slettet = null
+                    cvXmlRepository.save(cvXml)
+                }
+                ?: kotlin.run {
+                    log.warn("Fant ingen eksisterende XML CV for ${foedselsnummer.take(1)}.........${foedselsnummer.takeLast(1)}")
+                }
+
+
         } catch (e: Exception) {
             log.error("Got error when reprocessing CV after changed Samtykke ${e.message}", e)
         }
-
     }
 }

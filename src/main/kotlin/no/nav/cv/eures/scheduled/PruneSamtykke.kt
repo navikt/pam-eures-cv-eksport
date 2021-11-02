@@ -22,7 +22,7 @@ class PruneSamtykke(
 
     // Once a day (ms)
     @Profile("!test")
-    @Scheduled(fixedDelay = 1000 * 60 * 60 * 24)
+    @Scheduled(fixedDelay = 1000 * 60 * 60 * 24 * 1L)
     fun prune() {
         pruneBasedOnSamtykkeExpiry()
         pruneBasedOnCvExpiry()
@@ -41,6 +41,7 @@ class PruneSamtykke(
                     ?.let { xmlCv ->
                         xmlCv.slettet = ZonedDateTime.now()
                         xmlCv.xml = ""
+                        xmlCv.checksum = ""
                         cvXmlRepository.save(xmlCv)
                     }
             }
