@@ -107,6 +107,7 @@ class CvConverterService(
             ?.let {
                 it.slettet = it.slettet ?: ZonedDateTime.now()
                 it.xml = ""
+                it.checksum = ""
                 samtykkeRepository.slettSamtykke(foedselsnummer)
                 return@let cvXmlRepository.save(it)
             }
