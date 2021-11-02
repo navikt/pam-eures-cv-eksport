@@ -1,6 +1,7 @@
 package no.nav.cv.eures.samtykke
 
 import io.micrometer.core.instrument.MeterRegistry
+import no.nav.cv.eures.cv.CvRepository
 import no.nav.cv.eures.konverterer.CvConverterService
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
@@ -10,6 +11,7 @@ import org.springframework.stereotype.Service
 class SamtykkeService(
         private val samtykkeRepository: SamtykkeRepository,
         private val cvConverterService: CvConverterService,
+        private val cvRepository: CvRepository,
         private val meterRegistry: MeterRegistry
 ) {
     companion object {
@@ -51,5 +53,22 @@ class SamtykkeService(
 
         samtykkeRepository.oppdaterSamtykke(foedselsnummer, samtykke)
                 .run { cvConverterService.createOrUpdate(foedselsnummer) }
+
+        try {
+            log.info("Merker CV for oppdatering ${foedselsnummer.take(1)}.........${foedselsnummer.takeLast(1)} etter oppdatert samtykke")
+
+            cvRepository.hentCvByFoedselsnummer(foedselsnummer)
+                ?.let { rawCV ->
+                    rawCV.prosessert = false
+                    cvRepository.save(rawCV)
+                }
+                ?: kotlin.run {
+                    log.warn("Fant ingen eksisterende RAW CV for ${foedselsnummer.take(1)}.........${foedselsnummer.takeLast(1)}")
+                }
+
+        } catch (e: Exception) {
+            log.error("Got error when reprocessing CV after changed Samtykke ${e.message}", e)
+        }
+
     }
 }
