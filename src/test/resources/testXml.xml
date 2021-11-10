@@ -1,0 +1,58 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<Candidate xmlns="http://www.hr-xml.org/3" xmlns:oa="http://www.openapplications.org/oagis/9" majorVersionID="3" minorVersionID="2">
+    <DocumentID schemeID="NAV-002" schemeAgencyID="NAV" schemeAgencyName="NAV public employment services" schemeVersionID="1.3">66b42e02-40fe-4ed8-a86a-a88d581a88c6</DocumentID>
+    <CandidateSupplier>
+        <PartyID>NAV.NO</PartyID>
+        <PartyName>Nav</PartyName>
+        <PersonContact>
+            <PersonName>
+                <oa:GivenName>Arbeidsplassen.no</oa:GivenName>
+                <FamilyName>Arbeidsplassen.no</FamilyName>
+            </PersonName>
+            <Communication>
+                <ChannelCode>Telephone</ChannelCode>
+                <oa:DialNumber>nav.team.arbeidsplassen@nav.no</oa:DialNumber>
+            </Communication>
+        </PersonContact>
+        <PrecedenceCode>1</PrecedenceCode>
+    </CandidateSupplier>
+    <CandidatePerson>
+        <PersonName>
+            <oa:GivenName>Kløktig</oa:GivenName>
+            <FamilyName>Potet</FamilyName>
+        </PersonName>
+        <Communication>
+            <ChannelCode>Telephone</ChannelCode>
+            <oa:DialNumber>11111111</oa:DialNumber>
+        </Communication>
+        <Communication>
+            <ChannelCode>Email</ChannelCode>
+            <oa:URI>noreply@nav.no</oa:URI>
+        </Communication>
+        <BirthDate>1977-06-24</BirthDate>
+        <GenderCode>NotSpecified</GenderCode>
+    </CandidatePerson>
+    <CandidateProfile languageCode="no">
+        <ExecutiveSummary></ExecutiveSummary>
+        <EmploymentHistory/>
+        <EducationHistory/>
+        <Licenses>
+            <License>
+                <LicenseTypeCode>A</LicenseTypeCode>
+                <LicenseName>Tung motorsykkel</LicenseName>
+                <FreeFormPeriod/>
+            </License>
+            <License>
+                <LicenseTypeCode>B</LicenseTypeCode>
+                <LicenseName>Personbil</LicenseName>
+                <FreeFormPeriod/>
+            </License>
+        </Licenses>
+        <PersonQualifications>
+            <PersonCompetency>
+                <CompetencyID>http://data.europa.eu/esco/skill/6882a311-b19e-438b-9cff-7eb8930d9e42</CompetencyID>
+                <TaxonomyID>other</TaxonomyID>
+            </PersonCompetency>
+        </PersonQualifications>
+    </CandidateProfile>
+</Candidate>

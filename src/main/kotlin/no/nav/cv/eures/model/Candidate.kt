@@ -1,5 +1,6 @@
 package no.nav.cv.eures.model
 
+import com.fasterxml.jackson.annotation.JsonProperty
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlElementWrapper
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlRootElement
@@ -48,6 +49,7 @@ data class DocumentId(
         val schemeAgencyName: String = "NAV public employment services",
         @JacksonXmlProperty(isAttribute = true, localName = "schemeVersionID")
         val schemeVersionID: String = "1.3",
+        @JacksonXmlProperty(localName = "text")
         @JacksonXmlText
         val uuid: String
 )

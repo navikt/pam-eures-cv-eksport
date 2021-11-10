@@ -22,7 +22,7 @@ nødvendige ting (no.nav.security:token-validation-test-support) på classpathen
 Opprett database med applikasjonens defaultbruker 
 
 STart med å installere og starte postgresserveren - hvis det ikke allerede er på plass
-* Installere: `brew install postresql`
+* Installere: `brew install postgresql`
 * Start postgres-server og la den gå. For eksempel ved `postgres -D /usr/local/var/postgres`
 
 Opprett bruker `pam-eures-cv-eksport` uten passord, og database `pam-eures-cv-eksport` som eies av denne brukeren i din 

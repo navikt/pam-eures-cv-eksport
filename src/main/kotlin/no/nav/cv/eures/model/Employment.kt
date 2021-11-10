@@ -49,6 +49,7 @@ data class JobCategoryCode(
         @JacksonXmlProperty(isAttribute = true, localName = "name")
         val name: String,
 
+        //@JacksonXmlProperty(localName = "text")
         @JacksonXmlText
         val code: String
 )
