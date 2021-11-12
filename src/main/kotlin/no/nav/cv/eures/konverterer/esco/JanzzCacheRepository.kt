@@ -3,6 +3,7 @@ package no.nav.cv.eures.konverterer.esco
 import no.nav.cv.eures.konverterer.esco.dto.CachedEscoMapping
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
+import org.springframework.data.jpa.repository.Query
 import org.springframework.stereotype.Repository
 import org.springframework.transaction.annotation.Transactional
 import java.math.BigInteger
@@ -19,6 +20,8 @@ interface JanzzCacheRepository {
     fun pruneCache()
 
     fun getCacheCount() : Long
+
+    fun getCacheForEsco(escoCode: String): String?
 }
 
 @Repository
@@ -103,6 +106,17 @@ private class JpaJanzzCacheRepository(
     override fun getCacheCount(): Long
             = (entityManager.createNativeQuery(getCacheCount)
             .singleResult as BigInteger).toLong()
+
+    private val getEsco =
+        """
+            SELECT term FROM ESCO_CACHE WHERE esco = :esco
+        """.replace(serieMedWhitespace, " ")
+
+    @Transactional
+    override fun getCacheForEsco(escoCode: String): String? = entityManager.createNativeQuery(getEsco)
+        .setParameter("esco", escoCode)
+        .singleResult as? String
+
 }
 
 @Entity

@@ -49,7 +49,6 @@ data class DocumentId(
         val schemeAgencyName: String = "NAV public employment services",
         @JacksonXmlProperty(isAttribute = true, localName = "schemeVersionID")
         val schemeVersionID: String = "1.3",
-        @JacksonXmlProperty(localName = "text")
         @JacksonXmlText
         val uuid: String
 )

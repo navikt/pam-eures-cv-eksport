@@ -116,8 +116,6 @@ class CvConverterService(
 
     fun convertToXml(foedselsnummer: String): Triple<String, String, Candidate>? {
         val record = cvRepository.hentCvByFoedselsnummer(foedselsnummer)
-        //HUSK Å ENDRE TILBAKE
-        //val record = cvRepository.hentCvByAktoerId(foedselsnummer)
             ?: run {
                 log.info("Trying to convert XML for ${foedselsnummer.take(1)}.........${foedselsnummer.takeLast(1)} but got nothing from raw cv repo ")
                 return null
@@ -130,9 +128,9 @@ class CvConverterService(
 
                     cv ?: return@let null
 
-                    samtykkeRepository.hentSamtykke(record.foedselsnummer)
+                    samtykkeRepository.hentSamtykke(foedselsnummer)
                             ?.run {
-                                val xml = try {
+                                val (xml, previewJson) = try {
                                     val candidate = CandidateConverter(cv, profile, this).toXmlRepresentation()
                                     Pair(XmlSerializer.serialize(candidate), candidate)
                                 } catch (e: Exception) {
@@ -140,7 +138,7 @@ class CvConverterService(
                                     throw CvNotConvertedException("Failed to convert CV to XML for candidate ${cv.aktoerId}", e)
                                 }
 
-                                return@let Triple(cv.arenaKandidatnr, xml.first, xml.second)
+                                return@let Triple(cv.arenaKandidatnr, xml, previewJson)
                             }
                 }
             ?: run {

@@ -41,6 +41,8 @@ class JanzzService(
 
     fun getEscoForCompetence(term: String): List<CachedEscoMapping> = getEsco(term, EscoLookup.LOOKUP_TERM)
 
+    fun getTermForEsco(escoCode: String): String? = janzzCacheRepository.getCacheForEsco(escoCode)
+
     private fun getEsco(searchFor: String, lookup: EscoLookup): List<CachedEscoMapping> {
         val cachedEsco = janzzCacheRepository.fetchFromCacheTerm(searchFor)
 
@@ -73,7 +75,9 @@ class JanzzService(
         janzzCacheRepository.saveToCache(queryResult)
 
         val exactHits = when (lookup) {
-            EscoLookup.LOOKUP_CONCEPT -> queryResult.filter { it.conceptId == searchFor }
+            //BURDE VÆRE TERM ELLER SEARCHFOR BURDE VÆRE KONSEPTID
+            //EscoLookup.LOOKUP_CONCEPT -> queryResult.filter { it.conceptId == searchFor }
+            EscoLookup.LOOKUP_CONCEPT -> queryResult.filter { it.term == searchFor }
             EscoLookup.LOOKUP_TERM -> queryResult.filter { it.term == searchFor }
         }
 

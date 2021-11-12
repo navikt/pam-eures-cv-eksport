@@ -25,10 +25,10 @@ import java.util.*
 @RequestMapping("preview")
 @Unprotected
 class PreviewController(
-    private val cvConverterService: CvConverterService
+    private val previewService: PreviewService,
 ) {
 
     @GetMapping(produces = ["application/json"])
-    fun getPreview(@RequestParam fnr: String) = cvConverterService.convertToXml(fnr)?.third
+    fun getPreview(@RequestParam fnr: String) = previewService.getPreviewDto(fnr)
 
 }
