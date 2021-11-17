@@ -30,6 +30,7 @@ data class EducationLevelCode(
         @JacksonXmlProperty(isAttribute = true, localName = "listVersionID")
         val listVersionID: String = "2008/C11/01",
 
+        //@JacksonXmlProperty(localName = "text")
         @JacksonXmlText
         val code: String
 

@@ -5,6 +5,7 @@ import no.nav.arbeid.cv.avro.Jobbprofil
 import no.nav.arbeid.cv.avro.Melding
 import no.nav.arbeid.cv.avro.Meldingstype
 import no.nav.cv.eures.cv.*
+import no.nav.cv.eures.model.Candidate
 import no.nav.cv.eures.samtykke.SamtykkeRepository
 import no.nav.cv.eures.samtykke.SamtykkeService
 import no.nav.cv.eures.util.toMelding
@@ -53,7 +54,7 @@ class CvConverterService(
         if (cvXml == null) return null
 
         return convertToXml(cvXml.foedselsnummer)
-                ?.let { (_, xml) -> updateIfChanged(cvXml, xml)}
+                ?.let { (_, xml, _) -> updateIfChanged(cvXml, xml)}
     }
 
     fun updateIfChanged(cvXml: CvXml, newXml: String): CvXml {
@@ -83,7 +84,7 @@ class CvConverterService(
     fun createNew(foedselsnummer: String) {
         val now = ZonedDateTime.now()
         convertToXml(foedselsnummer)
-                ?.let { (ref, xml) ->
+                ?.let { (ref, xml, _) ->
                     val checksum = md5(xml)
                     log.debug("Create New: Before save of ${xml.length} bytes of xml with checksum $checksum")
                     cvXmlRepository.save(CvXml.create(
@@ -113,7 +114,7 @@ class CvConverterService(
             }
 
 
-    fun convertToXml(foedselsnummer: String): Pair<String, String>? {
+    fun convertToXml(foedselsnummer: String): Triple<String, String, Candidate>? {
         val record = cvRepository.hentCvByFoedselsnummer(foedselsnummer)
             ?: run {
                 log.info("Trying to convert XML for ${foedselsnummer.take(1)}.........${foedselsnummer.takeLast(1)} but got nothing from raw cv repo ")
@@ -129,15 +130,15 @@ class CvConverterService(
 
                     samtykkeRepository.hentSamtykke(foedselsnummer)
                             ?.run {
-                                val xml = try {
+                                val (xml, previewJson) = try {
                                     val candidate = CandidateConverter(cv, profile, this).toXmlRepresentation()
-                                    XmlSerializer.serialize(candidate)
+                                    Pair(XmlSerializer.serialize(candidate), candidate)
                                 } catch (e: Exception) {
                                     log.error("Failed to convert CV to XML for candidate ${cv.aktoerId}", e)
                                     throw CvNotConvertedException("Failed to convert CV to XML for candidate ${cv.aktoerId}", e)
                                 }
 
-                                return@let Pair(cv.arenaKandidatnr, xml)
+                                return@let Triple(cv.arenaKandidatnr, xml, previewJson)
                             }
                 }
             ?: run {
