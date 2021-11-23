@@ -65,4 +65,6 @@ spec:
     - name: AVRO_VERSION_FIFTYTWO_HEX
       value: {{ avro_version_fiftytwo_hex }}
   ingresses:
-    - {{ ingress }}
+  {{#each ingress as |url|}}
+     - {{url}}
+  {{/each}}
