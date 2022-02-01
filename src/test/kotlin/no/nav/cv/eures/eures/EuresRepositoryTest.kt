@@ -2,8 +2,6 @@ package no.nav.cv.eures.eures
 
 import no.nav.cv.eures.cv.CvXml
 import no.nav.cv.eures.cv.CvXmlRepository
-import no.nav.cv.eures.eures.dto.GetDetails.CandidateDetail.Status.ACTIVE
-import no.nav.cv.eures.eures.dto.GetDetails.CandidateDetail.Status.CLOSED
 import no.nav.cv.eures.samtykke.Samtykke
 import no.nav.cv.eures.samtykke.SamtykkeRepository
 import no.nav.security.token.support.test.spring.TokenGeneratorConfiguration
@@ -11,17 +9,13 @@ import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
-import org.junit.jupiter.api.assertAll
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.boot.jdbc.EmbeddedDatabaseConnection
-import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest
-import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.context.annotation.ComponentScan
 import org.springframework.context.annotation.FilterType
 import org.springframework.context.annotation.Import
+import org.springframework.data.domain.PageRequest
 import org.springframework.stereotype.Repository
-import org.springframework.test.annotation.DirtiesContext
 import java.time.ZonedDateTime
 
 @DataJpaTest(includeFilters = [ComponentScan.Filter(type = FilterType.ANNOTATION, classes = [Repository::class])])
@@ -62,15 +56,15 @@ class EuresRepositoryTest {
 
     @Test
     fun `getChanges skal returnere endret verdier riktig grupert etter gruppe`() {
-        val all = cvXmlRepository.fetchAllCvsAfterTimestamp(oneDayAgo.minusHours(1))
-        val two = cvXmlRepository.fetchAllCvsAfterTimestamp(oneDayAgo.plusHours(11))
-        val one = cvXmlRepository.fetchAllCvsAfterTimestamp(oneDayAgo.plusHours(12))
-        val zero = cvXmlRepository.fetchAllCvsAfterTimestamp(oneDayAgo.plusDays(1))
+        val all = cvXmlRepository.fetchAllCvsAfterTimestamp(PageRequest.of(0, 20), oneDayAgo.minusHours(1))
+        val two = cvXmlRepository.fetchAllCvsAfterTimestamp(PageRequest.of(0, 20), oneDayAgo.plusHours(11))
+        val one = cvXmlRepository.fetchAllCvsAfterTimestamp(PageRequest.of(0, 20),oneDayAgo.plusHours(12))
+        val zero = cvXmlRepository.fetchAllCvsAfterTimestamp(PageRequest.of(0, 20), oneDayAgo.plusDays(1))
 
-        assertEquals(4, all.size)
-        assertEquals(2, two.size)
-        assertEquals(1, one.size)
-        assertEquals(0, zero.size)
+        assertEquals(4, all.content.size)
+        assertEquals(2, two.content.size)
+        assertEquals(1, one.content.size)
+        assertEquals(0, zero.content.size)
     }
 
     @Test
