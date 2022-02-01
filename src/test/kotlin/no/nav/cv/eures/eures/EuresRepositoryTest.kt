@@ -49,8 +49,8 @@ class EuresRepositoryTest {
 
     @Test
     fun `fetchAllActive skal returnere kun aktive cv-xml`() {
-        val active = cvXmlRepository.fetchAllActive()
-        assertEquals(2, active.size)
+        val active = cvXmlRepository.fetchAllActive(PageRequest.of(0, 100))
+        assertEquals(2, active.content.size)
         active.forEach { cvXml -> assertTrue(listOf("PAM-1", "PAM-2").contains(cvXml.reference)) }
     }
 

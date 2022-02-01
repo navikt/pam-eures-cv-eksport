@@ -31,7 +31,7 @@ class EuresServiceTest {
             CvXml().update("PAM-3", "1234567892", oneDayAgo, oneDayAgo.plusHours(12), oneDayAgo.plusDays(1), xml = "SOME XML", checksum = "SOME CHECKSUM")
     ))
 
-    private val active = listOf(testData().content[0], testData().content[1])
+    private val active = PageImpl(listOf(testData().content[0], testData().content[1]))
 
     @BeforeEach
     fun setUp() {
@@ -42,7 +42,7 @@ class EuresServiceTest {
 
     @Test
     fun `getAll skal returnere kun aktive referanser`() {
-        Mockito.`when`(cvXmlRepository.fetchAllActive()).thenReturn(active)
+        Mockito.`when`(cvXmlRepository.fetchAllActive(eq(pageRequest))).thenReturn(active)
         euresService.getAllReferences().run {
             assertEquals(0, allReferences.filter { it.status == "CLOSED" }.size)
         }

@@ -23,7 +23,7 @@ interface CvXmlRepository : JpaRepository<CvXml, Long> {
                     WHERE SAMTYKKE.FOEDSELSNUMMER = CV_XML.FOEDSELSNUMMER
                 )
     """, nativeQuery = true)
-    fun fetchAllActive(): List<CvXml>
+    fun fetchAllActive(page: Pageable): Page<CvXml>
 
     @Query("""
     SELECT * FROM CV_XML
