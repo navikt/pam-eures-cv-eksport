@@ -44,7 +44,8 @@ class GenerateMetrics(
         gauges[name] = meterRegistry.gauge(name, AtomicLong(value))
     }
 
-    @Scheduled (fixedDelay = 1000 * 60 * 5)
+    // Disable metrics until these are fixed properly
+    // @Scheduled (fixedDelay = 1000 * 60 * 5)
     fun count() {
         try {
             val count = samtykkeRepository.hentAntallSamtykker()
