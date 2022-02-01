@@ -60,11 +60,11 @@ class GenerateMetrics(
                     addOrUpdateGauge(gaugeName, antall)
                 }
 
-            val (created, modified, closed) = euresService.getAll()
-            addOrUpdateGauge("cv.eures.eksport.antall.euresService.created.total", created.size)
-            addOrUpdateGauge("cv.eures.eksport.antall.euresService.modified.total", modified.size)
-            addOrUpdateGauge("cv.eures.eksport.antall.euresService.closed.total", closed.size)
-            log.info("Metric: ${created.size} opprettet, ${modified.size} endret, ${closed.size} slettet")
+            val (created, modified, closed) = euresService.getAllCounts()
+            addOrUpdateGauge("cv.eures.eksport.antall.euresService.created.total", created)
+            addOrUpdateGauge("cv.eures.eksport.antall.euresService.modified.total", modified)
+            addOrUpdateGauge("cv.eures.eksport.antall.euresService.closed.total", closed)
+            log.info("Metric: $created opprettet, $modified endret, $closed slettet")
 
             val countRaw = cvRepository.fetchCountRawCvs()
             addOrUpdateGauge("cv.eures.eksport.antall.raw.total", countRaw)

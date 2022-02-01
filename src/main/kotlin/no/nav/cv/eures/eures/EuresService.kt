@@ -34,7 +34,12 @@ class EuresService(
             return@let Triple(created, modified, closed)
         }
 
-    fun getAll() = cvXmlRepository.fetchAll().partitionCvs()
+    fun getAllCounts(): Triple<Long, Long, Long> {
+        val created = cvXmlRepository.fetchCountCreated()
+        val modified = cvXmlRepository.fetchCountModified()
+        val closed = cvXmlRepository.fetchCountClosed()
+        return Triple(created, modified, closed)
+    }
 
     fun getAllReferences(): GetAllReferences {
 
