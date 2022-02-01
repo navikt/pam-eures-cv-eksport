@@ -1,6 +1,7 @@
 package no.nav.cv.eures.cv
 
-import no.nav.cv.eures.model.Candidate
+import org.springframework.data.domain.Page
+import org.springframework.data.domain.Pageable
 import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.data.jpa.repository.Query
 import java.time.ZonedDateTime
@@ -39,7 +40,7 @@ interface CvXmlRepository : JpaRepository<CvXml, Long> {
     fun fetchAllCvsByReference(references: List<String>): List<CvXml>
 
     @Query("SELECT cv FROM CvXml cv WHERE cv.sistEndret > ?1 or cv.slettet > ?1")
-    fun fetchAllCvsAfterTimestamp(time: ZonedDateTime): List<CvXml>
+    fun fetchAllCvsAfterTimestamp(page: Pageable, time: ZonedDateTime): Page<CvXml>
 
 }
 

@@ -11,6 +11,9 @@ import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertAll
 import org.mockito.Mockito
+import org.springframework.data.domain.Page
+import org.springframework.data.domain.PageImpl
+import org.springframework.data.domain.PageRequest
 import java.time.ZonedDateTime
 
 class EuresServiceTest {
@@ -20,14 +23,15 @@ class EuresServiceTest {
     val cvXmlRepository: CvXmlRepository = Mockito.mock(CvXmlRepository::class.java)
 
     private var oneDayAgo = ZonedDateTime.now().minusDays(1)
+    private var pageRequest = PageRequest.of(0, 100)
 
-    private fun testData() = listOf(
+    private fun testData(): Page<CvXml> = PageImpl(listOf(
             CvXml().update("PAM-1", "1234567890", oneDayAgo, oneDayAgo, null, xml = "SOME XML", checksum = "SOME CHECKSUM"),
             CvXml().update("PAM-2", "1234567891", oneDayAgo, oneDayAgo.plusHours(12), null, xml = "SOME XML", checksum = "SOME CHECKSUM"),
             CvXml().update("PAM-3", "1234567892", oneDayAgo, oneDayAgo.plusHours(12), oneDayAgo.plusDays(1), xml = "SOME XML", checksum = "SOME CHECKSUM")
-    )
+    ))
 
-    private val active = listOf(testData()[0], testData()[1])
+    private val active = listOf(testData().content[0], testData().content[1])
 
     @BeforeEach
     fun setUp() {
@@ -46,7 +50,7 @@ class EuresServiceTest {
 
     @Test
     fun `getChanges skal returnere endret verdier riktig grupert etter gruppe`() {
-        Mockito.`when`(cvXmlRepository.fetchAllCvsAfterTimestamp(eq(oneDayAgo))).thenReturn(testData())
+        Mockito.`when`(cvXmlRepository.fetchAllCvsAfterTimestamp(eq(pageRequest), eq(oneDayAgo))).thenReturn(testData())
         val all = euresService.getChangedReferences(oneDayAgo)
 
         assertEquals(1, all.createdReferences.size)
@@ -60,9 +64,9 @@ class EuresServiceTest {
     fun `getDetails skal returnere korrekt status paa details`() {
         val references = testData().map(CvXml::reference)
 
-        Mockito.`when`(cvXmlRepository.fetchAllCvsByReference(eq(references))).thenReturn(testData())
+        Mockito.`when`(cvXmlRepository.fetchAllCvsByReference(eq(references.content))).thenReturn(testData().content)
 
-        val details = euresService.getDetails(references)
+        val details = euresService.getDetails(references.content)
 
         assertAll({
             assertTrue(details.details["PAM-1"]?.status == ACTIVE
