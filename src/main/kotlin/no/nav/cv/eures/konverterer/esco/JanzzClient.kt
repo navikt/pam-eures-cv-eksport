@@ -19,7 +19,6 @@ class JanzzClient(
         limit: String,
         lang: String = "no",
         branch: String = "skill",
-        CLASS_ESCO: String = "*",
         output_classifications: String = "ESCO"
     ): String? {
         val client = WebClient
@@ -33,10 +32,9 @@ class JanzzClient(
                 uriBuilder
                     .path("/japi/labels/")
                     .queryParam("q", query)
-                    .queryParam("limit", limit)
                     .queryParam("lang", lang)
                     .queryParam("branch", branch)
-                    .queryParam("CLASS_ESCO", CLASS_ESCO)
+                    .queryParam("exact_match", true)
                     .queryParam("output_classifications", output_classifications)
                     .build()
             }
