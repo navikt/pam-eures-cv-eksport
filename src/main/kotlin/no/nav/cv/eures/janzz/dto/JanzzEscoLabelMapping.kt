@@ -1,15 +1,15 @@
-package no.nav.cv.eures.konverterer.esco.dto
+package no.nav.cv.eures.janzz.dto
 
 import com.fasterxml.jackson.annotation.JsonProperty
 
 data class JanzzEscoLabelMapping (
-        @JsonProperty("classifications")
+    @JsonProperty("classifications")
         var classifications: JanzzEscoMappingClassification,
 
-        @JsonProperty("concept_id")
+    @JsonProperty("concept_id")
         var conceptId: Int,
 
-        @JsonProperty("label")
+    @JsonProperty("label")
         var label: String
 
 )

@@ -2,7 +2,7 @@ package no.nav.cv.eures.konverterer
 
 import no.nav.arbeid.cv.avro.Arbeidserfaring
 import no.nav.arbeid.cv.avro.Cv
-import no.nav.cv.eures.konverterer.esco.JanzzService
+import no.nav.cv.eures.janzz.JanzzService
 import no.nav.cv.eures.model.*
 import no.nav.cv.eures.samtykke.Samtykke
 
@@ -39,7 +39,7 @@ class EmploymentHistoryConverter(
             jobCategoryCode = stillingstittel?.toJobCategoryCode()
     ))
 
-    private fun String.toJobCategoryCode(): JobCategoryCode? = janzzService.getEscoForOccupation(this)
+    private fun String.toJobCategoryCode(): JobCategoryCode? = janzzService.getEscoForTerm(this, JanzzService.EscoLookupType.OCCUPATION)
             .firstOrNull() // TODO Might consider something more refined than just picking the first result
             ?.let {
                 JobCategoryCode(

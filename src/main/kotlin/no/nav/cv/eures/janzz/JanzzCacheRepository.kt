@@ -1,9 +1,8 @@
-package no.nav.cv.eures.konverterer.esco
+package no.nav.cv.eures.janzz
 
-import no.nav.cv.eures.konverterer.esco.dto.CachedEscoMapping
+import no.nav.cv.eures.janzz.dto.CachedEscoMapping
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
-import org.springframework.data.jpa.repository.Query
 import org.springframework.stereotype.Repository
 import org.springframework.transaction.annotation.Transactional
 import java.math.BigInteger

@@ -1,5 +1,6 @@
 package no.nav.cv.eures.konverterer.esco
 
+import no.nav.cv.eures.janzz.JanzzService
 import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
@@ -15,13 +16,13 @@ internal class JanzzServiceTest {
     @Test
     @Disabled
     fun `test search`() {
-        println(janzzService.getEscoForCompetence("Programmering"))
-        println(janzzService.getEscoForCompetence("Programmering"))
+        println(janzzService.getEscoForTerm("Programmering", JanzzService.EscoLookupType.SKILL))
+        println(janzzService.getEscoForTerm("Programmering", JanzzService.EscoLookupType.SKILL))
 
-        println(janzzService.getEscoForCompetence("NO HIT"))
-        println(janzzService.getEscoForCompetence("NO HIT"))
+        println(janzzService.getEscoForTerm("NO HIT", JanzzService.EscoLookupType.SKILL))
+        println(janzzService.getEscoForTerm("NO HIT", JanzzService.EscoLookupType.SKILL))
 
-        println(janzzService.getEscoForOccupation("Førstestyrmann"))
-        println(janzzService.getEscoForOccupation("Førstestyrmann"))
+        println(janzzService.getEscoForTerm("Førstestyrmann", JanzzService.EscoLookupType.OCCUPATION))
+        println(janzzService.getEscoForTerm("Førstestyrmann", JanzzService.EscoLookupType.OCCUPATION))
     }
 }

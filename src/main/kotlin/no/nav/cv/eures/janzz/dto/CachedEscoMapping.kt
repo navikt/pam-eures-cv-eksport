@@ -1,4 +1,4 @@
-package no.nav.cv.eures.konverterer.esco.dto
+package no.nav.cv.eures.janzz.dto
 
 import java.time.ZonedDateTime
 
