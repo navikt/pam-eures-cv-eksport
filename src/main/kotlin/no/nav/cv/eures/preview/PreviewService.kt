@@ -1,7 +1,7 @@
 package no.nav.cv.eures.preview
 
 import no.nav.cv.eures.konverterer.CvConverterService
-import no.nav.cv.eures.konverterer.esco.JanzzService
+import no.nav.cv.eures.janzz.JanzzService
 import no.nav.cv.eures.model.Candidate
 import org.springframework.stereotype.Service
 

@@ -2,26 +2,26 @@ package no.nav.cv.eures.konverterer
 
 import no.nav.arbeid.cv.avro.Arbeidserfaring
 import no.nav.arbeid.cv.avro.Cv
-import no.nav.cv.eures.konverterer.esco.JanzzService
+import no.nav.cv.eures.janzz.JanzzService
 import no.nav.cv.eures.model.*
 import no.nav.cv.eures.samtykke.Samtykke
+import org.springframework.stereotype.Service
 
+@Service
 class EmploymentHistoryConverter(
-        private val cv: Cv,
-        private val samtykke: Samtykke,
-        private val janzzService: JanzzService = JanzzService.instance()
+        private val janzzService: JanzzService
 ) {
     private val ikkeSamtykket = null
 
-    fun toXmlRepresentation() = when (samtykke.arbeidserfaring) {
+    fun toXmlRepresentation(cv: Cv, samtykke: Samtykke) = when (samtykke.arbeidserfaring) {
         true -> EmploymentHistory(cv.arbeidserfaring.toEmploymentList())
         false -> ikkeSamtykket
     }
 
     // TODO støtte null i fra-tidpsunkt
-    fun List<Arbeidserfaring>.toEmploymentList() = map {
+    private fun List<Arbeidserfaring>.toEmploymentList() = map {
         EmployerHistory(
-                organizationName = it?.arbeidsgiver ?: "",
+                organizationName = it.arbeidsgiver ?: "",
                 employmentPeriod = AttendancePeriod(
                         it.fraTidspunkt.toFormattedDateTime(),
                         it.tilTidspunkt?.toFormattedDateTime()
@@ -30,7 +30,7 @@ class EmploymentHistoryConverter(
     }
 
     // TODO støtte null i fra-tidpsunkt
-    fun Arbeidserfaring.toPositionHistory() = listOf(PositionHistory(
+    private fun Arbeidserfaring.toPositionHistory() = listOf(PositionHistory(
             positionTitle = stillingstittel ?: stillingstittelFritekst, // TODO Skal dette være friktekstfeltet?
             employmentPeriod = AttendancePeriod(
                     fraTidspunkt.toFormattedDateTime(),

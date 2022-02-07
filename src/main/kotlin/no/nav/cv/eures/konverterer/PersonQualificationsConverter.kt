@@ -1,7 +1,7 @@
 package no.nav.cv.eures.konverterer
 
 import no.nav.arbeid.cv.avro.*
-import no.nav.cv.eures.konverterer.esco.JanzzService
+import no.nav.cv.eures.janzz.JanzzService
 import no.nav.cv.eures.konverterer.language.LanguageConverter
 import no.nav.cv.eures.model.PersonCompetency
 import no.nav.cv.eures.model.PersonQualifications
@@ -45,7 +45,7 @@ class PersonQualificationsConverter (
     @JvmName("toEscoKompetanser")
     private fun List<String>.toEsco() : List<PersonCompetency>
             = asSequence().onEach { if(debug) log.debug("${cv.aktoerId} QUAL got competance $it") }
-            .map { janzzService.getEscoForCompetence(it) }
+            .map { janzzService.getEscoForSkill(it) }
             .flatten()
             .map { PersonCompetency(competencyID = it.esco, taxonomyID = "other") }
             .onEach { if(debug) log.debug("${cv.aktoerId} QUAL got mapped competance $it") }.toList()

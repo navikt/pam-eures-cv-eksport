@@ -1,11 +1,10 @@
 package no.nav.cv.eures.scheduled
 
 import no.nav.cv.eures.konverterer.CvConverterService
-import no.nav.cv.eures.konverterer.esco.JanzzCacheRepository
+import no.nav.cv.eures.janzz.JanzzCacheRepository
 import no.nav.cv.eures.samtykke.SamtykkeRepository
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
-import org.springframework.context.annotation.Profile
 import org.springframework.scheduling.annotation.Scheduled
 import org.springframework.stereotype.Service
 

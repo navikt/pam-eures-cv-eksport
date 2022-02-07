@@ -1,4 +1,4 @@
-package no.nav.cv.eures.konverterer.esco
+package no.nav.cv.eures.janzz
 
 import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.Test
@@ -15,11 +15,11 @@ internal class JanzzServiceTest {
     @Test
     @Disabled
     fun `test search`() {
-        println(janzzService.getEscoForCompetence("Programmering"))
-        println(janzzService.getEscoForCompetence("Programmering"))
+        println(janzzService.getEscoForSkill("Programmering"))
+        println(janzzService.getEscoForSkill("Programmering"))
 
-        println(janzzService.getEscoForCompetence("NO HIT"))
-        println(janzzService.getEscoForCompetence("NO HIT"))
+        println(janzzService.getEscoForSkill("NO HIT"))
+        println(janzzService.getEscoForSkill("NO HIT"))
 
         println(janzzService.getEscoForOccupation("Førstestyrmann"))
         println(janzzService.getEscoForOccupation("Førstestyrmann"))
