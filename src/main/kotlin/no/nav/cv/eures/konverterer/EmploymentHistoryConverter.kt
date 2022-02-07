@@ -39,7 +39,7 @@ class EmploymentHistoryConverter(
             jobCategoryCode = stillingstittel?.toJobCategoryCode()
     ))
 
-    private fun String.toJobCategoryCode(): JobCategoryCode? = janzzService.getEscoForConceptTitle(this)
+    private fun String.toJobCategoryCode(): JobCategoryCode? = janzzService.getEscoForOccupation(this)
             .firstOrNull() // TODO Might consider something more refined than just picking the first result
             ?.let {
                 JobCategoryCode(

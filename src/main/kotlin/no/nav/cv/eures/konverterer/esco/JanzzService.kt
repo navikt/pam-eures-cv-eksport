@@ -30,18 +30,40 @@ class JanzzService(
     }
 
     enum class EscoLookup {
-        LOOKUP_CONCEPT,
-        LOOKUP_TERM
+        OCCUPATION,
+        COMPETENCE
     }
 
     private val log: Logger = LoggerFactory.getLogger(JanzzService::class.java)
     private val objectMapper = ObjectMapper().registerModule(KotlinModule())
 
-    fun getEscoForConceptTitle(conceptTitle: String): List<CachedEscoMapping> = getEsco(conceptTitle, EscoLookup.LOOKUP_CONCEPT)
+    fun getEscoForOccupation(conceptTitle: String): List<CachedEscoMapping> = getEsco(conceptTitle, EscoLookup.OCCUPATION)
 
-    fun getEscoForCompetence(term: String): List<CachedEscoMapping> = getEsco(term, EscoLookup.LOOKUP_TERM)
+    fun getEscoForCompetence(term: String): List<CachedEscoMapping> = getEsco(term, EscoLookup.COMPETENCE)
 
     fun getTermForEsco(escoCode: String): String? = janzzCacheRepository.getCacheForEsco(escoCode)
+
+    fun getEscoForTerm(term: String, escoLookup: EscoLookup) {
+        val cachedEsco = janzzCacheRepository.fetchFromCacheTerm(term)
+
+        log.info("Cache for $escoLookup $term contains ${cachedEsco.size} hits")
+
+        // TODO As soon as Janzz finishes updating all their ESCO codes to the new format,
+        // remove this check to be more future proof wrt url changes
+
+        // USING IT TO FILTER NEGATIVE CACHE HITS TOO
+
+        // 69 http://data.europa.eu/esco/skill/148fc290-6363-4b0a-90a6-fe2f998f2037
+        // 74 http://data.europa.eu/esco/occupation/303a1e34-cb16-4054-b323-81e5eec17397
+        //
+        return when {
+            cachedEsco.isNotEmpty() -> cachedEsco
+            else -> fetchAndSaveToCache(term, escoLookup)
+        }
+            .filter { it.esco.length == 69 || it.esco.length == 74 }
+            .also {log.info("Esco of type $lookup for $searchFor returned ${it.size} filtered hits")}
+
+    }
 
     private fun getEsco(searchFor: String, lookup: EscoLookup): List<CachedEscoMapping> {
         val cachedEsco = janzzCacheRepository.fetchFromCacheTerm(searchFor)
@@ -66,9 +88,9 @@ class JanzzService(
     }
 
 
-    private fun fetchAndSaveToCache(searchFor: String, lookup: EscoLookup): List<CachedEscoMapping> {
+    private fun fetchAndSaveToCache(term: String, escoLookup: EscoLookup): List<CachedEscoMapping> {
         val queryResult = when (lookup) {
-            EscoLookup.LOOKUP_CONCEPT -> queryJanzzConceptId(searchFor)
+            EscoLookup.LOOKUP_CONCEPT -> queryJanzzOccupation(searchFor)
             EscoLookup.LOOKUP_TERM -> queryJanzzTerm(searchFor)
         }
 
@@ -86,19 +108,19 @@ class JanzzService(
         return exactHits
     }
 
-    private fun queryJanzzConceptId(conceptTitle: String): List<CachedEscoMapping> {
+    private fun queryJanzzOccupation(term: String): List<CachedEscoMapping> {
         val authorization = "token $token"
 
         val startMillis = System.currentTimeMillis()
 
-        val json = client.lookupConceptTitle(
+        val json = client.lookUpOccupation(
                 authorization = authorization,
-                conceptTitle = conceptTitle)
+                conceptTitle = term)
 
         if (json == null || json.length < 3) {
-            log.error("Janzz query for concept $conceptTitle returned null or empty list")
+            log.error("Janzz query for concept $term returned null or empty list")
             return listOf(CachedEscoMapping(
-                    term = conceptTitle,
+                    term = term,
                     conceptId = "",
                     esco = "NO HIT",
                     updated = ZonedDateTime.now()))
@@ -109,7 +131,7 @@ class JanzzService(
 
         val concepts = objectMapper.readValue<Array<JanzzEscoConceptMapping>>(json)
 
-        log.info("Query for concept '$conceptTitle' yielded result $concepts in $spentMillis ms")
+        log.info("Query for concept '$term' yielded result $concepts in $spentMillis ms")
 
         val hits = concepts
             .flatMap { outer ->
@@ -127,7 +149,7 @@ class JanzzService(
 
         return hits.ifEmpty {
             listOf(CachedEscoMapping(
-                term = conceptTitle,
+                term = term,
                 conceptId = "",
                 esco = "NO HIT",
                 updated = ZonedDateTime.now()))

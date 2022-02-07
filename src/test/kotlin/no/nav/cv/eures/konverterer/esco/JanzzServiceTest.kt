@@ -3,10 +3,6 @@ package no.nav.cv.eures.konverterer.esco
 import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.boot.jdbc.EmbeddedDatabaseConnection
-import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase
-import org.springframework.boot.test.context.SpringBootTest
-import org.springframework.test.context.ActiveProfiles
 
 //@SpringBootTest
 //@ActiveProfiles("test")
@@ -25,7 +21,7 @@ internal class JanzzServiceTest {
         println(janzzService.getEscoForCompetence("NO HIT"))
         println(janzzService.getEscoForCompetence("NO HIT"))
 
-        println(janzzService.getEscoForConceptTitle("Førstestyrmann"))
-        println(janzzService.getEscoForConceptTitle("Førstestyrmann"))
+        println(janzzService.getEscoForOccupation("Førstestyrmann"))
+        println(janzzService.getEscoForOccupation("Førstestyrmann"))
     }
 }

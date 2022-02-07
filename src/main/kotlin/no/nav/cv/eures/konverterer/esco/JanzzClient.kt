@@ -43,7 +43,7 @@ class JanzzClient(
             .block()
     }
 
-    fun lookupConceptTitle(
+    fun lookUpOccupation(
         authorization: String,
         conceptTitle: String,
         lang: String = "no",

@@ -22,20 +22,29 @@ interface CvXmlRepository : JpaRepository<CvXml, Long> {
     @Query("SELECT COUNT(cv) FROM CvXml cv WHERE cv.slettet IS NOT NULL")
     fun fetchCountClosed(): Long
 
-    @Query("""
-    SELECT * FROM CV_XML
-                WHERE SLETTET IS NULL
-                AND EXISTS(
-                    SELECT * FROM SAMTYKKE 
-                    WHERE SAMTYKKE.FOEDSELSNUMMER = CV_XML.FOEDSELSNUMMER
-                )
-    """, nativeQuery = true)
+    @Query(value = """
+        SELECT * FROM CV_XML
+        WHERE SLETTET IS NULL
+        AND EXISTS(
+            SELECT * FROM SAMTYKKE 
+            WHERE SAMTYKKE.FOEDSELSNUMMER = CV_XML.FOEDSELSNUMMER
+        )
+        """,
+        countQuery = """
+        SELECT count(*) FROM CV_XML
+        WHERE SLETTET IS NULL
+        AND EXISTS(
+            SELECT * FROM SAMTYKKE 
+            WHERE SAMTYKKE.FOEDSELSNUMMER = CV_XML.FOEDSELSNUMMER
+        )
+        """,
+        nativeQuery = true)
     fun fetchAllActive(page: Pageable): Page<CvXml>
 
     @Query("""
     SELECT * FROM CV_XML
                 WHERE SLETTET IS NULL
-                AND FOEDSELSNUMMER IN (?1)
+                AND FOEDSELSNUMMER IN :foedselsnummer
                 AND EXISTS(
                     SELECT * FROM SAMTYKKE 
                     WHERE SAMTYKKE.FOEDSELSNUMMER = CV_XML.FOEDSELSNUMMER
@@ -43,10 +52,10 @@ interface CvXmlRepository : JpaRepository<CvXml, Long> {
                 """, nativeQuery = true)
     fun fetchAllActiveCvsByFoedselsnummer(foedselsnummer: List<String>): List<CvXml>
 
-    @Query("SELECT cv FROM CvXml cv WHERE cv.reference in ?1")
+    @Query("SELECT cv FROM CvXml cv WHERE cv.reference in :references")
     fun fetchAllCvsByReference(references: List<String>): List<CvXml>
 
-    @Query("SELECT cv FROM CvXml cv WHERE cv.sistEndret > ?1 or cv.slettet > ?1")
+    @Query("SELECT cv FROM CvXml cv WHERE cv.sistEndret > :time or cv.slettet > :time")
     fun fetchAllCvsAfterTimestamp(page: Pageable, time: ZonedDateTime): Page<CvXml>
 
 }
