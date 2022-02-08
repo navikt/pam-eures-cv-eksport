@@ -41,13 +41,15 @@ class JanzzService(
     fun getTermForEsco(escoCode: String): String? = janzzCacheRepository.getCacheForEsco(escoCode)
 
     fun getEscoForTerm(term: String, escoLookup: EscoLookupType): List<CachedEscoMapping> {
-        val cachedEsco = janzzCacheRepository.fetchFromCacheTerm(term)
+        val standardizedTerm = term.replace("\\(.*\\)".toRegex(), "").trim().toLowerCase()
+        val cachedEsco = janzzCacheRepository.fetchFromCacheTerm(standardizedTerm)
 
-        log.info("Cache for $escoLookup $term contains ${cachedEsco.size} hits")
+        val isNotEmpty = cachedEsco.isNotEmpty()
+        log.info("Cache for $escoLookup $standardizedTerm contains ${cachedEsco.size} hits and isNotEmpty: $isNotEmpty")
 
         return when {
-            cachedEsco.isNotEmpty() -> cachedEsco
-            else -> fetchAndSaveToCache(term, escoLookup)
+            isNotEmpty -> cachedEsco
+            else -> fetchAndSaveToCache(standardizedTerm, escoLookup)
         }
     }
 
