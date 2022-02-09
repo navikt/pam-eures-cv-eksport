@@ -10,6 +10,10 @@ class CandidateProfileConverter(
         private val profile: Jobbprofil?,
         private val samtykke: Samtykke
 ) {
+    companion object {
+        val xml10Pattern = Regex("[^"+ "\u0009\r\n"+ "\u0020-\uD7FF"+ "\uE000-\uFFFD"+ "\ud800\udc00-\udbff\udfff"+ "]")
+    }
+
     private val ikkeSamtykket = ""
 
     fun toXmlRepresentation()
