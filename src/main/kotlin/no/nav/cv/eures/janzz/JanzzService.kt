@@ -81,7 +81,15 @@ class JanzzService(
         }
 
         //exact match
-        val res = objectMapper.readValue<List<JanzzEscoLabelMapping>>(json).first()
+        val res = objectMapper.readValue<List<JanzzEscoLabelMapping>>(json).firstOrNull() ?: return listOf(
+            CachedEscoMapping(
+                term = term,
+                conceptId = "",
+                esco = "NO HIT",
+                updated = ZonedDateTime.now()
+            )
+        )
+
         val escoLinkLength = if (escoLookupType == EscoLookupType.SKILL) skillEscoLinkLength else occupationEscoLinkLength
 
         val hits = res.classifications.ESCO.filter { esco ->
