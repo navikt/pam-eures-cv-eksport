@@ -16,5 +16,5 @@ data class JanzzEscoLabelMapping (
 
 data class JanzzEscoMappingClassification(
         @JsonProperty("ESCO")
-        var ESCO: List<String>
+        var ESCO: Array<String>
 )
