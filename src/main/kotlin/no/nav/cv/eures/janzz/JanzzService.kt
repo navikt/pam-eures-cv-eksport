@@ -25,8 +25,9 @@ class JanzzService(
         fun instance() = instance
         private val log: Logger = LoggerFactory.getLogger(JanzzService::class.java)
         private val objectMapper = ObjectMapper().registerModule(KotlinModule())
-        private val skillEscoLinkLength = 69
-        private val occupationEscoLinkLength = 74
+        private val skillEscoSubstring = "/skill/"
+        private val occupationEscoSubstring = "/occupation/"
+        private val iscoSubstring = "/isco/"
     }
 
     override fun afterPropertiesSet() {
@@ -90,13 +91,18 @@ class JanzzService(
             )
         )
 
-        val escoLinkLength = if (escoLookupType == EscoLookupType.SKILL) skillEscoLinkLength else occupationEscoLinkLength
+        val escoSubstring = when(escoLookupType) {
+            EscoLookupType.SKILL -> skillEscoSubstring
+            EscoLookupType.OCCUPATION -> occupationEscoSubstring
+        }
 
-        val (esco, isco) = res.classifications.ESCO.partition { it.length == escoLinkLength }
+        val (esco, isco) = res.classifications.ESCO.partition { it.contains(escoSubstring, ignoreCase = true) }
 
         val hits = (esco.ifEmpty {
             log.info("Janzz query for term $term had no valid esco codes")
-            isco
+            isco.filter {
+                it.contains(iscoSubstring, ignoreCase = true)
+            }
         })
             .map {
                 CachedEscoMapping(
