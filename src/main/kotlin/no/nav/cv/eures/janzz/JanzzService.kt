@@ -92,19 +92,23 @@ class JanzzService(
 
         val escoLinkLength = if (escoLookupType == EscoLookupType.SKILL) skillEscoLinkLength else occupationEscoLinkLength
 
-        val hits = res.classifications.ESCO.filter { esco ->
-            esco.length == escoLinkLength
-        }.map { esco ->
-            CachedEscoMapping(
-                term = term,
-                conceptId = res.conceptId.toString(),
-                esco = esco,
-                updated = ZonedDateTime.now()
-            )
-        }
+        val (esco, isco) = res.classifications.ESCO.partition { it.length == escoLinkLength }
+
+        val hits = (esco.ifEmpty {
+            log.info("Janzz query for term $term had no valid esco codes")
+            isco
+        })
+            .map {
+                CachedEscoMapping(
+                    term = term,
+                    conceptId = res.conceptId.toString(),
+                    esco = it,
+                    updated = ZonedDateTime.now()
+                )
+            }
 
         return hits.ifEmpty {
-            log.info("Janzz query for term $term had no valid esco codes")
+            log.info("Janzz query for term $term had no valid isco codes")
             listOf(
                 CachedEscoMapping(
                     term = term,
