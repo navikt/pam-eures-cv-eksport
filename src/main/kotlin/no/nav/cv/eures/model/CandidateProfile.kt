@@ -4,6 +4,7 @@ import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty
 import no.nav.arbeid.cv.avro.Cv
 import no.nav.arbeid.cv.avro.Jobbprofil
 import no.nav.cv.eures.janzz.dto.CachedEscoMapping
+import no.nav.cv.eures.model.dto.ArbeidserfaringWithEscoDto
 import no.nav.cv.eures.samtykke.Samtykke
 
 // 4.11
@@ -17,15 +18,17 @@ data class CandidateProfile(
         val certifications: Certifications? = null,
         val personQualifications: PersonQualifications? = null
 ) {
-    constructor(cv: Cv, jobbProfil: Jobbprofil, samtykke: Samtykke, occupationEscoMapping: CachedEscoMapping): this(
+    constructor(
+        samtykke: Samtykke,
+        cv: Cv,
+        jobbProfil: Jobbprofil,
+        arbeidserfaringerWithEsco: List<ArbeidserfaringWithEscoDto>
+    ): this(
         executiveSummary = if(samtykke.sammendrag) cv.sammendrag else "",
         employmentHistory = if(samtykke.arbeidserfaring) {
             EmploymentHistory(
-                employerHistory = cv.arbeidserfaring.map {
-                    EmployerHistory(
-                        arbeidserfaring = it,
-                        occupationEscoMapping = occupationEscoMapping
-                    )
+                employerHistory = arbeidserfaringerWithEsco.map {
+                    EmployerHistory(it)
                 }
             )
         } else null,
