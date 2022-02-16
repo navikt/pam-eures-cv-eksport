@@ -50,6 +50,15 @@ data class CandidateProfile(
                 }
             )
         } else null,
-
+        certifications = Certifications(
+            listOf<Certification>().apply {  }
+            if(samtykke.offentligeGodkjenninger) {
+                cv.godkjenninger.mapNotNull {
+                    Certification(it)
+                }
+            } else {
+                listOf()
+            }
+        ).nullIfNoCerts()
     )
 }
