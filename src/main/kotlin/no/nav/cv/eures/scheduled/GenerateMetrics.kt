@@ -11,6 +11,7 @@ import no.nav.cv.eures.samtykke.SamtykkeRepository
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.context.annotation.Profile
+import org.springframework.scheduling.annotation.Scheduled
 import org.springframework.stereotype.Service
 import java.util.concurrent.atomic.AtomicLong
 
@@ -43,8 +44,7 @@ class GenerateMetrics(
         gauges[name] = meterRegistry.gauge(name, AtomicLong(value))
     }
 
-    // Disable metrics until these are fixed properly
-    // @Scheduled (fixedDelay = 1000 * 60 * 5)
+    @Scheduled(fixedDelay = 1000 * 60 * 5)
     fun count() {
         try {
             val count = samtykkeRepository.hentAntallSamtykker()
