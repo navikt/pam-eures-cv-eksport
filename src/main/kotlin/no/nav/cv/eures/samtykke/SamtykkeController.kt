@@ -20,9 +20,16 @@ class SamtykkeController(
     }
 
     @GetMapping(produces = ["application/json"])
-    fun hentSamtykke() = samtykkeService.hentSamtykke(extractFnr())
+    fun hentSamtykke(): ResponseEntity<Samtykke> {
+        val fnr = extractFnr()
+        log.info("fetching samtykke for $fnr")
+        return samtykkeService.hentSamtykke(fnr)
             ?.let{ ResponseEntity.ok(it) }
-            ?: ResponseEntity.notFound().build()
+            ?: run {
+                log.warn("no samtykke for $fnr")
+                ResponseEntity.notFound().build()
+            }
+    }
 
 
     @PostMapping(produces = ["application/json"])
@@ -50,7 +57,9 @@ class InnloggetBrukerService (
 ) {
 
     fun fodselsnummer(): String {
-        val fnr = contextHolder.tokenValidationContext.getClaims("selvbetjening").subject
+        val fnr = contextHolder.tokenValidationContext.getClaims("selvbetjening").let {
+            it.getStringClaim("pid") ?: it.subject
+        }
         if (fnr == null || fnr.trim { it <= ' ' }.isEmpty()) {
             throw IllegalStateException("Fant ikke FNR i token")
         }
