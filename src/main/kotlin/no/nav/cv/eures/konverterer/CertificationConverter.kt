@@ -90,7 +90,7 @@ class CertificationConverter(
         Certification(
                 certificationTypeCode = null, // TODO: Find out what certificationTypeCode should be
                 certificationName = it.tittel.replace(CandidateProfileConverter.xml10Pattern, ""),
-                issuingAuthortity = IssuingAuthority(it.utsteder),
+                issuingAuthortity = IssuingAuthority(it.utsteder.replace(CandidateProfileConverter.xml10Pattern, "")),
                 firstIssuedDate = it.tidspunkt?.toFormattedDateTime(),
                 freeFormEffectivePeriod = null
         )
