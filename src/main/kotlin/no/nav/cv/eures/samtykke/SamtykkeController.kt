@@ -22,11 +22,9 @@ class SamtykkeController(
     @GetMapping(produces = ["application/json"])
     fun hentSamtykke(): ResponseEntity<Samtykke> {
         val fnr = extractFnr()
-        log.info("fetching samtykke for $fnr")
         return samtykkeService.hentSamtykke(fnr)
             ?.let{ ResponseEntity.ok(it) }
             ?: run {
-                log.warn("no samtykke for $fnr")
                 ResponseEntity.notFound().build()
             }
     }
