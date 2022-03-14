@@ -102,6 +102,9 @@ data class CandidateProfile(
                     listOf()
                 }
             )
-        ).nullIfNoCerts()
+        ).nullIfNoCerts(),
+        personQualifications = PersonQualifications(
+            if(samtykke.)
+        )
     )
 }

@@ -15,7 +15,6 @@ data class PersonCompetency(
 
         @JacksonXmlElementWrapper(useWrapping = false)
         val competencyDimension: List<CompetencyDimension>? = null
-
 )
 
 data class  CompetencyDimension(
