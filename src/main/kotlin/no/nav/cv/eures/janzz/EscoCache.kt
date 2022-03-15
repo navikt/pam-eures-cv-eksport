@@ -10,7 +10,7 @@ import java.time.ZonedDateTime
 import javax.persistence.*
 
 
-interface JanzzCacheRepository {
+interface EscoCache {
     fun fetchFromCacheTerm(term: String): List<CachedEscoMapping>
     fun fetchFromCacheConceptId(conceptId: String): List<CachedEscoMapping>
     fun fetchFromCacheGreedy(term: String): List<CachedEscoMapping>
@@ -24,13 +24,13 @@ interface JanzzCacheRepository {
 }
 
 @Repository
-private class JpaJanzzCacheRepository(
+private class JpaEscoCache(
         @PersistenceContext private val entityManager: EntityManager
-) : JanzzCacheRepository {
+) : EscoCache {
     private val serieMedWhitespace = Regex("(\\s+)")
 
     companion object {
-        val log: Logger = LoggerFactory.getLogger(JanzzCacheRepository::class.java)
+        val log: Logger = LoggerFactory.getLogger(EscoCache::class.java)
     }
 
     private val fetchFromCacheTerm =

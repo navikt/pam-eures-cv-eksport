@@ -6,7 +6,7 @@ import com.fasterxml.jackson.module.kotlin.readValue
 import io.micrometer.core.instrument.MeterRegistry
 import no.nav.cv.eures.cv.CvRepository
 import no.nav.cv.eures.eures.EuresService
-import no.nav.cv.eures.janzz.JanzzCacheRepository
+import no.nav.cv.eures.janzz.EscoCache
 import no.nav.cv.eures.samtykke.SamtykkeRepository
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
@@ -22,7 +22,7 @@ class GenerateMetrics(
         private val samtykkeRepository: SamtykkeRepository,
         private val cvRepository: CvRepository,
         private val euresService: EuresService,
-        private val janzzCacheRepository: JanzzCacheRepository
+        private val escoCache: EscoCache
 ) {
     companion object {
         val log: Logger = LoggerFactory.getLogger(GenerateMetrics::class.java)
@@ -70,7 +70,7 @@ class GenerateMetrics(
             addOrUpdateGauge("cv.eures.eksport.antall.raw.total", countRaw)
             log.info("Metric:$countRaw RawCV-er er lagret i EURES databsen")
 
-            val countEscoCache = janzzCacheRepository.getCacheCount()
+            val countEscoCache = escoCache.getCacheCount()
             addOrUpdateGauge("cv.eures.eksport.antall.escoCache.total", countEscoCache)
             log.info("Metric: $countEscoCache linjer i ESCO cache")
 

@@ -1,7 +1,7 @@
 package no.nav.cv.eures.scheduled
 
 import no.nav.cv.eures.konverterer.CvConverterService
-import no.nav.cv.eures.janzz.JanzzCacheRepository
+import no.nav.cv.eures.janzz.EscoCache
 import no.nav.cv.eures.samtykke.SamtykkeRepository
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
@@ -12,7 +12,7 @@ import org.springframework.stereotype.Service
 class XmlUpdater (
         private val cvConverterService: CvConverterService,
         private val samtykkeRepository: SamtykkeRepository,
-        private val janzzCacheRepository: JanzzCacheRepository
+        private val escoCacheRepository: EscoCache
 ){
 
     private val log: Logger = LoggerFactory.getLogger(XmlUpdater::class.java)
@@ -20,7 +20,7 @@ class XmlUpdater (
     @Scheduled(cron = "0 0 2 * * *") // Reprocess all CVs at 02:00 in the night
     fun updateXmlCv() {
         log.info("Pruning ESCO JANZZ cache")
-        janzzCacheRepository.pruneCache()
+        escoCacheRepository.pruneCache()
 
         log.info("Reprocessing CVs to XML")
         val foedselsnumre = samtykkeRepository.finnFoedselsnumre()

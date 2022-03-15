@@ -15,7 +15,7 @@ import java.time.ZonedDateTime
 @Service
 class JanzzService(
     private val client: JanzzQuery,
-    private val janzzCacheRepository: JanzzCacheRepository,
+    private val escoCacheRepository: EscoCache,
 
     @Value("\${janzz.authorization.token}") private val token: String,
 ): InitializingBean {
@@ -39,11 +39,11 @@ class JanzzService(
         SKILL
     }
 
-    fun getTermForEsco(escoCode: String): String? = janzzCacheRepository.getCacheForEsco(escoCode)
+    fun getTermForEsco(escoCode: String): String? = escoCacheRepository.getCacheForEsco(escoCode)
 
     fun getEscoForTerm(term: String, escoLookup: EscoLookupType): List<CachedEscoMapping> {
         val standardizedTerm = term.trim().toLowerCase()
-        val cachedEsco = janzzCacheRepository.fetchFromCacheTerm(standardizedTerm)
+        val cachedEsco = escoCacheRepository.fetchFromCacheTerm(standardizedTerm)
 
         val isNotEmpty = cachedEsco.isNotEmpty()
         log.info("Cache for $escoLookup $standardizedTerm contains ${cachedEsco.size} hits and isNotEmpty: $isNotEmpty")
@@ -56,7 +56,7 @@ class JanzzService(
 
     private fun fetchAndSaveToCache(term: String, escoLookupType: EscoLookupType): List<CachedEscoMapping> {
         val queryResult = queryJanzzByTerm(term, escoLookupType)
-        janzzCacheRepository.saveToCache(queryResult)
+        escoCacheRepository.saveToCache(queryResult)
         log.info("Saved ${queryResult.size} results to cache for term $term")
 
         return queryResult
