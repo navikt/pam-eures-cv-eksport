@@ -7,15 +7,12 @@ import com.fasterxml.jackson.databind.PropertyNamingStrategy
 import com.fasterxml.jackson.databind.SerializationFeature
 import com.fasterxml.jackson.databind.SerializerProvider
 import com.fasterxml.jackson.databind.module.SimpleModule
-import com.fasterxml.jackson.databind.ser.std.StdJdkSerializers
 import com.fasterxml.jackson.databind.ser.std.StringSerializer
 import com.fasterxml.jackson.dataformat.xml.XmlMapper
 import com.fasterxml.jackson.dataformat.xml.ser.ToXmlGenerator
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
 import com.fasterxml.jackson.module.kotlin.registerKotlinModule
 import no.nav.cv.eures.model.Candidate
-import no.nav.cv.eures.util.ForgivingWstxOutoputFactory
-import java.io.File
 
 object XmlSerializer {
     private val stringSerializer = StringSerializer()
