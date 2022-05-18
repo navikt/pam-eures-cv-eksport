@@ -107,6 +107,12 @@ compileTestKotlin {
 	}
 }
 
+jar {
+  from ('./src/main/resources') {
+    include 'META-INF/services/javax.xml.stream.XMLOutputFactory'
+  }
+}
+
 tasks.withType(JavaExec) {
     classpath += test.classpath
     jvmArgs('-noverify', '-XX:TieredStopAtLevel=1', '-Dcom.sun.management.jmxremote')
