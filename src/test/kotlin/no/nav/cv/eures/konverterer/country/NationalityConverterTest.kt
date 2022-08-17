@@ -11,7 +11,7 @@ class NationalityConverterTest {
         extractedFromDatabase10Nov2020.forEach { record ->
             val iso = NationalityConverter.getIsoCode(record)
 
-            assertNotNull(iso)
+            assertNotNull(iso, record)
         }
     }
 
@@ -354,5 +354,6 @@ class NationalityConverterTest {
         "ZW",
         "Zambia",
         "Zimbabwe",
-        "Østerrike")
+        "Østerrike"
+    )
 }
