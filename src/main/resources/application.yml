@@ -9,6 +9,32 @@ no.nav.security.jwt:
       discoveryurl: ${LOGINSERVICE_IDPORTEN_DISCOVERY_URL:http://metadata}
       accepted_audience: ${LOGINSERVICE_IDPORTEN_AUDIENCE:aud-localhost}
       cookie_name: selvbetjening-idtoken
+  client:
+    registration:
+      samtykke:
+        token-endpoint-url: ${AZURE_OPENID_CONFIG_TOKEN_ENDPOINT:http://localhost:8080/default/token}
+        grant-type: client_credentials
+        scope: ${SAMTYKKE_SCOPE:some_scope}
+        authentication:
+          client-id: ${AZURE_APP_CLIENT_ID:dummy}
+          client-secret: ${AZURE_APP_CLIENT_SECRET:dummy}
+          client-auth-method: client_secret_basic
+      personoppslag:
+        token-endpoint-url: ${AZURE_OPENID_CONFIG_TOKEN_ENDPOINT:http://localhost:8080/default/token}
+        grant-type: client_credentials
+        scope: ${PERSONOPPSLAG_SCOPE:some_scope}
+        authentication:
+          client-id: ${AZURE_APP_CLIENT_ID:dummy}
+          client-secret: ${AZURE_APP_CLIENT_SECRET:dummy}
+          client-auth-method: client_secret_basic
+      pdl:
+        token-endpoint-url: ${AZURE_OPENID_CONFIG_TOKEN_ENDPOINT:http://localhost:8080/default/token}
+        grant-type: client_credentials
+        scope: ${PDL_SCOPE:some_scope}
+        authentication:
+          client-id: ${AZURE_APP_CLIENT_ID:dummy}
+          client-secret: ${AZURE_APP_CLIENT_SECRET:dummy}
+          client-auth-method: client_secret_basic
 
 spring:
   kafka:

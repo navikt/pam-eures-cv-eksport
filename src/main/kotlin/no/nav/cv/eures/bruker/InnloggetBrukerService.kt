@@ -1,0 +1,20 @@
+package no.nav.cv.eures.bruker
+
+import no.nav.security.token.support.core.context.TokenValidationContextHolder
+import org.springframework.stereotype.Component
+
+@Component
+class InnloggetBrukerService (
+    private val contextHolder: TokenValidationContextHolder
+) {
+
+    fun fodselsnummer(): String {
+        val fnr = contextHolder.tokenValidationContext.getClaims("selvbetjening").let {
+            it.getStringClaim("pid") ?: it.subject
+        }
+        if (fnr == null || fnr.trim { it <= ' ' }.isEmpty()) {
+            throw IllegalStateException("Fant ikke FNR i token")
+        }
+        return fnr
+    }
+}
