@@ -7,7 +7,8 @@ on:
       - "LICENCE"
       - "CODEOWNERS"
     branches:
-      - master
+      - kunEUCVTilEures
+
 jobs:
   call-workflow:
     uses: navikt/pam-deploy/.github/workflows/deploy-dev.yml@v2
