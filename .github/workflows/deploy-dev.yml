@@ -7,6 +7,7 @@ on:
       - "LICENCE"
       - "CODEOWNERS"
     branches:
+      - master
       - kunEUCVTilEures
 
 jobs:
