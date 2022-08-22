@@ -1,14 +1,14 @@
 package no.nav.cv.eures.bruker
 
 import no.nav.security.token.support.core.context.TokenValidationContextHolder
-import org.springframework.stereotype.Component
+import org.springframework.stereotype.Service
 
-@Component
+@Service
 class InnloggetBrukerService (
     private val contextHolder: TokenValidationContextHolder
-) {
+) : InnloggetBruker {
 
-    fun fodselsnummer(): String {
+    override fun fodselsnummer(): String {
         val fnr = contextHolder.tokenValidationContext.getClaims("selvbetjening").let {
             it.getStringClaim("pid") ?: it.subject
         }

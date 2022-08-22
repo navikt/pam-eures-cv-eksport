@@ -1,7 +1,9 @@
 package no.nav.cv.eures.pdl
 
+import no.nav.cv.eures.bruker.InnloggetBruker
 import no.nav.cv.eures.bruker.InnloggetBrukerService
 import no.nav.cv.eures.samtykke.Samtykke
+import no.nav.security.token.support.core.api.ProtectedWithClaims
 import no.nav.security.token.support.core.api.Unprotected
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
@@ -11,10 +13,9 @@ import org.springframework.web.bind.annotation.*
 
 @RestController
 @RequestMapping("pdl")
-//@ProtectedWithClaims(issuer = "selvbetjening")
-@Unprotected
+@ProtectedWithClaims(issuer = "selvbetjening")
 class PdlController (
-    private val innloggetbrukerService: InnloggetBrukerService,
+    private val innloggetBrukerService: InnloggetBruker,
     private val pdlPersonGateway: PdlPersonGateway
 ) {
     companion object {
@@ -22,11 +23,14 @@ class PdlController (
     }
 
     @GetMapping(produces = ["application/json"])
-    fun getErEUEOSStatsborgerskap(): ResponseEntity<Boolean> {
-        val fnr = innloggetbrukerService.fodselsnummer()
-        return ResponseEntity.ok(pdlPersonGateway.erEUEOSstatsborger(fnr))
+    fun getErEUEOSStatsborgerskap(): ResponseEntity<EUEOSstatsborgerskap> {
+        val fnr = innloggetBrukerService.fodselsnummer()
+        return ResponseEntity.ok(EUEOSstatsborgerskap(erEUEOSborger = pdlPersonGateway.erEUEOSstatsborger(fnr) ?: false))
     }
 }
 
+data class EUEOSstatsborgerskap(
+    val erEUEOSborger: Boolean
+)
 
 
