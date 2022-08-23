@@ -25,7 +25,9 @@ class PdlController (
     @GetMapping(produces = ["application/json"])
     fun getErEUEOSStatsborgerskap(): ResponseEntity<EUEOSstatsborgerskap> {
         val fnr = innloggetBrukerService.fodselsnummer()
-        return ResponseEntity.ok(EUEOSstatsborgerskap(erEUEOSborger = pdlPersonGateway.erEUEOSstatsborger(fnr) ?: false))
+        val erEUEOSstatsborger = EUEOSstatsborgerskap(erEUEOSborger = pdlPersonGateway.erEUEOSstatsborger(fnr) ?: false)
+        log.info("Person er statsborger i EU/EØS: $erEUEOSstatsborger")
+        return ResponseEntity.ok(erEUEOSstatsborger)
     }
 }
 
