@@ -47,7 +47,7 @@ class PdlControllerTest {
     @Test
     fun `call returns euEos statsborgerskap true when service returns true` () {
         Mockito.`when`(innloggetBrukerService?.fodselsnummer())
-            .thenReturn("111111111");
+            .thenReturn("111111111")
         Mockito.`when`(pdlPersonGateway?.erEUEOSstatsborger(anyString()))
             .thenReturn(true)
         mockMvc.perform(MockMvcRequestBuilders.get("/pdl")
@@ -62,7 +62,7 @@ class PdlControllerTest {
     @Test
     fun `call returns euEos statsborgerskap false when service returns false` () {
         Mockito.`when`(innloggetBrukerService?.fodselsnummer())
-            .thenReturn("111111111");
+            .thenReturn("111111111")
         Mockito.`when`(pdlPersonGateway?.erEUEOSstatsborger(anyString()))
             .thenReturn(false)
         mockMvc.perform(MockMvcRequestBuilders.get("/pdl")
