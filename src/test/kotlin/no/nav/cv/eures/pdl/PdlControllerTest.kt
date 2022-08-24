@@ -79,17 +79,4 @@ class PdlControllerTest {
         headers.setBearerAuth(token)
         return headers
     }
-
-
-    /*
-        @Test
-    fun `call to fetch changes` () {
-        mockMvc.perform(
-             MockMvcRequestBuilders.get("/input/api/cv/v1.0/getChanges/1607963578952")
-                     .headers(headerWithToken(VALID_TEST_TOKEN_BASE64))
-        ).andExpect(
-            MockMvcResultMatchers.status().isOk
-        )
-    }
-     */
 }

@@ -31,13 +31,13 @@ class PdlPersonService(
         val statsborgerskap = hentPersondataFraPdl(
             ident = ident,
             query = PdlHentStatsborgerskapQuery(ident = ident)
-        )?.toStatsborgerskap();
+        )?.toStatsborgerskap()
 
         return statsborgerskap?.any { getEuresApprovedCountries().contains(it.land)
-                && (it.gyldigTilOgMed?.let{ LocalDate.parse(it).isAfter(LocalDate.now()) } ?: true)}
+                && it.gyldigTilOgMed?.let{ LocalDate.parse(it).isAfter(LocalDate.now()) } ?: true}
     }
 
-    fun getEuresApprovedCountries(): List<String> {
+    private fun getEuresApprovedCountries(): List<String> {
         return EuresCountries.values().map { it.toString() }
     }
 

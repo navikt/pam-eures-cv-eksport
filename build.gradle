@@ -84,6 +84,7 @@ dependencies {
     testImplementation 'org.mockito:mockito-core:3.5.13'
     testImplementation "no.nav.security:token-validation-test-support:${tokenSupportVersion}"
     testImplementation "com.nhaarman.mockitokotlin2:mockito-kotlin:2.2.0"
+    testImplementation "org.powermock:powermock-api-mockito2:2.0.9"
 
 }
 
