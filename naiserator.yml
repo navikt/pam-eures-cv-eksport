@@ -68,8 +68,10 @@ spec:
       value: SASL_SSL
     - name: AVRO_VERSION_FIFTYTWO_HEX
       value: {{ avro_version_fiftytwo_hex }}
-    - name: AZUREAD_SCOPE_PDL
-      value: {{ azuread_scope_pdl }}
+    - name: PDL_SCOPE
+      value: {{ pdl_scope }}
+    - name: PDL_BASE_URL
+      value: {{ pdl_base_url }}
   ingresses:
   {{#each ingress as |url|}}
      - {{url}}
