@@ -13,7 +13,6 @@ abstract class PdlQueryMultiple {
 
 const val PDL_STATSBORGERSKAP_QUERY = """
     query(${"$"}ident: ID!) {
-      ident
       hentPerson(ident: ${"$"}ident) {
         statsborgerskap {
           land
