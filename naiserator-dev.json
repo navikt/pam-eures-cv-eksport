@@ -6,6 +6,6 @@
   "ingress":  ["https://arbeidsplassen.dev.nav.no/pam-eures-cv-eksport", "https://pam-eures-cv-eksport.dev-gcp.nais.io/pam-eures-cv-eksport"],
   "avro_version_fiftytwo_hex": "NoInt0000031f",
   "azure_ad_tenant": "trygdeetaten.no",
-  "pdl_base_url": "https://pdl-api.intern.nav.no",
+  "pdl_base_url": "https://pdl-api.dev.intern.nav.no",
   "pdl_scope": "api://dev-fss.pdl.pdl-api/.default"
 }
