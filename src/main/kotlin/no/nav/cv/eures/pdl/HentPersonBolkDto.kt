@@ -1,14 +1,15 @@
 package no.nav.cv.eures.pdl
 
-data class HentPersonDto(
-    val data: HentPersonData? = null,
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties
+
+@JsonIgnoreProperties(ignoreUnknown = true)
+data class HentPersonBolkDto(
+    val data: HentPersonBolk? = null,
     val errors: List<PdlError>? = null
 ) {
+    val personer get() = data?.hentPersonBolk
 
-    val person get() = data?.hentPerson
-    val ident get() = data?.ident
-
-
+    @JsonIgnoreProperties(ignoreUnknown = true)
     data class PdlError(
         var message: String? = null,
         var locations: List<Map<String, Int>>? = listOf(),
@@ -16,23 +17,27 @@ data class HentPersonDto(
         var extensions: Map<String, String>? = mapOf()
     )
 
+    @JsonIgnoreProperties(ignoreUnknown = true)
+    data class HentPersonBolk(
+        val hentPersonBolk: List<HentPersonData>? = listOf()
+    )
+
+    @JsonIgnoreProperties(ignoreUnknown = true)
     data class HentPersonData(
         val ident: String? = null,
-        val hentPerson: Person? = null
+        val person: Person? = null
     ) {
+        @JsonIgnoreProperties(ignoreUnknown = true)
         data class Person(
             val statsborgerskap: List<Statsborgerskap>? = listOf()
         ) {
+            @JsonIgnoreProperties(ignoreUnknown = true)
             data class Statsborgerskap(
                 val land: String?,
                 val gyldigFraOgMed: String?,
                 val gyldigTilOgMed: String?
             )
         }
-    }
-
-    fun toStatsborgerskap(): List<HentPersonData.Person.Statsborgerskap>? {
-        return data?.hentPerson?.statsborgerskap;
     }
 }
 

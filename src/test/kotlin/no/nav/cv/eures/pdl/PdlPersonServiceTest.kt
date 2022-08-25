@@ -33,7 +33,7 @@ class PdlPersonServiceTest {
 
     @Test
     fun `call erEUEOSborger returns true when has statsborgerskap NOR`() {
-    val dto = HentPersonDto(HentPersonDto.HentPersonData(HentPersonDto.HentPersonData.Person(listOf(
+    val dto = HentPersonDto(HentPersonDto.HentPersonData("", HentPersonDto.HentPersonData.Person(listOf(
         HentPersonDto.HentPersonData.Person.Statsborgerskap(
             "NOR",
             null,
@@ -47,7 +47,7 @@ class PdlPersonServiceTest {
 
     @Test
     fun `call erEUEOSborger returns false when has statsborgerskap utenfor Eureslisten over godkjente land`() {
-        val dto = HentPersonDto(HentPersonDto.HentPersonData(HentPersonDto.HentPersonData.Person(listOf(
+        val dto = HentPersonDto(HentPersonDto.HentPersonData("", HentPersonDto.HentPersonData.Person(listOf(
             HentPersonDto.HentPersonData.Person.Statsborgerskap(
                 "AFG",
                 null,
@@ -61,7 +61,7 @@ class PdlPersonServiceTest {
 
     @Test
     fun `call erEUEOSborger returns false when godkjent land har til og med dato som er passert`() {
-        val dto = HentPersonDto(HentPersonDto.HentPersonData(HentPersonDto.HentPersonData.Person(listOf(
+        val dto = HentPersonDto(HentPersonDto.HentPersonData("", HentPersonDto.HentPersonData.Person(listOf(
             HentPersonDto.HentPersonData.Person.Statsborgerskap(
                 "NOR",
                 null,
@@ -75,7 +75,7 @@ class PdlPersonServiceTest {
 
     @Test
     fun `call erEUEOSborger returns true ved flere statsborgerskap, men kun ett er gyldig`() {
-        val dto = HentPersonDto(HentPersonDto.HentPersonData(HentPersonDto.HentPersonData.Person(listOf(
+        val dto = HentPersonDto(HentPersonDto.HentPersonData("", HentPersonDto.HentPersonData.Person(listOf(
             HentPersonDto.HentPersonData.Person.Statsborgerskap(
                 "NOR",
                 null,

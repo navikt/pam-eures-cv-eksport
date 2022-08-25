@@ -1,5 +1,6 @@
 package no.nav.cv.eures.pdl
 
+import com.fasterxml.jackson.core.type.TypeReference
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import org.slf4j.LoggerFactory
@@ -35,6 +36,15 @@ class PdlPersonService(
 
         return statsborgerskap?.any { getEuresApprovedCountries().contains(it.land)
                 && it.gyldigTilOgMed?.let{ LocalDate.parse(it).isAfter(LocalDate.now()) } ?: true}
+    }
+
+    override fun getIdenterUtenforEUSomHarSamtykket(identer: List<String>) : List<String>? {
+        val samtykkeBrukere = hentStatsborgerskapForFlereFraPdl(
+            identer = identer,
+            query = PdlHentStatsborgerskapListeQuery(identer = identer))
+
+        val identerUtenforEU = samtykkeBrukere?.personer?.filter{bruker-> bruker.person?.statsborgerskap?.any{borgerskap -> getEuresApprovedCountries().contains(borgerskap.land)}?: false}
+        return identerUtenforEU?.filter{it.ident != null}?.map{it.ident!!}
     }
 
     private fun getEuresApprovedCountries(): List<String> {
@@ -89,8 +99,46 @@ class PdlPersonService(
         }
     }
 
+    fun hentStatsborgerskapForFlereFraPdl(
+        identer: List<String>,
+        query: PdlQueryMultiple = PdlHentStatsborgerskapListeQuery(identer = identer)
+    ): HentPersonBolkDto? {
+        try {
+            log.info("Henter persondata fra PDL")
+
+            val (responseCode, responseBody) = with(URL(url).openConnection() as HttpURLConnection) {
+                requestMethod = "POST"
+                connectTimeout = 10000
+                readTimeout = 10000
+                doOutput = true
+
+                setRequestProperty("Authorization", "Bearer ${tokenProvider.get()}")
+                setRequestProperty(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
+                setRequestProperty("Tema", "REK")
+
+                outputStream.writer(Charsets.UTF_8).apply {
+                    write(objectMapper.writeValueAsString(query))
+                    flush()
+                }
+
+                val stream: InputStream? = if (responseCode < 300) this.inputStream else this.errorStream
+                responseCode to stream?.use { s -> s.bufferedReader().readText() }
+            }
+            // Vi må kunne skille på Not Found og feil. Hva returneres hvis personen ikke er i KRR?
+            if (responseCode >= 300 || responseBody == null) {
+                log.error("Fikk feil fra pdl: $responseBody")
+                throw RuntimeException("unknown error (responseCode=$responseCode) from pdl")
+            }
+
+            return objectMapper.readValue(responseBody, HentPersonBolkDto::class.java)
+        } catch (ex: Exception) {
+            log.error("Kall til PDL feilet", ex)
+            return null
+        }
+    }
+
     enum class EuresCountries {
         AUT, BEL, BGR, HRV, CYP, CZE, DNK, EST, FIN, FRA, DEU, GRC, HUN, IRL, ITA, LVA, LTU, LUX, MLT, NLD, POL, PRT, ROU, SVK, SVN, ESP, SWE,
-        GBR, CHE, LIE, NOR, ISL;
+        CHE, LIE, NOR, ISL;
     }
 }

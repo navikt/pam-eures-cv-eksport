@@ -33,5 +33,9 @@ class EuresController(
     fun getDetails(@RequestBody references: List<String>) =
         euresService.getDetails(references)
 
+    @GetMapping("getIdenterUtenforEUSomHarSamtykket")
+    fun getIdenterUtenforEUSomHarSamtykket() =
+        euresService.getAntallIdenterUtenforEUSomHarSamtykket()
+
 
 }

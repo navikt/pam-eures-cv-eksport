@@ -5,6 +5,8 @@ import no.nav.cv.eures.cv.CvXml
 import no.nav.cv.eures.cv.CvXmlRepository
 import no.nav.cv.eures.eures.dto.GetDetails.CandidateDetail.Status.ACTIVE
 import no.nav.cv.eures.eures.dto.GetDetails.CandidateDetail.Status.CLOSED
+import no.nav.cv.eures.pdl.PdlPersonGateway
+import no.nav.cv.eures.samtykke.SamtykkeRepository
 import no.nav.security.token.support.test.spring.TokenGeneratorConfiguration
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertTrue
@@ -34,6 +36,11 @@ class EuresServiceIntegrationTest {
     @Autowired
     lateinit var cvXmlRepository: CvXmlRepository
 
+    @Autowired
+    lateinit var samtykkeRepository: SamtykkeRepository
+    @Autowired
+    lateinit var personGateway: PdlPersonGateway
+
     private var oneDayAgo = ZonedDateTime.now().minusDays(1)
 
     private fun testData() = listOf(
@@ -46,7 +53,7 @@ class EuresServiceIntegrationTest {
 
     @BeforeEach
     fun setUp() {
-        euresService = EuresService(cvXmlRepository)
+        euresService = EuresService(cvXmlRepository,samtykkeRepository,personGateway)
         //testData().forEach { cvXmlRepository.save(it) }
     }
 

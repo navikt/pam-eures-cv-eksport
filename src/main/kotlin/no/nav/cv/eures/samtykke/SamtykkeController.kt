@@ -1,5 +1,6 @@
 package no.nav.cv.eures.samtykke
 
+import no.nav.cv.eures.bruker.InnloggetBruker
 import no.nav.cv.eures.bruker.InnloggetBrukerService
 import no.nav.cv.eures.pdl.PdlPersonGateway
 import no.nav.security.token.support.core.api.ProtectedWithClaims
@@ -14,7 +15,7 @@ import org.springframework.web.bind.annotation.*
 @ProtectedWithClaims(issuer = "selvbetjening")
 class SamtykkeController(
     private val samtykkeService: SamtykkeService,
-    private val innloggetbrukerService: InnloggetBrukerService,
+    private val innloggetbrukerService: InnloggetBruker,
     private val pdlPersonGateway: PdlPersonGateway
 ) {
     companion object {

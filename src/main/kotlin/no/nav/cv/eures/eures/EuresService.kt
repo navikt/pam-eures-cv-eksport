@@ -10,6 +10,8 @@ import no.nav.cv.eures.eures.dto.GetDetails
 import no.nav.cv.eures.eures.dto.GetDetails.CandidateDetail
 import no.nav.cv.eures.eures.dto.GetDetails.CandidateDetail.Status.ACTIVE
 import no.nav.cv.eures.eures.dto.GetDetails.CandidateDetail.Status.CLOSED
+import no.nav.cv.eures.pdl.PdlPersonGateway
+import no.nav.cv.eures.samtykke.SamtykkeRepository
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.data.domain.PageRequest
@@ -20,7 +22,9 @@ import java.time.ZonedDateTime
 
 @Component
 class EuresService(
-    private val cvXmlRepository: CvXmlRepository
+    private val cvXmlRepository: CvXmlRepository,
+    private val samtykkeRepository: SamtykkeRepository,
+    private val personGateway: PdlPersonGateway
 ) {
 
     companion object {
@@ -120,4 +124,12 @@ class EuresService(
 
             return@let GetDetails(map)
         }
+
+    fun getAntallIdenterUtenforEUSomHarSamtykket() : Int {
+        val identer = samtykkeRepository.finnFoedselsnumre()
+
+        val resultat = personGateway.getIdenterUtenforEUSomHarSamtykket(identer)
+
+        return resultat?.size ?: error("Det har skjedd en feil :( ")
+    }
 }
