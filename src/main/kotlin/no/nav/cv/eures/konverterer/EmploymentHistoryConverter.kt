@@ -23,7 +23,7 @@ class EmploymentHistoryConverter(
         EmployerHistory(
                 organizationName = it?.arbeidsgiver ?: "",
                 employmentPeriod = AttendancePeriod(
-                        it.fraTidspunkt.toFormattedDateTime(),
+                        it.fraTidspunkt?.toFormattedDateTime() ?: DateText("Unknown"),
                         it.tilTidspunkt?.toFormattedDateTime()
                 ),
                 positionHistory = it.toPositionHistory())
@@ -33,7 +33,7 @@ class EmploymentHistoryConverter(
     fun Arbeidserfaring.toPositionHistory() = listOf(PositionHistory(
             positionTitle = stillingstittel ?: stillingstittelFritekst, // TODO Skal dette være friktekstfeltet?
             employmentPeriod = AttendancePeriod(
-                    fraTidspunkt.toFormattedDateTime(),
+                    fraTidspunkt?.toFormattedDateTime() ?: DateText("Unknown"),
                     tilTidspunkt?.toFormattedDateTime()
             ),
             jobCategoryCode = stillingstittel?.toJobCategoryCode()
