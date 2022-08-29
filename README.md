@@ -1,4 +1,4 @@
-## Hva er pam-eures-cv-eksport? 
+## Beskrivelse 
 `pam-eures-cv-eksport` er et API som tilrettelegger for innhenting av CV-data fra [EURES](https://ec.europa.eu/eures/public/homepage). Den tar seg av lagring av samtykke for deling av CV-data med EURES (gjennom [pam-personbruker](https://github.com/navikt/pam-personbruker)), samt konvertering av dataene til riktig format. 
 
 ## For å kjøre appen lokalt
@@ -52,3 +52,6 @@ aktør til en fil ved navn cv_UUID.xml
 ## XML Validator
 https://webgate.acceptance.ec.europa.eu/eures/eures-tools/debug-tool/page/main#/validator-tool
 (Brukernavn og passord i vault for team-pam)
+
+## Avhengigheter
+  - Kafka topic: arbeid-pam-cv-endret-v6
