@@ -22,7 +22,7 @@ internal class EmploymentHistoryConverterTest {
     @Test
     fun `Arbeidserfaring med startdato null mappes til DateText unknown`() {
         val arbeidserfaringer = listOf(
-            Arbeidserfaring(null, "Kul kokk med sluttdato", null, null, "NAV-Kantina", LocalDate.now(), null, null, null, true),
+            Arbeidserfaring(null, "Kul kokk med sluttdato", null, null, "NAV-Kantina", LocalDate.of(2022, 8, 26), null, null, null, true),
             Arbeidserfaring(null, "Kul kokk uten sluttdato", null, null, "NAV-Kantina", null, null, null, null, true)
         )
 
