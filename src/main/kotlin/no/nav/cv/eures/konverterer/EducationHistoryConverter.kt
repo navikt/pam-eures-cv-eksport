@@ -25,7 +25,7 @@ class EducationHistoryConverter(
             organizationName = it.laerested,
             programName = "${it.utdanningsretning} - ${it.beskrivelse}",
             attendancePeriod = AttendancePeriod(
-                    it.fraTidspunkt?.toFormattedDateTime(),
+                    it.fraTidspunkt?.toFormattedDateTime() ?: DateText("Unknown"),
                     it.tilTidspunkt?.toFormattedDateTime()),
             educationLevelCode = EducationLevelCode(code = it.nuskodeGrad.toEducationLevelCode()),
             educationDegree = educationDegree(it.nuskodeGrad.toEducationLevelCode())
