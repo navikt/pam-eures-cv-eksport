@@ -28,7 +28,7 @@ class PdlPersonServiceTest {
 
     @Test
     fun `call get null statsborgerskap when call to pdl fails`() {
-        assertEquals("Skal få null når kall feiler mot PDL",null, pdlPersonGateway.erEUEOSstatsborger("1111111"));
+        assertEquals("Skal få null når kall feiler mot PDL",null, pdlPersonGateway.erEUEOSstatsborger("1111111"))
     }
 
     @Test

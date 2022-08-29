@@ -1,19 +1,13 @@
 package no.nav.cv.eures.eures
 
-import com.nhaarman.mockitokotlin2.eq
 import no.nav.cv.eures.cv.CvXml
 import no.nav.cv.eures.cv.CvXmlRepository
-import no.nav.cv.eures.eures.dto.GetDetails.CandidateDetail.Status.ACTIVE
-import no.nav.cv.eures.eures.dto.GetDetails.CandidateDetail.Status.CLOSED
 import no.nav.cv.eures.pdl.PdlPersonGateway
 import no.nav.cv.eures.samtykke.SamtykkeRepository
 import no.nav.security.token.support.test.spring.TokenGeneratorConfiguration
 import org.junit.jupiter.api.Assertions.assertEquals
-import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
-import org.junit.jupiter.api.assertAll
-import org.mockito.Mockito
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.jdbc.EmbeddedDatabaseConnection
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase
