@@ -1,7 +1,6 @@
 package no.nav.cv.eures.samtykke
 
 import no.nav.cv.eures.bruker.InnloggetBruker
-import no.nav.cv.eures.bruker.InnloggetBrukerService
 import no.nav.cv.eures.pdl.PdlPersonGateway
 import no.nav.security.token.support.core.api.ProtectedWithClaims
 import org.slf4j.Logger

@@ -34,7 +34,7 @@ class PdlControllerTest {
 
 
     @Test
-    fun `call to fetch details` () {
+    fun `call returns no statsborgerskap when statsborgerskap result is null` () {
         mockMvc.perform(MockMvcRequestBuilders.get("/pdl")
             .headers(headerWithToken(token))
         ).andExpect(

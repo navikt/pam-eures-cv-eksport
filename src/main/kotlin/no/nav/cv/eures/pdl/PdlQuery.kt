@@ -54,7 +54,6 @@ data class PdlHentStatsborgerskapQuery(
 ) : PdlQueryMultiple() {
 
     constructor(identer: List<String>) : this(
-        //variables = mapOf("identer" to "[${identer.map{"\"${it}\""}.joinToString ( "," )}]")
         variables = mapOf("identer" to identer)
     )
 

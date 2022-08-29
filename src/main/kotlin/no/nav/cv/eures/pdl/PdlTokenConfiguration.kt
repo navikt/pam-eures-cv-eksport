@@ -8,7 +8,6 @@ import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import java.util.function.Supplier
 
-// Token Supplier
 @Configuration
 @EnableOAuth2Client(cacheEnabled = true)
 open class PdlTokenConfiguration {

@@ -90,4 +90,12 @@ class PdlPersonServiceTest {
 
         assertEquals("Ett gyldig statsborger av flere skal gi true", true, pdlPersonGateway.erEUEOSstatsborger("11"))
     }
+
+    @Test
+    fun `call erEUEOSborger returns false ved ingen statsborgerskap`() {
+        val dto = HentPersonDto(HentPersonDto.HentPersonData("", HentPersonDto.HentPersonData.Person()))
+        doReturn(dto).whenever(pdlPersonGateway).hentPersondataFraPdl(com.nhaarman.mockitokotlin2.any(), com.nhaarman.mockitokotlin2.any())
+
+        assertEquals("Ingen statsborgerskap skal gi false", false, pdlPersonGateway.erEUEOSstatsborger("11"))
+    }
 }

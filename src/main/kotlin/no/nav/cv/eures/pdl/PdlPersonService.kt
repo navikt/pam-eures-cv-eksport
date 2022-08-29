@@ -1,6 +1,5 @@
 package no.nav.cv.eures.pdl
 
-import com.fasterxml.jackson.core.type.TypeReference
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import org.slf4j.LoggerFactory
@@ -76,7 +75,6 @@ class PdlPersonService(
                 val stream: InputStream? = if (responseCode < 300) this.inputStream else this.errorStream
                 responseCode to stream?.use { s -> s.bufferedReader().readText() }
             }
-            // Vi må kunne skille på Not Found og feil. Hva returneres hvis personen ikke er i KRR?
             if (responseCode >= 300 || responseBody == null) {
                 log.error("Fikk feil fra pdl: $responseBody")
                 throw RuntimeException("unknown error (responseCode=$responseCode) from pdl")
@@ -124,7 +122,6 @@ class PdlPersonService(
                 val stream: InputStream? = if (responseCode < 300) this.inputStream else this.errorStream
                 responseCode to stream?.use { s -> s.bufferedReader().readText() }
             }
-            // Vi må kunne skille på Not Found og feil. Hva returneres hvis personen ikke er i KRR?
             if (responseCode >= 300 || responseBody == null) {
                 log.error("Fikk feil fra pdl: $responseBody")
                 throw RuntimeException("unknown error (responseCode=$responseCode) from pdl")
