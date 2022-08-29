@@ -8,7 +8,6 @@ data class HentPersonDto(
     val person get() = data?.hentPerson
     val ident get() = data?.ident
 
-
     data class PdlError(
         var message: String? = null,
         var locations: List<Map<String, Int>>? = listOf(),
@@ -35,4 +34,3 @@ data class HentPersonDto(
         return data?.hentPerson?.statsborgerskap;
     }
 }
-

@@ -81,13 +81,8 @@ class PdlPersonService(
             }
 
             val response = objectMapper.readValue(responseBody, HentPersonDto::class.java)
-
-            val error = response.errors?.firstOrNull()
-
-            if (error?.extensions?.get("code") == "not_found") {
+            if (response.errors?.firstOrNull() != null) {
                 return null
-            } else if (error != null) {
-                throw Exception(error.message)
             }
 
             return response

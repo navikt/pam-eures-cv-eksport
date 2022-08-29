@@ -32,6 +32,7 @@ class EuresServiceIntegrationTest {
 
     @Autowired
     lateinit var samtykkeRepository: SamtykkeRepository
+
     @Autowired
     lateinit var personGateway: PdlPersonGateway
 
@@ -43,12 +44,9 @@ class EuresServiceIntegrationTest {
             CvXml().update("PAM-3", "1234567892", oneDayAgo, oneDayAgo.plusHours(12), oneDayAgo.plusDays(1), xml = "SOME XML", checksum = "SOME CHECKSUM")
     )
 
-    private val active = listOf(testData()[0], testData()[1])
-
     @BeforeEach
     fun setUp() {
         euresService = EuresService(cvXmlRepository,samtykkeRepository,personGateway)
-        //testData().forEach { cvXmlRepository.save(it) }
     }
 
     @Test
@@ -72,5 +70,4 @@ class EuresServiceIntegrationTest {
         assertEquals(0, closed.modifiedReferences.size)
         assertEquals(1, closed.closedReferences.size)
     }
-
 }

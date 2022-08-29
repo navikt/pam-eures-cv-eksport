@@ -30,10 +30,6 @@ class EuresControllerTest {
     @MockBean
     private lateinit var euresService: EuresService
 
-    @BeforeEach
-    fun setup() {
-    }
-
     @Test
     fun `call to fetch changes` () {
         mockMvc.perform(

@@ -30,5 +30,3 @@ class PdlController (
 data class EUEOSstatsborgerskap(
     val erEUEOSborger: Boolean
 )
-
-

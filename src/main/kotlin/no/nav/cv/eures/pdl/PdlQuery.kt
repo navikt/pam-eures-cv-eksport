@@ -1,7 +1,5 @@
 package no.nav.cv.eures.pdl
 
-
-
 abstract class PdlQuery {
     abstract val query: String
     abstract val variables: Map<String, String>
@@ -48,7 +46,9 @@ data class PdlHentStatsborgerskapQuery(
         variables = mapOf("ident" to ident)
     )
 
-}data class PdlHentStatsborgerskapListeQuery(
+}
+
+data class PdlHentStatsborgerskapListeQuery(
     override val query: String = PDL_STATSBORGERSKAP_LISTE_QUERY,
     override val variables: Map<String, List<String>>
 ) : PdlQueryMultiple() {
