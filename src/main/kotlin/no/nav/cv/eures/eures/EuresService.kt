@@ -130,6 +130,6 @@ class EuresService(
 
         val resultat = personGateway.getIdenterUtenforEUSomHarSamtykket(identer)
 
-        return resultat?.size ?: error("Det har skjedd en feil :( ")
+        return resultat?.size ?: error("Antall identer kunne ikke hentes ut")
     }
 }
