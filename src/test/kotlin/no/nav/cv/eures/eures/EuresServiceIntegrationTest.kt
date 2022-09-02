@@ -2,9 +2,9 @@ package no.nav.cv.eures.eures
 
 import no.nav.cv.eures.cv.CvXml
 import no.nav.cv.eures.cv.CvXmlRepository
+import no.nav.security.token.support.spring.test.EnableMockOAuth2Server
 import no.nav.cv.eures.pdl.PdlPersonGateway
 import no.nav.cv.eures.samtykke.SamtykkeRepository
-import no.nav.security.token.support.test.spring.TokenGeneratorConfiguration
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
@@ -12,7 +12,6 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.jdbc.EmbeddedDatabaseConnection
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase
 import org.springframework.boot.test.context.SpringBootTest
-import org.springframework.context.annotation.Import
 import org.springframework.test.annotation.DirtiesContext
 import org.springframework.test.context.ActiveProfiles
 import java.time.ZonedDateTime
@@ -21,7 +20,7 @@ import java.time.ZonedDateTime
 @ActiveProfiles("test")
 @AutoConfigureTestDatabase(connection = EmbeddedDatabaseConnection.H2)
 @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
-@Import(TokenGeneratorConfiguration::class)
+@EnableMockOAuth2Server
 class EuresServiceIntegrationTest {
 
     @Autowired

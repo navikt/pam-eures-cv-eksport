@@ -1,6 +1,7 @@
 package no.nav.cv.eures.konverterer
 
 import no.nav.cv.eures.cv.CvXml
+import no.nav.security.token.support.spring.test.EnableMockOAuth2Server
 import org.junit.jupiter.api.Test
 
 import org.junit.jupiter.api.Assertions.*
@@ -14,6 +15,7 @@ import java.time.ZonedDateTime
 @SpringBootTest
 @ActiveProfiles("test")
 @AutoConfigureTestDatabase(connection = EmbeddedDatabaseConnection.H2)
+@EnableMockOAuth2Server
 internal class CvConverterServiceTest {
 
     @Autowired

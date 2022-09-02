@@ -5,14 +5,13 @@ import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
 import com.fasterxml.jackson.module.kotlin.KotlinModule
 import no.nav.cv.eures.bruker.InnloggetBrukerService
 import no.nav.cv.eures.pdl.PdlPersonGateway
+import no.nav.security.token.support.spring.test.EnableMockOAuth2Server
 import no.nav.security.token.support.test.JwtTokenGenerator
-import no.nav.security.token.support.test.spring.TokenGeneratorConfiguration
 import org.junit.jupiter.api.Test
 import org.mockito.Mockito
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest
 import org.springframework.boot.test.mock.mockito.MockBean
-import org.springframework.context.annotation.Import
 import org.springframework.http.HttpHeaders
 import org.springframework.http.MediaType
 import org.springframework.test.context.ActiveProfiles
@@ -23,7 +22,7 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers
 
 @WebMvcTest(SamtykkeController::class)
 @ActiveProfiles("test")
-@Import(TokenGeneratorConfiguration::class)
+@EnableMockOAuth2Server
 class SamtykkeControllerTest {
 
     var token = JwtTokenGenerator.createSignedJWT("12345678910").serialize()

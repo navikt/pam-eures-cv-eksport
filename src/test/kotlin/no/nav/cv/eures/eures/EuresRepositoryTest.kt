@@ -4,7 +4,7 @@ import no.nav.cv.eures.cv.CvXml
 import no.nav.cv.eures.cv.CvXmlRepository
 import no.nav.cv.eures.samtykke.Samtykke
 import no.nav.cv.eures.samtykke.SamtykkeRepository
-import no.nav.security.token.support.test.spring.TokenGeneratorConfiguration
+import no.nav.security.token.support.spring.test.EnableMockOAuth2Server
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.BeforeEach
@@ -13,13 +13,14 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest
 import org.springframework.context.annotation.ComponentScan
 import org.springframework.context.annotation.FilterType
-import org.springframework.context.annotation.Import
 import org.springframework.data.domain.PageRequest
 import org.springframework.stereotype.Repository
+import org.springframework.test.context.ActiveProfiles
 import java.time.ZonedDateTime
 
 @DataJpaTest(includeFilters = [ComponentScan.Filter(type = FilterType.ANNOTATION, classes = [Repository::class])])
-@Import(TokenGeneratorConfiguration::class)
+@EnableMockOAuth2Server
+@ActiveProfiles("test")
 class EuresRepositoryTest {
 
     @Autowired
