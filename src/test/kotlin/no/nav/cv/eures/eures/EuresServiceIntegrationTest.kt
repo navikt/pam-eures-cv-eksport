@@ -2,9 +2,9 @@ package no.nav.cv.eures.eures
 
 import no.nav.cv.eures.cv.CvXml
 import no.nav.cv.eures.cv.CvXmlRepository
-import no.nav.security.token.support.spring.test.EnableMockOAuth2Server
 import no.nav.cv.eures.pdl.PdlPersonGateway
 import no.nav.cv.eures.samtykke.SamtykkeRepository
+import no.nav.security.token.support.spring.test.EnableMockOAuth2Server
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test

@@ -6,7 +6,6 @@ import no.nav.cv.eures.pdl.PdlPersonGateway
 import no.nav.security.token.support.core.api.ProtectedWithClaims
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
-import org.springframework.beans.factory.annotation.Value
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
@@ -40,10 +39,8 @@ class SamtykkeController(
     fun oppdaterSamtykke(
         @RequestBody samtykke: Samtykke
     ): ResponseEntity<Samtykke> {
-        when (pdlPersonGateway?.erEUEOSstatsborger(extractFnr()) ?: false) {
-            false -> {
-                return ResponseEntity.status(HttpStatus.UNAVAILABLE_FOR_LEGAL_REASONS).body(null)
-            }
+        if(pdlPersonGateway.erEUEOSstatsborger(extractFnr()) != true) {
+            return ResponseEntity.status(HttpStatus.UNAVAILABLE_FOR_LEGAL_REASONS).body(null)
         }
         samtykkeService.oppdaterSamtykke(extractFnr(), samtykke)
         return ResponseEntity.ok(samtykke)
