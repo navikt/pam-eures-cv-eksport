@@ -24,7 +24,16 @@ class JanzzService(
         private lateinit var instance: JanzzService
         fun instance() = instance
         private val log: Logger = LoggerFactory.getLogger(JanzzService::class.java)
-        private val objectMapper = ObjectMapper().registerModule(KotlinModule())
+        private val objectMapper = ObjectMapper().registerModule(
+            KotlinModule.Builder()
+                .withReflectionCacheSize(512)
+                .configure(KotlinFeature.NullToEmptyCollection, false)
+                .configure(KotlinFeature.NullToEmptyMap, false)
+                .configure(KotlinFeature.NullIsSameAsDefault, false)
+                .configure(KotlinFeature.SingletonSupport, false)
+                .configure(KotlinFeature.StrictNullChecks, false)
+                .build()
+        )
         private val skillEscoSubstring = "/skill/"
         private val occupationEscoSubstring = "/occupation/"
         private val iscoSubstring = "/isco/"

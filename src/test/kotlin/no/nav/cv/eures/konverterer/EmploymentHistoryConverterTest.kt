@@ -4,6 +4,7 @@ import no.nav.arbeid.cv.avro.Arbeidserfaring
 import no.nav.arbeid.cv.avro.Cv
 import no.nav.cv.eures.janzz.JanzzService
 import no.nav.cv.eures.samtykke.Samtykke
+import no.nav.security.token.support.spring.test.EnableMockOAuth2Server
 import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
@@ -14,6 +15,7 @@ import java.time.LocalDate
 
 @SpringBootTest
 @ActiveProfiles("test")
+@EnableMockOAuth2Server
 internal class EmploymentHistoryConverterTest {
 
     @Autowired
