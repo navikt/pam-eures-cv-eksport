@@ -30,11 +30,6 @@ class EuresControllerTest {
     @MockBean
     private lateinit var euresService: EuresService
 
-    @BeforeEach
-    fun setup() {
-        //baseUrl = "http://localhost:${randomServerPort}/pam-eures-cv-eksport/"
-    }
-
     @Test
     fun `call to fetch changes` () {
         mockMvc.perform(

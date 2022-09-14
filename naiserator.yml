@@ -38,6 +38,10 @@ spec:
   envFrom:
     - secret: pam-eures-cv-eksport-secret
     - configmap: loginservice-idporten
+  azure:
+    application:
+      enabled: true
+      tenant: {{ azure_ad_tenant }}
   gcp:
     sqlInstances:
       - type: POSTGRES_11
@@ -64,6 +68,10 @@ spec:
       value: SASL_SSL
     - name: AVRO_VERSION_FIFTYTWO_HEX
       value: {{ avro_version_fiftytwo_hex }}
+    - name: PDL_SCOPE
+      value: {{ pdl_scope }}
+    - name: PDL_BASE_URL
+      value: {{ pdl_base_url }}
   ingresses:
   {{#each ingress as |url|}}
      - {{url}}
