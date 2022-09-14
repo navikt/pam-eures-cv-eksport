@@ -1,8 +1,8 @@
 package no.nav.cv.eures.samtykke
 
+import io.swagger.v3.oas.annotations.Operation
 import no.nav.cv.eures.bruker.InnloggetBruker
 import no.nav.cv.eures.pdl.PdlPersonGateway
-import io.swagger.v3.oas.annotations.Operation
 import no.nav.security.token.support.core.api.ProtectedWithClaims
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
