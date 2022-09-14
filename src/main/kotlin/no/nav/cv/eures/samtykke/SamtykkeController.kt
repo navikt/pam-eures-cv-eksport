@@ -36,8 +36,10 @@ class SamtykkeController(
     fun oppdaterSamtykke(
         @RequestBody samtykke: Samtykke
     ): ResponseEntity<Samtykke> {
-        if (pdlPersonGateway.erEUEOSstatsborger(extractFnr()) != true) {
-            return ResponseEntity.status(HttpStatus.UNAVAILABLE_FOR_LEGAL_REASONS).body(null)
+        when(pdlPersonGateway?.erEUEOSstatsborger(extractFnr()) ?: false) {
+            false -> {
+                return ResponseEntity.status(HttpStatus.UNAVAILABLE_FOR_LEGAL_REASONS).body(null)
+            }
         }
         samtykkeService.oppdaterSamtykke(extractFnr(), samtykke)
         return ResponseEntity.ok(samtykke)
