@@ -1,65 +1,137 @@
 package no.nav.cv.eures.samtykke
 
-import no.nav.cv.eures.konverterer.CvConverterService
+import com.fasterxml.jackson.databind.ObjectMapper
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
+import com.fasterxml.jackson.module.kotlin.KotlinModule
+import no.nav.cv.eures.bruker.InnloggetBrukerService
+import no.nav.cv.eures.pdl.PdlPersonGateway
+import no.nav.security.token.support.test.JwtTokenGenerator
 import no.nav.security.token.support.test.spring.TokenGeneratorConfiguration
-import org.junit.jupiter.api.Assertions.assertEquals
-import org.junit.jupiter.api.BeforeEach
-import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.Test
+import org.mockito.Mockito
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.boot.test.context.SpringBootTest
+import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest
 import org.springframework.boot.test.mock.mockito.MockBean
-import org.springframework.boot.test.web.client.TestRestTemplate
-import org.springframework.boot.web.client.RestTemplateBuilder
-import org.springframework.boot.web.server.LocalServerPort
 import org.springframework.context.annotation.Import
+import org.springframework.http.HttpHeaders
+import org.springframework.http.MediaType
 import org.springframework.test.context.ActiveProfiles
-import java.time.ZoneId
-import java.time.ZonedDateTime
+import org.springframework.test.web.servlet.MockMvc
+import org.springframework.test.web.servlet.request.MockMvcRequestBuilders
+import org.springframework.test.web.servlet.result.MockMvcResultMatchers
 
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+
+@WebMvcTest(SamtykkeController::class)
 @ActiveProfiles("test")
 @Import(TokenGeneratorConfiguration::class)
 class SamtykkeControllerTest {
 
-    private val aktoerId1 = "123"
-    private val aktoerId2 = "321"
+    var token = JwtTokenGenerator.createSignedJWT("12345678910").serialize()
 
-    private val now = ZonedDateTime.now()
-    private val yesterday = now.minusDays(1)
-
-    @LocalServerPort
-    private var randomServerPort = 0
-    private var baseUrl = ""
-    private val client = TestRestTemplate()
-
-    @BeforeEach
-    fun setup() {
-        baseUrl = "http://localhost:${randomServerPort}/pam-eures-cv-eksport/"
-    }
     @Autowired
-    lateinit var samtykkeRepository: SamtykkeRepository
+    private lateinit var mockMvc: MockMvc
 
     @MockBean
-    lateinit var konverterer: CvConverterService
+    private val samtykkeService: SamtykkeService? = null
 
+    @MockBean
+    private val pdlPersonGateway: PdlPersonGateway? = null
+
+    @MockBean
+    private val innloggetbrukerService: InnloggetBrukerService? = null
 
     @Test
-    @Disabled("Need to implement usage of authorizastion header first")
-    fun `oppdater og hent samtykke`() {
+    fun `call to get not found when no previous samtykke` () {
+        Mockito.`when`(innloggetbrukerService?.fodselsnummer())
+        .thenReturn("111111111")
+        mockMvc.perform(
+            MockMvcRequestBuilders.get("/samtykke")
+            .headers(headerWithToken(token))
+        ).andExpect(
+            MockMvcResultMatchers.status().isNotFound
+        )
+    }
 
-        val samtykke = Samtykke(now, personalia = true, utdanning = true)
+    @Test
+    fun `call to delete samtykke` () {
+        Mockito.`when`(innloggetbrukerService?.fodselsnummer())
+        .thenReturn("111111111")
+        mockMvc.perform(
+            MockMvcRequestBuilders.delete("/samtykke")
+            .headers(headerWithToken(token))
+        ).andExpect(
+            MockMvcResultMatchers.status().isOk
+        )
+    }
 
-        val body = client.postForObject("samtykke", samtykke, String::class.java)
+    @Test
+    fun `call to get samtykke` () {
+        val fnr = "111111111"
+        var samtykke = Samtykke()
+        Mockito.`when`(innloggetbrukerService?.fodselsnummer())
+        .thenReturn(fnr)
+        Mockito.`when`(samtykkeService?.hentSamtykke(fnr))
+        .thenReturn(samtykke)
 
-        assertEquals("OK",body)
+        mockMvc.perform(
+            MockMvcRequestBuilders.get("/samtykke")
+            .headers(headerWithToken(token))
+        ).andExpect(
+            MockMvcResultMatchers.status().isOk
+        ).andExpect(
+            MockMvcResultMatchers.content().json("{'personalia':false}")
+        )
+    }
 
-        val hentet = client.getForEntity("samtykke", Samtykke::class.java).body
+    @Test
+    fun `call to post samtykke for updating and return 451 because of no eueusstatsborgerskap` () {
+        val samtykke = Samtykke()
 
-        // TODO : Hvorfor tror databasen at den er UTC? --> Det er default for ZonedTimeDate
-        assertEquals(now.withZoneSameInstant(ZoneId.of("UTC")), hentet?.sistEndret)
-        assertEquals(true, hentet?.personalia)
-        assertEquals(true, hentet?.utdanning)
+        Mockito.`when`(innloggetbrukerService?.fodselsnummer())
+            .thenReturn("111111111")
+        mockMvc.perform(
+            MockMvcRequestBuilders.post("/samtykke")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(asJsonString(samtykke))
+                .headers(headerWithToken(token))
+        ).andExpect(
+            MockMvcResultMatchers.status().isUnavailableForLegalReasons
+        )
+    }
+
+    @Test
+    fun `call to post samtykke return 200 ok and statsborgerskap` () {
+        val samtykke = Samtykke()
+        val fnr="111111111"
+
+        Mockito.`when`(innloggetbrukerService?.fodselsnummer())
+            .thenReturn(fnr)
+        Mockito.`when`(pdlPersonGateway?.erEUEOSstatsborger(fnr))
+            .thenReturn(true)
+        mockMvc.perform(
+            MockMvcRequestBuilders.post("/samtykke")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(asJsonString(samtykke))
+                .headers(headerWithToken(token))
+        ).andExpect(
+            MockMvcResultMatchers.status().isOk
+        ).andExpect(
+            MockMvcResultMatchers.content().json("{'personalia':false}")
+        )
+    }
+    fun asJsonString(obj: Any?): String? {
+        return try {
+            ObjectMapper().registerModule(KotlinModule()).registerModule(JavaTimeModule()).writeValueAsString(obj)
+        } catch (e: Exception) {
+            throw RuntimeException(e)
+        }
+    }
+
+
+    fun headerWithToken(token: String): HttpHeaders {
+        val headers = HttpHeaders()
+        headers.setBearerAuth(token)
+        return headers
     }
 
 }

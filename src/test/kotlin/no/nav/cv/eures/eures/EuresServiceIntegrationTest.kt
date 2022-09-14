@@ -1,17 +1,13 @@
 package no.nav.cv.eures.eures
 
-import com.nhaarman.mockitokotlin2.eq
 import no.nav.cv.eures.cv.CvXml
 import no.nav.cv.eures.cv.CvXmlRepository
-import no.nav.cv.eures.eures.dto.GetDetails.CandidateDetail.Status.ACTIVE
-import no.nav.cv.eures.eures.dto.GetDetails.CandidateDetail.Status.CLOSED
+import no.nav.cv.eures.pdl.PdlPersonGateway
+import no.nav.cv.eures.samtykke.SamtykkeRepository
 import no.nav.security.token.support.test.spring.TokenGeneratorConfiguration
 import org.junit.jupiter.api.Assertions.assertEquals
-import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
-import org.junit.jupiter.api.assertAll
-import org.mockito.Mockito
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.jdbc.EmbeddedDatabaseConnection
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase
@@ -34,6 +30,12 @@ class EuresServiceIntegrationTest {
     @Autowired
     lateinit var cvXmlRepository: CvXmlRepository
 
+    @Autowired
+    lateinit var samtykkeRepository: SamtykkeRepository
+
+    @Autowired
+    lateinit var personGateway: PdlPersonGateway
+
     private var oneDayAgo = ZonedDateTime.now().minusDays(1)
 
     private fun testData() = listOf(
@@ -42,12 +44,9 @@ class EuresServiceIntegrationTest {
             CvXml().update("PAM-3", "1234567892", oneDayAgo, oneDayAgo.plusHours(12), oneDayAgo.plusDays(1), xml = "SOME XML", checksum = "SOME CHECKSUM")
     )
 
-    private val active = listOf(testData()[0], testData()[1])
-
     @BeforeEach
     fun setUp() {
-        euresService = EuresService(cvXmlRepository)
-        //testData().forEach { cvXmlRepository.save(it) }
+        euresService = EuresService(cvXmlRepository,samtykkeRepository,personGateway)
     }
 
     @Test
@@ -71,5 +70,4 @@ class EuresServiceIntegrationTest {
         assertEquals(0, closed.modifiedReferences.size)
         assertEquals(1, closed.closedReferences.size)
     }
-
 }

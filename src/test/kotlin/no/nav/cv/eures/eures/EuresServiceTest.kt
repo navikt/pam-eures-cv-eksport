@@ -5,6 +5,8 @@ import no.nav.cv.eures.cv.CvXml
 import no.nav.cv.eures.cv.CvXmlRepository
 import no.nav.cv.eures.eures.dto.GetDetails.CandidateDetail.Status.ACTIVE
 import no.nav.cv.eures.eures.dto.GetDetails.CandidateDetail.Status.CLOSED
+import no.nav.cv.eures.pdl.PdlPersonGateway
+import no.nav.cv.eures.samtykke.SamtykkeRepository
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.BeforeEach
@@ -21,6 +23,8 @@ class EuresServiceTest {
     lateinit var euresService: EuresService
 
     val cvXmlRepository: CvXmlRepository = Mockito.mock(CvXmlRepository::class.java)
+    var samtykkeRepository : SamtykkeRepository  = Mockito.mock(SamtykkeRepository::class.java)
+    var personGateway: PdlPersonGateway = Mockito.mock(PdlPersonGateway::class.java)
 
     private var oneDayAgo = ZonedDateTime.now().minusDays(1)
     private var pageRequest = PageRequest.of(0, 100)
@@ -35,7 +39,7 @@ class EuresServiceTest {
 
     @BeforeEach
     fun setUp() {
-        euresService = EuresService(cvXmlRepository)
+        euresService = EuresService(cvXmlRepository, samtykkeRepository, personGateway)
         //testData().forEach { cvXmlRepository.save(it) }
     }
 
