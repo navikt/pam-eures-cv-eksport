@@ -25,7 +25,7 @@ class SamtykkeController(
     fun hentSamtykke(): ResponseEntity<Samtykke> {
         val fnr = extractFnr()
         return samtykkeService.hentSamtykke(fnr)
-            ?.let{ ResponseEntity.ok(it) }
+            ?.let { ResponseEntity.ok(it) }
             ?: run {
                 ResponseEntity.notFound().build()
             }
@@ -34,10 +34,10 @@ class SamtykkeController(
 
     @PostMapping(produces = ["application/json"])
     fun oppdaterSamtykke(
-            @RequestBody samtykke: Samtykke
+        @RequestBody samtykke: Samtykke
     ): ResponseEntity<Samtykke> {
-        when(pdlPersonGateway?.erEUEOSstatsborger(extractFnr()) ?: false) {
-            false -> { return ResponseEntity.status(HttpStatus.UNAVAILABLE_FOR_LEGAL_REASONS).body(null)}
+        if (pdlPersonGateway.erEUEOSstatsborger(extractFnr()) != true) {
+            return ResponseEntity.status(HttpStatus.UNAVAILABLE_FOR_LEGAL_REASONS).body(null)
         }
         samtykkeService.oppdaterSamtykke(extractFnr(), samtykke)
         return ResponseEntity.ok(samtykke)
