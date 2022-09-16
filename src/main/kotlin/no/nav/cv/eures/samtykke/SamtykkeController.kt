@@ -18,7 +18,7 @@ class SamtykkeController(
     private val innloggetbrukerService: InnloggetBruker,
     private val pdlPersonGateway: PdlPersonGateway
 ) {
-        companion object {
+    companion object {
         val log: Logger = LoggerFactory.getLogger(SamtykkeController::class.java)
     }
 
