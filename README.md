@@ -4,8 +4,8 @@
 ## For å kjøre appen lokalt
 
 Det kreves at enkelte ting kjører på PC
-1. Postgres med applikasjonens database, pam-eures-cv-eksport
-1. Kafka-oppsett fra CV. Se nedenfor 
+1. Postgres med applikasjonens database, pam-eures-cv-eksport 
+2. Kafka-oppsett fra CV. Se nedenfor 
 
 ### Kommandolinje
 `gradle run`
@@ -21,7 +21,7 @@ nødvendige ting (no.nav.security:token-validation-test-support) på classpathen
 ## Oppsett av database første gang
 Opprett database med applikasjonens defaultbruker 
 
-STart med å installere og starte postgresserveren - hvis det ikke allerede er på plass
+Start med å installere og starte postgresserveren - hvis det ikke allerede er på plass
 * Installere: `brew install postgresql`
 * Start postgres-server og la den gå. For eksempel ved `postgres -D /usr/local/var/postgres`
 

@@ -62,8 +62,6 @@ spring:
       - "classpath:db"
     connect-retries: 50
 
-
-
 kafka:
   topics:
     consumers:

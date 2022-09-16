@@ -2,10 +2,10 @@ package no.nav.cv.eures.samtykke
 
 import no.nav.cv.eures.bruker.InnloggetBruker
 import no.nav.cv.eures.pdl.PdlPersonGateway
+import io.swagger.v3.oas.annotations.Operation
 import no.nav.security.token.support.core.api.ProtectedWithClaims
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
-import org.springframework.beans.factory.annotation.Value
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
@@ -22,6 +22,7 @@ class SamtykkeController(
         val log: Logger = LoggerFactory.getLogger(SamtykkeController::class.java)
     }
 
+    @Operation(summary = "Henter et samtykke", description = "Henter et samtykke basert på fnr i claim")
     @GetMapping(produces = ["application/json"])
     fun hentSamtykke(): ResponseEntity<Samtykke> {
         val fnr = extractFnr()
@@ -33,6 +34,7 @@ class SamtykkeController(
     }
 
 
+    @Operation(summary = "Oppdaterer et samtykke", description = "Oppdaterer et samtyke basert på fnr i claim")
     @PostMapping(produces = ["application/json"])
     fun oppdaterSamtykke(
         @RequestBody samtykke: Samtykke
@@ -46,6 +48,7 @@ class SamtykkeController(
         return ResponseEntity.ok(samtykke)
     }
 
+    @Operation(summary = "Sletter et samtykke", description = "Sletter et samtykke basert på fnr i claim")
     @DeleteMapping(produces = ["application/text"])
     fun slettSamtykke(): ResponseEntity<String> {
         samtykkeService.slettSamtykke(extractFnr())
