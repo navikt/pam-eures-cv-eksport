@@ -93,6 +93,9 @@ mainClassName = "no.nav.cv.eures.ApplicationKt"
 
 test {
     useJUnitPlatform()
+    testLogging {
+        exceptionFormat = 'full'
+    }
 }
 
 compileKotlin {
