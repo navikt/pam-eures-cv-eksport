@@ -73,7 +73,7 @@ spec:
     - name: PDL_BASE_URL
       value: {{ pdl_base_url }}
     - name: FEATURE_TOGGLE
-      value: {{ feature_toggle_eures }}
+      value: "{{ feature_toggle_eures }}"
   ingresses:
   {{#each ingress as |url|}}
      - {{url}}
