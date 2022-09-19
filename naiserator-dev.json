@@ -8,5 +8,5 @@
   "azure_ad_tenant": "trygdeetaten.no",
   "pdl_base_url": "https://pdl-api.dev-fss-pub.nais.io",
   "pdl_scope": "api://dev-fss.pdl.pdl-api/.default",
-  "feature_toggle_eures": true
+  "feature_toggle_eures": "true"
 }
