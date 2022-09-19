@@ -94,3 +94,7 @@ management:
       exposure:
         include: prometheus
     enabled-by-default: false
+
+featuretoggling:
+  euEuresStatsborgerskap: ${FEATURE_TOGGLE:false}
+

@@ -79,7 +79,7 @@ class SamtykkeControllerTest {
             MockMvcResultMatchers.content().json("{'personalia':false}")
         )
     }
-
+/*
     @Test
     fun `call to post samtykke for updating and return 451 because of no eueusstatsborgerskap` () {
         val samtykke = Samtykke()
@@ -95,7 +95,7 @@ class SamtykkeControllerTest {
             MockMvcResultMatchers.status().isUnavailableForLegalReasons
         )
     }
-
+*/
     @Test
     fun `call to post samtykke return 200 ok and statsborgerskap` () {
         val samtykke = Samtykke()
