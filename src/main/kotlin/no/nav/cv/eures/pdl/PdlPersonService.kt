@@ -47,7 +47,8 @@ class PdlPersonService(
 
             identerUtenforEU.addAll(
                 samtykkeBrukere?.personer?.filter { bruker ->
-                    bruker.person?.statsborgerskap?.all { borgerskap -> !getEuresApprovedCountries().contains(borgerskap.land) }
+                    bruker.person?.statsborgerskap?.all { borgerskap -> !getEuresApprovedCountries().contains(borgerskap.land)
+                            || (getEuresApprovedCountries().contains(borgerskap.land) && borgerskap.gyldigTilOgMed?.let{ LocalDate.parse(it).isBefore(LocalDate.now()) } ?: false)}
                         ?: false
                 } ?: emptyList())
 
