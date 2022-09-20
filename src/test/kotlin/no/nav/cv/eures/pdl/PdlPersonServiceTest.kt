@@ -40,7 +40,7 @@ class PdlPersonServiceTest {
             null
         )
     ))))
-    doReturn(dto).whenever(pdlPersonGateway).hentPersondataFraPdl(com.nhaarman.mockitokotlin2.any(), com.nhaarman.mockitokotlin2.any())
+    doReturn(dto).whenever(pdlPersonGateway).hentPersondataFraPdl(com.nhaarman.mockitokotlin2.any())
 
     assertEquals("Statsborgerskap NOR (Norsk) skal returnere true", true, pdlPersonGateway.erEUEOSstatsborger("11"))
     }
@@ -54,7 +54,7 @@ class PdlPersonServiceTest {
                 null
             )
         ))))
-        doReturn(dto).whenever(pdlPersonGateway).hentPersondataFraPdl(com.nhaarman.mockitokotlin2.any(), com.nhaarman.mockitokotlin2.any())
+        doReturn(dto).whenever(pdlPersonGateway).hentPersondataFraPdl(com.nhaarman.mockitokotlin2.any())
 
         assertEquals("Statsborgerskap AFG (Afganistan) skal returnere false", false, pdlPersonGateway.erEUEOSstatsborger("11"))
     }
@@ -68,7 +68,7 @@ class PdlPersonServiceTest {
                 "2020-01-01"
             )
         ))))
-        doReturn(dto).whenever(pdlPersonGateway).hentPersondataFraPdl(com.nhaarman.mockitokotlin2.any(), com.nhaarman.mockitokotlin2.any())
+        doReturn(dto).whenever(pdlPersonGateway).hentPersondataFraPdl(com.nhaarman.mockitokotlin2.any())
 
         assertEquals("Utgått NOR (Norsk) statsborgerskal skal returnere false", false, pdlPersonGateway.erEUEOSstatsborger("11"))
     }
@@ -86,7 +86,7 @@ class PdlPersonServiceTest {
                 null
             )
         ))))
-        doReturn(dto).whenever(pdlPersonGateway).hentPersondataFraPdl(com.nhaarman.mockitokotlin2.any(), com.nhaarman.mockitokotlin2.any())
+        doReturn(dto).whenever(pdlPersonGateway).hentPersondataFraPdl(com.nhaarman.mockitokotlin2.any())
 
         assertEquals("Ett gyldig statsborger av flere skal gi true", true, pdlPersonGateway.erEUEOSstatsborger("11"))
     }
@@ -94,7 +94,7 @@ class PdlPersonServiceTest {
     @Test
     fun `call erEUEOSborger returns false ved ingen statsborgerskap`() {
         val dto = HentPersonDto(HentPersonDto.HentPersonData("", HentPersonDto.HentPersonData.Person()))
-        doReturn(dto).whenever(pdlPersonGateway).hentPersondataFraPdl(com.nhaarman.mockitokotlin2.any(), com.nhaarman.mockitokotlin2.any())
+        doReturn(dto).whenever(pdlPersonGateway).hentPersondataFraPdl(com.nhaarman.mockitokotlin2.any())
 
         assertEquals("Ingen statsborgerskap skal gi false", false, pdlPersonGateway.erEUEOSstatsborger("11"))
     }

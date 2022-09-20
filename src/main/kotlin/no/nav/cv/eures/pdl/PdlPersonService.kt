@@ -29,7 +29,6 @@ class PdlPersonService(
 
     override fun erEUEOSstatsborger(ident: String): Boolean? {
         val statsborgerskap = hentPersondataFraPdl(
-            ident = ident,
             query = PdlHentStatsborgerskapQuery(ident = ident)
         )?.toStatsborgerskap()
 
@@ -44,8 +43,7 @@ class PdlPersonService(
             log.info("Chunk størrelse mot pdl ${it.size}")
 
             val samtykkeBrukere = hentStatsborgerskapForFlereFraPdl(
-                identer = it,
-                query = PdlHentStatsborgerskapListeQuery(identer = identer))
+                query = PdlHentStatsborgerskapListeQuery(identer = it))
 
             identerUtenforEU.addAll(
                 samtykkeBrukere?.personer?.filter { bruker ->
@@ -65,8 +63,7 @@ class PdlPersonService(
     }
 
     fun hentPersondataFraPdl(
-        ident: String,
-        query: PdlQuery = PdlHentStatsborgerskapQuery(ident = ident)
+        query: PdlQuery
     ): HentPersonDto? {
         try {
             log.info("Henter persondata fra PDL")
@@ -107,8 +104,7 @@ class PdlPersonService(
     }
 
     fun hentStatsborgerskapForFlereFraPdl(
-        identer: List<String>,
-        query: PdlQueryMultiple = PdlHentStatsborgerskapListeQuery(identer = identer)
+        query: PdlQueryMultiple
     ): HentPersonBolkDto? {
         try {
             log.info("Henter persondata fra PDL")
