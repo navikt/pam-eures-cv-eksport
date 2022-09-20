@@ -55,6 +55,10 @@ class PdlPersonService(
                     " og antall identerUtenforEU: ${identerUtenforEU.size}")
         }
 
+        identerUtenforEU.forEach{
+            log.debug("Statborgerskap ${it.person?.statsborgerskap}")
+        }
+
         return identerUtenforEU.filter{it.ident != null}.map{it.ident!!}
     }
 
