@@ -42,7 +42,11 @@ class PdlPersonService(
             identer = identer,
             query = PdlHentStatsborgerskapListeQuery(identer = identer))
 
-        val identerUtenforEU = samtykkeBrukere?.personer?.filter{bruker-> bruker.person?.statsborgerskap?.any{borgerskap -> getEuresApprovedCountries().contains(borgerskap.land)}?: false}
+        val identerUtenforEU = samtykkeBrukere?.personer?.filter{bruker-> bruker.person?.statsborgerskap?.all{borgerskap -> !getEuresApprovedCountries().contains(borgerskap.land)}?: false}
+
+        log.info("Antall feil i kall mot PDL: ${samtykkeBrukere?.errors?.size} og antall tilsynelatende ok: ${samtykkeBrukere?.data?.hentPersonBolk?.size}" +
+                " og antall identerUtenforEU: ${identerUtenforEU?.size}")
+
         return identerUtenforEU?.filter{it.ident != null}?.map{it.ident!!}
     }
 
@@ -122,7 +126,12 @@ class PdlPersonService(
                 throw RuntimeException("unknown error (responseCode=$responseCode) from pdl")
             }
 
-            return objectMapper.readValue(responseBody, HentPersonBolkDto::class.java)
+            val response = objectMapper.readValue(responseBody, HentPersonBolkDto::class.java)
+            if (response.errors?.firstOrNull() != null) {
+                log.warn("Fikk error fra PDL ${response.errors?.firstOrNull()?.message}")
+            }
+
+            return response
         } catch (ex: Exception) {
             log.error("Kall til PDL feilet", ex)
             return null

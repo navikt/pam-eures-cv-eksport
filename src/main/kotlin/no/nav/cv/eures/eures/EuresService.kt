@@ -130,6 +130,8 @@ class EuresService(
 
         val resultat = personGateway.getIdenterUtenforEUSomHarSamtykket(identer)
 
+        log.info("Identer som har samtykket er ${identer.size} og resultratet fra pdl er ${resultat?.size} stort")
+
         return resultat?.size ?: error("Antall identer kunne ikke hentes ut")
     }
 }
