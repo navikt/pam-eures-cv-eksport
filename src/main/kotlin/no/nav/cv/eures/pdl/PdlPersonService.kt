@@ -38,16 +38,26 @@ class PdlPersonService(
     }
 
     override fun getIdenterUtenforEUSomHarSamtykket(identer: List<String>) : List<String>? {
-        val samtykkeBrukere = hentStatsborgerskapForFlereFraPdl(
-            identer = identer,
-            query = PdlHentStatsborgerskapListeQuery(identer = identer))
+        val identerUtenforEU = mutableListOf<HentPersonBolkDto.HentPersonData>()
 
-        val identerUtenforEU = samtykkeBrukere?.personer?.filter{bruker-> bruker.person?.statsborgerskap?.all{borgerskap -> !getEuresApprovedCountries().contains(borgerskap.land)}?: false}
+        identer.chunked(1000).forEach{
+            log.info("Chunk størrelse mot pdl ${it.size}")
 
-        log.info("Antall feil i kall mot PDL: ${samtykkeBrukere?.errors?.size} og antall tilsynelatende ok: ${samtykkeBrukere?.data?.hentPersonBolk?.size}" +
-                " og antall identerUtenforEU: ${identerUtenforEU?.size}")
+            val samtykkeBrukere = hentStatsborgerskapForFlereFraPdl(
+                identer = it,
+                query = PdlHentStatsborgerskapListeQuery(identer = identer))
 
-        return identerUtenforEU?.filter{it.ident != null}?.map{it.ident!!}
+            identerUtenforEU.addAll(
+                samtykkeBrukere?.personer?.filter { bruker ->
+                    bruker.person?.statsborgerskap?.all { borgerskap -> !getEuresApprovedCountries().contains(borgerskap.land) }
+                        ?: false
+                } ?: emptyList())
+
+            log.info("Antall feil i kall mot PDL: ${samtykkeBrukere?.errors?.size} og antall tilsynelatende ok: ${samtykkeBrukere?.data?.hentPersonBolk?.size}" +
+                    " og antall identerUtenforEU: ${identerUtenforEU.size}")
+        }
+
+        return identerUtenforEU.filter{it.ident != null}.map{it.ident!!}
     }
 
     private fun getEuresApprovedCountries(): List<String> {
