@@ -51,7 +51,7 @@ class JanzzService(
     fun getTermForEsco(escoCode: String): String? = janzzCacheRepository.getCacheForEsco(escoCode)
 
     fun getEscoForTerm(term: String, escoLookup: EscoLookupType): List<CachedEscoMapping> {
-        val standardizedTerm = term.trim().toLowerCase()
+        val standardizedTerm = term.trim().lowercase()
         val cachedEsco = janzzCacheRepository.fetchFromCacheTerm(standardizedTerm)
 
         val isNotEmpty = cachedEsco.isNotEmpty()

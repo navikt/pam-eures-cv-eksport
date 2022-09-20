@@ -3,7 +3,7 @@ package no.nav.cv.eures.konverterer
 import com.fasterxml.jackson.annotation.JsonInclude
 import com.fasterxml.jackson.core.JsonGenerator
 import com.fasterxml.jackson.databind.JsonSerializer
-import com.fasterxml.jackson.databind.PropertyNamingStrategy
+import com.fasterxml.jackson.databind.PropertyNamingStrategies
 import com.fasterxml.jackson.databind.SerializationFeature
 import com.fasterxml.jackson.databind.SerializerProvider
 import com.fasterxml.jackson.databind.module.SimpleModule
@@ -20,7 +20,7 @@ object XmlSerializer {
     private val xml: XmlMapper = XmlMapper().apply {
         registerKotlinModule()
         registerModule(JavaTimeModule())
-        propertyNamingStrategy = PropertyNamingStrategy.UPPER_CAMEL_CASE
+        propertyNamingStrategy = PropertyNamingStrategies.UPPER_CAMEL_CASE
         setSerializationInclusion(JsonInclude.Include.NON_NULL)
         enable(ToXmlGenerator.Feature.WRITE_XML_DECLARATION)
         enable(SerializationFeature.INDENT_OUTPUT)
