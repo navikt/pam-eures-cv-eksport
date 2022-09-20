@@ -34,7 +34,7 @@ object NationalityConverter {
         val s2i = mutableMapOf<String, String>()
 
         // Some hardcoded fixes
-        i2s["SF"] = "Finland".toUpperCase() // Listed in Wikipedia as reserved for Finland until 2012, but we still have records with this code
+        i2s["SF"] = "Finland".uppercase() // Listed in Wikipedia as reserved for Finland until 2012, but we still have records with this code
         s2i["NORSK"] = "NO" // pam-cv-api produces kafka test messages with 'Norsk' instead of 'Norge' in the nationality field
 
         /* Not accepted by EURES at this stage
@@ -50,8 +50,8 @@ object NationalityConverter {
         for(line in reader.readLines()) {
             val columns = line.split(";")
 
-            val iso = columns[0].toUpperCase()
-            val str = columns[1].toUpperCase()
+            val iso = columns[0].uppercase()
+            val str = columns[1].uppercase()
 
             // The latest versions of country names are in the end of the landskoder.csv file, so they'll overwrite the
             // earlier versions
@@ -65,7 +65,7 @@ object NationalityConverter {
     }
 
     fun getIsoCode(nationality: String) : String? {
-        val nationalityUpper = nationality.toUpperCase()
+        val nationalityUpper = nationality.uppercase()
 
         if(isoToString.containsKey(nationalityUpper))
             return nationalityUpper

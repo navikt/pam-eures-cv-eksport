@@ -56,7 +56,7 @@ class GenerateMetrics(
                     log.info("Got these categories and counts: ${it.map { (kategori, antall) -> "$kategori: $antall" }.joinToString ( "," )}")
                 }
                 .forEach{(kategori, antall) ->
-                    val gaugeName = "cv.eures.eksport.antall.samtykker.${kategori.toLowerCase()}"
+                    val gaugeName = "cv.eures.eksport.antall.samtykker.${kategori.lowercase()}"
                     addOrUpdateGauge(gaugeName, antall)
                 }
 
