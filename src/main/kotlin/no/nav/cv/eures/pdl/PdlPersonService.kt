@@ -57,7 +57,7 @@ class PdlPersonService(
         }
 
         identerUtenforEU.forEach{
-            log.debug("Statsborgerskap for ident ${it.ident}: ${it.person?.statsborgerskap}")
+            log.debug("Statsborgerskap ${it.person?.statsborgerskap}")
         }
 
         return identerUtenforEU.filter{it.ident != null}.map{it.ident!!}
