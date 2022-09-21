@@ -63,10 +63,6 @@ class PdlPersonService(
             .eachCount()
         log.debug("Antall pr land: $countByCountry")
 
-        identerUtenforEU.forEach{
-            log.debug("Statsborgerskap ${it.person?.statsborgerskap}")
-        }
-
         return identerUtenforEU.filter{it.ident != null}.map{it.ident!!}
     }
 
