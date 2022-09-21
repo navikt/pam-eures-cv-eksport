@@ -56,6 +56,13 @@ class PdlPersonService(
                     " og antall identerUtenforEU: ${identerUtenforEU.size}")
         }
 
+        val countByCountry = identerUtenforEU
+            .filter { it.person?.statsborgerskap != null }
+            .flatMap { it.person!!.statsborgerskap!! }
+            .groupingBy { it.land }
+            .eachCount()
+        log.debug("Antall pr land: $countByCountry")
+
         identerUtenforEU.forEach{
             log.debug("Statsborgerskap ${it.person?.statsborgerskap}")
         }
