@@ -18,10 +18,6 @@ class SamtykkeController(
     private val innloggetbrukerService: InnloggetBruker,
     private val pdlPersonGateway: PdlPersonGateway
 ) {
-
-        @Value("\${featuretoggling.euEuresStatsborgerskap}")
-        lateinit var featureToggle: String
-
         companion object {
         val log: Logger = LoggerFactory.getLogger(SamtykkeController::class.java)
     }
@@ -41,11 +37,9 @@ class SamtykkeController(
     fun oppdaterSamtykke(
         @RequestBody samtykke: Samtykke
     ): ResponseEntity<Samtykke> {
-        if (featureToggle == "true") {
-            when (pdlPersonGateway?.erEUEOSstatsborger(extractFnr()) ?: false) {
-                false -> {
-                    return ResponseEntity.status(HttpStatus.UNAVAILABLE_FOR_LEGAL_REASONS).body(null)
-                }
+        when (pdlPersonGateway?.erEUEOSstatsborger(extractFnr()) ?: false) {
+            false -> {
+                return ResponseEntity.status(HttpStatus.UNAVAILABLE_FOR_LEGAL_REASONS).body(null)
             }
         }
         samtykkeService.oppdaterSamtykke(extractFnr(), samtykke)
