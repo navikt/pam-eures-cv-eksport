@@ -61,6 +61,10 @@ class PdlPersonService(
             .flatMap { it.person!!.statsborgerskap!! }
             .groupingBy { it.land }
             .eachCount()
+            .toList()
+            .sortedWith(compareByDescending<Pair<String?, Int>> { it.second }.thenBy { it.first })
+            .toMap()
+
         log.debug("Antall pr land: $countByCountry")
 
         return identerUtenforEU.filter{it.ident != null}.map{it.ident!!}
