@@ -1,8 +1,13 @@
 package no.nav.cv.eures.eures
 
+import com.fasterxml.jackson.databind.ObjectMapper
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
+import com.fasterxml.jackson.module.kotlin.KotlinModule
+import com.nhaarman.mockitokotlin2.*
+import no.nav.cv.eures.model.Converters.toUtcZonedDateTime
 import no.nav.security.token.support.spring.test.EnableMockOAuth2Server
-import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
+import org.mockito.Mockito.verifyNoInteractions
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest
 import org.springframework.boot.test.mock.mockito.MockBean
@@ -32,25 +37,28 @@ class EuresControllerTest {
 
     @Test
     fun `call to fetch changes` () {
+        val modificationTimestamp = 1607963578952.toUtcZonedDateTime()
         mockMvc.perform(
              MockMvcRequestBuilders.get("/input/api/cv/v1.0/getChanges/1607963578952")
                      .headers(headerWithToken(VALID_TEST_TOKEN_BASE64))
         ).andExpect(
             MockMvcResultMatchers.status().isOk
         )
+        verify(euresService, times(1)).getChangedReferences(modificationTimestamp)
     }
 
     @Test
     fun `call to fetch details` () {
-        val requestBody = """ ["FD100003", "FD1234123"] """
+        val references = listOf("FD100003", "FD1234123")
         mockMvc.perform(
                 MockMvcRequestBuilders.post("/input/api/cv/v1.0/getDetails")
                         .headers(headerWithToken(VALID_TEST_TOKEN_BASE64))
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(requestBody)
+                        .content(asJsonString(references))
         ).andExpect(
             MockMvcResultMatchers.status().isOk
         )
+        verify(euresService, times(1)).getDetails(references)
     }
 
     @Test
@@ -72,6 +80,7 @@ class EuresControllerTest {
         ).andExpect(
                 MockMvcResultMatchers.status().isUnauthorized
         )
+        verifyNoInteractions(euresService)
     }
 
     @Test
@@ -82,9 +91,20 @@ class EuresControllerTest {
         ).andExpect(
                 MockMvcResultMatchers.status().isUnauthorized
         )
+        verifyNoInteractions(euresService)
     }
 
-    fun headerWithToken(token: String): HttpHeaders {
+    private fun asJsonString(obj: Any): String {
+        return try {
+            ObjectMapper().registerModule(
+                KotlinModule.Builder().build()
+            ).registerModule(JavaTimeModule()).writeValueAsString(obj)
+        } catch (e: Exception) {
+            throw RuntimeException(e)
+        }
+    }
+
+    private fun headerWithToken(token: String): HttpHeaders {
         val headers = HttpHeaders()
         headers.setBearerAuth(token)
         return headers
