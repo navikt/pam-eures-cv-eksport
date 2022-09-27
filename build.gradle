@@ -82,6 +82,7 @@ dependencies {
     }
     testImplementation "com.h2database:h2"
     testImplementation "no.nav.security:token-validation-spring-test:${tokenSupportVersion}"
+    testImplementation "no.nav.security:mock-oauth2-server:0.5.3"
     testImplementation "com.nhaarman.mockitokotlin2:mockito-kotlin:2.2.0"
     testImplementation "org.powermock:powermock-api-mockito2:2.0.9"
 
