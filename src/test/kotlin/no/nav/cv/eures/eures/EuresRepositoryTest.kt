@@ -9,6 +9,8 @@ import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
+import org.slf4j.Logger
+import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest
 import org.springframework.context.annotation.ComponentScan
@@ -23,6 +25,10 @@ import java.time.ZonedDateTime
 @EnableMockOAuth2Server
 @ActiveProfiles("test")
 class EuresRepositoryTest {
+
+    companion object {
+        private val log: Logger = LoggerFactory.getLogger(EuresRepositoryTest::class.java)
+    }
 
     @Autowired
     lateinit var cvXmlRepository: CvXmlRepository
@@ -62,6 +68,10 @@ class EuresRepositoryTest {
         val two = cvXmlRepository.fetchAllCvsAfterTimestamp(PageRequest.of(0, 20), oneDayAgo.plusHours(11))
         val one = cvXmlRepository.fetchAllCvsAfterTimestamp(PageRequest.of(0, 20),oneDayAgo.plusHours(12))
         val zero = cvXmlRepository.fetchAllCvsAfterTimestamp(PageRequest.of(0, 20), oneDayAgo.plusDays(1))
+
+        log.info("Dato for one day ago som har blitt brukt i testen: $oneDayAgo")
+        log.info("Resultat som kan sjekkes hvis testen feiler på github med 'expected: <1> but was: <2>': ${one.content}")
+        log.info("Resultat for å hente alle cv-er: ${all.content}")
 
         assertEquals(4, all.content.size)
         assertEquals(2, two.content.size)
