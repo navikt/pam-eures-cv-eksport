@@ -16,6 +16,7 @@ import org.springframework.context.annotation.FilterType
 import org.springframework.context.annotation.Import
 import org.springframework.data.domain.PageRequest
 import org.springframework.stereotype.Repository
+import java.time.ZoneId
 import java.time.ZonedDateTime
 
 @DataJpaTest(includeFilters = [ComponentScan.Filter(type = FilterType.ANNOTATION, classes = [Repository::class])])
@@ -28,7 +29,7 @@ class EuresRepositoryTest {
     @Autowired
     lateinit var samtykkeRepository: SamtykkeRepository
 
-    private var oneDayAgo = ZonedDateTime.now().minusDays(1)
+    private var oneDayAgo = ZonedDateTime.now(ZoneId.of("UTC")).minusDays(1)
 
     private fun testData() = listOf(
             CvXml().update("PAM-1", "1234567890", oneDayAgo, oneDayAgo, null, xml = "SOME XML", checksum = "SOME CHECKSUM"),
