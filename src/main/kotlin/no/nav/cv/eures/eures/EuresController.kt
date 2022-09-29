@@ -1,5 +1,6 @@
 package no.nav.cv.eures.eures
 
+import no.nav.cv.eures.eures.dto.GetChangedReferences
 import no.nav.cv.eures.model.Converters.toUtcZonedDateTime
 import no.nav.security.token.support.core.api.Unprotected
 import org.springframework.web.bind.annotation.*
@@ -25,9 +26,14 @@ class EuresController(
         euresService.getAllReferences()
 
     @GetMapping("getChanges/{modificationTimestamp}", produces = ["application/json"])
-    fun getChanges(@PathVariable("modificationTimestamp") modificationTimestamp: Long) =
-        euresService.getChangedReferences(modificationTimestamp.toUtcZonedDateTime())
+    fun getChanges(@PathVariable("modificationTimestamp") modificationTimestamp: Long): GetChangedReferences {
+        val changedReferences = euresService.getChangedReferences(modificationTimestamp.toUtcZonedDateTime())
+        log.info("Antall cv-er opprettet: ${changedReferences.createdReferences.size}, " +
+                "antall cv-er endret: ${changedReferences.modifiedReferences.size} og " +
+                "antall cv-er slettet: ${changedReferences.closedReferences.size}")
 
+        return changedReferences
+    }
 
     @PostMapping("getDetails", consumes = ["application/json"], produces = ["application/json"])
     fun getDetails(@RequestBody references: List<String>) =
