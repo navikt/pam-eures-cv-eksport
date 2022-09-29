@@ -5,8 +5,10 @@ import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
 import com.fasterxml.jackson.module.kotlin.KotlinModule
 import com.nhaarman.mockitokotlin2.*
 import no.nav.cv.eures.model.Converters.toUtcZonedDateTime
+import no.nav.cv.eures.eures.dto.GetChangedReferences
 import no.nav.security.token.support.spring.test.EnableMockOAuth2Server
 import org.junit.jupiter.api.Test
+import org.mockito.Mockito
 import org.mockito.Mockito.verifyNoInteractions
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest
@@ -38,6 +40,7 @@ class EuresControllerTest {
     @Test
     fun `call to fetch changes` () {
         val modificationTimestamp = 1607963578952.toUtcZonedDateTime()
+        Mockito.`when`(euresService.getChangedReferences(any())).thenReturn(GetChangedReferences())
         mockMvc.perform(
              MockMvcRequestBuilders.get("/input/api/cv/v1.0/getChanges/1607963578952")
                      .headers(headerWithToken(VALID_TEST_TOKEN_BASE64))
