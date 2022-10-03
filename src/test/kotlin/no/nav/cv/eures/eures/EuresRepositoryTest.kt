@@ -20,6 +20,7 @@ import org.springframework.stereotype.Repository
 import org.springframework.test.context.ActiveProfiles
 import java.time.ZoneId
 import java.time.ZonedDateTime
+import java.util.*
 
 @DataJpaTest(includeFilters = [ComponentScan.Filter(type = FilterType.ANNOTATION, classes = [Repository::class])])
 @EnableMockOAuth2Server
@@ -72,6 +73,8 @@ class EuresRepositoryTest {
         log.info("Dato for one day ago som har blitt brukt i testen: $oneDayAgo")
         log.info("Resultat som kan sjekkes hvis testen feiler på github med 'expected: <1> but was: <2>': ${one.content}")
         log.info("Resultat for å hente alle cv-er: ${all.content}")
+        val calendar = Calendar.getInstance()
+        log.info("Calendar: ${calendar.timeZone}")
 
         assertEquals(4, all.content.size)
         assertEquals(2, two.content.size)
