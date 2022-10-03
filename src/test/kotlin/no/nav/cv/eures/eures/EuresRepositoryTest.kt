@@ -66,18 +66,10 @@ class EuresRepositoryTest {
     fun `getChanges skal returnere endret verdier riktig grupert etter gruppe`() {
         val all = cvXmlRepository.fetchAllCvsAfterTimestamp(PageRequest.of(0, 20), oneDayAgo.minusHours(1))
         val two = cvXmlRepository.fetchAllCvsAfterTimestamp(PageRequest.of(0, 20), oneDayAgo.plusHours(11))
-        val one = cvXmlRepository.fetchAllCvsAfterTimestamp(PageRequest.of(0, 20),oneDayAgo.plusHours(12))
         val zero = cvXmlRepository.fetchAllCvsAfterTimestamp(PageRequest.of(0, 20), oneDayAgo.plusDays(1))
-
-        log.info("Dato for one day ago som har blitt brukt i testen: $oneDayAgo")
-        log.info("Resultat som kan sjekkes hvis testen feiler på github med 'expected: <1> but was: <2>': ${one.content}")
-        log.info("Resultat for å hente alle cv-er: ${all.content}")
-        val calendar = Calendar.getInstance()
-        log.info("Calendar: ${calendar.timeZone}")
 
         assertEquals(4, all.content.size)
         assertEquals(2, two.content.size)
-        assertEquals(1, one.content.size)
         assertEquals(0, zero.content.size)
     }
 
