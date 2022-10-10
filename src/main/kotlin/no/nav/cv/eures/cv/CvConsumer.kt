@@ -1,9 +1,15 @@
 package no.nav.cv.eures.cv
 
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
+import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
+import com.fasterxml.jackson.module.kotlin.readValue
 import io.micrometer.core.instrument.MeterRegistry
 import no.nav.arbeid.cv.avro.Melding
 import no.nav.arbeid.cv.avro.Meldingstype
+import no.nav.cv.dto.CvEndretInternDto
+import no.nav.cv.dto.CvMeldingstype
 import no.nav.cv.eures.cv.RawCV.Companion.RecordType.*
+import no.nav.cv.eures.konverterer.CvConverterService2
 import no.nav.cv.eures.samtykke.SamtykkeService
 import no.nav.cv.eures.util.toMelding
 import org.apache.kafka.clients.consumer.ConsumerRecord
@@ -21,11 +27,14 @@ import java.util.*
 class CvConsumer(
         private val cvRepository: CvRepository,
         private val samtykkeService: SamtykkeService,
-        private val meterRegistry: MeterRegistry
+        private val meterRegistry: MeterRegistry,
+        private val cvConverterService2: CvConverterService2
 ) {
 
     companion object {
         val log: Logger = LoggerFactory.getLogger(CvConsumer::class.java)
+        val objectMapper = jacksonObjectMapper()
+            .registerModule(JavaTimeModule())
     }
 
 
@@ -129,7 +138,6 @@ class CvConsumer(
             Meldingstype.SLETT -> delete()
             null -> throw Exception("Invalid meldingstype: null")
         }
-
     }
 
 
@@ -146,7 +154,21 @@ class CvConsumer(
     }
 
     private fun processJsonMessage(endretCV: ConsumerRecord<String, ByteArray>) {
-        System.out.println(endretCV.headers() + " " + endretCV.key())
+        try {
+            val df: DateFormat = SimpleDateFormat("yyyy-MM-dd HH:mm")
+            val isoDate = df.format(Date(endretCV.timestamp()))
+
+            log.debug("Processing json kafka message with key ${endretCV.key()} with timestamp $isoDate")
+
+            val cvEndretInternDto = objectMapper.readValue<CvEndretInternDto>(endretCV.value())
+            when (cvEndretInternDto.meldingstype) {
+                CvMeldingstype.OPPRETT -> cvConverterService2.createOrUpdate(cvEndretInternDto)
+                CvMeldingstype.ENDRE -> cvConverterService2.createOrUpdate(cvEndretInternDto)
+                CvMeldingstype.SLETT -> cvEndretInternDto.foedselsnummer?.let { cvConverterService2.delete(cvEndretInternDto.foedselsnummer) }
+            }
+        } catch (e: Exception) {
+            log.warn("Klarte ikke behandle kafkamelding ${endretCV.key()} (partition: ${endretCV.partition()} - offset ${endretCV.offset()} - størrelse: ${endretCV.value().size}  StackTrace: ${e.stackTraceToString()}", e)
+        }
     }
 
     private fun processAvroMessage(endretCV: ConsumerRecord<String, ByteArray>) {
@@ -154,7 +176,7 @@ class CvConsumer(
             val df: DateFormat = SimpleDateFormat("yyyy-MM-dd HH:mm")
             val isoDate = df.format(Date(endretCV.timestamp()))
 
-            log.debug("Processing kafka message with key ${endretCV.key()} with timestamp $isoDate")
+            log.debug("Processing avro kafka message with key ${endretCV.key()} with timestamp $isoDate")
             val meldingValue = endretCV.value()
             val rawAvroBase64 = Base64.getEncoder().encodeToString(meldingValue)
             meldingValue.toMelding(endretCV.key()).createUpdateOrDelete(rawAvroBase64)

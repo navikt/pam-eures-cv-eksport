@@ -7,10 +7,7 @@ import no.nav.arbeid.cv.avro.Meldingstype
 import no.nav.cv.eures.cv.*
 import no.nav.cv.eures.model.Candidate
 import no.nav.cv.eures.samtykke.SamtykkeRepository
-import no.nav.cv.eures.samtykke.SamtykkeService
 import no.nav.cv.eures.util.toMelding
-import org.apache.avro.io.DecoderFactory
-import org.apache.avro.specific.SpecificDatumReader
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
@@ -56,6 +53,7 @@ class CvConverterService(
         return convertToXml(cvXml.foedselsnummer)
                 ?.let { (_, xml, _) -> updateIfChanged(cvXml, xml)}
     }
+
 
     fun updateIfChanged(cvXml: CvXml, newXml: String): CvXml {
         val now = ZonedDateTime.now()
@@ -145,8 +143,6 @@ class CvConverterService(
                 log.info("Trying to convert XML for ${foedselsnummer.take(1)}.........${foedselsnummer.takeLast(1)} but got null from melding.cvAndProfile() ")
                 null
             }
-
-
     }
 
 }

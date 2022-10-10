@@ -3,6 +3,7 @@ package no.nav.cv.eures.cv
 import com.nhaarman.mockitokotlin2.doReturn
 import io.micrometer.core.instrument.simple.SimpleMeterRegistry
 import no.nav.arbeid.cv.avro.Melding
+import no.nav.cv.eures.konverterer.CvConverterService2
 import no.nav.cv.eures.samtykke.SamtykkeService
 import org.apache.kafka.clients.consumer.ConsumerRecord
 import org.junit.jupiter.api.Assertions.assertEquals
@@ -19,7 +20,7 @@ class CvConsumerTest {
 
     private val cvRepository = Mockito.mock(CvRepository::class.java)
     private val samtykkeService = Mockito.mock(SamtykkeService::class.java)
-
+    private val cvConverterService2 = Mockito.mock(CvConverterService2::class.java)
 
     private val meterRegistry = SimpleMeterRegistry()
     private val testData = CvTestData()
@@ -32,7 +33,7 @@ class CvConsumerTest {
 
     @BeforeEach
     fun setup() {
-        cvConsumer = CvConsumer(cvRepository, samtykkeService, meterRegistry)
+        cvConsumer = CvConsumer(cvRepository, samtykkeService, meterRegistry, cvConverterService2)
     }
 
     @Test

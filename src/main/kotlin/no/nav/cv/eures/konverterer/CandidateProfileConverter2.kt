@@ -8,7 +8,6 @@ import no.nav.cv.eures.samtykke.Samtykke
 
 class CandidateProfileConverter2(
     private val dto: CvEndretInternDto,
-    private val profile: Jobbprofil?, //TODO delete or replace
     private val samtykke: Samtykke
 ) {
     companion object {
@@ -24,6 +23,6 @@ class CandidateProfileConverter2(
             educationHistory = if(samtykke.utdanning) EducationHistoryConverter2(dto).toXmlRepresentation() else null,
             licenses = if(samtykke.foererkort) LicensesConverter2(dto).toXmlRepresentation() else null,
             certifications = CertificationConverter2(dto, samtykke).toXmlRepresentation(),
-            personQualifications = PersonQualificationsConverter2(dto, profile, samtykke).toXmlRepresentation()
+            personQualifications = PersonQualificationsConverter2(dto, samtykke).toXmlRepresentation()
     )
 }

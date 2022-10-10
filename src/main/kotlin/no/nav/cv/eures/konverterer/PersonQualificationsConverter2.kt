@@ -3,6 +3,8 @@ package no.nav.cv.eures.konverterer
 import no.nav.arbeid.cv.avro.*
 import no.nav.cv.dto.CvEndretInternDto
 import no.nav.cv.dto.cv.CvEndretInternLanguage
+import no.nav.cv.dto.cv.CvEndretInternSkillDraft
+import no.nav.cv.dto.jobwishes.CvEndretInternSkill
 import no.nav.cv.eures.janzz.JanzzService
 import no.nav.cv.eures.konverterer.language.LanguageConverter
 import no.nav.cv.eures.model.PersonCompetency
@@ -13,7 +15,6 @@ import org.slf4j.LoggerFactory
 
 class PersonQualificationsConverter2 (
     private val dto: CvEndretInternDto,
-    private val profile: Jobbprofil?,
     private val samtykke: Samtykke,
     private val janzzService: JanzzService = JanzzService.instance()
 ) {
@@ -25,12 +26,12 @@ class PersonQualificationsConverter2 (
     fun toXmlRepresentation() : PersonQualifications? {
         val qualifications = mutableListOf<PersonCompetency>()
 
-        if(samtykke.spraak && dto.cv?.languages != null)
-            qualifications.addAll(dto.cv?.languages.toLanguages())
+        if(samtykke.spraak)
+            qualifications.addAll(dto.cv?.languages?.toLanguages().orEmpty())
 
-        if(samtykke.kompetanser && profile?.kompetanser != null)
-            qualifications.addAll(profile.kompetanser.toEsco())
-
+        if(samtykke.kompetanser)
+            qualifications.addAll(dto.cv?.skillDrafts?.mapNotNull { it.title }?.toEsco().orEmpty())
+            qualifications.addAll(dto.jobWishes?.skills?.mapNotNull { it.title }?.toEsco().orEmpty())
         return if(qualifications.isNotEmpty()) PersonQualifications(qualifications) else null
     }
 
