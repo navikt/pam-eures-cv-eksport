@@ -1,10 +1,19 @@
 package no.nav.cv.eures.cv
 
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
+import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import com.nhaarman.mockitokotlin2.doReturn
+import com.nhaarman.mockitokotlin2.firstValue
 import io.micrometer.core.instrument.simple.SimpleMeterRegistry
 import no.nav.arbeid.cv.avro.Melding
+import no.nav.arbeid.cv.avro.Meldingstype
+import no.nav.cv.dto.CvEndretInternDto
+import no.nav.cv.dto.CvMeldingstype
+import no.nav.cv.dto.cv.CvEndretInternCvDto
+import no.nav.cv.dto.cv.CvEndretInternLanguage
 import no.nav.cv.eures.konverterer.CvConverterService2
 import no.nav.cv.eures.samtykke.SamtykkeService
+import org.apache.avro.data.Json
 import org.apache.kafka.clients.consumer.ConsumerRecord
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.BeforeEach
@@ -13,6 +22,7 @@ import org.mockito.ArgumentCaptor
 import org.mockito.Captor
 import org.mockito.Mockito
 import java.time.ZonedDateTime
+import java.util.UUID
 
 class CvConsumerTest {
 
@@ -30,6 +40,10 @@ class CvConsumerTest {
 
     val meldingCaptorRawCv = ArgumentCaptor.forClass(RawCV::class.java)
     val stringCaptor = com.nhaarman.mockitokotlin2.argumentCaptor<String>()
+    val meldingCaptorCvInternDto = com.nhaarman.mockitokotlin2.argumentCaptor<CvEndretInternDto>()
+
+    val jacksonMapper = jacksonObjectMapper()
+        .registerModule(JavaTimeModule())
 
     @BeforeEach
     fun setup() {
@@ -100,7 +114,71 @@ class CvConsumerTest {
         assertEquals(testData.foedselsnummer2, stringCaptor.firstValue)
     }
 
-
     private fun record(offset: Long, aktorId: String, melding: Melding)
     = ConsumerRecord<String, ByteArray>(TOPIC, PARTITION, offset, aktorId, melding.toByteArray())
+
+    @Test
+    fun `test at cv-endret-intern-v3 blir parset korrekt og rutet korrekt til createOrUpdate`() {
+        var offset = 0L
+        var aktorId = "123"
+        var language = "Norsk"
+        var meldingsType = CvMeldingstype.OPPRETT
+        cvConsumer.receive(listOf(
+            internRecord(offset++, testData.aktoerId1, createCvEndretInternDto(aktorId, "", language, meldingsType))))
+
+        Mockito.verify(cvConverterService2, Mockito.times(1)).createOrUpdate(meldingCaptorCvInternDto.capture())
+
+        assertEquals(aktorId, meldingCaptorCvInternDto.firstValue.aktorId, "Skal få 123 som aktørId")
+        assertEquals(language, meldingCaptorCvInternDto.firstValue.cv?.languages?.get(0)?.language, "Skal få norsk som språk")
+    }
+
+    @Test
+    fun `test at cv-endret-intern-v3 blir rutet korrekt til cvConverterService2delete`() {
+        var offset = 0L
+        var fodselsnr = "11111111"
+        var meldingsType = CvMeldingstype.SLETT
+        var cvEndretInternDto = createCvEndretInternDto("", fodselsnr, "", meldingsType)
+        cvConsumer.receive(listOf(
+            internRecord(offset++, testData.aktoerId1, cvEndretInternDto)))
+
+        Mockito.verify(cvConverterService2, Mockito.times(1)).delete(stringCaptor.capture())
+        assertEquals(fodselsnr, stringCaptor.firstValue, "Skal gi fødselsnummeret mottatt i receiveren.")
+    }
+
+    private fun createCvEndretInternDto(aktorId: String, fodselsnr: String, language: String, meldingstype: CvMeldingstype) : CvEndretInternDto {
+        return CvEndretInternDto(aktorId = aktorId, kandidatNr = null, foedselsnummer = fodselsnr, meldingstype = meldingstype,
+            cv = CvEndretInternCvDto(
+                uuid = UUID.randomUUID(),
+                hasCar = true,
+                summary = "Dyktig i jobben",
+                languages = listOf(CvEndretInternLanguage(
+                    language = language,
+                    iso3Code = "",
+                    oralProficiency = "",
+                    writtenProficiency = ""
+                )),
+                otherExperience = listOf(),
+                workExperience = listOf(),
+                courses = listOf(),
+                certificates = listOf(),
+                education = listOf(),
+                vocationalCertificates = listOf(),
+                authorizations = listOf(),
+                driversLicenses = listOf(),
+                skillDrafts = listOf(),
+                synligForArbeidsgiver = true,
+                synligForVeileder = true,
+                createdAt = ZonedDateTime.now(),
+                updatedAt = ZonedDateTime.now()
+            ),
+            personalia = null,
+            jobWishes = null,
+            oppfolgingsInformasjon = null,
+            updatedBy = null
+            )
+    }
+
+    private fun internRecord(offset: Long, aktorId: String, dto: CvEndretInternDto)
+    = ConsumerRecord<String, ByteArray>("\${kafka.topics.consumers.cv_endret_json}", PARTITION, offset, aktorId, jacksonMapper.writeValueAsBytes(dto))
+
 }
