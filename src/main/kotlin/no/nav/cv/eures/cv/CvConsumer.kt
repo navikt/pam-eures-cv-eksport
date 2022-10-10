@@ -30,7 +30,7 @@ class CvConsumer(
 
 
     @KafkaListener(
-            topics = ["\${kafka.topics.consumers.cv_endret}"],
+            topics = ["\${kafka.topics.consumers.cv_endret}", "\${kafka.topics.consumers.cv_endret_json}"],
             containerFactory = "cvMeldingContainerFactory",
     )
     fun receive(record: List<ConsumerRecord<String, ByteArray>>) {
@@ -137,18 +137,30 @@ class CvConsumer(
         log.debug("Fikk ${endretCV.size} meldinger fra CV endret Kafka.")
 
         endretCV.forEach { melding ->
-            try {
-                val df: DateFormat = SimpleDateFormat("yyyy-MM-dd HH:mm")
-                val isoDate = df.format(Date(melding.timestamp()))
-
-                log.debug("Processing kafka message with key ${melding.key()} with timestamp $isoDate")
-                val meldingValue = melding.value()
-                val rawAvroBase64 = Base64.getEncoder().encodeToString(meldingValue)
-                meldingValue.toMelding(melding.key()).createUpdateOrDelete(rawAvroBase64)
-
-            } catch (e: Exception) {
-                log.warn("Klarte ikke behandle kafkamelding ${melding.key()} (partition: ${melding.partition()} - offset ${melding.offset()} - størrelse: ${melding.value().size}  StackTrace: ${e.stackTraceToString()}", e)
+            if (melding.topic().equals("\${kafka.topics.consumers.cv_endret_json}")) {
+                processJsonMessage(melding)
+            } else {
+                processAvroMessage(melding)
             }
+        }
+    }
+
+    private fun processJsonMessage(endretCV: ConsumerRecord<String, ByteArray>) {
+        System.out.println(endretCV.headers() + " " + endretCV.key())
+    }
+
+    private fun processAvroMessage(endretCV: ConsumerRecord<String, ByteArray>) {
+        try {
+            val df: DateFormat = SimpleDateFormat("yyyy-MM-dd HH:mm")
+            val isoDate = df.format(Date(endretCV.timestamp()))
+
+            log.debug("Processing kafka message with key ${endretCV.key()} with timestamp $isoDate")
+            val meldingValue = endretCV.value()
+            val rawAvroBase64 = Base64.getEncoder().encodeToString(meldingValue)
+            meldingValue.toMelding(endretCV.key()).createUpdateOrDelete(rawAvroBase64)
+
+        } catch (e: Exception) {
+            log.warn("Klarte ikke behandle kafkamelding ${endretCV.key()} (partition: ${endretCV.partition()} - offset ${endretCV.offset()} - størrelse: ${endretCV.value().size}  StackTrace: ${e.stackTraceToString()}", e)
         }
     }
 

@@ -64,6 +64,7 @@ kafka:
   topics:
     consumers:
       cv_endret: ${KAFKA_CONSUMER_TOPIC_CV_ENDRET:arbeid-pam-cv-endret-v2-dev}
+      cv_endret_json: ${KAFKA_CONSUMER_TOPIC_CV_ENDRET_JSON:teampam.cv-endret-intern-v3}
 
 avro:
   schema.subject: ${KAFKA_CONSUMER_TOPIC_CV_ENDRET:arbeid-pam-cv-endret-v2-dev}-value

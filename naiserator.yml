@@ -58,6 +58,8 @@ spec:
   env:
     - name: KAFKA_CONSUMER_TOPIC_CV_ENDRET
       value: {{ kafka_consumer_topic_cv_endret }}
+    - name: KAFKA_CONSUMER_TOPIC_CV_ENDRET_JSON
+      value: {{ kafka_consumer_topic_cv_endret_json }}
     - name: KAFKA_BOOTSTRAP_SERVERS
       value: {{ kafka_bootstrap_servers }}
     - name: DB_DRIVER
