@@ -36,7 +36,7 @@ class EuresRepositoryTest {
     @Autowired
     lateinit var samtykkeRepository: SamtykkeRepository
 
-    private var oneDayAgo = ZonedDateTime.now().minusDays(1)
+    private var oneDayAgo = ZonedDateTime.now().withNano(0).minusDays(1)
 
     private fun testData() = listOf(
             CvXml().update("PAM-1", "1234567890", oneDayAgo, oneDayAgo, null, xml = "SOME XML", checksum = "SOME CHECKSUM"),
@@ -71,7 +71,8 @@ class EuresRepositoryTest {
 
         assertEquals(4, all.content.size)
         assertEquals(2, two.content.size)
-        //assertEquals(0, zero.content.size)
+        assertEquals(1, one.content.size)
+        assertEquals(0, zero.content.size)
 
         if(one.content.size > 1) {
             log.info("Compared date: ${oneDayAgo.plusHours(12)}")
@@ -80,8 +81,6 @@ class EuresRepositoryTest {
             assertEquals(oneDayAgo.plusHours(12), one.content[0].sistEndret)
             assertEquals(oneDayAgo.plusHours(12), one.content[1].sistEndret)
         }
-        assertEquals(1, one.content.size)
-
     }
 
     @Test
