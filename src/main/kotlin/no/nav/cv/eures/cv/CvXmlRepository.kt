@@ -55,8 +55,8 @@ interface CvXmlRepository : JpaRepository<CvXml, Long> {
     @Query("SELECT cv FROM CvXml cv WHERE cv.reference in :references")
     fun fetchAllCvsByReference(references: List<String>): List<CvXml>
 
-    @Query("SELECT cv FROM CvXml cv WHERE cv.sistEndret > :time or cv.slettet > :time")
-    fun fetchAllCvsAfterTimestamp(page: Pageable, time: ZonedDateTime): Page<CvXml>
+    @Query("SELECT cv FROM CvXml cv WHERE cv.sistEndret > :timeChanged or cv.slettet > :timeChanged")
+    fun fetchAllCvsAfterTimestamp(page: Pageable, timeChanged: ZonedDateTime): Page<CvXml>
 
 }
 

@@ -75,6 +75,7 @@ class EuresRepositoryTest {
         //assertEquals(0, zero.content.size)
 
         if(one.content.size > 1) {
+            log.info("Content: ${one.content}")
             assertEquals(oneDayAgo.plusHours(12), one.content[0].sistEndret)
             assertEquals(oneDayAgo.plusHours(12), one.content[1].sistEndret)
         }
