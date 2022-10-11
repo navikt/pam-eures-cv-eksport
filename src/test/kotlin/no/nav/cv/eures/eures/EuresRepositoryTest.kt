@@ -73,6 +73,7 @@ class EuresRepositoryTest {
         assertEquals(2, two.content.size)
         //assertEquals(1, one.content.size)
         //assertEquals(0, zero.content.size)
+        log.info("Content for one ${one.content}")
 
         if(one.content.size > 1) {
             log.info("Content: ${one.content}")
