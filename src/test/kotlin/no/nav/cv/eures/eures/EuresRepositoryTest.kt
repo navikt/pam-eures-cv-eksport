@@ -66,21 +66,13 @@ class EuresRepositoryTest {
     fun `getChanges skal returnere endret verdier riktig grupert etter gruppe`() {
         val all = cvXmlRepository.fetchAllCvsAfterTimestamp(PageRequest.of(0, 20), oneDayAgo.minusHours(1))
         val two = cvXmlRepository.fetchAllCvsAfterTimestamp(PageRequest.of(0, 20), oneDayAgo.plusHours(11))
-        val one = cvXmlRepository.fetchAllCvsAfterTimestamp(PageRequest.of(0, 20),oneDayAgo.plusHours(12))
+        val one = cvXmlRepository.fetchAllCvsAfterTimestamp(PageRequest.of(0, 20), oneDayAgo.plusHours(12))
         val zero = cvXmlRepository.fetchAllCvsAfterTimestamp(PageRequest.of(0, 20), oneDayAgo.plusDays(1))
 
         assertEquals(4, all.content.size)
         assertEquals(2, two.content.size)
         assertEquals(1, one.content.size)
         assertEquals(0, zero.content.size)
-
-        if(one.content.size > 1) {
-            log.info("Compared date: ${oneDayAgo.plusHours(12)}")
-            log.info("Content: ${one.content}")
-
-            assertEquals(oneDayAgo.plusHours(12), one.content[0].sistEndret)
-            assertEquals(oneDayAgo.plusHours(12), one.content[1].sistEndret)
-        }
     }
 
     @Test
