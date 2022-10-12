@@ -164,7 +164,7 @@ class CvConsumer(
             when (cvEndretInternDto.meldingstype) {
                 CvMeldingstype.OPPRETT -> cvConverterService2.createOrUpdate(cvEndretInternDto)
                 CvMeldingstype.ENDRE -> cvConverterService2.createOrUpdate(cvEndretInternDto)
-                CvMeldingstype.SLETT -> cvEndretInternDto.foedselsnummer?.let { cvConverterService2.delete(cvEndretInternDto.foedselsnummer) }
+                CvMeldingstype.SLETT -> cvEndretInternDto.fodselsnummer?.let { cvConverterService2.delete(cvEndretInternDto.fodselsnummer) }
             }
         } catch (e: Exception) {
             log.warn("Klarte ikke behandle kafkamelding ${endretCV.key()} (partition: ${endretCV.partition()} - offset ${endretCV.offset()} - størrelse: ${endretCV.value().size}  StackTrace: ${e.stackTraceToString()}", e)

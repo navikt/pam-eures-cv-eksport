@@ -146,7 +146,7 @@ class CvConsumerTest {
     }
 
     private fun createCvEndretInternDto(aktorId: String, fodselsnr: String, language: String, meldingstype: CvMeldingstype) : CvEndretInternDto {
-        return CvEndretInternDto(aktorId = aktorId, kandidatNr = null, foedselsnummer = fodselsnr, meldingstype = meldingstype,
+        return CvEndretInternDto(aktorId = aktorId, kandidatNr = null, fodselsnummer = fodselsnr, meldingstype = meldingstype,
             cv = CvEndretInternCvDto(
                 uuid = UUID.randomUUID(),
                 hasCar = true,

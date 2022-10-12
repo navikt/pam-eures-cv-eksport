@@ -70,7 +70,7 @@ class CvConverterService2(
                 CvConverterService.log.debug("Create New: Before save of ${xml.length} bytes of xml with checksum $checksum")
                 cvXmlRepository.save(CvXml.create(
                     reference = ref,
-                    foedselsnummer = dto.foedselsnummer.orEmpty(),
+                    foedselsnummer = dto.fodselsnummer.orEmpty(),
                     opprettet = now,
                     sistEndret = now,
                     slettet = null,
@@ -81,7 +81,7 @@ class CvConverterService2(
     }
 
 
-    fun createOrUpdate(dto: CvEndretInternDto) = cvXmlRepository.fetch(dto.foedselsnummer!!)
+    fun createOrUpdate(dto: CvEndretInternDto) = cvXmlRepository.fetch(dto.fodselsnummer!!)
         ?.let { updateExisting(it, dto) }
         ?: createNew(dto)
 
@@ -100,10 +100,10 @@ class CvConverterService2(
             ?.let {
                 CvConverterService.log.debug("Got CV aktoerid: ${it.aktorId}")
 
-                samtykkeRepository.hentSamtykke(it.foedselsnummer!!)
+                samtykkeRepository.hentSamtykke(it.fodselsnummer!!)
                     ?.run {
                         val (xml, previewJson) = try {
-                            val candidate = CandidateConverter2(it, this).toXmlRepresentation() //TODO nullet ut profil her OBS OBS
+                            val candidate = CandidateConverter2(it, this).toXmlRepresentation()
                             Pair(XmlSerializer.serialize(candidate), candidate)
                         } catch (e: Exception) {
                             CvConverterService.log.error("Failed to convert CV to XML for candidate ${it.aktorId}", e)
