@@ -1,8 +1,6 @@
 package no.nav.cv.eures.util
 
 import no.nav.arbeid.cv.avro.Melding
-import no.nav.cv.eures.cv.CvConsumer
-import no.nav.cv.eures.cv.KafkaConfig
 import org.apache.avro.io.DecoderFactory
 import org.apache.avro.specific.SpecificDatumReader
 import org.slf4j.LoggerFactory

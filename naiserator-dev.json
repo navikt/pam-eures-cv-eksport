@@ -4,7 +4,7 @@
   "kafka_schema_registry": "kafka-schema-registry.nais-q.adeo.no",
   "kafka_consumer_topic_cv_endret":"arbeid-pam-cv-endret-v6",
 
-  "kafka_consumer_topic_cv_endret_json": "teampam.cv-endret-intern-v3",
+  "kafka_consumer_topic_cv_endret_json": "cv-endret-intern-v3",
 
   "ingress":  ["https://arbeidsplassen.dev.nav.no/pam-eures-cv-eksport", "https://pam-eures-cv-eksport.dev-gcp.nais.io/pam-eures-cv-eksport"],
   "avro_version_fiftytwo_hex": "NoInt0000031f",

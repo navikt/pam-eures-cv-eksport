@@ -1,4 +1,4 @@
-package no.nav.cv.eures.cv
+package no.nav.cv.eures.cv.consumer
 
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
@@ -8,6 +8,8 @@ import no.nav.arbeid.cv.avro.Melding
 import no.nav.arbeid.cv.avro.Meldingstype
 import no.nav.cv.dto.CvEndretInternDto
 import no.nav.cv.dto.CvMeldingstype
+import no.nav.cv.eures.cv.CvRepository
+import no.nav.cv.eures.cv.RawCV
 import no.nav.cv.eures.cv.RawCV.Companion.RecordType.*
 import no.nav.cv.eures.konverterer.CvConverterService2
 import no.nav.cv.eures.samtykke.SamtykkeService
@@ -15,6 +17,7 @@ import no.nav.cv.eures.util.toMelding
 import org.apache.kafka.clients.consumer.ConsumerRecord
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
+import org.springframework.beans.factory.annotation.Value
 import org.springframework.kafka.annotation.KafkaListener
 import org.springframework.stereotype.Service
 import java.text.DateFormat
@@ -25,10 +28,11 @@ import java.util.*
 
 @Service
 class CvConsumer(
-        private val cvRepository: CvRepository,
-        private val samtykkeService: SamtykkeService,
-        private val meterRegistry: MeterRegistry,
-        private val cvConverterService2: CvConverterService2
+    private val cvRepository: CvRepository,
+    private val samtykkeService: SamtykkeService,
+    private val meterRegistry: MeterRegistry,
+    private val cvConverterService2: CvConverterService2,
+    @Value("\${featureToggle.internTopicOn}") private val internTopicOn: Boolean
 ) {
 
     companion object {
@@ -39,12 +43,25 @@ class CvConsumer(
 
 
     @KafkaListener(
-            topics = ["\${kafka.topics.consumers.cv_endret}", "\${kafka.topics.consumers.cv_endret_json}"],
+            topics = ["\${kafka.topics.consumers.cv_endret}"],
             containerFactory = "cvMeldingContainerFactory",
     )
-    fun receive(record: List<ConsumerRecord<String, ByteArray>>) {
-        log.debug("Receiving cv melding message")
-        processMessages(record)
+    fun receiveAvro(record: List<ConsumerRecord<String, ByteArray>>) {
+        log.debug("Receiving cv avro message")
+        if (!internTopicOn) {
+            processAvroMessages(record)
+        }
+    }
+
+    @KafkaListener(
+        topics = ["\${kafka.aiven.topics.consumers.cv_endret}"],
+        containerFactory = "cvEndretInternContainerFactory"
+    )
+    fun receiveJson(record: List<ConsumerRecord<String, ByteArray>>) {
+        log.debug("Receiving cv json message")
+        if (internTopicOn) {
+            processJsonMessages(record)
+        }
     }
 
     private fun String.foedselsnummerOrNull(): String? {
@@ -103,12 +120,12 @@ class CvConsumer(
             cvRepository.deleteCvByAktorId(aktoerId)
 
             val newRawCv = RawCV.create(
-                    aktoerId = aktoerId,
-                    foedselsnummer = foedselsnummer,
-                    sistEndret = ZonedDateTime.now(),
-                    rawAvro = rawAvroBase64,
-                    underOppfoelging = (oppfolgingsinformasjon != null),
-                    meldingstype = CREATE
+                aktoerId = aktoerId,
+                foedselsnummer = foedselsnummer,
+                sistEndret = ZonedDateTime.now(),
+                rawAvro = rawAvroBase64,
+                underOppfoelging = (oppfolgingsinformasjon != null),
+                meldingstype = CREATE
             )
 
             try {
@@ -141,17 +158,21 @@ class CvConsumer(
     }
 
 
-    private fun processMessages(endretCV: List<ConsumerRecord<String, ByteArray>>) {
+    private fun processAvroMessages(endretCV: List<ConsumerRecord<String, ByteArray>>) {
         log.debug("Fikk ${endretCV.size} meldinger fra CV endret Kafka.")
 
         endretCV.forEach { melding ->
-            if (melding.topic().equals("\${kafka.topics.consumers.cv_endret_json}")) {
-                log.info("Mottatt json-melding på topic: " + melding.topic())
-                //processJsonMessage(melding)
-            } else {
-                log.info("Mottatt avro-melding på topic: " + melding.topic())
-                processAvroMessage(melding)
-            }
+            log.info("Mottatt avro-melding på topic: " + melding.topic())
+            processAvroMessage(melding)
+        }
+    }
+
+    private fun processJsonMessages(endretCV: List<ConsumerRecord<String, ByteArray>>) {
+        log.debug("Fikk ${endretCV.size} meldinger fra CV endret Kafka.")
+
+        endretCV.forEach { melding ->
+            log.info("Mottatt json-melding på topic: " + melding.topic())
+            //processJsonMessage(melding)
         }
     }
 

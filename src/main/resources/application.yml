@@ -61,10 +61,27 @@ spring:
 
 
 kafka:
+  aiven:
+    topics:
+      consumers:
+        cv_endret: ${KAFKA_CONSUMER_TOPIC_CV_ENDRET_JSON:teampam.cv-endret-intern-v3}
+      brokers: ${KAFKA_BROKERS:localhost}
+      securityProtocol: SSL
+      certificate: ${KAFKA_CERTIFICATE:cert}
+      certificatePath: ${KAFKA_CERTIFICATE_PATH:/dev/zero}
+      privateKey: ${KAFKA_PRIVATE_KEY:key}
+      privateKeyPath: ${KAFKA_PRIVATE_KEY_PATH:/dev/zero}
+      ca: ${KAFKA_CA:ca}
+      caPath: ${KAFKA_CA_PATH:/dev/zero}
+      keystorePath: ${KAFKA_KEYSTORE_PATH:/dev/zero}
+      truststorePath: ${KAFKA_TRUSTSTORE_PATH:/dev/zero}
+      credstorePassword: ${KAFKA_CREDSTORE_PASSWORD:pwd}
+      schemaRegistry: ${KAFKA_SCHEMA_REGISTRY:pwd}
+      schemaUsername: ${KAFKA_SCHEMA_REGISTRY_USER:none}
+      schemaPassword: ${KAFKA_SCHEMA_REGISTRY_PASSWORD:none}
   topics:
     consumers:
       cv_endret: ${KAFKA_CONSUMER_TOPIC_CV_ENDRET:arbeid-pam-cv-endret-v2-dev}
-      cv_endret_json: ${KAFKA_CONSUMER_TOPIC_CV_ENDRET_JSON:teampam.cv-endret-intern-v3}
 
 avro:
   schema.subject: ${KAFKA_CONSUMER_TOPIC_CV_ENDRET:arbeid-pam-cv-endret-v2-dev}-value
@@ -93,3 +110,6 @@ management:
       exposure:
         include: prometheus
     enabled-by-default: false
+
+featureToggle:
+  internTopicOn: false

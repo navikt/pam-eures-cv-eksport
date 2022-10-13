@@ -3,24 +3,21 @@ package no.nav.cv.eures.cv
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import com.nhaarman.mockitokotlin2.doReturn
-import com.nhaarman.mockitokotlin2.firstValue
 import io.micrometer.core.instrument.simple.SimpleMeterRegistry
 import no.nav.arbeid.cv.avro.Melding
-import no.nav.arbeid.cv.avro.Meldingstype
 import no.nav.cv.dto.CvEndretInternDto
 import no.nav.cv.dto.CvMeldingstype
 import no.nav.cv.dto.cv.CvEndretInternCvDto
 import no.nav.cv.dto.cv.CvEndretInternLanguage
+import no.nav.cv.eures.cv.consumer.CvConsumer
 import no.nav.cv.eures.konverterer.CvConverterService2
 import no.nav.cv.eures.samtykke.SamtykkeService
-import org.apache.avro.data.Json
 import org.apache.kafka.clients.consumer.ConsumerRecord
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.Test
 import org.mockito.ArgumentCaptor
-import org.mockito.Captor
 import org.mockito.Mockito
 import java.time.ZonedDateTime
 import java.util.UUID
@@ -48,13 +45,13 @@ class CvConsumerTest {
 
     @BeforeEach
     fun setup() {
-        cvConsumer = CvConsumer(cvRepository, samtykkeService, meterRegistry, cvConverterService2)
+        cvConsumer = CvConsumer(cvRepository, samtykkeService, meterRegistry, cvConverterService2, false)
     }
 
     @Test
     fun `mottar en og en cv - lagres riktig`() {
-        cvConsumer.receive(listOf(record(0, testData.aktoerId1, testData.melding1)))
-        cvConsumer.receive(listOf(record(1, testData.aktoerId2, testData.melding2)))
+        cvConsumer.receiveAvro(listOf(record(0, testData.aktoerId1, testData.melding1)))
+        cvConsumer.receiveAvro(listOf(record(1, testData.aktoerId2, testData.melding2)))
 
         Mockito.verify(cvRepository, Mockito.times(2)).saveAndFlush(meldingCaptorRawCv.capture())
 
@@ -66,7 +63,7 @@ class CvConsumerTest {
     fun `mottar to cver - lagres riktig`() {
         var offset = 0L
 
-        cvConsumer.receive(listOf(
+        cvConsumer.receiveAvro(listOf(
             record(offset++, testData.aktoerId1, testData.melding1),
             record(offset, testData.aktoerId2, testData.melding2)
         ))
@@ -104,7 +101,7 @@ class CvConsumerTest {
             .`when`(cvRepository)
             .hentCvByFoedselsnummer(testData.foedselsnummer2)
 
-        cvConsumer.receive(listOf(
+        cvConsumer.receiveAvro(listOf(
             record(offset++, testData.aktoerId1, testData.meldingMedOppfolgingsinformasjon),
             record(offset, testData.aktoerId2, testData.meldingUtenOppfolgingsinformasjo)
         ))
@@ -125,7 +122,7 @@ class CvConsumerTest {
         var aktorId = "123"
         var language = "Norsk"
         var meldingsType = CvMeldingstype.OPPRETT
-        cvConsumer.receive(listOf(
+        cvConsumer.receiveJson(listOf(
             internRecord(offset, testData.aktoerId1, createCvEndretInternDto(aktorId, "", language, meldingsType))))
 
         Mockito.verify(cvConverterService2, Mockito.times(1)).createOrUpdate(meldingCaptorCvInternDto.capture())
@@ -141,7 +138,7 @@ class CvConsumerTest {
         var fodselsnr = "11111111"
         var meldingsType = CvMeldingstype.SLETT
         var cvEndretInternDto = createCvEndretInternDto("", fodselsnr, "", meldingsType)
-        cvConsumer.receive(listOf(
+        cvConsumer.receiveJson(listOf(
             internRecord(offset, testData.aktoerId1, cvEndretInternDto)))
 
         Mockito.verify(cvConverterService2, Mockito.times(1)).delete(stringCaptor.capture())
@@ -182,6 +179,6 @@ class CvConsumerTest {
     }
 
     private fun internRecord(offset: Long, aktorId: String, dto: CvEndretInternDto)
-    = ConsumerRecord<String, ByteArray>("\${kafka.topics.consumers.cv_endret_json}", PARTITION, offset, aktorId, jacksonMapper.writeValueAsBytes(dto))
+    = ConsumerRecord<String, ByteArray>("\${kafka.aiven.topics.consumers.cv_endret}", PARTITION, offset, aktorId, jacksonMapper.writeValueAsBytes(dto))
 
 }
