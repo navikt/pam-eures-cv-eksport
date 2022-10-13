@@ -28,8 +28,20 @@ class KafkaConfig {
     @Value("\${spring.kafka.consumer.group-id}")
     lateinit var groupId: String
 
+    @Value("\${kafka.aiven.topics.keystorePath}")
+    lateinit var keyStorePath: String
+
+    @Value("\${kafka.aiven.topics.credstorePassword}")
+    lateinit var credstorePassword: String
+
+    @Value("\${kafka.aiven.topics.truststorePath}")
+    lateinit var truststorePath: String
+
     @Value("\${featureToggle.internTopicOn}")
     private val internTopicOn: Boolean = false
+
+    @Value("\${kafka.aiven.topics.brokers}")
+    private val brokers: Boolean = false
 
     companion object {
         private val log = LoggerFactory.getLogger(KafkaConfig::class.java)
@@ -86,7 +98,7 @@ class KafkaConfig {
     fun defaultInternTopicConsumerConfigs(
     ): MutableMap<String, Any> {
         val map: MutableMap<String, Any> = hashMapOf(
-            ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG to "\${kafka.aiven.topics.brokers}",
+            ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG to brokers,
             ConsumerConfig.GROUP_ID_CONFIG to "pam-eures-cv-eksport-v111",
             ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG to StringDeserializer::class.java,
             ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG to StringDeserializer::class.java,
@@ -98,11 +110,11 @@ class KafkaConfig {
             SslConfigs.SSL_ENDPOINT_IDENTIFICATION_ALGORITHM_CONFIG to "", // Disable server host name verification
             SslConfigs.SSL_TRUSTSTORE_TYPE_CONFIG to "JKS",
             SslConfigs.SSL_KEYSTORE_TYPE_CONFIG to "PKCS12",
-            SslConfigs.SSL_TRUSTSTORE_LOCATION_CONFIG to "\${kafka.aiven.topics.truststorePath}",
-            SslConfigs.SSL_TRUSTSTORE_PASSWORD_CONFIG to "\${kafka.aiven.topics.credstorePassword}",
-            SslConfigs.SSL_KEYSTORE_LOCATION_CONFIG to "\${kafka.aiven.topics.keystorePath}",
-            SslConfigs.SSL_KEYSTORE_PASSWORD_CONFIG to "\${kafka.aiven.topics.credstorePassword}",
-            SslConfigs.SSL_KEY_PASSWORD_CONFIG to "\${kafka.aiven.topics.credstorePassword}"
+            SslConfigs.SSL_TRUSTSTORE_LOCATION_CONFIG to truststorePath,
+            SslConfigs.SSL_TRUSTSTORE_PASSWORD_CONFIG to credstorePassword,
+            SslConfigs.SSL_KEYSTORE_LOCATION_CONFIG to keyStorePath,
+            SslConfigs.SSL_KEYSTORE_PASSWORD_CONFIG to credstorePassword,
+            SslConfigs.SSL_KEY_PASSWORD_CONFIG to credstorePassword
         )
         return map
     }
