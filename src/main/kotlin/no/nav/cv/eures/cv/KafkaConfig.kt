@@ -41,7 +41,7 @@ class KafkaConfig {
     private val internTopicOn: Boolean = false
 
     @Value("\${kafka.aiven.topics.brokers}")
-    private val brokers: Boolean = false
+    lateinit var brokers: String
 
     companion object {
         private val log = LoggerFactory.getLogger(KafkaConfig::class.java)
