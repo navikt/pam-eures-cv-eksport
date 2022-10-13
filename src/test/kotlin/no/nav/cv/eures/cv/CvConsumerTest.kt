@@ -17,6 +17,7 @@ import org.apache.avro.data.Json
 import org.apache.kafka.clients.consumer.ConsumerRecord
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.BeforeEach
+import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.Test
 import org.mockito.ArgumentCaptor
 import org.mockito.Captor
@@ -117,6 +118,7 @@ class CvConsumerTest {
     private fun record(offset: Long, aktorId: String, melding: Melding)
     = ConsumerRecord<String, ByteArray>(TOPIC, PARTITION, offset, aktorId, melding.toByteArray())
 
+    @Disabled
     @Test
     fun `test at cv-endret-intern-v3 blir parset korrekt og rutet korrekt til createOrUpdate`() {
         var offset = 0L
@@ -124,7 +126,7 @@ class CvConsumerTest {
         var language = "Norsk"
         var meldingsType = CvMeldingstype.OPPRETT
         cvConsumer.receive(listOf(
-            internRecord(offset++, testData.aktoerId1, createCvEndretInternDto(aktorId, "", language, meldingsType))))
+            internRecord(offset, testData.aktoerId1, createCvEndretInternDto(aktorId, "", language, meldingsType))))
 
         Mockito.verify(cvConverterService2, Mockito.times(1)).createOrUpdate(meldingCaptorCvInternDto.capture())
 
@@ -132,6 +134,7 @@ class CvConsumerTest {
         assertEquals(language, meldingCaptorCvInternDto.firstValue.cv?.languages?.get(0)?.language, "Skal få norsk som språk")
     }
 
+    @Disabled
     @Test
     fun `test at cv-endret-intern-v3 blir rutet korrekt til cvConverterService2delete`() {
         var offset = 0L
@@ -139,7 +142,7 @@ class CvConsumerTest {
         var meldingsType = CvMeldingstype.SLETT
         var cvEndretInternDto = createCvEndretInternDto("", fodselsnr, "", meldingsType)
         cvConsumer.receive(listOf(
-            internRecord(offset++, testData.aktoerId1, cvEndretInternDto)))
+            internRecord(offset, testData.aktoerId1, cvEndretInternDto)))
 
         Mockito.verify(cvConverterService2, Mockito.times(1)).delete(stringCaptor.capture())
         assertEquals(fodselsnr, stringCaptor.firstValue, "Skal gi fødselsnummeret mottatt i receiveren.")

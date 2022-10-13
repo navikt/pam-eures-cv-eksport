@@ -146,8 +146,10 @@ class CvConsumer(
 
         endretCV.forEach { melding ->
             if (melding.topic().equals("\${kafka.topics.consumers.cv_endret_json}")) {
-                processJsonMessage(melding)
+                log.info("Mottatt json-melding på topic: " + melding.topic())
+                //processJsonMessage(melding)
             } else {
+                log.info("Mottatt avro-melding på topic: " + melding.topic())
                 processAvroMessage(melding)
             }
         }
