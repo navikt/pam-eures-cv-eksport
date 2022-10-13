@@ -10,5 +10,6 @@
   "avro_version_fiftytwo_hex": "NoInt00000100",
   "azure_ad_tenant": "nav.no",
   "pdl_base_url": "https://pdl-api.prod-fss-pub.nais.io",
-  "pdl_scope": "api://prod-fss.pdl.pdl-api/.default"
+  "pdl_scope": "api://prod-fss.pdl.pdl-api/.default",
+  "kafka_pool": "nav-prod"
 }
