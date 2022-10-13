@@ -1,11 +1,15 @@
 ## Beskrivelse 
-`pam-eures-cv-eksport` er et API som tilrettelegger for innhenting av CV-data fra [EURES](https://ec.europa.eu/eures/public/homepage). Den tar seg av lagring av samtykke for deling av CV-data med EURES (gjennom [pam-personbruker](https://github.com/navikt/pam-personbruker)), samt konvertering av dataene til riktig format. 
+`pam-eures-cv-eksport` er et API som tilrettelegger for innhenting av CV-data fra [EURES](https://ec.europa.eu/eures/public/homepage). Den tar seg av lagring av samtykke for deling av CV-data med EURES (gjennom [pam-personbruker](https://github.com/navikt/pam-personbruker)), samt konvertering av dataene til riktig format.
+
+## Api-dokumentasjon
+Beskrivelse av endepunktene applikasjonen tilbyr kan finnes på http://localhost:9030/pam-eures-cv-eksport/swagger-ui.html hvis applikasjonen kjører lokalt.
+For å få den til å enable dokumentasjonen lokalt, må `SWAGGER_ENABLED=true` legges til som en miljøvariabel.
 
 ## For å kjøre appen lokalt
 
 Det kreves at enkelte ting kjører på PC
 1. Postgres med applikasjonens database, pam-eures-cv-eksport
-1. Kafka-oppsett fra CV. Se nedenfor 
+2. Kafka-oppsett fra CV. Se nedenfor 
 
 ### Kommandolinje
 `gradle run`
@@ -21,7 +25,7 @@ nødvendige ting (no.nav.security:token-validation-test-support) på classpathen
 ## Oppsett av database første gang
 Opprett database med applikasjonens defaultbruker 
 
-STart med å installere og starte postgresserveren - hvis det ikke allerede er på plass
+Start med å installere og starte postgresserveren - hvis det ikke allerede er på plass
 * Installere: `brew install postgresql`
 * Start postgres-server og la den gå. For eksempel ved `postgres -D /usr/local/var/postgres`
 

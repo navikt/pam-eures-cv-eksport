@@ -92,3 +92,11 @@ management:
       exposure:
         include: prometheus
     enabled-by-default: false
+
+springdoc:
+  api-docs:
+    enabled: ${SWAGGER_ENABLED:false}
+  swagger-ui:
+    enabled: ${SWAGGER_ENABLED:false}
+    disable-swagger-default-url: true
+    path: swagger-ui.html
