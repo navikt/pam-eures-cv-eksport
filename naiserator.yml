@@ -79,4 +79,4 @@ spec:
      - {{url}}
   {{/each}}
   kafka:
-    pool: { { kafka_pool } }
+    pool: {{ kafka_pool}}
