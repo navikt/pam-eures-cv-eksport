@@ -112,4 +112,4 @@ management:
     enabled-by-default: false
 
 featureToggle:
-  internTopicOn: false
+  internTopicOn: true
