@@ -87,7 +87,7 @@ class KafkaConfig {
     ): MutableMap<String, Any> {
         val map: MutableMap<String, Any> = hashMapOf(
             ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG to "\${kafka.aiven.topics.brokers}",
-            ConsumerConfig.GROUP_ID_CONFIG to "\${spring.kafka.consumer.group-id}",
+            ConsumerConfig.GROUP_ID_CONFIG to "pam-eures-cv-eksport-v111",
             ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG to StringDeserializer::class.java,
             ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG to StringDeserializer::class.java,
             ConsumerConfig.CLIENT_ID_CONFIG to (System.getenv("POD_NAME") ?: "pam-cv-endret-bridge-${UUID.randomUUID()}"),
