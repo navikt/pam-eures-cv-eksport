@@ -73,7 +73,7 @@ spec:
     - name: PDL_BASE_URL
       value: {{ pdl_base_url }}
     - name: SWAGGER_ENABLED
-      value: {{ swagger_enabled }}
+      value: "{{ swagger_enabled }}"
   ingresses:
   {{#each ingress as |url|}}
      - {{url}}
