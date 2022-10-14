@@ -11,6 +11,8 @@ For å få den til å enable dokumentasjonen lokalt, må `SWAGGER_ENABLED=true` 
 Det kreves at enkelte ting kjører på PC
 1. Postgres med applikasjonens database, pam-eures-cv-eksport
 2. Kafka-oppsett fra CV. Se nedenfor 
+3. Containeren mock-login må kjøre. Den kan startes fra pam-personbruker ved å kjøre `npm run localhost-api`.
+4. Legg inn innslag i /etc/hosts med `127.0.0.1 host.docker.internal`
 
 ### Kommandolinje
 `gradle run`

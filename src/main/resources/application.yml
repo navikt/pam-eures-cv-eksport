@@ -3,10 +3,14 @@ server:
   servlet:
     context-path: /pam-eures-cv-eksport
 
+mock-oauth2-server:
+  port: 8080
+  hostname: host.docker.internal
+
 no.nav.security.jwt:
   issuer:
     selvbetjening:
-      discoveryurl: ${LOGINSERVICE_IDPORTEN_DISCOVERY_URL:http://metadata}
+      discoveryurl: ${LOGINSERVICE_IDPORTEN_DISCOVERY_URL:http://${mock-oauth2-server.hostname}:${mock-oauth2-server.port}/selvbetjening/.well-known/openid-configuration}
       accepted_audience: ${LOGINSERVICE_IDPORTEN_AUDIENCE:aud-localhost}
       cookie_name: selvbetjening-idtoken
   client:
