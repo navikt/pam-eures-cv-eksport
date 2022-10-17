@@ -38,7 +38,7 @@ class KafkaConfig {
     lateinit var truststorePath: String
 
     @Value("\${featureToggle.internTopicOn}")
-    private val internTopicOn: Boolean = false
+    private val internTopicOn: Boolean = true
 
     @Value("\${kafka.aiven.topics.brokers}")
     lateinit var brokers: String
@@ -52,8 +52,8 @@ class KafkaConfig {
         ConcurrentKafkaListenerContainerFactory<String, ByteArray>().apply {
             setConcurrency(1)
             if (internTopicOn) {
-                var mergedProps = defaultInternTopicConsumerConfigs().apply {
-                    putAll(consumerFactory.configurationProperties)
+                var mergedProps = consumerFactory.configurationProperties.toMutableMap().apply {
+                    putAll(defaultInternTopicConsumerConfigs())
                 }
                 setConsumerFactory(meldingConsumerFactoryJsonTopic(mergedProps))
             } else {
@@ -98,11 +98,11 @@ class KafkaConfig {
     fun defaultInternTopicConsumerConfigs(
     ): MutableMap<String, Any> {
         val map: MutableMap<String, Any> = hashMapOf(
-            ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG to brokers,
+            ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG to "vi tester noe",
             ConsumerConfig.GROUP_ID_CONFIG to "pam-eures-cv-eksport-v111",
             ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG to StringDeserializer::class.java,
             ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG to StringDeserializer::class.java,
-            ConsumerConfig.CLIENT_ID_CONFIG to (System.getenv("POD_NAME") ?: "pam-cv-endret-bridge-${UUID.randomUUID()}"),
+            ConsumerConfig.CLIENT_ID_CONFIG to (System.getenv("POD_NAME") ?: "pam-eures-cv-eksport-${UUID.randomUUID()}"),
             ConsumerConfig.AUTO_OFFSET_RESET_CONFIG to "earliest",
             ConsumerConfig.ENABLE_AUTO_COMMIT_CONFIG to true,
 
