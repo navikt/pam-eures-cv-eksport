@@ -83,7 +83,7 @@ class KafkaConfig {
 
             CommonClientConfigs.SECURITY_PROTOCOL_CONFIG to onpremSecurityProtocol,
             SaslConfigs.SASL_MECHANISM to "PLAIN",
-            SaslConfigs.SASL_JAAS_CONFIG to "no.nav.cv.eures.cv.NaisLoginModule required",
+            SaslConfigs.SASL_JAAS_CONFIG to "no.nav.cv.eures.cv.NaisLoginModule required;",
             SslConfigs.SSL_TRUSTSTORE_LOCATION_CONFIG to trustStoreLocationOnPrem,
             SslConfigs.SSL_TRUSTSTORE_PASSWORD_CONFIG to trustStorePasswordOnPrem,
 
