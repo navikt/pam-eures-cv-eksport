@@ -64,8 +64,8 @@ spec:
       value: {{ kafka_bootstrap_servers }}
     - name: DB_DRIVER
       value: 'org.postgresql.Driver'
-    - name: KAFKA_SCHEMA_REGISTRY
-      value: {{ kafka_schema_registry }}
+    - name: KAFKA_SCHEMA_REGISTRY_ONPREM
+      value: {{ kafka_schema_registry_onprem }}
     - name: KAFKA_SECURITY_PROTOCOL
       value: SASL_SSL
     - name: AVRO_VERSION_FIFTYTWO_HEX
