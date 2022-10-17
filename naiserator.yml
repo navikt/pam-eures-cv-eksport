@@ -28,7 +28,7 @@ spec:
   accessPolicy:
     outbound:
       external:
-        - host: {{ kafka_schema_registry }}
+        - host: {{ kafka_schema_registry_onprem }}
     inbound:
       rules:
         - application: pam-eures-cv-eksport-proxy
