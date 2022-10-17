@@ -58,8 +58,6 @@ spring:
       - "classpath:db"
     connect-retries: 50
 
-
-
 kafka:
   aiven:
     topics:
@@ -76,9 +74,6 @@ kafka:
       keystorePath: ${KAFKA_KEYSTORE_PATH:/dev/zero}
       truststorePath: ${KAFKA_TRUSTSTORE_PATH:/dev/zero}
       credstorePassword: ${KAFKA_CREDSTORE_PASSWORD:pwd}
-      schemaRegistry: ${KAFKA_SCHEMA_REGISTRY:pwd}
-      schemaUsername: ${KAFKA_SCHEMA_REGISTRY_USER:none}
-      schemaPassword: ${KAFKA_SCHEMA_REGISTRY_PASSWORD:none}
   topics:
     consumers:
       cv_endret: ${KAFKA_CONSUMER_TOPIC_CV_ENDRET:arbeid-pam-cv-endret-v2-dev}
