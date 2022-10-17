@@ -21,27 +21,6 @@ no.nav.security.jwt:
           client-auth-method: client_secret_basic
 
 spring:
-  kafka:
-    ssl:
-      trust-store-location: file:${NAV_TRUSTSTORE_PATH:}
-      trust-store-password: ${NAV_TRUSTSTORE_PASSWORD:}
-    bootstrap-servers: ${KAFKA_BOOTSTRAP_SERVERS:localhost:9092}
-    consumer:
-      group-id: pam-eures-cv-eksport-v111
-      auto-offset-reset: earliest
-      enable-auto-commit: true
-      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
-      value-deserializer: org.apache.kafka.common.serialization.ByteArrayDeserializer
-    properties:
-      sasl:
-        mechanism: PLAIN
-        jaas:
-          config: no.nav.cv.eures.cv.NaisLoginModule required;
-      schema:
-        registry:
-          url: https://${KAFKA_SCHEMA_REGISTRY:localhost:8081}
-      security:
-        protocol: ${KAFKA_SECURITY_PROTOCOL:PLAINTEXT}
   datasource:
     driver-class-name: ${DB_DRIVER:org.postgresql.Driver}
     url: jdbc:postgresql://${DB_HOST:localhost}:${DB_PORT:5432}/${DB_DATABASE:pam-eures-cv-eksport}
@@ -59,11 +38,24 @@ spring:
     connect-retries: 50
 
 kafka:
+  onprem:
+    consumer:
+      group-id: pam-eures-cv-eksport-v1
+    bootstrap-servers: ${KAFKA_BOOTSTRAP_SERVERS:localhost:9092}
+    ssl:
+      trust-store-location: file:${NAV_TRUSTSTORE_PATH:}
+      trust-store-password: ${NAV_TRUSTSTORE_PASSWORD:}
+    schema:
+      registry:
+        url: https://${KAFKA_SCHEMA_REGISTRY:localhost:8081}
+    security:
+      protocol: ${KAFKA_SECURITY_PROTOCOL:PLAINTEXT}
+
   aiven:
     topics:
       consumers:
         cv_endret: ${KAFKA_CONSUMER_TOPIC_CV_ENDRET_JSON:teampam.cv-endret-intern-v3}
-      brokers: ${KAFKA_BROKERS:localhost}
+      brokers: ${KAFKA_BROKERS:localhost:9092}
       securityProtocol: SSL
       certificate: ${KAFKA_CERTIFICATE:cert}
       certificatePath: ${KAFKA_CERTIFICATE_PATH:/dev/zero}

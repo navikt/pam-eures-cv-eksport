@@ -1,7 +1,10 @@
 package no.nav.cv.eures.cv
 
+import io.confluent.kafka.serializers.KafkaAvroDeserializer
+import io.confluent.kafka.serializers.KafkaAvroDeserializerConfig
 import org.apache.kafka.clients.CommonClientConfigs
 import org.apache.kafka.clients.consumer.ConsumerConfig
+import org.apache.kafka.common.config.SaslConfigs
 import org.apache.kafka.common.config.SslConfigs
 import org.apache.kafka.common.serialization.StringDeserializer
 import org.slf4j.LoggerFactory
@@ -15,6 +18,7 @@ import org.springframework.kafka.core.ConsumerFactory
 import org.springframework.kafka.core.DefaultKafkaConsumerFactory
 import org.springframework.kafka.listener.SeekToCurrentBatchErrorHandler
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor
+import java.io.File
 import java.time.Duration
 import java.util.*
 
@@ -22,10 +26,10 @@ import java.util.*
 @EnableKafka
 class KafkaConfig {
 
-    @Value("\${spring.kafka.bootstrap-servers}")
+    @Value("\${kafka.onprem.bootstrap-servers}")
     lateinit var bootstrapServers: String
 
-    @Value("\${spring.kafka.consumer.group-id}")
+    @Value("\${kafka.onprem.consumer.group-id}")
     lateinit var groupId: String
 
     @Value("\${kafka.aiven.topics.keystorePath}")
@@ -43,10 +47,56 @@ class KafkaConfig {
     @Value("\${kafka.aiven.topics.brokers}")
     lateinit var brokers: String
 
+    @Value("\${kafka.onprem.ssl.trust-store-location}")
+    lateinit var trustStoreLocationOnPrem: String
+
+    @Value("\${kafka.onprem.ssl.trust-store-password}")
+    lateinit var trustStorePasswordOnPrem: String
+
+    @Value("\${kafka.onprem.schema.registry.url}")
+    lateinit var schemaRegistryOnPrem: String
+
+    @Value("\${kafka.onprem.security.protocol}")
+    lateinit var onpremSecurityProtocol: String
+
+
+
     companion object {
         private val log = LoggerFactory.getLogger(KafkaConfig::class.java)
     }
 
+    @Bean(name = ["cvMeldingContainerFactory"])
+    fun onpremKafkaListenerConstainerFactory() : ConcurrentKafkaListenerContainerFactory<String, ByteArray> {
+        return ConcurrentKafkaListenerContainerFactory<String, ByteArray>().apply{
+            setConsumerFactory(consumerFactory())
+        }
+    }
+
+    @Bean
+    fun consumerFactory() : ConsumerFactory<String, ByteArray> {
+        val props: MutableMap<String, Any> = hashMapOf(
+            ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG to bootstrapServers,
+            ConsumerConfig.GROUP_ID_CONFIG to groupId,
+            ConsumerConfig.CLIENT_ID_CONFIG to (System.getenv("POD_NAME") ?: "pam-eures-cv-eksport-${UUID.randomUUID()}"),
+            ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG to StringDeserializer::class.java.canonicalName,
+            ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG to KafkaAvroDeserializer::class.java.canonicalName,
+
+            CommonClientConfigs.SECURITY_PROTOCOL_CONFIG to onpremSecurityProtocol,
+            SaslConfigs.SASL_MECHANISM to "PLAIN",
+            SaslConfigs.SASL_JAAS_CONFIG to "no.nav.cv.eures.cv.NaisLoginModule required",
+            SslConfigs.SSL_TRUSTSTORE_LOCATION_CONFIG to trustStoreLocationOnPrem,
+            SslConfigs.SSL_TRUSTSTORE_PASSWORD_CONFIG to trustStorePasswordOnPrem,
+
+            KafkaAvroDeserializerConfig.SPECIFIC_AVRO_READER_CONFIG to "true",
+            KafkaAvroDeserializerConfig.SCHEMA_REGISTRY_URL_CONFIG to schemaRegistryOnPrem,
+            KafkaAvroDeserializerConfig.BASIC_AUTH_CREDENTIALS_SOURCE to "USER_INFO",
+            KafkaAvroDeserializerConfig.USER_INFO_CONFIG to "user:pass"
+
+            )
+        return DefaultKafkaConsumerFactory<String, ByteArray>(props)
+    }
+
+    /*
     @Bean(name = ["cvMeldingContainerFactory"])
     fun meldingContainerFactory(consumerFactory: ConsumerFactory<String, Any>): ConcurrentKafkaListenerContainerFactory<String, ByteArray>? =
         ConcurrentKafkaListenerContainerFactory<String, ByteArray>().apply {
@@ -98,7 +148,7 @@ class KafkaConfig {
     fun defaultInternTopicConsumerConfigs(
     ): MutableMap<String, Any> {
         val map: MutableMap<String, Any> = hashMapOf(
-            ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG to "vi tester noe",
+            ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG to brokers,
             ConsumerConfig.GROUP_ID_CONFIG to "pam-eures-cv-eksport-v111",
             ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG to StringDeserializer::class.java,
             ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG to StringDeserializer::class.java,
@@ -124,4 +174,7 @@ class KafkaConfig {
 
     fun meldingConsumerFactoryJsonTopic(configs: Map<String, Any> = defaultInternTopicConsumerConfigs()): DefaultKafkaConsumerFactory<String, ByteArray>
             = DefaultKafkaConsumerFactory(configs)
+}
+
+     */
 }

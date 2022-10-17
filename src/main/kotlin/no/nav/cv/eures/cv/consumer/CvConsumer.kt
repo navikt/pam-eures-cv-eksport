@@ -52,7 +52,7 @@ class CvConsumer(
             processAvroMessages(record)
         }
     }
-
+/*
     @KafkaListener(
         topics = ["\${kafka.aiven.topics.consumers.cv_endret}"],
         containerFactory = "cvEndretInternContainerFactory"
@@ -63,7 +63,7 @@ class CvConsumer(
             processJsonMessages(record)
         }
     }
-
+*/
     private fun String.foedselsnummerOrNull(): String? {
         if (this == "-") return null
 

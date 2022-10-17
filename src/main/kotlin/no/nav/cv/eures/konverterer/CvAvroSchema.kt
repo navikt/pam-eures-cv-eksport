@@ -39,7 +39,7 @@ class CvAvroSchema(private val schemaClient: CvAvroSchemaClient) {
 
 @Service
 class CvAvroSchemaClient(
-        @Value("\${spring.kafka.properties.schema.registry.url}") private val schemaRegistryUrl: String,
+        @Value("\${kafka.onprem.schema.registry.url}") private val schemaRegistryUrl: String,
         @Value("\${avro.schema.subject}") private val schemaSubject: String,
         @Autowired private val client: RestTemplate
 ) {
