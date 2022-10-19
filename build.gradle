@@ -3,8 +3,8 @@ plugins {
     id "org.jetbrains.kotlin.plugin.spring" version "1.7.20"
     id "org.jetbrains.kotlin.plugin.jpa" version "1.7.20"
     id "application"
-    id "org.springframework.boot" version "2.7.3"
-    id "io.spring.dependency-management" version "1.0.13.RELEASE"
+    id "org.springframework.boot" version "2.7.4"
+    id "io.spring.dependency-management" version "1.0.14.RELEASE"
 }
 
 version "0.1"
@@ -24,10 +24,11 @@ configurations {
 }
 
 ext {
-    springdocVersion = '1.6.11'
+    springdocVersion = '1.6.12'
     kotlinVersion = '1.7.20'
-    avroVersion = '1.9.2'
+    avroVersion = '1.11.1'
     tokenSupportVersion = '2.1.6'
+    jacksonVersion = '2.13.4'
 }
 
 dependencies {
@@ -37,8 +38,13 @@ dependencies {
     implementation "org.apache.avro:avro:${avroVersion}"
     implementation "net.logstash.logback:logstash-logback-encoder:7.2"
 
-    implementation "com.fasterxml.jackson.module:jackson-module-kotlin"
-    implementation "com.fasterxml.jackson.dataformat:jackson-dataformat-xml"
+    //SNYK fixes
+    implementation "org.yaml:snakeyaml:1.33"
+    implementation "com.fasterxml.jackson.module:jackson-module-kotlin:${jacksonVersion}"
+    implementation "com.fasterxml.jackson.dataformat:jackson-dataformat-xml:${jacksonVersion}"
+    implementation "org.springframework.boot:spring-boot-starter-webflux:2.7.4"
+    implementation "org.apache.kafka:kafka-clients:3.3.1"
+    implementation "com.fasterxml.jackson.core:jackson-databind:2.13.4.2"
 
     implementation "no.nav.arbeid.pam:pam-cv-avro-cvmeldinger:52"
 
@@ -54,7 +60,6 @@ dependencies {
     implementation "org.springframework.boot:spring-boot-starter-data-jpa"
     implementation "org.springframework.boot:spring-boot-starter-validation"
 
-    implementation 'org.springframework.boot:spring-boot-starter-webflux'
 
     implementation "org.springframework.boot:spring-boot-starter-web"
     implementation 'org.springframework.boot:spring-boot-starter-actuator'
@@ -68,20 +73,17 @@ dependencies {
 
     implementation "net.minidev:json-smart:2.4.8"
 
-    //SNYK fixes
-    implementation 'org.yaml:snakeyaml:1.33'
-
     runtimeOnly "org.springdoc:springdoc-openapi-kotlin:${springdocVersion}"
-    runtimeOnly 'com.fasterxml.jackson.module:jackson-module-kotlin'
+    runtimeOnly "com.fasterxml.jackson.module:jackson-module-kotlin:${jacksonVersion}"
 
     testImplementation('org.springframework.boot:spring-boot-starter-test') {
         exclude group: 'org.junit.vintage', module: 'junit-vintage-engine'
     }
-    testImplementation 'org.junit.jupiter:junit-jupiter:5.9.0'
+    testImplementation 'org.junit.jupiter:junit-jupiter'
     testImplementation "com.h2database:h2"
-    testImplementation "org.mockito:mockito-core:4.8.0"
+    testImplementation "org.mockito:mockito-core"
     testImplementation "no.nav.security:token-validation-spring-test:${tokenSupportVersion}"
-    testImplementation "no.nav.security:mock-oauth2-server:0.5.4"
+    testImplementation "no.nav.security:mock-oauth2-server"
     testImplementation "com.nhaarman.mockitokotlin2:mockito-kotlin:2.2.0"
     testImplementation "org.powermock:powermock-api-mockito2:2.0.9"
 
