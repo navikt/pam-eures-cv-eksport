@@ -146,7 +146,7 @@ class PdlPersonService(
 
             val response = objectMapper.readValue(responseBody, HentPersonBolkDto::class.java)
             if (response.errors?.firstOrNull() != null) {
-                log.warn("Fikk error fra PDL ${response.errors?.firstOrNull()?.message}")
+                log.warn("Fikk error fra PDL ${response.errors.firstOrNull()?.message}")
             }
 
             return response

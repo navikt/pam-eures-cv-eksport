@@ -18,10 +18,9 @@ class EmploymentHistoryConverter(
         false -> ikkeSamtykket
     }
 
-    // TODO støtte null i fra-tidpsunkt
     fun List<Arbeidserfaring>.toEmploymentList() = map {
         EmployerHistory(
-                organizationName = it?.arbeidsgiver ?: "",
+                organizationName = it.arbeidsgiver ?: "",
                 employmentPeriod = AttendancePeriod(
                         it.fraTidspunkt?.toFormattedDateTime() ?: DateText("Unknown"),
                         it.tilTidspunkt?.toFormattedDateTime()
@@ -29,7 +28,6 @@ class EmploymentHistoryConverter(
                 positionHistory = it.toPositionHistory())
     }
 
-    // TODO støtte null i fra-tidpsunkt
     fun Arbeidserfaring.toPositionHistory() = listOf(PositionHistory(
             positionTitle = stillingstittel ?: stillingstittelFritekst, // TODO Skal dette være friktekstfeltet?
             employmentPeriod = AttendancePeriod(
