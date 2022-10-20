@@ -181,9 +181,12 @@ class CvConsumer(
 
             log.debug("Processing json kafka message with key ${endretCV.key()} with timestamp $isoDate")
 
-            System.out.println(endretCV.value())
+            System.out.println("TOPICTEST. Mottatt string : " + endretCV.value())
 
             val cvEndretInternDto = objectMapper.readValue<CvEndretInternDto>(endretCV.value())
+
+            System.out.println("TOPICTEST. CvEndretInternDto : " + endretCV.value())
+
             when (cvEndretInternDto.meldingstype) {
                 CvMeldingstype.OPPRETT -> cvConverterService2.createOrUpdate(cvEndretInternDto)
                 CvMeldingstype.ENDRE -> cvConverterService2.createOrUpdate(cvEndretInternDto)
