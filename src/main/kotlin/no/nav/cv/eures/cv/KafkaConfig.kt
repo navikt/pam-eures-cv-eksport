@@ -66,15 +66,15 @@ class KafkaConfig {
     }
 
     @Bean(name = ["internCvTopicContainerFactory"])
-    fun internCvTopicKafkaListenerConstainerFactory() : ConcurrentKafkaListenerContainerFactory<String, ByteArray> {
-        return ConcurrentKafkaListenerContainerFactory<String, ByteArray>().apply{
+    fun internCvTopicKafkaListenerConstainerFactory() : ConcurrentKafkaListenerContainerFactory<String, String> {
+        return ConcurrentKafkaListenerContainerFactory<String, String>().apply{
             setConsumerFactory(consumerFactoryInternCvTopic())
             setBatchListener(true)
         }
     }
 
     @Bean
-    fun consumerFactoryInternCvTopic() : ConsumerFactory<String, ByteArray> {
+    fun consumerFactoryInternCvTopic() : ConsumerFactory<String, String> {
         val props: MutableMap<String, Any> = hashMapOf(
             ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG to brokers,
             ConsumerConfig.GROUP_ID_CONFIG to "pam-eures-cv-eksport-v111",

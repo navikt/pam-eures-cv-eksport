@@ -8,7 +8,7 @@ on:
       - "CODEOWNERS"
     branches:
       - master
-      - cv-endret-intern-impl
+      - nytt-cv-topic-feilsoking
 
 jobs:
   call-workflow:

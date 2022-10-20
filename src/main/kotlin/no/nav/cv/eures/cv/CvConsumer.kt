@@ -55,7 +55,7 @@ class CvConsumer(
         topics = ["\${kafka.topics.consumers.cv_endret_json}"],
         containerFactory = "internCvTopicContainerFactory"
     )
-    fun receiveJson(record: List<ConsumerRecord<String, ByteArray>>) {
+    fun receiveJson(record: List<ConsumerRecord<String, String>>) {
         log.debug("Receiving cv json message")
         if (internTopicOn) {
             processJsonMessages(record)
@@ -180,6 +180,8 @@ class CvConsumer(
             val isoDate = df.format(Date(endretCV.timestamp()))
 
             log.debug("Processing json kafka message with key ${endretCV.key()} with timestamp $isoDate")
+
+            System.out.println(endretCV.value())
 
             val cvEndretInternDto = objectMapper.readValue<CvEndretInternDto>(endretCV.value())
             when (cvEndretInternDto.meldingstype) {
