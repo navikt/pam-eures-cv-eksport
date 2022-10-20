@@ -165,7 +165,7 @@ class CvConsumer(
         }
     }
 
-    private fun processJsonMessages(endretCV: List<ConsumerRecord<String, ByteArray>>) {
+    private fun processJsonMessages(endretCV: List<ConsumerRecord<String, String>>) {
         log.debug("Fikk ${endretCV.size} meldinger fra CV endret Kafka.")
 
         endretCV.forEach { melding ->
@@ -174,7 +174,7 @@ class CvConsumer(
         }
     }
 
-    private fun processJsonMessage(endretCV: ConsumerRecord<String, ByteArray>) {
+    private fun processJsonMessage(endretCV: ConsumerRecord<String, String>) {
         try {
             val df: DateFormat = SimpleDateFormat("yyyy-MM-dd HH:mm")
             val isoDate = df.format(Date(endretCV.timestamp()))
