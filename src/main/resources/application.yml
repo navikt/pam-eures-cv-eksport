@@ -108,4 +108,4 @@ springdoc:
     path: swagger-ui.html
 
 featureToggle:
-  internTopicOn: false
+  internTopicOn: true
