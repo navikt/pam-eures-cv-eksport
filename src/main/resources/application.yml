@@ -19,29 +19,7 @@ no.nav.security.jwt:
           client-id: ${AZURE_APP_CLIENT_ID:dummy}
           client-secret: ${AZURE_APP_CLIENT_SECRET:dummy}
           client-auth-method: client_secret_basic
-
 spring:
-  kafka:
-    ssl:
-      trust-store-location: file:${NAV_TRUSTSTORE_PATH:}
-      trust-store-password: ${NAV_TRUSTSTORE_PASSWORD:}
-    bootstrap-servers: ${KAFKA_BOOTSTRAP_SERVERS:localhost:9092}
-    consumer:
-      group-id: pam-eures-cv-eksport-v10
-      auto-offset-reset: earliest
-      enable-auto-commit: true
-      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
-      value-deserializer: org.apache.kafka.common.serialization.ByteArrayDeserializer
-    properties:
-      sasl:
-        mechanism: PLAIN
-        jaas:
-          config: no.nav.cv.eures.cv.NaisLoginModule required;
-      schema:
-        registry:
-          url: https://${KAFKA_SCHEMA_REGISTRY:localhost:8081}
-      security:
-        protocol: ${KAFKA_SECURITY_PROTOCOL:PLAINTEXT}
   datasource:
     driver-class-name: ${DB_DRIVER:org.postgresql.Driver}
     url: jdbc:postgresql://${DB_HOST:localhost}:${DB_PORT:5432}/${DB_DATABASE:pam-eures-cv-eksport}
@@ -61,9 +39,37 @@ spring:
 
 
 kafka:
+  onprem:
+    consumer:
+      group-id: pam-eures-cv-eksport-v1
+    bootstrap-servers: ${KAFKA_BOOTSTRAP_SERVERS:localhost:9092}
+    ssl:
+      trust-store-location: ${NAV_TRUSTSTORE_PATH:}
+      trust-store-password: ${NAV_TRUSTSTORE_PASSWORD:}
+    schema:
+      registry:
+        url: https://${KAFKA_SCHEMA_REGISTRY:localhost:8081}
+    security:
+      protocol: ${KAFKA_SECURITY_PROTOCOL:PLAINTEXT}
+  aiven:
+    brokers: ${KAFKA_BROKERS:localhost:9092}
+    securityProtocol: SSL
+    certificate: ${KAFKA_CERTIFICATE:cert}
+    certificatePath: ${KAFKA_CERTIFICATE_PATH:/dev/zero}
+    privateKey: ${KAFKA_PRIVATE_KEY:key}
+    privateKeyPath: ${KAFKA_PRIVATE_KEY_PATH:/dev/zero}
+    ca: ${KAFKA_CA:ca}
+    caPath: ${KAFKA_CA_PATH:/dev/zero}
+    keystorePath: ${KAFKA_KEYSTORE_PATH:/dev/zero}
+    truststorePath: ${KAFKA_TRUSTSTORE_PATH:/dev/zero}
+    credstorePassword: ${KAFKA_CREDSTORE_PASSWORD:pwd}
+    schemaRegistry: ${KAFKA_SCHEMA_REGISTRY:pwd}
+    schemaUsername: ${KAFKA_SCHEMA_REGISTRY_USER:none}
+    schemaPassword: ${KAFKA_SCHEMA_REGISTRY_PASSWORD:none}
   topics:
     consumers:
       cv_endret: ${KAFKA_CONSUMER_TOPIC_CV_ENDRET:arbeid-pam-cv-endret-v2-dev}
+      cv_endret_json: ${KAFKA_CONSUMER_TOPIC_CV_ENDRET_JSON:teampam.cv-endret-intern-v3}
 
 avro:
   schema.subject: ${KAFKA_CONSUMER_TOPIC_CV_ENDRET:arbeid-pam-cv-endret-v2-dev}-value

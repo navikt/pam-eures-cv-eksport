@@ -8,6 +8,7 @@ on:
       - "CODEOWNERS"
     branches:
       - master
+      - -cv-endret-intern-impl
 
 jobs:
   call-workflow:
