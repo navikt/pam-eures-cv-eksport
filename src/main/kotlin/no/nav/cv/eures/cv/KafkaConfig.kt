@@ -98,7 +98,7 @@ class KafkaConfig {
             props.put(SslConfigs.SSL_TRUSTSTORE_LOCATION_CONFIG, truststorePath)
             props.put(SslConfigs.SSL_TRUSTSTORE_PASSWORD_CONFIG, credstorePassword)
         }
-        return DefaultKafkaConsumerFactory<String, ByteArray>(props)
+        return DefaultKafkaConsumerFactory<String, String>(props)
     }
 
     @Bean
