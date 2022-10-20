@@ -188,7 +188,7 @@ class CvConsumer(
                 CvMeldingstype.SLETT -> cvEndretInternDto.fodselsnummer?.let { cvConverterService2.delete(cvEndretInternDto.fodselsnummer) }
             }
         } catch (e: Exception) {
-            log.warn("Klarte ikke behandle kafkamelding ${endretCV.key()} (partition: ${endretCV.partition()} - offset ${endretCV.offset()} - størrelse: ${endretCV.value().size}  StackTrace: ${e.stackTraceToString()}", e)
+            log.warn("Klarte ikke behandle kafkamelding", e)
         }
     }
 
