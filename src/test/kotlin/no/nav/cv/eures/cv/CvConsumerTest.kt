@@ -3,6 +3,7 @@ package no.nav.cv.eures.cv
 import com.nhaarman.mockitokotlin2.doReturn
 import io.micrometer.core.instrument.simple.SimpleMeterRegistry
 import no.nav.arbeid.cv.avro.Melding
+import no.nav.cv.eures.konverterer.CvConverterService2
 import no.nav.cv.eures.samtykke.SamtykkeService
 import org.apache.kafka.clients.consumer.ConsumerRecord
 import org.junit.jupiter.api.Assertions.assertEquals
@@ -19,7 +20,7 @@ class CvConsumerTest {
 
     private val cvRepository = Mockito.mock(CvRepository::class.java)
     private val samtykkeService = Mockito.mock(SamtykkeService::class.java)
-
+    private val cvConverterService2 = Mockito.mock(CvConverterService2::class.java)
 
     private val meterRegistry = SimpleMeterRegistry()
     private val testData = CvTestData()
@@ -32,13 +33,13 @@ class CvConsumerTest {
 
     @BeforeEach
     fun setup() {
-        cvConsumer = CvConsumer(cvRepository, samtykkeService, meterRegistry)
+        cvConsumer = CvConsumer(cvRepository, samtykkeService, meterRegistry, cvConverterService2, false)
     }
 
     @Test
     fun `mottar en og en cv - lagres riktig`() {
-        cvConsumer.receive(listOf(record(0, testData.aktoerId1, testData.melding1)))
-        cvConsumer.receive(listOf(record(1, testData.aktoerId2, testData.melding2)))
+        cvConsumer.receiveAvro(listOf(record(0, testData.aktoerId1, testData.melding1)))
+        cvConsumer.receiveAvro(listOf(record(1, testData.aktoerId2, testData.melding2)))
 
         Mockito.verify(cvRepository, Mockito.times(2)).saveAndFlush(meldingCaptorRawCv.capture())
 
@@ -50,7 +51,7 @@ class CvConsumerTest {
     fun `mottar to cver - lagres riktig`() {
         var offset = 0L
 
-        cvConsumer.receive(listOf(
+        cvConsumer.receiveAvro(listOf(
             record(offset++, testData.aktoerId1, testData.melding1),
             record(offset, testData.aktoerId2, testData.melding2)
         ))
@@ -88,7 +89,7 @@ class CvConsumerTest {
             .`when`(cvRepository)
             .hentCvByFoedselsnummer(testData.foedselsnummer2)
 
-        cvConsumer.receive(listOf(
+        cvConsumer.receiveAvro(listOf(
             record(offset++, testData.aktoerId1, testData.meldingMedOppfolgingsinformasjon),
             record(offset, testData.aktoerId2, testData.meldingUtenOppfolgingsinformasjo)
         ))
