@@ -61,6 +61,7 @@ class KafkaConfig {
     fun onpremKafkaListenerConstainerFactory() : ConcurrentKafkaListenerContainerFactory<String, ByteArray> {
         return ConcurrentKafkaListenerContainerFactory<String, ByteArray>().apply{
             setConsumerFactory(consumerFactoryOnPrem())
+            setBatchListener(true)
         }
     }
 
@@ -68,6 +69,7 @@ class KafkaConfig {
     fun internCvTopicKafkaListenerConstainerFactory() : ConcurrentKafkaListenerContainerFactory<String, ByteArray> {
         return ConcurrentKafkaListenerContainerFactory<String, ByteArray>().apply{
             setConsumerFactory(consumerFactoryInternCvTopic())
+            setBatchListener(true)
         }
     }
 
