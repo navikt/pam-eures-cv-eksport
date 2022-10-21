@@ -106,6 +106,3 @@ springdoc:
     enabled: ${SWAGGER_ENABLED:false}
     disable-swagger-default-url: true
     path: swagger-ui.html
-
-featureToggle:
-  internTopicOn: true

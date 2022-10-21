@@ -30,7 +30,6 @@ class CvConsumer(
     private val samtykkeService: SamtykkeService,
     private val meterRegistry: MeterRegistry,
     private val cvConverterService2: CvConverterService2,
-    @Value("\${featureToggle.internTopicOn}") private val internTopicOn: Boolean
 ) {
 
     companion object {
@@ -46,9 +45,7 @@ class CvConsumer(
     )
     fun receiveAvro(record: List<ConsumerRecord<String, ByteArray>>) {
         log.debug("Receiving cv avro message")
-        if (!internTopicOn) {
-            processAvroMessages(record)
-        }
+        processAvroMessages(record)
     }
 
     @KafkaListener(
@@ -57,9 +54,7 @@ class CvConsumer(
     )
     fun receiveJson(record: List<ConsumerRecord<String, String>>) {
         log.debug("Receiving cv json message")
-        if (internTopicOn) {
-            processJsonMessages(record)
-        }
+        processJsonMessages(record)
     }
 
     private fun String.foedselsnummerOrNull(): String? {
@@ -181,11 +176,11 @@ class CvConsumer(
 
             log.debug("Processing json kafka message with key ${endretCV.key()} with timestamp $isoDate")
 
-            System.out.println("TOPICTEST. Mottatt string : " + endretCV.value())
+            log.info("TOPICTEST. Mottatt string : " + endretCV.value())
 
             val cvEndretInternDto = objectMapper.readValue<CvEndretInternDto>(endretCV.value())
 
-            System.out.println("TOPICTEST. CvEndretInternDto : " + endretCV.value())
+            log.info("TOPICTEST. CvEndretInternDto : " + endretCV.value())
 
             when (cvEndretInternDto.meldingstype) {
                 CvMeldingstype.OPPRETT -> cvConverterService2.createOrUpdate(cvEndretInternDto)
