@@ -45,7 +45,7 @@ class CvConsumer(
     )
     fun receiveAvro(record: List<ConsumerRecord<String, ByteArray>>) {
         log.debug("Receiving cv avro message")
-        processAvroMessages(record)
+        //processAvroMessages(record)
     }
 
     @KafkaListener(
@@ -54,7 +54,7 @@ class CvConsumer(
     )
     fun receiveJson(record: List<ConsumerRecord<String, String>>) {
         log.debug("Receiving cv json message")
-        //processJsonMessages(record)
+        processJsonMessages(record)
     }
 
     private fun String.foedselsnummerOrNull(): String? {
