@@ -27,23 +27,19 @@ class CertificationConverter2(
     fun toXmlRepresentation(): Certifications? {
         val certs = mutableListOf<Certification>()
 
+
+        val (autorisasjon, fagbrev) = dto.cv?.vocationalCertificates?.toCertifications() ?: Pair(emptyList(), emptyList())
+
         if (samtykke.offentligeGodkjenninger)
-            //certs.addAll(cv.godkjenninger.toCertifications())
-            certs.addAll(dto.cv?.authorizations?.toCertifications().orEmpty()) //TODO kontroller denne!
+            certs.addAll(dto.cv?.authorizations?.toCertifications().orEmpty())
+            certs.addAll(autorisasjon)
+
 
         if (samtykke.andreGodkjenninger)
-            //certs.addAll(cv.sertifikat.toCertifications()) //truckførerbevis etc
-            certs.addAll(dto.cv?.certificates?.toCertifications().orEmpty()) //TODO sjekk denne
+            certs.addAll(dto.cv?.certificates?.toCertifications().orEmpty())
 
         if (samtykke.kurs)
-            //certs.addAll(cv.kurs.toCertifications())
-            certs.addAll(dto.cv?.courses?.toCertifications().orEmpty()) //TODO sjekk denne også, men trolig korrekt
-
-        //val (autorisasjon, fagbrev) = cv.fagdokumentasjon.toCertifications()
-        val (autorisasjon, fagbrev) = dto.cv?.vocationalCertificates?.toCertifications()!! //TODO kontroller
-
-        if (samtykke.offentligeGodkjenninger)
-            certs.addAll(autorisasjon)
+            certs.addAll(dto.cv?.courses?.toCertifications().orEmpty())
 
         if (samtykke.fagbrev)
             certs.addAll(fagbrev)
@@ -56,7 +52,7 @@ class CertificationConverter2(
         it.title ?: return@mapNotNull null
 
         Certification(
-                certificationTypeCode = null, // TODO: Find out what certificationTypeCode should be
+                certificationTypeCode = null,
                 certificationName = it.title,
                 issuingAuthortity = IssuingAuthority(it.issuer ?: ""),
                 firstIssuedDate = it.fromDate?.toFormattedDateTime(),
@@ -72,7 +68,7 @@ class CertificationConverter2(
         it.certificateName ?: it.alternativeName ?: return@mapNotNull null
 
         Certification(
-                certificationTypeCode = null, // TODO: Find out what certificationTypeCode should be
+                certificationTypeCode = null,
                 certificationName = it.certificateName ?: it.alternativeName ?: return@mapNotNull null,
                 issuingAuthortity = IssuingAuthority(it.issuer ?: ""),
                 firstIssuedDate = it.fromDate?.toFormattedDateTime(),
@@ -88,7 +84,7 @@ class CertificationConverter2(
         it.title ?: return@mapNotNull null
 
         Certification(
-                certificationTypeCode = null, // TODO: Find out what certificationTypeCode should be
+                certificationTypeCode = null,
                 certificationName = it.title.replace(CandidateProfileConverter.xml10Pattern, ""),
                 issuingAuthortity = IssuingAuthority((it.issuer ?: "").replace(CandidateProfileConverter.xml10Pattern, "")),
                 firstIssuedDate = it.date?.toFormattedDateTime(),

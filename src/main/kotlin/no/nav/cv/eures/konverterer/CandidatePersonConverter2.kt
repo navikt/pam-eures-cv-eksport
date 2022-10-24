@@ -29,7 +29,7 @@ class CandidatePersonConverter2(
                     familyName = ""
                 ),
                 communication = listOf(),
-                residencyCountryCode = "", //TODO cv.land?.toIso3166_1a2CountryCode(),
+                residencyCountryCode = "",
                 nationalityCode = null, // quick fix issues 14. sept 2021 cv.nasjonalitet?.let { listOf(it.toIso3166_1a2CountryCode()) },
                 birthDate = "",
                 genderCode = GenderCode.NotSpecified,
@@ -47,12 +47,12 @@ class CandidatePersonConverter2(
                 address = dto.personalia?.gateadresse,
                 zipCode = dto.personalia?.postnummer,
                 city = dto.personalia?.poststed,
-                countryCode = null), // TODO cv.land?.toIso3166_1a2CountryCode()),
+                countryCode = null),
 
-            residencyCountryCode = "", //TODO cv.land?.toIso3166_1a2CountryCode(), // May be null, but that seems to be OK
+            residencyCountryCode = "",
             nationalityCode =  null, //cv.nasjonalitet?.let { listOf(it.toIso3166_1a2CountryCode()) },
             birthDate = dto.personalia?.foedselsdato.toString(),
-            genderCode = GenderCode.NotSpecified, // TODO : Vi har vel ikke kjønn?
+            genderCode = GenderCode.NotSpecified,
             primaryLanguageCode = if (samtykke.spraak) getForstespraak(dto.cv?.languages) else listOf()
         )
     }

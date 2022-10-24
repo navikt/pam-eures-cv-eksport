@@ -10,7 +10,7 @@ import no.nav.cv.dto.person.CvEndretInternPersonaliaDto
 data class CvEndretInternDto(
     val aktorId: String,
     val kandidatNr: String?,
-    val fodselsnummer: String?,
+    val fodselsnummer: String,
     val meldingstype: CvMeldingstype,
     val cv: CvEndretInternCvDto?,
     //cant be null as Person in CV which this field is based on cant be null for cv-endret-intern messages

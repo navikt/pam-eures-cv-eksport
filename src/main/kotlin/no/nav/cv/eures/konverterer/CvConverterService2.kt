@@ -81,7 +81,7 @@ class CvConverterService2(
     }
 
 
-    fun createOrUpdate(dto: CvEndretInternDto) = cvXmlRepository.fetch(dto.fodselsnummer!!)
+    fun createOrUpdate(dto: CvEndretInternDto) = cvXmlRepository.fetch(dto.fodselsnummer)
         ?.let { updateExisting(it, dto) }
         ?: createNew(dto)
 
@@ -100,7 +100,7 @@ class CvConverterService2(
             ?.let {
                 CvConverterService.log.debug("Got CV aktoerid: ${it.aktorId}")
 
-                samtykkeRepository.hentSamtykke(it.fodselsnummer!!)
+                samtykkeRepository.hentSamtykke(it.fodselsnummer)
                     ?.run {
                         val (xml, previewJson) = try {
                             val candidate = CandidateConverter2(it, this).toXmlRepresentation()
