@@ -47,7 +47,7 @@ class CandidatePersonConverter2(
                 address = dto.personalia?.gateadresse,
                 zipCode = dto.personalia?.postnummer,
                 city = dto.personalia?.poststed,
-                countryCode = ""), // TODO cv.land?.toIso3166_1a2CountryCode()),
+                countryCode = null), // TODO cv.land?.toIso3166_1a2CountryCode()),
 
             residencyCountryCode = "", //TODO cv.land?.toIso3166_1a2CountryCode(), // May be null, but that seems to be OK
             nationalityCode =  null, //cv.nasjonalitet?.let { listOf(it.toIso3166_1a2CountryCode()) },
