@@ -42,7 +42,7 @@ dependencies {
     implementation "org.yaml:snakeyaml:1.33"
     implementation "com.fasterxml.jackson.module:jackson-module-kotlin:${jacksonVersion}"
     implementation "com.fasterxml.jackson.dataformat:jackson-dataformat-xml:${jacksonVersion}"
-    implementation "org.springframework.boot:spring-boot-starter-webflux:2.7.4"
+    implementation "org.springframework.boot:spring-boot-starter-webflux:2.7.5"
     implementation "org.apache.kafka:kafka-clients:3.3.1"
     implementation "com.fasterxml.jackson.core:jackson-databind:2.13.4.2"
 
