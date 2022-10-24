@@ -15,6 +15,8 @@ import org.springframework.kafka.annotation.EnableKafka
 import org.springframework.kafka.config.ConcurrentKafkaListenerContainerFactory
 import org.springframework.kafka.core.ConsumerFactory
 import org.springframework.kafka.core.DefaultKafkaConsumerFactory
+import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor
+import java.time.Duration
 import java.util.*
 
 @Configuration
@@ -60,17 +62,27 @@ class KafkaConfig {
     @Bean(name = ["cvMeldingContainerFactory"])
     fun onpremKafkaListenerConstainerFactory() : ConcurrentKafkaListenerContainerFactory<String, ByteArray> {
         return ConcurrentKafkaListenerContainerFactory<String, ByteArray>().apply{
+            setConcurrency(1)
             setConsumerFactory(consumerFactoryOnPrem())
+            containerProperties.pollTimeout = Long.MAX_VALUE
+            containerProperties.consumerTaskExecutor = containerExecutor()
             setBatchListener(true)
+            containerProperties.authorizationExceptionRetryInterval = Duration.ofSeconds(60)
         }
     }
+
+    @Bean
+    fun containerExecutor(): ThreadPoolTaskExecutor = ThreadPoolTaskExecutor().apply { corePoolSize = 10 }
 
     @Bean(name = ["internCvTopicContainerFactory"])
     fun internCvTopicKafkaListenerConstainerFactory() : ConcurrentKafkaListenerContainerFactory<String, String> {
         return ConcurrentKafkaListenerContainerFactory<String, String>().apply{
+            setConcurrency(1)
             setConsumerFactory(consumerFactoryInternCvTopic())
+            containerProperties.pollTimeout = Long.MAX_VALUE
+            containerProperties.consumerTaskExecutor = containerExecutor()
             setBatchListener(true)
-        }
+            containerProperties.authorizationExceptionRetryInterval = Duration.ofSeconds(60)        }
     }
 
     @Bean
