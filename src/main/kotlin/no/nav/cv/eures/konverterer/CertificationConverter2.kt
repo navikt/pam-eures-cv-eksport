@@ -54,12 +54,11 @@ class CertificationConverter2(
     @JvmName("toCertificationsGodkjenning")
     private fun List<CvEndretInternAuthorization>.toCertifications() = mapNotNull {
         it.title ?: return@mapNotNull null
-        it.issuer ?: return@mapNotNull null
 
         Certification(
                 certificationTypeCode = null, // TODO: Find out what certificationTypeCode should be
                 certificationName = it.title,
-                issuingAuthortity = IssuingAuthority(it.issuer),
+                issuingAuthortity = IssuingAuthority(it.issuer ?: ""),
                 firstIssuedDate = it.fromDate?.toFormattedDateTime(),
                 freeFormEffectivePeriod = FreeFormEffectivePeriod(
                         startDate = null,
@@ -70,13 +69,12 @@ class CertificationConverter2(
 
     @JvmName("toCertificationsSertifikat")
     private fun List<CvEndretInternCertificate>.toCertifications() = mapNotNull {
-        it.issuer ?: return@mapNotNull null
         it.certificateName ?: it.alternativeName ?: return@mapNotNull null
 
         Certification(
                 certificationTypeCode = null, // TODO: Find out what certificationTypeCode should be
                 certificationName = it.certificateName ?: it.alternativeName ?: return@mapNotNull null,
-                issuingAuthortity = IssuingAuthority(it.issuer),
+                issuingAuthortity = IssuingAuthority(it.issuer ?: ""),
                 firstIssuedDate = it.fromDate?.toFormattedDateTime(),
                 freeFormEffectivePeriod = FreeFormEffectivePeriod(
                         startDate = null,
@@ -88,12 +86,11 @@ class CertificationConverter2(
     @JvmName("toCertificationsKurs")
     private fun List<CvEndretInternCourse>.toCertifications() = mapNotNull {
         it.title ?: return@mapNotNull null
-        it.issuer ?: return@mapNotNull null
 
         Certification(
                 certificationTypeCode = null, // TODO: Find out what certificationTypeCode should be
                 certificationName = it.title.replace(CandidateProfileConverter.xml10Pattern, ""),
-                issuingAuthortity = IssuingAuthority(it.issuer.replace(CandidateProfileConverter.xml10Pattern, "")),
+                issuingAuthortity = IssuingAuthority((it.issuer ?: "").replace(CandidateProfileConverter.xml10Pattern, "")),
                 firstIssuedDate = it.date?.toFormattedDateTime(),
                 freeFormEffectivePeriod = null
         )
