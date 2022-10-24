@@ -68,6 +68,7 @@ class KafkaConfig {
             containerProperties.consumerTaskExecutor = containerExecutor()
             setBatchListener(true)
             containerProperties.authorizationExceptionRetryInterval = Duration.ofSeconds(60)
+            setBatchErrorHandler(KafkaErrorHandler())
         }
     }
 
@@ -82,7 +83,9 @@ class KafkaConfig {
             containerProperties.pollTimeout = Long.MAX_VALUE
             containerProperties.consumerTaskExecutor = containerExecutor()
             setBatchListener(true)
-            containerProperties.authorizationExceptionRetryInterval = Duration.ofSeconds(60)        }
+            containerProperties.authorizationExceptionRetryInterval = Duration.ofSeconds(60)
+            setBatchErrorHandler(KafkaErrorHandler())
+        }
     }
 
     @Bean
