@@ -30,7 +30,7 @@ class CandidatePersonConverter2(
                 ),
                 communication = listOf(),
                 residencyCountryCode = "",
-                nationalityCode = null, // quick fix issues 14. sept 2021 cv.nasjonalitet?.let { listOf(it.toIso3166_1a2CountryCode()) },
+                nationalityCode = null,
                 birthDate = "",
                 genderCode = GenderCode.NotSpecified,
                 primaryLanguageCode = if (samtykke.spraak) getForstespraak(dto.cv?.languages) else listOf()

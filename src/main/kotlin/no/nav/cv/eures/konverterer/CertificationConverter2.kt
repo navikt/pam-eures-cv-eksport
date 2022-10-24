@@ -100,7 +100,7 @@ class CertificationConverter2(
                 aut.mapNotNull {
                     it.title ?: return@mapNotNull null
                     Certification(
-                            certificationTypeCode = null, // TODO: Find out what certificationTypeCode should be
+                            certificationTypeCode = null,
                             certificationName = it.title,
                             issuingAuthortity = IssuingAuthority(""),
                             firstIssuedDate = null,
@@ -111,7 +111,7 @@ class CertificationConverter2(
                 fag.mapNotNull {
                     it.title ?: return@mapNotNull null
                     Certification(
-                            certificationTypeCode = null, // TODO: Find out what certificationTypeCode should be
+                            certificationTypeCode = null,
                             certificationName = it.title,
                             issuingAuthortity = IssuingAuthority("Yrkesopplæringsnemnd"),
                             firstIssuedDate = null,

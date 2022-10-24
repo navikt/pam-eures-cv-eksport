@@ -38,20 +38,11 @@ class EmploymentHistoryConverter2(
     ))
 
     private fun String.toJobCategoryCode(): JobCategoryCode? = janzzService.getEscoForTerm(this, JanzzService.EscoLookupType.OCCUPATION)
-            .firstOrNull() // TODO Might consider something more refined than just picking the first result
+            .firstOrNull()
             ?.let {
                 JobCategoryCode(
                         name = it.term,
                         code = it.esco
                 )
             }
-
-
-
 }
-
-
-//val organizationName: String,
-//val organizationContact: PersonContact, // TODO Usikker paa denne mappingen
-//val industryCode: IndustryCode,
-//val employmentPeriod: AttendancePeriod
