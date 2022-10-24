@@ -1,18 +1,17 @@
 package no.nav.cv.eures.konverterer
 
 import no.nav.cv.eures.cv.CvXml
-import org.junit.jupiter.api.Test
-
+import no.nav.security.token.support.spring.test.EnableMockOAuth2Server
 import org.junit.jupiter.api.Assertions.*
+import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.jdbc.EmbeddedDatabaseConnection
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase
 import org.springframework.boot.test.context.SpringBootTest
-import org.springframework.test.context.ActiveProfiles
 import java.time.ZonedDateTime
 
 @SpringBootTest
-@ActiveProfiles("test")
+@EnableMockOAuth2Server
 @AutoConfigureTestDatabase(connection = EmbeddedDatabaseConnection.H2)
 internal class CvConverterServiceTest {
 
@@ -45,7 +44,7 @@ internal class CvConverterServiceTest {
     }
 
 
-    val createdAt = ZonedDateTime.now().minusMinutes(5)
+    val createdAt: ZonedDateTime = ZonedDateTime.now().minusMinutes(5)
 
     val xmlString1 = "XML String 1"
     val xmlString2 = "XML String 2"

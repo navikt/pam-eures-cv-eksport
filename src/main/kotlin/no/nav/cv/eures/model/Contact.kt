@@ -58,7 +58,7 @@ data class Communication(
                 address: String? = null,
                 zipCode: String? = null,
                 city: String? = null,
-                countryCode: String?? = null
+                countryCode: String? = null
         ) : List<Communication> {
             val comList = mutableListOf<Communication>()
 

@@ -24,7 +24,7 @@ class JanzzService(
         private lateinit var instance: JanzzService
         fun instance() = instance
         private val log: Logger = LoggerFactory.getLogger(JanzzService::class.java)
-        private val objectMapper = ObjectMapper().registerModule(KotlinModule())
+        private val objectMapper = ObjectMapper().registerModule(KotlinModule.Builder().build())
         private val skillEscoSubstring = "/skill/"
         private val occupationEscoSubstring = "/occupation/"
         private val iscoSubstring = "/isco/"
@@ -42,7 +42,7 @@ class JanzzService(
     fun getTermForEsco(escoCode: String): String? = janzzCacheRepository.getCacheForEsco(escoCode)
 
     fun getEscoForTerm(term: String, escoLookup: EscoLookupType): List<CachedEscoMapping> {
-        val standardizedTerm = term.trim().toLowerCase()
+        val standardizedTerm = term.trim().lowercase()
         val cachedEsco = janzzCacheRepository.fetchFromCacheTerm(standardizedTerm)
 
         val isNotEmpty = cachedEsco.isNotEmpty()

@@ -11,17 +11,18 @@ For å få den til å enable dokumentasjonen lokalt, må `SWAGGER_ENABLED=true` 
 Det kreves at enkelte ting kjører på PC
 1. Postgres med applikasjonens database, pam-eures-cv-eksport
 2. Kafka-oppsett fra CV. Se nedenfor 
+3. Containeren mock-login må kjøre. Den kan startes fra pam-personbruker ved å kjøre `npm run localhost-api`.
+4. Legg inn innslag i /etc/hosts med `127.0.0.1 host.docker.internal`
 
 ### Kommandolinje
 `gradle run`
 
 Dette kjører opp appen vha gradle. Da puttes også src/test/* på classpath. Der finnes det en logback-test.xml som gjør
-logging litt hyggeligere. I tillegg finnes no.nav.security:token-validation-test-support på test-class-path, slik at man
-kan teste endepunktene også 
+logging litt hyggeligere.  
 
 ### Intellij
 Bruk IntelliJ sin gradle-plugin, og velg Tasks -> application -> run. Da får man de
-nødvendige ting (no.nav.security:token-validation-test-support) på classpathen
+nødvendige ting på classpathen
 
 ## Oppsett av database første gang
 Opprett database med applikasjonens defaultbruker 

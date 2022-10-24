@@ -1,17 +1,15 @@
 package no.nav.cv.eures.pdl
 
+import com.nhaarman.mockitokotlin2.doReturn
+import com.nhaarman.mockitokotlin2.whenever
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.powermock.api.mockito.PowerMockito
-import com.nhaarman.mockitokotlin2.doReturn
-import com.nhaarman.mockitokotlin2.whenever
 import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.boot.test.mock.mockito.MockBean
-import org.springframework.test.context.ActiveProfiles
 import org.springframework.test.util.AssertionErrors.assertEquals
 import java.util.function.Supplier
 
-@ActiveProfiles("test")
 class PdlPersonServiceTest {
 
     private lateinit var pdlPersonGateway: PdlPersonService

@@ -4,7 +4,7 @@ import no.nav.cv.eures.cv.CvXml
 import no.nav.cv.eures.cv.CvXmlRepository
 import no.nav.cv.eures.samtykke.Samtykke
 import no.nav.cv.eures.samtykke.SamtykkeRepository
-import no.nav.security.token.support.test.spring.TokenGeneratorConfiguration
+import no.nav.security.token.support.spring.test.EnableMockOAuth2Server
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.BeforeEach
@@ -13,14 +13,12 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest
 import org.springframework.context.annotation.ComponentScan
 import org.springframework.context.annotation.FilterType
-import org.springframework.context.annotation.Import
 import org.springframework.data.domain.PageRequest
 import org.springframework.stereotype.Repository
-import java.time.ZoneId
 import java.time.ZonedDateTime
 
 @DataJpaTest(includeFilters = [ComponentScan.Filter(type = FilterType.ANNOTATION, classes = [Repository::class])])
-@Import(TokenGeneratorConfiguration::class)
+@EnableMockOAuth2Server
 class EuresRepositoryTest {
 
     @Autowired
@@ -29,7 +27,7 @@ class EuresRepositoryTest {
     @Autowired
     lateinit var samtykkeRepository: SamtykkeRepository
 
-    private var oneDayAgo = ZonedDateTime.now(ZoneId.of("UTC")).minusDays(1)
+    private var oneDayAgo = ZonedDateTime.now().withNano(0).minusDays(1)
 
     private fun testData() = listOf(
             CvXml().update("PAM-1", "1234567890", oneDayAgo, oneDayAgo, null, xml = "SOME XML", checksum = "SOME CHECKSUM"),
@@ -59,7 +57,7 @@ class EuresRepositoryTest {
     fun `getChanges skal returnere endret verdier riktig grupert etter gruppe`() {
         val all = cvXmlRepository.fetchAllCvsAfterTimestamp(PageRequest.of(0, 20), oneDayAgo.minusHours(1))
         val two = cvXmlRepository.fetchAllCvsAfterTimestamp(PageRequest.of(0, 20), oneDayAgo.plusHours(11))
-        val one = cvXmlRepository.fetchAllCvsAfterTimestamp(PageRequest.of(0, 20),oneDayAgo.plusHours(12))
+        val one = cvXmlRepository.fetchAllCvsAfterTimestamp(PageRequest.of(0, 20), oneDayAgo.plusHours(12))
         val zero = cvXmlRepository.fetchAllCvsAfterTimestamp(PageRequest.of(0, 20), oneDayAgo.plusDays(1))
 
         assertEquals(4, all.content.size)
@@ -80,6 +78,4 @@ class EuresRepositoryTest {
         val unknown = cvXmlRepository.fetchAllCvsByReference(listOf("NON-EXISTANT"))
         assertEquals(0, unknown.size)
     }
-
-
 }
