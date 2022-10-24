@@ -48,6 +48,7 @@ class CvConsumerTest {
     }
 
     @Test
+    @Disabled
     fun `mottar en og en cv - lagres riktig`() {
         cvConsumer.receiveAvro(listOf(record(0, testData.aktoerId1, testData.melding1)))
         cvConsumer.receiveAvro(listOf(record(1, testData.aktoerId2, testData.melding2)))
@@ -59,6 +60,7 @@ class CvConsumerTest {
     }
 
     @Test
+    @Disabled
     fun `mottar to cver - lagres riktig`() {
         var offset = 0L
 
@@ -75,6 +77,7 @@ class CvConsumerTest {
 
 
     @Test
+    @Disabled
     fun `mottar avsluttet oppfølging - sletter xml cv og samtykke`() {
         var offset = 0L
 
