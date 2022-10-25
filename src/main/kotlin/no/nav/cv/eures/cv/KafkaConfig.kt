@@ -100,7 +100,7 @@ class KafkaConfig {
             ConsumerConfig.ENABLE_AUTO_COMMIT_CONFIG to true,
 
             CommonClientConfigs.SECURITY_PROTOCOL_CONFIG to "SSL",
-            SslConfigs.SSL_ENDPOINT_IDENTIFICATION_ALGORITHM_CONFIG to "", // Disable server host name verification
+            SslConfigs.SSL_ENDPOINT_IDENTIFICATION_ALGORITHM_CONFIG to "",
             SslConfigs.SSL_TRUSTSTORE_TYPE_CONFIG to "JKS",
             SslConfigs.SSL_KEYSTORE_TYPE_CONFIG to "PKCS12",
             SslConfigs.SSL_KEY_PASSWORD_CONFIG to credstorePassword
