@@ -45,7 +45,7 @@ class CvConsumer(
     )
     fun receiveAvro(record: List<ConsumerRecord<String, ByteArray>>) {
         log.debug("Receiving cv avro message")
-        //processAvroMessages(record)
+        processAvroMessages(record)
     }
 
     @KafkaListener(
@@ -54,7 +54,7 @@ class CvConsumer(
     )
     fun receiveJson(record: List<ConsumerRecord<String, String>>) {
         log.debug("Receiving cv json message")
-        processJsonMessages(record)
+        //processJsonMessages(record)
     }
 
     private fun String.foedselsnummerOrNull(): String? {
@@ -175,12 +175,7 @@ class CvConsumer(
             val isoDate = df.format(Date(endretCV.timestamp()))
 
             log.debug("Processing json kafka message with key ${endretCV.key()} with timestamp $isoDate")
-
-            log.info("TOPICTEST. Mottatt string : " + endretCV.value())
-
             val cvEndretInternDto = objectMapper.readValue<CvEndretInternDto>(endretCV.value())
-
-            log.info("TOPICTEST. CvEndretInternDto : " + endretCV.value())
 
             when (cvEndretInternDto.meldingstype) {
                 CvMeldingstype.OPPRETT -> cvConverterService2.createOrUpdate(cvEndretInternDto)
