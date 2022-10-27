@@ -50,7 +50,7 @@ class CandidatePersonConverter2(
                 countryCode = null),
 
             residencyCountryCode = "",
-            nationalityCode =  null, //cv.nasjonalitet?.let { listOf(it.toIso3166_1a2CountryCode()) },
+            nationalityCode =  null,
             birthDate = dto.personalia?.foedselsdato.toString(),
             genderCode = GenderCode.NotSpecified,
             primaryLanguageCode = if (samtykke.spraak) getForstespraak(dto.cv?.languages) else listOf()

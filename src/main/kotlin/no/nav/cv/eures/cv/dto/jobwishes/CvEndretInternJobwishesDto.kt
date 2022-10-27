@@ -5,7 +5,6 @@ import java.time.ZonedDateTime
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 data class CvEndretInternJobwishesDto(
-    //assume this is always set
     val id: Long,
     val startOption: String?,
     val occupations: List<CvEndretInternOccupation>,

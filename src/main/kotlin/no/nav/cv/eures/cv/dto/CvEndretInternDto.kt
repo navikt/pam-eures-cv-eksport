@@ -13,7 +13,6 @@ data class CvEndretInternDto(
     val fodselsnummer: String,
     val meldingstype: CvMeldingstype,
     val cv: CvEndretInternCvDto?,
-    //cant be null as Person in CV which this field is based on cant be null for cv-endret-intern messages
     val personalia: CvEndretInternPersonaliaDto?,
     val jobWishes: CvEndretInternJobwishesDto?,
     val oppfolgingsInformasjon: CvEndretInternOppfolgingsinformasjonDto?,
