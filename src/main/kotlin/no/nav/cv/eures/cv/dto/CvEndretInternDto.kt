@@ -10,7 +10,7 @@ import no.nav.cv.dto.person.CvEndretInternPersonaliaDto
 data class CvEndretInternDto(
     val aktorId: String,
     val kandidatNr: String?,
-    val fodselsnummer: String,
+    val fodselsnummer: String?,
     val meldingstype: CvMeldingstype,
     val cv: CvEndretInternCvDto?,
     val personalia: CvEndretInternPersonaliaDto?,

@@ -41,7 +41,7 @@ spring:
 kafka:
   onprem:
     consumer:
-      group-id: pam-eures-cv-eksport-v1
+      group-id: pam-eures-cv-eksport-v10
     bootstrap-servers: ${KAFKA_BOOTSTRAP_SERVERS:localhost:9092}
     ssl:
       trust-store-location: ${NAV_TRUSTSTORE_PATH:}

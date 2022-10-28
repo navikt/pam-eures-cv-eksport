@@ -12,7 +12,7 @@ import javax.persistence.*
 
 interface SamtykkeRepository {
 
-    fun hentSamtykke(foedselsnummer: String) : Samtykke?
+    fun hentSamtykke(foedselsnummer: String?) : Samtykke?
     fun hentSamtykkeUtenNaaverendeXml(foedselsnummer: List<String>) : List<SamtykkeEntity>
     fun hentGamleSamtykker(time: ZonedDateTime): List<SamtykkeEntity>
     fun hentAntallSamtykker() : Long
@@ -40,7 +40,7 @@ private open class JpaSamtykkeRepository(
             """.replace(serieMedWhitespace, " ")
 
     @Transactional(readOnly = true)
-    override fun hentSamtykke(foedselsnummer: String)
+    override fun hentSamtykke(foedselsnummer: String?)
             = entityManager.createNativeQuery(hentSamtykke, SamtykkeEntity::class.java)
                 .setParameter("foedselsnummer", foedselsnummer)
                 .resultList
