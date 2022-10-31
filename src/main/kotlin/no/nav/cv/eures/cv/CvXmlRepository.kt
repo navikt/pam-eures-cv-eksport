@@ -90,6 +90,9 @@ class CvXml {
     @Column(name = "CHECKSUM", nullable = false)
     lateinit var checksum: String
 
+    @Column(name = "AKTORID", nullable = true)
+    lateinit var aktorId: String
+
     fun update(
             reference: String,
             foedselsnummer: String,
