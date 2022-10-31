@@ -6,15 +6,16 @@ import no.nav.cv.eures.cv.CvXmlRepository
 import no.nav.cv.eures.cv.RawCV
 import no.nav.cv.eures.samtykke.Samtykke
 import no.nav.cv.eures.samtykke.SamtykkeRepository
-import org.junit.jupiter.api.Assertions.*
+import no.nav.security.token.support.spring.test.EnableMockOAuth2Server
+import org.junit.jupiter.api.Assertions.assertNotNull
+import org.junit.jupiter.api.Assertions.assertNull
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
-import org.springframework.test.context.ActiveProfiles
 import java.time.ZonedDateTime
 
 @SpringBootTest
-@ActiveProfiles("test")
+@EnableMockOAuth2Server
 internal class PruneSamtykkeTest {
 
     @Autowired

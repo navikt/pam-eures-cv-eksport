@@ -1,24 +1,23 @@
 package no.nav.cv.eures.samtykke
 
-import no.nav.security.token.support.test.spring.TokenGeneratorConfiguration
+import no.nav.security.token.support.spring.test.EnableMockOAuth2Server
+import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.Assertions.assertNull
 import org.junit.jupiter.api.Test
-
-import org.junit.jupiter.api.Assertions.*
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest
 import org.springframework.context.annotation.ComponentScan
 import org.springframework.context.annotation.FilterType
-import org.springframework.context.annotation.Import
 import org.springframework.stereotype.Repository
 import java.time.ZonedDateTime
 
 @DataJpaTest(includeFilters = [ComponentScan.Filter(type = FilterType.ANNOTATION, classes = [Repository::class])])
-@Import(TokenGeneratorConfiguration::class)
+@EnableMockOAuth2Server
 internal class SamtykkeRepositoryTest {
     val foedselsnummer = "dummy"
     val foedselsnummer2 = "dummy2"
-    val now = ZonedDateTime.now()
-    val yesterday = ZonedDateTime.now().minusDays(1)
+    val now: ZonedDateTime = ZonedDateTime.now()
+    val yesterday: ZonedDateTime = ZonedDateTime.now().minusDays(1)
 
     @Autowired
     lateinit var samtykkeRepository: SamtykkeRepository

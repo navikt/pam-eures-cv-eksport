@@ -28,7 +28,7 @@ class GenerateMetrics(
         val log: Logger = LoggerFactory.getLogger(GenerateMetrics::class.java)
     }
 
-    private val objectMapper = ObjectMapper().registerModule(KotlinModule())
+    private val objectMapper = ObjectMapper().registerModule(KotlinModule.Builder().build())
 
     val gauges = mutableMapOf<String, AtomicLong>()
 
@@ -56,7 +56,7 @@ class GenerateMetrics(
                     log.info("Got these categories and counts: ${it.map { (kategori, antall) -> "$kategori: $antall" }.joinToString ( "," )}")
                 }
                 .forEach{(kategori, antall) ->
-                    val gaugeName = "cv.eures.eksport.antall.samtykker.${kategori.toLowerCase()}"
+                    val gaugeName = "cv.eures.eksport.antall.samtykker.${kategori.lowercase()}"
                     addOrUpdateGauge(gaugeName, antall)
                 }
 

@@ -8,7 +8,7 @@ import org.slf4j.LoggerFactory
 @RestController
 @RequestMapping("/")
 @Unprotected
-class PingController() {
+class PingController {
     companion object {
         val log: Logger = LoggerFactory.getLogger(PingController::class.java)
     }
