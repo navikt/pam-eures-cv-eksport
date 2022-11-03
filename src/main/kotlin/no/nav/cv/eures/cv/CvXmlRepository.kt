@@ -12,6 +12,8 @@ interface CvXmlRepository : JpaRepository<CvXml, Long> {
     @Query("SELECT cv FROM CvXml cv WHERE cv.foedselsnummer = ?1")
     fun fetch(foedselsnummer: String?): CvXml?
 
+    @Query("SELECT cv FROM CvXml cv WHERE cv.aktorId = ?1")
+    fun fetchByAktorId(aktorId: String?): CvXml?
 
     @Query("SELECT COUNT(cv) FROM CvXml cv WHERE cv.slettet IS NULL AND cv.opprettet = cv.sistEndret")
     fun fetchCountCreated(): Long

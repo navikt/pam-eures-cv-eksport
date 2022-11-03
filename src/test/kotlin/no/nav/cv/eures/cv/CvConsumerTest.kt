@@ -141,13 +141,14 @@ class CvConsumerTest {
 
         var offset = 0L
         var fodselsnr = "11111111"
+        var aktoerID = "123"
         var meldingsType = CvMeldingstype.SLETT
-        var cvEndretInternDto = createCvEndretInternDto("", fodselsnr, "", meldingsType)
+        var cvEndretInternDto = createCvEndretInternDto(aktoerID, fodselsnr, "", meldingsType)
         cvConsumer.receiveJson(listOf(
             internRecord(offset, testData.aktoerId1, cvEndretInternDto)))
 
         Mockito.verify(cvConverterService2, Mockito.times(1)).delete(stringCaptor.capture())
-        assertEquals(fodselsnr, stringCaptor.firstValue, "Skal gi fødselsnummeret mottatt i receiveren.")
+        assertEquals(aktoerID, stringCaptor.firstValue, "Skal gi fødselsnummeret mottatt i receiveren.")
 
 
     }

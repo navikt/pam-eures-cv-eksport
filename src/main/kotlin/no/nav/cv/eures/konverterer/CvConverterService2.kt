@@ -68,36 +68,39 @@ class CvConverterService2(
             ?.let { (ref, xml, _) ->
                 val checksum = md5(xml)
                 CvConverterService.log.debug("Create New: Before save of ${xml.length} bytes of xml with checksum $checksum")
-                cvXmlRepository.save(CvXml.create(
-                    reference = ref,
-                    foedselsnummer = dto.fodselsnummer.orEmpty(),
-                    opprettet = now,
-                    sistEndret = now,
-                    slettet = null,
-                    xml = xml,
-                    checksum = checksum
-                ))
+                dto.fodselsnummer?.let {
+                    cvXmlRepository.save(
+                        CvXml.create(
+                            reference = ref,
+                            foedselsnummer = dto.fodselsnummer,
+                            opprettet = now,
+                            sistEndret = now,
+                            slettet = null,
+                            xml = xml,
+                            checksum = checksum
+                        )
+                    )
+                }
             }
     }
-
 
     fun createOrUpdate(dto: CvEndretInternDto) = cvXmlRepository.fetch(dto.fodselsnummer)
         ?.let { updateExisting(it, dto) }
         ?: createNew(dto)
 
-    fun delete(foedselsnummer: String): CvXml? = cvXmlRepository.fetch(foedselsnummer)
+    fun delete(aktorId: String): CvXml? = cvXmlRepository.fetchByAktorId(aktorId)
             ?.let {
                 it.slettet = it.slettet ?: ZonedDateTime.now()
                 it.xml = ""
                 it.checksum = ""
-                samtykkeRepository.slettSamtykke(foedselsnummer)
+                samtykkeRepository.slettSamtykke(it.foedselsnummer)
                 return@let cvXmlRepository.save(it)
             }
 
 
     fun convertToXml(dto: CvEndretInternDto): Triple<String, String, Candidate>? {
         return dto
-            ?.let {
+            .let {
                 CvConverterService.log.debug("Got CV aktoerid: ${it.aktorId}")
 
                 samtykkeRepository.hentSamtykke(it.fodselsnummer)
