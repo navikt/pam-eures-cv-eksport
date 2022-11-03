@@ -77,7 +77,8 @@ class CvConverterService2(
                             sistEndret = now,
                             slettet = null,
                             xml = xml,
-                            checksum = checksum
+                            checksum = checksum,
+                            aktorId = dto.aktorId
                         )
                     )
                 }

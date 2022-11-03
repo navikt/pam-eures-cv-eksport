@@ -21,7 +21,7 @@ internal class CvConverterService2Test {
 
     @Test
     fun `Not changing checksum when xml is not changed`() {
-        val cvBefore = createCv("Ref321", "111222333")
+        val cvBefore = createCv("Ref321", "111222333", "123222")
 
         val checksumBefore = cvBefore.checksum
         val cvAfter = cvConverterService.updateIfChanged(cvBefore, xmlString1)
@@ -32,7 +32,7 @@ internal class CvConverterService2Test {
 
     @Test
     fun `Updated checksum when xml is changed`() {
-        val cvBefore = createCv("Ref123", "333222111")
+        val cvBefore = createCv("Ref123", "333222111", "32323")
 
         val checksumBefore = cvBefore.checksum
         val checksumAfter = cvConverterService.md5(xmlString2)
@@ -168,13 +168,13 @@ internal class CvConverterService2Test {
         </Candidate>
     """.trimIndent()
 
-    private fun createCv(ref: String, fnr: String) = CvXml.create(
+    private fun createCv(ref: String, fnr: String, aktorId: String) = CvXml.create(
         reference = ref,
         foedselsnummer = fnr,
         opprettet = createdAt,
         sistEndret = createdAt,
         slettet = null,
         xml = xmlString1,
-        checksum = cvConverterService.md5(xmlString1)
-    )
+        checksum = cvConverterService.md5(xmlString1),
+        aktorId = aktorId)
 }

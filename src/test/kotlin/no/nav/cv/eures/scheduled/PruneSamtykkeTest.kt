@@ -52,7 +52,8 @@ internal class PruneSamtykkeTest {
             sistEndret = deleteThisSistEndret,
             slettet = null,
             xml = "xml string",
-            checksum = "checksum")
+            checksum = "checksum",
+            aktorId = "123")
 
         val keepThisButKeepRawCv = RawCV.create(
             aktoerId = "aid2",
@@ -68,7 +69,8 @@ internal class PruneSamtykkeTest {
             sistEndret = keepThisSistEndret,
             slettet = null,
             xml = "xml string",
-            checksum = "checksum")
+            checksum = "checksum",
+            aktorId="123")
 
 
         samtykkeRepository.oppdaterSamtykke(deleteThisFoedselsnummer, Samtykke(deleteThisSistEndret))

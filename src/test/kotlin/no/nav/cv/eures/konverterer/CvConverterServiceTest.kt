@@ -56,6 +56,6 @@ internal class CvConverterServiceTest {
             sistEndret = createdAt,
             slettet = null,
             xml = xmlString1,
-            checksum = cvConverterService.md5(xmlString1)
-    )
+            checksum = cvConverterService.md5(xmlString1),
+            aktorId= null)
 }

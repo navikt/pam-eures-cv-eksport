@@ -93,7 +93,7 @@ class CvXml {
     lateinit var checksum: String
 
     @Column(name = "AKTORID", nullable = true)
-    lateinit var aktorId: String
+    var aktorId: String? = null
 
     fun update(
             reference: String,
@@ -102,7 +102,8 @@ class CvXml {
             sistEndret: ZonedDateTime,
             slettet: ZonedDateTime?,
             xml: String,
-            checksum: String
+            checksum: String,
+            aktorId: String?
     ): CvXml {
         this.reference = reference
         this.foedselsnummer = foedselsnummer
@@ -111,12 +112,13 @@ class CvXml {
         this.slettet = slettet
         this.xml = xml
         this.checksum = checksum
+        this.aktorId = aktorId
 
         return this
     }
 
     override fun toString(): String {
-        return "CvXml(aktoerId='$foedselsnummer', opprettet=$opprettet, sistEndret=$sistEndret, slettet=$slettet, checksum='$checksum', xml='$xml')"
+        return "CvXml(aktoerId='$aktorId', opprettet=$opprettet, sistEndret=$sistEndret, slettet=$slettet, checksum='$checksum', xml='$xml')"
     }
 
     companion object {
@@ -127,7 +129,8 @@ class CvXml {
                 sistEndret: ZonedDateTime,
                 slettet: ZonedDateTime?,
                 xml: String,
-                checksum: String
-        ) = CvXml().update(reference, foedselsnummer, opprettet, sistEndret, slettet, xml, checksum)
+                checksum: String,
+                aktorId: String?,
+        ) = CvXml().update(reference, foedselsnummer, opprettet, sistEndret, slettet, xml, checksum, aktorId)
     }
 }

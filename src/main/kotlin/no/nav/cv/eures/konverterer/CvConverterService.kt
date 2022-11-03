@@ -94,7 +94,8 @@ class CvConverterService(
                             sistEndret = now,
                             slettet = null,
                             xml = xml,
-                            checksum = checksum
+                            checksum = checksum,
+                            aktorId = null
                     ))
                 }
     }
