@@ -53,6 +53,9 @@ class KafkaConfig {
     @Value("\${kafka.onprem.security.protocol}")
     lateinit var onpremSecurityProtocol: String
 
+    @Value("\${kafka.aiven.groupid}")
+    lateinit var groupidInternTopic: String
+
 
 
     companion object {
@@ -92,7 +95,7 @@ class KafkaConfig {
     fun consumerFactoryInternCvTopic() : ConsumerFactory<String, String> {
         val props: MutableMap<String, Any> = hashMapOf(
             ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG to brokers,
-            ConsumerConfig.GROUP_ID_CONFIG to "pam-eures-cv-eksport-v111",
+            ConsumerConfig.GROUP_ID_CONFIG to groupidInternTopic,
             ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG to StringDeserializer::class.java,
             ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG to StringDeserializer::class.java,
             ConsumerConfig.CLIENT_ID_CONFIG to (System.getenv("POD_NAME") ?: "pam-eures-cv-eksport-${UUID.randomUUID()}"),
