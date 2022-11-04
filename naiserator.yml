@@ -56,20 +56,10 @@ spec:
     enabled: true
     path: /pam-eures-cv-eksport/actuator/prometheus
   env:
-    - name: KAFKA_CONSUMER_TOPIC_CV_ENDRET
-      value: {{ kafka_consumer_topic_cv_endret }}
-    - name: KAFKA_CONSUMER_TOPIC_CV_ENDRET_JSON
-      value: {{ kafka_consumer_topic_cv_endret_json }}
-    - name: KAFKA_BOOTSTRAP_SERVERS
-      value: {{ kafka_bootstrap_servers }}
+    - name: KAFKA_CONSUMER_TOPIC_CV_ENDRET_INTERN
+      value: {{ kafka_consumer_topic_cv_endret_intern }}
     - name: DB_DRIVER
       value: 'org.postgresql.Driver'
-    - name: KAFKA_SCHEMA_REGISTRY_ONPREM
-      value: {{ kafka_schema_registry_onprem }}
-    - name: KAFKA_SECURITY_PROTOCOL
-      value: SASL_SSL
-    - name: AVRO_VERSION_FIFTYTWO_HEX
-      value: {{ avro_version_fiftytwo_hex }}
     - name: PDL_SCOPE
       value: {{ pdl_scope }}
     - name: PDL_BASE_URL

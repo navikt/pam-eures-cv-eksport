@@ -71,6 +71,7 @@ dependencies {
     implementation "no.nav.security:token-client-spring:${tokenSupportVersion}"
 
     implementation "net.minidev:json-smart:2.4.8"
+    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.4.1")
 
     runtimeOnly "org.springdoc:springdoc-openapi-kotlin:${springdocVersion}"
     runtimeOnly "com.fasterxml.jackson.module:jackson-module-kotlin:${jacksonVersion}"

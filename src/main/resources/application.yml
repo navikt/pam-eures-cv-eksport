@@ -43,18 +43,6 @@ spring:
 
 
 kafka:
-  onprem:
-    consumer:
-      group-id: pam-eures-cv-eksport-v10
-    bootstrap-servers: ${KAFKA_BOOTSTRAP_SERVERS:localhost:9092}
-    ssl:
-      trust-store-location: ${NAV_TRUSTSTORE_PATH:}
-      trust-store-password: ${NAV_TRUSTSTORE_PASSWORD:}
-    schema:
-      registry:
-        url: https://${KAFKA_SCHEMA_REGISTRY:localhost:8081}
-    security:
-      protocol: ${KAFKA_SECURITY_PROTOCOL:PLAINTEXT}
   aiven:
     groupid: pam-eures-cv-eksport-v1
     brokers: ${KAFKA_BROKERS:localhost:9092}
@@ -73,11 +61,7 @@ kafka:
     schemaPassword: ${KAFKA_SCHEMA_REGISTRY_PASSWORD:none}
   topics:
     consumers:
-      cv_endret: ${KAFKA_CONSUMER_TOPIC_CV_ENDRET:arbeid-pam-cv-endret-v2-dev}
-      cv_endret_json: ${KAFKA_CONSUMER_TOPIC_CV_ENDRET_JSON:teampam.cv-endret-intern-v3}
-
-avro:
-  schema.subject: ${KAFKA_CONSUMER_TOPIC_CV_ENDRET:arbeid-pam-cv-endret-v2-dev}-value
+      cv_endret_intern: ${KAFKA_CONSUMER_TOPIC_CV_ENDRET_INTERN:teampam.cv-endret-intern-v3}
 
 jackson:
   serializationInclusion: ALWAYS

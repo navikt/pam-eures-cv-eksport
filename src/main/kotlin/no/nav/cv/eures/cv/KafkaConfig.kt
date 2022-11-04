@@ -23,11 +23,6 @@ import java.util.*
 @EnableKafka
 class KafkaConfig {
 
-    @Value("\${kafka.onprem.bootstrap-servers}")
-    lateinit var bootstrapServers: String
-
-    @Value("\${kafka.onprem.consumer.group-id}")
-    lateinit var groupId: String
 
     @Value("\${kafka.aiven.keystorePath}")
     lateinit var keyStorePath: String
@@ -41,39 +36,8 @@ class KafkaConfig {
     @Value("\${kafka.aiven.brokers}")
     lateinit var brokers: String
 
-    @Value("\${kafka.onprem.ssl.trust-store-location}")
-    lateinit var trustStoreLocationOnPrem: String
-
-    @Value("\${kafka.onprem.ssl.trust-store-password}")
-    lateinit var trustStorePasswordOnPrem: String
-
-    @Value("\${kafka.onprem.schema.registry.url}")
-    lateinit var schemaRegistryOnPrem: String
-
-    @Value("\${kafka.onprem.security.protocol}")
-    lateinit var onpremSecurityProtocol: String
-
     @Value("\${kafka.aiven.groupid}")
     lateinit var groupidInternTopic: String
-
-
-
-    companion object {
-        private val log = LoggerFactory.getLogger(KafkaConfig::class.java)
-    }
-
-    @Bean(name = ["cvMeldingContainerFactory"])
-    fun onpremKafkaListenerConstainerFactory() : ConcurrentKafkaListenerContainerFactory<String, ByteArray> {
-        return ConcurrentKafkaListenerContainerFactory<String, ByteArray>().apply{
-            setConcurrency(1)
-            setConsumerFactory(consumerFactoryOnPrem())
-            containerProperties.pollTimeout = Long.MAX_VALUE
-            containerProperties.consumerTaskExecutor = containerExecutor()
-            setBatchListener(true)
-            containerProperties.authorizationExceptionRetryInterval = Duration.ofSeconds(60)
-            setBatchErrorHandler(KafkaErrorHandler())
-        }
-    }
 
     @Bean
     fun containerExecutor(): ThreadPoolTaskExecutor = ThreadPoolTaskExecutor().apply { corePoolSize = 10 }
@@ -117,29 +81,5 @@ class KafkaConfig {
             props.put(SslConfigs.SSL_TRUSTSTORE_PASSWORD_CONFIG, credstorePassword)
         }
         return DefaultKafkaConsumerFactory<String, String>(props)
-    }
-
-    @Bean
-    fun consumerFactoryOnPrem() : ConsumerFactory<String, ByteArray> {
-        val props: MutableMap<String, Any> = hashMapOf(
-            ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG to bootstrapServers,
-            ConsumerConfig.GROUP_ID_CONFIG to groupId,
-            ConsumerConfig.CLIENT_ID_CONFIG to (System.getenv("POD_NAME") ?: "pam-eures-cv-eksport-${UUID.randomUUID()}"),
-            ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG to StringDeserializer::class.java.canonicalName,
-            ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG to ByteArrayDeserializer::class.java.canonicalName,
-
-            CommonClientConfigs.SECURITY_PROTOCOL_CONFIG to onpremSecurityProtocol,
-            SaslConfigs.SASL_MECHANISM to "PLAIN",
-            SaslConfigs.SASL_JAAS_CONFIG to "no.nav.cv.eures.cv.NaisLoginModule required;",
-            SslConfigs.SSL_TRUSTSTORE_LOCATION_CONFIG to trustStoreLocationOnPrem,
-            SslConfigs.SSL_TRUSTSTORE_PASSWORD_CONFIG to trustStorePasswordOnPrem,
-
-            KafkaAvroDeserializerConfig.SPECIFIC_AVRO_READER_CONFIG to "true",
-            KafkaAvroDeserializerConfig.SCHEMA_REGISTRY_URL_CONFIG to schemaRegistryOnPrem,
-            KafkaAvroDeserializerConfig.BASIC_AUTH_CREDENTIALS_SOURCE to "USER_INFO",
-            KafkaAvroDeserializerConfig.USER_INFO_CONFIG to "${System.getenv("KAFKA_SCHEMA_REGISTRY_USER")}:${System.getenv("KAFKA_SCHEMA_REGISTRY_PASSWORD")}",
-
-            )
-        return DefaultKafkaConsumerFactory<String, ByteArray>(props)
     }
 }
