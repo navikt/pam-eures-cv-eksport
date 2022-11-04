@@ -38,6 +38,14 @@ class CvConsumer(
         processMessages(record)
     }
 
+    @KafkaListener(
+        topics = ["\${kafka.topics.consumers.cv_endret_json}"],
+        containerFactory = "internCvTopicContainerFactory"
+    )
+    fun receiveJson(record: List<ConsumerRecord<String, String>>) {
+        log.debug("Receiving cv message from new topic.")
+    }
+
     private fun String.foedselsnummerOrNull(): String? {
         if (this == "-") return null
 

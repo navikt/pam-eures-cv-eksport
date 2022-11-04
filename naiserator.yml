@@ -28,7 +28,7 @@ spec:
   accessPolicy:
     outbound:
       external:
-        - host: {{ kafka_schema_registry }}
+        - host: {{ kafka_schema_registry_onprem }}
     inbound:
       rules:
         - application: pam-eures-cv-eksport-proxy
@@ -58,12 +58,14 @@ spec:
   env:
     - name: KAFKA_CONSUMER_TOPIC_CV_ENDRET
       value: {{ kafka_consumer_topic_cv_endret }}
+    - name: KAFKA_CONSUMER_TOPIC_CV_ENDRET_JSON
+      value: {{ kafka_consumer_topic_cv_endret_json }}
     - name: KAFKA_BOOTSTRAP_SERVERS
       value: {{ kafka_bootstrap_servers }}
     - name: DB_DRIVER
       value: 'org.postgresql.Driver'
-    - name: KAFKA_SCHEMA_REGISTRY
-      value: {{ kafka_schema_registry }}
+    - name: KAFKA_SCHEMA_REGISTRY_ONPREM
+      value: {{ kafka_schema_registry_onprem }}
     - name: KAFKA_SECURITY_PROTOCOL
       value: SASL_SSL
     - name: AVRO_VERSION_FIFTYTWO_HEX
@@ -78,3 +80,5 @@ spec:
   {{#each ingress as |url|}}
      - {{url}}
   {{/each}}
+  kafka:
+    pool: {{kafka_pool}}

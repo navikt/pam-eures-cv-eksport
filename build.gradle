@@ -13,7 +13,6 @@ sourceCompatibility = '1.18'
 
 repositories {
     mavenCentral()
-    maven { url "https://jcenter.bintray.com" }
     maven { url "https://github-package-registry-mirror.gc.nav.no/cached/maven-release" }
     maven { url "https://packages.confluent.io/maven"}
 }

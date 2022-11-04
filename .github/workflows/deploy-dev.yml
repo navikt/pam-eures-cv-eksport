@@ -8,6 +8,7 @@ on:
       - "CODEOWNERS"
     branches:
       - master
+      - konsumer-men-ikke-behandle-interntopic
 
 jobs:
   call-workflow:
