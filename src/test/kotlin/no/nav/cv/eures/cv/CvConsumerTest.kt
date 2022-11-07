@@ -3,21 +3,14 @@ package no.nav.cv.eures.cv
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import com.nhaarman.mockitokotlin2.any
-import com.nhaarman.mockitokotlin2.doReturn
-import io.micrometer.core.instrument.simple.SimpleMeterRegistry
-import no.nav.arbeid.cv.avro.Melding
 import no.nav.cv.dto.CvEndretInternDto
 import no.nav.cv.dto.CvMeldingstype
 import no.nav.cv.dto.cv.CvEndretInternCvDto
 import no.nav.cv.dto.cv.CvEndretInternLanguage
-import no.nav.cv.eures.samtykke.SamtykkeService
 import org.apache.kafka.clients.consumer.ConsumerRecord
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.BeforeEach
-import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.Test
-import org.mockito.ArgumentCaptor
-import org.mockito.Captor
 import org.mockito.Mockito
 import java.time.ZonedDateTime
 import java.util.*
@@ -31,7 +24,6 @@ class CvConsumerTest {
 
     private val testData = CvTestData()
 
-    private val TOPIC = "test-topic"
     private val PARTITION = 0
 
     val stringCaptor = com.nhaarman.mockitokotlin2.argumentCaptor<String>()
@@ -76,8 +68,6 @@ class CvConsumerTest {
             meldingCaptorCvInternDto.firstValue.cv?.languages?.get(0)?.language,
             "Skal få norsk som språk"
         )
-
-
     }
 
     @Test
