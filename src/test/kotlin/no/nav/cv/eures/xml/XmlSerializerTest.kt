@@ -3,6 +3,7 @@ package no.nav.cv.eures.xml
 import no.nav.cv.eures.cv.CvRepository
 import no.nav.cv.eures.cv.RawCV
 import no.nav.cv.eures.konverterer.CvConverterService
+import no.nav.cv.eures.konverterer.CvConverterService2
 import no.nav.cv.eures.samtykke.Samtykke
 import no.nav.cv.eures.samtykke.SamtykkeControllerTest
 import no.nav.cv.eures.samtykke.SamtykkeRepository
@@ -21,7 +22,7 @@ import java.time.ZonedDateTime
 class XmlSerializerTest {
 
     @Autowired
-    lateinit var cvConverterService: CvConverterService
+    lateinit var cvConverterService2: CvConverterService2
 
     @Autowired
     lateinit var cvRepository: CvRepository
@@ -65,7 +66,7 @@ class XmlSerializerTest {
        // cvRepository.saveAndFlush(newRawCv)
 
 
-        val xmlString = cvConverterService.convertToXml(fnr)
+        val xmlString = cvConverterService2.convertToXml(fnr)
 
         val filename = "cv_$fnr.xml"
         File(filename).writeText(xmlString!!.second)
