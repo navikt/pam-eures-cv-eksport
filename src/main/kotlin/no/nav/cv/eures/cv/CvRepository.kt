@@ -52,8 +52,8 @@ class RawCV {
     @Column(name = "SIST_ENDRET", nullable = false)
     lateinit var sistEndret: ZonedDateTime
 
-    @Column(name = "RAW_AVRO", nullable = true )
-    var rawAvro: String? = null
+    @Column(name = "RAW_AVRO", nullable = false )
+    var rawAvro: String? = ""
 
     @Column(name = "PROSESSERT", nullable = false)
     var prosessert: Boolean = false
@@ -71,7 +71,7 @@ class RawCV {
             aktoerId: String? = null,
             foedselsnummer: String? = null,
             sistEndret: ZonedDateTime? = null,
-            rawAvro: String? = null,
+            rawAvro: String? = "",
             underOppfoelging: Boolean? = null,
             meldingstype: RecordType,
             jsonCv: String? = null
@@ -104,7 +104,7 @@ class RawCV {
                 aktoerId: String,
                 foedselsnummer: String,
                 sistEndret: ZonedDateTime,
-                rawAvro: String? = null,
+                rawAvro: String? = "",
                 underOppfoelging: Boolean? = false,
                 meldingstype: RecordType,
                 jsonCv: String? = null
