@@ -1,10 +1,12 @@
 package no.nav.cv.dto.cv
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties
+import kotlinx.serialization.Serializable
 import java.time.ZonedDateTime
 import java.util.*
 
 @JsonIgnoreProperties(ignoreUnknown = true)
+@Serializable
 data class CvEndretInternCvDto(
     val uuid: UUID?,
     val hasCar: Boolean?,
