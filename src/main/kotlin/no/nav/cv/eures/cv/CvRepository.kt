@@ -52,8 +52,8 @@ class RawCV {
     @Column(name = "SIST_ENDRET", nullable = false)
     lateinit var sistEndret: ZonedDateTime
 
-    @Column(name = "RAW_AVRO", nullable = false)
-    lateinit var rawAvro: String
+    @Column(name = "RAW_AVRO", nullable = true)
+    var rawAvro: String? = null
 
     @Column(name = "PROSESSERT", nullable = false)
     var prosessert: Boolean = false
@@ -88,7 +88,7 @@ class RawCV {
     }
 
     fun getWireBytes() : ByteArray
-        = if (!rawAvro.isBlank()) Base64.getDecoder().decode(rawAvro) else ByteArray(0)
+        = if (!rawAvro?.isBlank()!!) Base64.getDecoder().decode(rawAvro) else ByteArray(0)
 
     override fun toString(): String {
         return "RawCV(aktoerId='$aktoerId', sistEndret=$sistEndret, rawAvro='$rawAvro')"
@@ -103,7 +103,7 @@ class RawCV {
                 aktoerId: String,
                 foedselsnummer: String,
                 sistEndret: ZonedDateTime,
-                rawAvro: String,
+                rawAvro: String? = null,
                 underOppfoelging: Boolean? = false,
                 meldingstype: RecordType
         ) = RawCV().update(aktoerId, foedselsnummer, sistEndret, rawAvro, underOppfoelging, meldingstype)
