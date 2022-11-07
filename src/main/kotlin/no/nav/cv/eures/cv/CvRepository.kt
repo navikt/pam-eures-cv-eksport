@@ -65,7 +65,7 @@ class RawCV {
     lateinit var meldingstype: RecordType
 
     @Column(name = "JSON_CV", nullable = true)
-    lateinit var jsonCv: String
+    var jsonCv: String? = null
 
     fun update(
             aktoerId: String? = null,
