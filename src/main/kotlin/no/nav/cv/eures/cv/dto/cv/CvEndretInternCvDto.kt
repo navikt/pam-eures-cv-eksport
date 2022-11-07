@@ -6,7 +6,6 @@ import java.time.ZonedDateTime
 import java.util.*
 
 @JsonIgnoreProperties(ignoreUnknown = true)
-@Serializable
 data class CvEndretInternCvDto(
     val uuid: UUID?,
     val hasCar: Boolean?,
