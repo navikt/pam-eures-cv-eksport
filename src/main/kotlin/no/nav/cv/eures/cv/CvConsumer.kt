@@ -48,13 +48,14 @@ class CvConsumer(
         try {
             val df: DateFormat = SimpleDateFormat("yyyy-MM-dd HH:mm")
             val isoDate = df.format(Date(endretCV.timestamp()))
+            val cvAsJson = endretCV.value()
 
             log.debug("Processing json kafka message with key ${endretCV.key()} with timestamp $isoDate")
-            val cvEndretInternDto = objectMapper.readValue<CvEndretInternDto>(endretCV.value())
+            val cvEndretInternDto = objectMapper.readValue<CvEndretInternDto>(cvAsJson)
 
             when (cvEndretInternDto.meldingstype) {
-                CvMeldingstype.OPPRETT -> cvRawService.createOrUpdateRawCvRecord(cvEndretInternDto)
-                CvMeldingstype.ENDRE -> cvRawService.createOrUpdateRawCvRecord(cvEndretInternDto)
+                CvMeldingstype.OPPRETT -> cvRawService.createOrUpdateRawCvRecord(cvEndretInternDto, cvAsJson)
+                CvMeldingstype.ENDRE -> cvRawService.createOrUpdateRawCvRecord(cvEndretInternDto, cvAsJson)
                 CvMeldingstype.SLETT -> cvRawService.deleteCv(cvEndretInternDto.aktorId)
             }
         } catch (e: Exception) {

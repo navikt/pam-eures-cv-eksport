@@ -1,7 +1,5 @@
 package no.nav.cv.eures.cv
 
-import kotlinx.serialization.encodeToString
-import kotlinx.serialization.json.Json
 import no.nav.cv.dto.CvEndretInternDto
 import no.nav.cv.eures.samtykke.SamtykkeService
 import org.slf4j.Logger
@@ -19,7 +17,7 @@ class CvRawService(
         val log: Logger = LoggerFactory.getLogger(CvRawService::class.java)
     }
 
-    fun createOrUpdateRawCvRecord(dto: CvEndretInternDto) {
+    fun createOrUpdateRawCvRecord(dto: CvEndretInternDto, cvAsJson: String) {
         val foedselsnummer = dto.fodselsnummer
         val aktoerId = dto.aktorId
 
@@ -44,7 +42,7 @@ class CvRawService(
                 log.debug("Updating ${existing.aktoerId}")
                 existing.update(
                     sistEndret = ZonedDateTime.now(),
-                    jsonCv = Json.encodeToString(dto),
+                    jsonCv = cvAsJson,
                     underOppfoelging = (dto.oppfolgingsInformasjon != null),
                     meldingstype = RawCV.Companion.RecordType.UPDATE
                 )
@@ -64,7 +62,7 @@ class CvRawService(
                 aktoerId = aktoerId,
                 foedselsnummer = foedselsnummer,
                 sistEndret = ZonedDateTime.now(),
-                jsonCv = Json.encodeToString(dto),
+                jsonCv = cvAsJson,
                 underOppfoelging = dto.oppfolgingsInformasjon?.erUnderOppfolging,
                 meldingstype = RawCV.Companion.RecordType.CREATE
             )

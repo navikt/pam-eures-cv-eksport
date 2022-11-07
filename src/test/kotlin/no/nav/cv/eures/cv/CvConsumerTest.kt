@@ -2,6 +2,7 @@ package no.nav.cv.eures.cv
 
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
+import com.nhaarman.mockitokotlin2.any
 import com.nhaarman.mockitokotlin2.doReturn
 import io.micrometer.core.instrument.simple.SimpleMeterRegistry
 import no.nav.arbeid.cv.avro.Melding
@@ -59,14 +60,15 @@ class CvConsumerTest {
         var aktorId = "123"
         var language = "Norsk"
         var meldingsType = CvMeldingstype.OPPRETT
+        val cv = createCvEndretInternDto(aktorId, "", language, meldingsType)
 
         cvConsumer.receive(
             listOf(
-                internRecord(offset, testData.aktoerId1, createCvEndretInternDto(aktorId, "", language, meldingsType))
+                internRecord(offset, testData.aktoerId1, cv)
             )
         )
 
-        Mockito.verify(cvRawService, Mockito.times(1)).createOrUpdateRawCvRecord(meldingCaptorCvInternDto.capture())
+        Mockito.verify(cvRawService, Mockito.times(1)).createOrUpdateRawCvRecord(meldingCaptorCvInternDto.capture(), any())
 
         assertEquals(aktorId, meldingCaptorCvInternDto.firstValue.aktorId, "Skal få 123 som aktørId")
         assertEquals(
