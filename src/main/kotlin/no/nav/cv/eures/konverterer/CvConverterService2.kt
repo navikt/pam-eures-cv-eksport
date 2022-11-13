@@ -28,7 +28,7 @@ class CvConverterService2(
     }
 
     fun updateExisting(cvXml: CvXml?): CvXml? {
-        CvConverterService.log.debug("Updating existing ${cvXml?.id}")
+        log.debug("Updating existing ${cvXml?.id}")
 
         if (cvXml == null) return null
 
@@ -65,7 +65,7 @@ class CvConverterService2(
         convertToXml(fodselsnummer)
             ?.let { (ref, xml, _) ->
                 val checksum = md5(xml)
-                CvConverterService.log.debug("Create New: Before save of ${xml.length} bytes of xml with checksum $checksum")
+                log.debug("Create New: Before save of ${xml.length} bytes of xml with checksum $checksum")
                 fodselsnummer?.let {
                     cvXmlRepository.save(
                         CvXml.create(
@@ -101,7 +101,7 @@ class CvConverterService2(
         val dto = objectMapper.readValue<CvEndretInternDto>(record?.jsonCv!!)
         return dto
             .let {
-                CvConverterService.log.debug("Got CV aktoerid: ${it.aktorId}")
+                log.debug("Got CV aktoerid: ${it.aktorId}")
 
                 samtykkeRepository.hentSamtykke(fodselsnummer)
                     ?.run {
@@ -109,7 +109,7 @@ class CvConverterService2(
                             val candidate = CandidateConverter2(it, this).toXmlRepresentation()
                             Pair(XmlSerializer.serialize(candidate), candidate)
                         } catch (e: Exception) {
-                            CvConverterService.log.error("Failed to convert CV to XML for candidate ${it.aktorId}", e)
+                            log.error("Failed to convert CV to XML for candidate ${it.aktorId}", e)
                             throw CvNotConvertedException("Failed to convert CV to XML for candidate ${it.aktorId}", e)
                         }
                         return@let Triple(it.kandidatNr ?: "", xml, previewJson)

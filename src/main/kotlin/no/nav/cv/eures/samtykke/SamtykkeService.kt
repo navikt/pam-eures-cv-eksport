@@ -14,6 +14,7 @@ import org.springframework.stereotype.Service
 class SamtykkeService(
     private val samtykkeRepository: SamtykkeRepository,
     private val cvConverterService2: CvConverterService2,
+    private val cvConverterService: CvConverterService,
     private val cvRepository: CvRepository,
     private val cvXmlRepository: CvXmlRepository,
     private val meterRegistry: MeterRegistry
@@ -56,7 +57,11 @@ class SamtykkeService(
         }
 
         samtykkeRepository.oppdaterSamtykke(foedselsnummer, samtykke)
-                .run { cvConverterService2.createOrUpdate(foedselsnummer) }
+                .run { when (cvRepository.hentCvByFoedselsnummer(foedselsnummer)?.jsonCv == null) {
+                    true -> cvConverterService.createOrUpdate(foedselsnummer)
+                    false -> cvConverterService2.createOrUpdate(foedselsnummer)
+                    }
+                }
 
         undeleteCvXml(foedselsnummer)
     }
