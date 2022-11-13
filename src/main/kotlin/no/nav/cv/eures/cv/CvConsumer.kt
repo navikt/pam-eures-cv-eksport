@@ -31,15 +31,14 @@ class CvConsumer(
         containerFactory = "internCvTopicContainerFactory"
     )
     fun receive(record: List<ConsumerRecord<String, String>>) {
-        log.debug("Receiving cv message from new topic.")
+        log.debug("Receiving cv message.")
         processMessages(record)
     }
 
     private fun processMessages(endretCV: List<ConsumerRecord<String, String>>) {
-        log.debug("Fikk ${endretCV.size} meldinger fra CV endret Kafka.")
+        log.debug("Fikk ${endretCV.size} meldinger fra CV endret topic.")
 
         endretCV.forEach { melding ->
-            log.info("Mottatt json-melding på topic: " + melding.topic())
             processMessage(melding)
         }
     }

@@ -74,7 +74,6 @@ class MessageProcessor(
         partition { rawCv -> rawCv.meldingstype == DELETE }
             .let {
                 val (deleted, createdOrModified) = it
-                log.info("Deleted json " + deleted.size + " createdOrModified size: " + createdOrModified.size)
                 listOf(
                     deleted.let { rawCvs ->
                         rawCvs.forEach { rawCv -> cvConverterService2.delete(rawCv.foedselsnummer) }
@@ -118,7 +117,6 @@ class MessageProcessor(
     @Scheduled(fixedDelay = 5000)
     fun process() {
         val (avroCver, jsonCver) = cvRepository.hentUprosesserteCver().partition { rawCV ->  rawCV.jsonCv == null}
-        log.info("AvroCver size: " + avroCver.size + " jsonCver size: " + jsonCver.size)
         avroCver
             .processRecords()
             .also { rawCvs ->
@@ -126,7 +124,7 @@ class MessageProcessor(
                     rawCv.prosessert = true
                     cvRepository.saveAndFlush(rawCv)
                 }
-                if (rawCvs.isNotEmpty()) log.info("Prosesserte ${rawCvs.size} endringer fra gammelt topic.")
+                if (rawCvs.isNotEmpty()) log.info("Prosesserte ${rawCvs.size} endringer fra utfaset topic.")
             }
         jsonCver
             .processJsonCvRecords()
