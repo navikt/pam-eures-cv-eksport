@@ -9,7 +9,6 @@ import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.mockito.ArgumentCaptor
-import org.mockito.Captor
 import org.mockito.Mockito
 import java.time.ZonedDateTime
 
@@ -19,6 +18,7 @@ class CvConsumerTest {
 
     private val cvRepository = Mockito.mock(CvRepository::class.java)
     private val samtykkeService = Mockito.mock(SamtykkeService::class.java)
+    private val cvRawService = Mockito.mock(CvRawService::class.java)
 
 
     private val meterRegistry = SimpleMeterRegistry()
@@ -32,7 +32,7 @@ class CvConsumerTest {
 
     @BeforeEach
     fun setup() {
-        cvConsumer = CvConsumer(cvRepository, samtykkeService, meterRegistry)
+        cvConsumer = CvConsumer(cvRepository, samtykkeService, meterRegistry, cvRawService)
     }
 
     @Test

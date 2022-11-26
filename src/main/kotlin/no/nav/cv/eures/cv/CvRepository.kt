@@ -68,12 +68,13 @@ class RawCV {
     var jsonCv: String? = null
 
     fun update(
-            aktoerId: String? = null,
-            foedselsnummer: String? = null,
-            sistEndret: ZonedDateTime? = null,
-            rawAvro: String? = null,
-            underOppfoelging: Boolean? = null,
-            meldingstype: RecordType
+        aktoerId: String? = null,
+        foedselsnummer: String? = null,
+        sistEndret: ZonedDateTime? = null,
+        rawAvro: String? = "",
+        underOppfoelging: Boolean? = null,
+        meldingstype: RecordType,
+        jsonCv: String? = null
     ) : RawCV {
         this.aktoerId = aktoerId ?: this.aktoerId
         this.foedselsnummer = foedselsnummer ?: this.foedselsnummer
@@ -81,9 +82,15 @@ class RawCV {
         this.rawAvro = rawAvro ?: this.rawAvro
         this.underOppfoelging = underOppfoelging ?: this.underOppfoelging
         this.meldingstype = meldingstype
-
+        this.jsonCv = jsonCv ?: this.jsonCv
         this.prosessert = false
 
+        return this
+    }
+
+    fun update(jsonCv: String? = null
+    ) : RawCV {
+        this.jsonCv = jsonCv ?: this.jsonCv
         return this
     }
 
@@ -100,12 +107,13 @@ class RawCV {
         }
 
         fun create(
-                aktoerId: String,
-                foedselsnummer: String,
-                sistEndret: ZonedDateTime,
-                rawAvro: String,
-                underOppfoelging: Boolean? = false,
-                meldingstype: RecordType
-        ) = RawCV().update(aktoerId, foedselsnummer, sistEndret, rawAvro, underOppfoelging, meldingstype)
+            aktoerId: String,
+            foedselsnummer: String,
+            sistEndret: ZonedDateTime,
+            rawAvro: String? = "",
+            underOppfoelging: Boolean? = false,
+            meldingstype: RecordType,
+            jsonCv: String? = null
+        ) = RawCV().update(aktoerId, foedselsnummer, sistEndret, rawAvro, underOppfoelging, meldingstype, jsonCv)
     }
 }

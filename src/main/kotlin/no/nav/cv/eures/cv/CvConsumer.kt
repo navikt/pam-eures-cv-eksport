@@ -1,9 +1,13 @@
 package no.nav.cv.eures.cv
 
+import com.fasterxml.jackson.module.kotlin.readValue
 import io.micrometer.core.instrument.MeterRegistry
 import no.nav.arbeid.cv.avro.Melding
 import no.nav.arbeid.cv.avro.Meldingstype
+import no.nav.cv.dto.CvEndretInternDto
+import no.nav.cv.dto.CvMeldingstype
 import no.nav.cv.eures.cv.RawCV.Companion.RecordType.*
+import no.nav.cv.eures.samtykke.SamtykkeEntity.Companion.objectMapper
 import no.nav.cv.eures.samtykke.SamtykkeService
 import no.nav.cv.eures.util.toMelding
 import org.apache.kafka.clients.consumer.ConsumerRecord
@@ -21,7 +25,8 @@ import java.util.*
 class CvConsumer(
         private val cvRepository: CvRepository,
         private val samtykkeService: SamtykkeService,
-        private val meterRegistry: MeterRegistry
+        private val meterRegistry: MeterRegistry,
+        private val cvRawService: CvRawService
 ) {
 
     companion object {
@@ -42,8 +47,12 @@ class CvConsumer(
         topics = ["\${kafka.topics.consumers.cv_endret_json}"],
         containerFactory = "internCvTopicContainerFactory"
     )
-    fun receiveJson(record: List<ConsumerRecord<String, String>>) {
+    fun receiveJson(records: List<ConsumerRecord<String, String>>) {
         log.debug("Receiving cv message from new topic.")
+
+        records.forEach { melding ->
+            processMessage(melding)
+        }
     }
 
     private fun String.foedselsnummerOrNull(): String? {
@@ -157,6 +166,23 @@ class CvConsumer(
             } catch (e: Exception) {
                 log.warn("Klarte ikke behandle kafkamelding ${melding.key()} (partition: ${melding.partition()} - offset ${melding.offset()} - størrelse: ${melding.value().size}  StackTrace: ${e.stackTraceToString()}", e)
             }
+        }
+    }
+
+    private fun processMessage(endretCV: ConsumerRecord<String, String>) {
+        try {
+            val df: DateFormat = SimpleDateFormat("yyyy-MM-dd HH:mm")
+            val isoDate = df.format(Date(endretCV.timestamp()))
+            val cvAsJson = endretCV.value()
+
+            log.debug("Processing json kafka message with key ${endretCV.key()} with timestamp $isoDate")
+            val cvEndretInternDto = objectMapper.readValue<CvEndretInternDto>(cvAsJson)
+
+            if (cvEndretInternDto.meldingstype != CvMeldingstype.SLETT) {
+                cvRawService.createOrUpdateRawCvRecord(cvEndretInternDto, cvAsJson)
+            }
+        } catch (e: Exception) {
+            log.warn("Klarte ikke behandle kafkamelding ${endretCV.key()} (partition: ${endretCV.partition()} - offset ${endretCV.offset()}  StackTrace: ${e.stackTraceToString()}", e)
         }
     }
 
