@@ -1,5 +1,7 @@
 package no.nav.cv.eures.cv
 
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
+import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import com.fasterxml.jackson.module.kotlin.readValue
 import io.micrometer.core.instrument.MeterRegistry
 import no.nav.arbeid.cv.avro.Melding
@@ -31,6 +33,8 @@ class CvConsumer(
 
     companion object {
         val log: Logger = LoggerFactory.getLogger(CvConsumer::class.java)
+        val objectMapper = jacksonObjectMapper()
+            .registerModule(JavaTimeModule())
     }
 
 
