@@ -3,6 +3,7 @@ package no.nav.cv.eures.cv
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import com.nhaarman.mockitokotlin2.any
+import io.micrometer.core.instrument.MeterRegistry
 import no.nav.cv.dto.CvEndretInternDto
 import no.nav.cv.dto.CvMeldingstype
 import no.nav.cv.dto.cv.CvEndretInternCvDto
@@ -21,6 +22,7 @@ class CvConsumerTest {
 
 
     private val cvRawService = Mockito.mock(CvRawService::class.java)
+    private val meterRegistry = Mockito.mock(MeterRegistry::class.java)
 
     private val testData = CvTestData()
 
@@ -34,7 +36,7 @@ class CvConsumerTest {
 
     @BeforeEach
     fun setup() {
-        cvConsumer = CvConsumer(cvRawService)
+        cvConsumer = CvConsumer(cvRawService, meterRegistry)
     }
 
     private fun internRecord(offset: Long, aktorId: String, dto: CvEndretInternDto) = ConsumerRecord<String, String>(

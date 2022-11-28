@@ -3,6 +3,7 @@ package no.nav.cv.eures.cv
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import com.fasterxml.jackson.module.kotlin.readValue
+import io.micrometer.core.instrument.MeterRegistry
 import no.nav.cv.dto.CvEndretInternDto
 import no.nav.cv.dto.CvMeldingstype
 import org.apache.kafka.clients.consumer.ConsumerRecord
@@ -17,7 +18,8 @@ import java.util.*
 
 @Service
 class CvConsumer(
-        private val cvRawService: CvRawService
+        private val cvRawService: CvRawService,
+        private val meterRegistry: MeterRegistry
 ) {
 
     companion object {
@@ -51,6 +53,9 @@ class CvConsumer(
 
             log.debug("Processing json kafka message with key ${endretCV.key()} with timestamp $isoDate")
             val cvEndretInternDto = objectMapper.readValue<CvEndretInternDto>(cvAsJson)
+
+            meterRegistry.counter("cv.endring.mottatt",
+                "meldingstype", cvEndretInternDto.meldingstype.toString())
 
             when (cvEndretInternDto.meldingstype) {
                 CvMeldingstype.OPPRETT -> cvRawService.createOrUpdateRawCvRecord(cvEndretInternDto, cvAsJson)
