@@ -52,8 +52,8 @@ class RawCV {
     @Column(name = "SIST_ENDRET", nullable = false)
     lateinit var sistEndret: ZonedDateTime
 
-    @Column(name = "RAW_AVRO", nullable = false)
-    lateinit var rawAvro: String
+    @Column(name = "RAW_AVRO", nullable = false )
+    var rawAvro: String? = ""
 
     @Column(name = "PROSESSERT", nullable = false)
     var prosessert: Boolean = false
@@ -68,13 +68,13 @@ class RawCV {
     var jsonCv: String? = null
 
     fun update(
-        aktoerId: String? = null,
-        foedselsnummer: String? = null,
-        sistEndret: ZonedDateTime? = null,
-        rawAvro: String? = "",
-        underOppfoelging: Boolean? = null,
-        meldingstype: RecordType,
-        jsonCv: String? = null
+            aktoerId: String? = null,
+            foedselsnummer: String? = null,
+            sistEndret: ZonedDateTime? = null,
+            rawAvro: String? = "",
+            underOppfoelging: Boolean? = null,
+            meldingstype: RecordType,
+            jsonCv: String? = null
     ) : RawCV {
         this.aktoerId = aktoerId ?: this.aktoerId
         this.foedselsnummer = foedselsnummer ?: this.foedselsnummer
@@ -88,14 +88,8 @@ class RawCV {
         return this
     }
 
-    fun update(jsonCv: String? = null
-    ) : RawCV {
-        this.jsonCv = jsonCv ?: this.jsonCv
-        return this
-    }
-
     fun getWireBytes() : ByteArray
-        = if (!rawAvro.isBlank()) Base64.getDecoder().decode(rawAvro) else ByteArray(0)
+        = if (!rawAvro?.isBlank()!!) Base64.getDecoder().decode(rawAvro) else ByteArray(0)
 
     override fun toString(): String {
         return "RawCV(aktoerId='$aktoerId', sistEndret=$sistEndret, rawAvro='$rawAvro')"
@@ -107,13 +101,13 @@ class RawCV {
         }
 
         fun create(
-            aktoerId: String,
-            foedselsnummer: String,
-            sistEndret: ZonedDateTime,
-            rawAvro: String? = "",
-            underOppfoelging: Boolean? = false,
-            meldingstype: RecordType,
-            jsonCv: String? = null
+                aktoerId: String,
+                foedselsnummer: String,
+                sistEndret: ZonedDateTime,
+                rawAvro: String? = "",
+                underOppfoelging: Boolean? = false,
+                meldingstype: RecordType,
+                jsonCv: String? = null
         ) = RawCV().update(aktoerId, foedselsnummer, sistEndret, rawAvro, underOppfoelging, meldingstype, jsonCv)
     }
 }

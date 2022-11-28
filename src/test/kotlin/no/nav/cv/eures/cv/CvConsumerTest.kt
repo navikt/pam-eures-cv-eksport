@@ -1,105 +1,136 @@
 package no.nav.cv.eures.cv
 
-import com.nhaarman.mockitokotlin2.doReturn
-import io.micrometer.core.instrument.simple.SimpleMeterRegistry
-import no.nav.arbeid.cv.avro.Melding
-import no.nav.cv.eures.samtykke.SamtykkeService
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
+import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
+import com.nhaarman.mockitokotlin2.any
+import no.nav.cv.dto.CvEndretInternDto
+import no.nav.cv.dto.CvMeldingstype
+import no.nav.cv.dto.cv.CvEndretInternCvDto
+import no.nav.cv.dto.cv.CvEndretInternLanguage
 import org.apache.kafka.clients.consumer.ConsumerRecord
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
-import org.mockito.ArgumentCaptor
 import org.mockito.Mockito
 import java.time.ZonedDateTime
+import java.util.*
 
 class CvConsumerTest {
 
-    private lateinit var cvConsumer : CvConsumer
+    private lateinit var cvConsumer: CvConsumer
 
-    private val cvRepository = Mockito.mock(CvRepository::class.java)
-    private val samtykkeService = Mockito.mock(SamtykkeService::class.java)
+
     private val cvRawService = Mockito.mock(CvRawService::class.java)
 
-
-    private val meterRegistry = SimpleMeterRegistry()
     private val testData = CvTestData()
 
-    private val TOPIC = "test-topic"
     private val PARTITION = 0
 
-    val meldingCaptorRawCv = ArgumentCaptor.forClass(RawCV::class.java)
     val stringCaptor = com.nhaarman.mockitokotlin2.argumentCaptor<String>()
+    val meldingCaptorCvInternDto = com.nhaarman.mockitokotlin2.argumentCaptor<CvEndretInternDto>()
+
+    val jacksonMapper = jacksonObjectMapper()
+        .registerModule(JavaTimeModule())
 
     @BeforeEach
     fun setup() {
-        cvConsumer = CvConsumer(cvRepository, samtykkeService, meterRegistry, cvRawService)
+        cvConsumer = CvConsumer(cvRawService)
     }
 
-    @Test
-    fun `mottar en og en cv - lagres riktig`() {
-        cvConsumer.receive(listOf(record(0, testData.aktoerId1, testData.melding1)))
-        cvConsumer.receive(listOf(record(1, testData.aktoerId2, testData.melding2)))
+    private fun internRecord(offset: Long, aktorId: String, dto: CvEndretInternDto) = ConsumerRecord<String, String>(
+        "\${kafka.aiven.topics.consumers.cv_endret_intern}",
+        PARTITION,
+        offset,
+        aktorId,
+        jacksonMapper.writeValueAsString(dto)
+    )
 
-        Mockito.verify(cvRepository, Mockito.times(2)).saveAndFlush(meldingCaptorRawCv.capture())
-
-        assertEquals(testData.foedselsnummer1, meldingCaptorRawCv.allValues[0].foedselsnummer)
-        assertEquals(testData.foedselsnummer2, meldingCaptorRawCv.allValues[1].foedselsnummer)
-    }
 
     @Test
-    fun `mottar to cver - lagres riktig`() {
+    fun `test at cv-endret-intern-v3 blir parset korrekt og rutet korrekt til createOrUpdate`() {
         var offset = 0L
+        var aktorId = "123"
+        var language = "Norsk"
+        var meldingsType = CvMeldingstype.OPPRETT
+        val cv = createCvEndretInternDto(aktorId, "", language, meldingsType)
 
-        cvConsumer.receive(listOf(
-            record(offset++, testData.aktoerId1, testData.melding1),
-            record(offset, testData.aktoerId2, testData.melding2)
-        ))
+        cvConsumer.receive(
+            listOf(
+                internRecord(offset, testData.aktoerId1, cv)
+            )
+        )
 
-        Mockito.verify(cvRepository, Mockito.times(2)).saveAndFlush(meldingCaptorRawCv.capture())
+        Mockito.verify(cvRawService, Mockito.times(1)).createOrUpdateRawCvRecord(meldingCaptorCvInternDto.capture(), any())
 
-        assertEquals(testData.foedselsnummer1, meldingCaptorRawCv.allValues[0].foedselsnummer)
-        assertEquals(testData.foedselsnummer2, meldingCaptorRawCv.allValues[1].foedselsnummer)
+        assertEquals(aktorId, meldingCaptorCvInternDto.firstValue.aktorId, "Skal få 123 som aktørId")
+        assertEquals(
+            language,
+            meldingCaptorCvInternDto.firstValue.cv?.languages?.get(0)?.language,
+            "Skal få norsk som språk"
+        )
     }
-
 
     @Test
-    fun `mottar avsluttet oppfølging - sletter xml cv og samtykke`() {
+    fun `test at cv-endret-intern-v3 blir rutet korrekt til cvConverterService2delete`() {
+
         var offset = 0L
+        var fodselsnr = "11111111"
+        var aktoerID = "123"
+        var meldingsType = CvMeldingstype.SLETT
+        var cvEndretInternDto = createCvEndretInternDto(aktoerID, fodselsnr, "", meldingsType)
+        cvConsumer.receive(
+            listOf(
+                internRecord(offset, testData.aktoerId1, cvEndretInternDto)
+            )
+        )
 
-        doReturn(
-            RawCV.create(
-                aktoerId = testData.aktoerId1,
-                foedselsnummer = testData.foedselsnummer1,
-                sistEndret = ZonedDateTime.now(),
-                rawAvro = "",
-                underOppfoelging = true,
-                meldingstype = RawCV.Companion.RecordType.UPDATE))
-            .`when`(cvRepository)
-            .hentCvByFoedselsnummer(testData.foedselsnummer1)
+        Mockito.verify(cvRawService, Mockito.times(1)).deleteCv(stringCaptor.capture())
+        assertEquals(aktoerID, stringCaptor.firstValue, "Skal gi fødselsnummeret mottatt i receiveren.")
 
-        doReturn(
-            RawCV.create(
-                aktoerId = testData.aktoerId2,
-                foedselsnummer = testData.foedselsnummer2,
-                sistEndret = ZonedDateTime.now(),
-                rawAvro = "",
-                underOppfoelging = true,
-                meldingstype = RawCV.Companion.RecordType.UPDATE))
-            .`when`(cvRepository)
-            .hentCvByFoedselsnummer(testData.foedselsnummer2)
 
-        cvConsumer.receive(listOf(
-            record(offset++, testData.aktoerId1, testData.meldingMedOppfolgingsinformasjon),
-            record(offset, testData.aktoerId2, testData.meldingUtenOppfolgingsinformasjo)
-        ))
+    }
 
-        Mockito.verify(samtykkeService, Mockito.times(1))
-            .slettSamtykke(stringCaptor.capture())
-
-        assertEquals(testData.foedselsnummer2, stringCaptor.firstValue)
+    private fun createCvEndretInternDto(
+        aktorId: String,
+        fodselsnr: String,
+        language: String,
+        meldingstype: CvMeldingstype
+    ): CvEndretInternDto {
+        return CvEndretInternDto(
+            aktorId = aktorId, kandidatNr = null, fodselsnummer = fodselsnr, meldingstype = meldingstype,
+            cv = CvEndretInternCvDto(
+                uuid = UUID.randomUUID(),
+                hasCar = true,
+                summary = "Dyktig i jobben",
+                languages = listOf(
+                    CvEndretInternLanguage(
+                        language = language,
+                        iso3Code = "",
+                        oralProficiency = "",
+                        writtenProficiency = ""
+                    )
+                ),
+                otherExperience = listOf(),
+                workExperience = listOf(),
+                courses = listOf(),
+                certificates = listOf(),
+                education = listOf(),
+                vocationalCertificates = listOf(),
+                authorizations = listOf(),
+                driversLicenses = listOf(),
+                skillDrafts = listOf(),
+                synligForArbeidsgiver = true,
+                synligForVeileder = true,
+                createdAt = ZonedDateTime.now(),
+                updatedAt = ZonedDateTime.now()
+            ),
+            personalia = null,
+            jobWishes = null,
+            oppfolgingsInformasjon = null,
+            updatedBy = null
+        )
     }
 
 
-    private fun record(offset: Long, aktorId: String, melding: Melding)
-    = ConsumerRecord<String, ByteArray>(TOPIC, PARTITION, offset, aktorId, melding.toByteArray())
+
 }

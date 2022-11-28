@@ -2,17 +2,18 @@ package no.nav.cv.eures.preview
 
 import no.nav.cv.eures.konverterer.CvConverterService
 import no.nav.cv.eures.janzz.JanzzService
+import no.nav.cv.eures.konverterer.CvConverterService2
 import no.nav.cv.eures.model.Candidate
 import org.springframework.stereotype.Service
 
 @Service
 class PreviewService(
-    private val cvConverterService: CvConverterService,
+    private val cvConverterService2: CvConverterService2,
     private val janzzService: JanzzService
 ) {
 
     fun getPreviewDto(fnr: String): PreviewDto {
-        val (_, _, candidate) = cvConverterService.convertToXml(fnr)
+        val (_, _, candidate) = cvConverterService2.convertToXml(fnr)
             ?: return PreviewDto()
 
         return PreviewDto(
