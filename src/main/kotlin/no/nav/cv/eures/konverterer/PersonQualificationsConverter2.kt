@@ -13,7 +13,7 @@ import no.nav.cv.eures.samtykke.Samtykke
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 
-class PersonQualificationsConverter2 (
+class PersonQualificationsConverter2(
     private val dto: CvEndretInternDto,
     private val samtykke: Samtykke,
     private val janzzService: JanzzService = JanzzService.instance()
@@ -23,31 +23,30 @@ class PersonQualificationsConverter2 (
         val log: Logger = LoggerFactory.getLogger(PersonQualificationsConverter2::class.java)
     }
 
-    fun toXmlRepresentation() : PersonQualifications? {
+    fun toXmlRepresentation(): PersonQualifications? {
         val qualifications = mutableListOf<PersonCompetency>()
 
-        if(samtykke.spraak)
+        if (samtykke.spraak)
             qualifications.addAll(dto.cv?.languages?.toLanguages().orEmpty())
 
-        if(samtykke.kompetanser)
+        if (samtykke.kompetanser) {
             qualifications.addAll(dto.cv?.skillDrafts?.mapNotNull { it.title }?.toEsco().orEmpty())
             qualifications.addAll(dto.jobWishes?.skills?.mapNotNull { it.title }?.toEsco().orEmpty())
-        return if(qualifications.isNotEmpty()) PersonQualifications(qualifications) else null
+        }
+        return if (qualifications.isNotEmpty()) PersonQualifications(qualifications) else null
     }
 
-    private fun List<CvEndretInternLanguage>.toLanguages()  : List<PersonCompetency>
-            = mapNotNull { spraak ->
-                spraak.iso3Code
-                        ?.let { i3k -> LanguageConverter.fromIso3ToIso1(i3k) }
-                        ?.let { PersonCompetency(competencyID = it, taxonomyID = "language") }
-            }
+    private fun List<CvEndretInternLanguage>.toLanguages(): List<PersonCompetency> = mapNotNull { spraak ->
+        spraak.iso3Code
+            ?.let { i3k -> LanguageConverter.fromIso3ToIso1(i3k) }
+            ?.let { PersonCompetency(competencyID = it, taxonomyID = "language") }
+    }
 
 
     @JvmName("toEscoKompetanser")
-    private fun List<String>.toEsco() : List<PersonCompetency>
-            = asSequence()
-            .map { janzzService.getEscoForTerm(it, JanzzService.EscoLookupType.SKILL) }
-            .flatten()
-            .map { PersonCompetency(competencyID = it.esco, taxonomyID = "other") }.toList()
+    private fun List<String>.toEsco(): List<PersonCompetency> = asSequence()
+        .map { janzzService.getEscoForTerm(it, JanzzService.EscoLookupType.SKILL) }
+        .flatten()
+        .map { PersonCompetency(competencyID = it.esco, taxonomyID = "other") }.toList()
 
 }
