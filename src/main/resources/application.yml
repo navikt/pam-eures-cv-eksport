@@ -44,7 +44,7 @@ spring:
 
 kafka:
   aiven:
-    groupid: pam-eures-cv-eksport-v1
+    groupid: pam-eures-cv-eksport-v2
     brokers: ${KAFKA_BROKERS:localhost:9092}
     securityProtocol: SSL
     certificate: ${KAFKA_CERTIFICATE:cert}
