@@ -1,6 +1,5 @@
 package no.nav.cv.eures.util
 
-import no.nav.cv.eures.konverterer.CvConverterService
 import no.nav.cv.eures.konverterer.CvConverterService2
 import no.nav.cv.eures.scheduled.XmlUpdater
 import no.nav.security.token.support.core.api.Unprotected

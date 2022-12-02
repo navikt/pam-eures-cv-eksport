@@ -1,11 +1,8 @@
 package no.nav.cv.eures.konverterer
 
-import no.nav.arbeid.cv.avro.Cv
-import no.nav.arbeid.cv.avro.Ferdighetsnivaa
-import no.nav.arbeid.cv.avro.Spraakferdighet
 import no.nav.cv.dto.CvEndretInternDto
 import no.nav.cv.dto.cv.CvEndretInternLanguage
-import no.nav.cv.eures.konverterer.country.NationalityConverter
+import no.nav.cv.dto.cv.Ferdighetsnivaa
 import no.nav.cv.eures.konverterer.language.LanguageConverter
 import no.nav.cv.eures.model.*
 import no.nav.cv.eures.samtykke.Samtykke
@@ -22,7 +19,7 @@ class CandidatePersonConverter2(
 
     fun toXmlRepresentation(): CandidatePerson {
         if (!samtykke.personalia) {
-            CandidatePersonConverter.log.warn("Sharing CV without personalia, CvId : \"${dto.cv?.uuid}\"")
+            log.warn("Sharing CV without personalia, CvId : \"${dto.cv?.uuid}\"")
             return CandidatePerson(
                 personName = Name(
                     givenName = "",

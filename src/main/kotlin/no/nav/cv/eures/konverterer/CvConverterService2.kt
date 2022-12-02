@@ -22,7 +22,7 @@ class CvConverterService2(
 ) {
 
     companion object {
-        val log: Logger = LoggerFactory.getLogger(CvConverterService::class.java)
+        val log: Logger = LoggerFactory.getLogger(CvConverterService2::class.java)
         val objectMapper = jacksonObjectMapper()
             .registerModule(JavaTimeModule())
     }
@@ -119,3 +119,5 @@ class CvConverterService2(
     }
 
 }
+
+class CvNotConvertedException(msg: String, e: Exception): Exception(msg, e)

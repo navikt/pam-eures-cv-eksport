@@ -1,12 +1,8 @@
 package no.nav.cv.eures.konverterer
 
-import no.nav.arbeid.cv.avro.Cv
-import no.nav.arbeid.cv.avro.Utdannelse
 import no.nav.cv.dto.CvEndretInternDto
-import no.nav.cv.dto.cv.CvEndretInternCvDto
 import no.nav.cv.dto.cv.CvEndretInternEducation
 import no.nav.cv.eures.model.*
-import no.nav.cv.eures.samtykke.Samtykke
 
 
 

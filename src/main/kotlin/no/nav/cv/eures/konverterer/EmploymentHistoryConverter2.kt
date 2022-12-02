@@ -1,13 +1,9 @@
 package no.nav.cv.eures.konverterer
 
-import no.nav.arbeid.cv.avro.Arbeidserfaring
-import no.nav.arbeid.cv.avro.Cv
 import no.nav.cv.dto.CvEndretInternDto
-import no.nav.cv.dto.cv.CvEndretInternOtherExperience
 import no.nav.cv.dto.cv.CvEndretInternWorkExperience
 import no.nav.cv.eures.janzz.JanzzService
 import no.nav.cv.eures.model.*
-import no.nav.cv.eures.samtykke.Samtykke
 
 class EmploymentHistoryConverter2(
     private val dto: CvEndretInternDto,

@@ -2,17 +2,12 @@ package no.nav.cv.eures.xml
 
 import no.nav.cv.eures.cv.CvRepository
 import no.nav.cv.eures.cv.RawCV
-import no.nav.cv.eures.konverterer.CvConverterService
 import no.nav.cv.eures.konverterer.CvConverterService2
 import no.nav.cv.eures.samtykke.Samtykke
-import no.nav.cv.eures.samtykke.SamtykkeControllerTest
 import no.nav.cv.eures.samtykke.SamtykkeRepository
 import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.Test
-import org.junit.jupiter.api.extension.ExtendWith
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.boot.test.context.SpringBootTest
-import org.springframework.test.context.junit.jupiter.SpringExtension
 import java.io.File
 import java.time.ZonedDateTime
 

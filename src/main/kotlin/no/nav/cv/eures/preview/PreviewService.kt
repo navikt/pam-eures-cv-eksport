@@ -1,6 +1,5 @@
 package no.nav.cv.eures.preview
 
-import no.nav.cv.eures.konverterer.CvConverterService
 import no.nav.cv.eures.janzz.JanzzService
 import no.nav.cv.eures.konverterer.CvConverterService2
 import no.nav.cv.eures.model.Candidate

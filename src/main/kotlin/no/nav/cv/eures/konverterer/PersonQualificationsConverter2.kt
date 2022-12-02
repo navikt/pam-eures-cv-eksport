@@ -1,10 +1,7 @@
 package no.nav.cv.eures.konverterer
 
-import no.nav.arbeid.cv.avro.*
 import no.nav.cv.dto.CvEndretInternDto
 import no.nav.cv.dto.cv.CvEndretInternLanguage
-import no.nav.cv.dto.cv.CvEndretInternSkillDraft
-import no.nav.cv.dto.jobwishes.CvEndretInternSkill
 import no.nav.cv.eures.janzz.JanzzService
 import no.nav.cv.eures.konverterer.language.LanguageConverter
 import no.nav.cv.eures.model.PersonCompetency

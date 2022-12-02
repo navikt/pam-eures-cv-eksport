@@ -4,7 +4,6 @@ import no.nav.cv.eures.cv.CvRepository
 import no.nav.cv.eures.cv.CvXmlRepository
 import no.nav.cv.eures.cv.RawCV
 import no.nav.cv.eures.cv.RawCV.Companion.RecordType.DELETE
-import no.nav.cv.eures.konverterer.CvConverterService
 import no.nav.cv.eures.konverterer.CvConverterService2
 import no.nav.cv.eures.konverterer.CvNotConvertedException
 import no.nav.cv.eures.samtykke.SamtykkeRepository
@@ -20,55 +19,11 @@ class MessageProcessor(
     private val cvRepository: CvRepository,
     private val cvXmlRepository: CvXmlRepository,
     private val samtykkeRepository: SamtykkeRepository,
-    private val cvConverterService: CvConverterService,
     private val cvConverterService2: CvConverterService2
 ) {
     companion object {
         val log: Logger = LoggerFactory.getLogger(MessageProcessor::class.java)
     }
-
-    private fun List<RawCV>.processRecords(): List<RawCV> =
-        partition { rawCv -> rawCv.meldingstype == DELETE }
-            .let {
-                val (deleted, createdOrModified) = it
-                listOf(
-                    deleted.let { rawCvs ->
-                        rawCvs.forEach { rawCv -> cvConverterService.delete(rawCv.foedselsnummer) }
-                        rawCvs
-                    },
-                    createdOrModified.let { rawCvs ->
-                        val chunks = rawCvs.chunked(1000)
-                        val unsuccessfullyProcessed = mutableListOf<String>()
-                        for (chunk in chunks) {
-                            val foedselsnummer = chunk.map(RawCV::foedselsnummer)
-
-                            // Create new ones where Samtykke exists
-                            samtykkeRepository.hentSamtykkeUtenNaaverendeXml(foedselsnummer)
-                                .forEach { samtykke ->
-                                    log.debug("Inside hentSamtykkeUtenNaaverendeXml loop for $samtykke")
-                                    try {
-                                        cvConverterService.createOrUpdate(samtykke.foedselsnummer)
-                                    } catch (e: CvNotConvertedException) {
-                                        log.error("Failed to produce XML for fn starting with in ${samtykke.foedselsnummer.take(2)}. Continuing loop.")
-                                        unsuccessfullyProcessed.add(samtykke.foedselsnummer)
-                                    }
-                                }
-
-                            // Update existing ones
-                            cvXmlRepository.fetchAllActiveCvsByFoedselsnummer(foedselsnummer)
-                                .forEach { cvXml ->
-                                    try {
-                                        cvConverterService.updateExisting(cvXml)
-                                    } catch (e: CvNotConvertedException) {
-                                        log.error("Failed to update XML for fn starting with in ${cvXml.foedselsnummer.take(2)}. Continuing loop.")
-                                        unsuccessfullyProcessed.add(cvXml.foedselsnummer)
-                                    }
-                                }
-                        }
-                        rawCvs.filterNot { cv -> cv.foedselsnummer in unsuccessfullyProcessed }
-                    }
-                ).flatten()
-            }
 
     private fun List<RawCV>.processJsonCvRecords(): List<RawCV> =
         partition { rawCv -> rawCv.meldingstype == DELETE }
@@ -92,7 +47,13 @@ class MessageProcessor(
                                     try {
                                         cvConverterService2.createOrUpdate(samtykke.foedselsnummer)
                                     } catch (e: CvNotConvertedException) {
-                                        log.error("Failed to produce XML for fn starting with in ${samtykke.foedselsnummer.take(2)}. Continuing loop.")
+                                        log.error(
+                                            "Failed to produce XML for fn starting with in ${
+                                                samtykke.foedselsnummer.take(
+                                                    2
+                                                )
+                                            }. Continuing loop."
+                                        )
                                         unsuccessfullyProcessed.add(samtykke.foedselsnummer)
                                     }
                                 }
@@ -102,8 +63,14 @@ class MessageProcessor(
                                 .forEach { cvXml ->
                                     try {
                                         cvConverterService2.updateExisting(cvXml)
-                                    } catch (e: CvNotConvertedException) {
-                                        log.error("Failed to update XML for fn starting with in ${cvXml.foedselsnummer.take(2)}. Continuing loop.")
+                                    } catch (e: Exception) {
+                                        log.error(
+                                            "Failed to update XML for fn starting with in ${
+                                                cvXml.foedselsnummer.take(
+                                                    2
+                                                )
+                                            }. Continuing loop."
+                                        )
                                         unsuccessfullyProcessed.add(cvXml.foedselsnummer)
                                     }
                                 }
@@ -116,16 +83,7 @@ class MessageProcessor(
 
     @Scheduled(fixedDelay = 5000)
     fun process() {
-        val (avroCver, jsonCver) = cvRepository.hentUprosesserteCver().partition { rawCV ->  rawCV.jsonCv == null}
-        avroCver
-            .processRecords()
-            .also { rawCvs ->
-                rawCvs.map { rawCv ->
-                    rawCv.prosessert = true
-                    cvRepository.saveAndFlush(rawCv)
-                }
-                if (rawCvs.isNotEmpty()) log.info("Prosesserte ${rawCvs.size} endringer fra utfaset topic.")
-            }
+        val (avroCver, jsonCver) = cvRepository.hentUprosesserteCver().partition { rawCV -> rawCV.jsonCv == null }
         jsonCver
             .processJsonCvRecords()
             .also { rawCvs ->

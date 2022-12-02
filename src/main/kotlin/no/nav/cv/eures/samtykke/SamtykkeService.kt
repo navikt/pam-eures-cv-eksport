@@ -2,9 +2,7 @@ package no.nav.cv.eures.samtykke
 
 import io.micrometer.core.instrument.MeterRegistry
 import no.nav.cv.eures.cv.CvRepository
-import no.nav.cv.eures.cv.CvXml
 import no.nav.cv.eures.cv.CvXmlRepository
-import no.nav.cv.eures.konverterer.CvConverterService
 import no.nav.cv.eures.konverterer.CvConverterService2
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
@@ -14,7 +12,6 @@ import org.springframework.stereotype.Service
 class SamtykkeService(
     private val samtykkeRepository: SamtykkeRepository,
     private val cvConverterService2: CvConverterService2,
-    private val cvConverterService: CvConverterService,
     private val cvRepository: CvRepository,
     private val cvXmlRepository: CvXmlRepository,
     private val meterRegistry: MeterRegistry
@@ -57,9 +54,8 @@ class SamtykkeService(
         }
 
         samtykkeRepository.oppdaterSamtykke(foedselsnummer, samtykke)
-                .run { when (cvRepository.hentCvByFoedselsnummer(foedselsnummer)?.jsonCv == null) {
-                    true -> cvConverterService.createOrUpdate(foedselsnummer)
-                    false -> cvConverterService2.createOrUpdate(foedselsnummer)
+                .run { if (cvRepository.hentCvByFoedselsnummer(foedselsnummer)?.jsonCv != null) {
+                        cvConverterService2.createOrUpdate(foedselsnummer)
                     }
                 }
 

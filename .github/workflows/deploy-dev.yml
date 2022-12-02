@@ -8,7 +8,7 @@ on:
       - "CODEOWNERS"
     branches:
       - master
-      - bytte-ut-avro-topic-med-interntopic
+      - rydde-opp
 
 jobs:
   call-workflow:

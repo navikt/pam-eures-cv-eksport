@@ -25,7 +25,6 @@ configurations {
 ext {
     springdocVersion = '1.6.12'
     kotlinVersion = '1.7.20'
-    avroVersion = '1.11.1'
     tokenSupportVersion = '2.1.6'
     jacksonVersion = '2.13.4'
 }
@@ -34,7 +33,6 @@ dependencies {
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:${kotlinVersion}"
     implementation "org.jetbrains.kotlin:kotlin-reflect:${kotlinVersion}"
     implementation "javax.annotation:javax.annotation-api"
-    implementation "org.apache.avro:avro:${avroVersion}"
     implementation "net.logstash.logback:logstash-logback-encoder:7.2"
 
     //SNYK fixes
@@ -44,8 +42,6 @@ dependencies {
     implementation "org.springframework.boot:spring-boot-starter-webflux:2.7.5"
     implementation "org.apache.kafka:kafka-clients:3.3.1"
     implementation "com.fasterxml.jackson.core:jackson-databind:2.13.4.2"
-
-    implementation "no.nav.arbeid.pam:pam-cv-avro-cvmeldinger:52"
 
     implementation "org.postgresql:postgresql:42.5.0"
     implementation "org.hibernate:hibernate-core"
@@ -63,8 +59,6 @@ dependencies {
     implementation "org.springframework.boot:spring-boot-starter-web"
     implementation 'org.springframework.boot:spring-boot-starter-actuator'
     implementation 'io.micrometer:micrometer-registry-prometheus:1.9.4'
-
-    implementation 'io.confluent:kafka-avro-serializer:5.3.0'
 
     implementation "no.nav.security:token-validation-spring:${tokenSupportVersion}"
     implementation "no.nav.security:token-client-core:${tokenSupportVersion}"

@@ -2,21 +2,7 @@ package no.nav.cv.eures.model
 
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlElementWrapper
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty
-import no.nav.arbeid.cv.avro.Cv
-import no.nav.cv.eures.samtykke.Samtykke
 
-
-class Contact(
-        private val cv: Cv,
-        private val samtykke: Samtykke
-) {
-    fun getCommunicationList() : List<Communication> {
-
-
-        return listOf()
-
-    }
-}
 
 // 4.6
 data class PersonContact(

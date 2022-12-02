@@ -1,7 +1,5 @@
 package no.nav.cv.eures.konverterer
 
-import no.nav.arbeid.cv.avro.Cv
-import no.nav.arbeid.cv.avro.Jobbprofil
 import no.nav.cv.dto.CvEndretInternDto
 import no.nav.cv.eures.model.CandidateProfile
 import no.nav.cv.eures.samtykke.Samtykke

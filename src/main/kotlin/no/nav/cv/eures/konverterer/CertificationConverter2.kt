@@ -1,11 +1,7 @@
 package no.nav.cv.eures.konverterer
 
-import no.nav.arbeid.cv.avro.*
 import no.nav.cv.dto.CvEndretInternDto
-import no.nav.cv.dto.cv.CvEndretInternAuthorization
-import no.nav.cv.dto.cv.CvEndretInternCertificate
-import no.nav.cv.dto.cv.CvEndretInternCourse
-import no.nav.cv.dto.cv.CvEndretInternVocationalCertificate
+import no.nav.cv.dto.cv.*
 import no.nav.cv.eures.model.Certification
 import no.nav.cv.eures.model.Certifications
 import no.nav.cv.eures.model.FreeFormEffectivePeriod
@@ -85,8 +81,8 @@ class CertificationConverter2(
 
         Certification(
                 certificationTypeCode = null,
-                certificationName = it.title.replace(CandidateProfileConverter.xml10Pattern, ""),
-                issuingAuthortity = IssuingAuthority((it.issuer ?: "").replace(CandidateProfileConverter.xml10Pattern, "")),
+                certificationName = it.title.replace(CandidateProfileConverter2.xml10Pattern, ""),
+                issuingAuthortity = IssuingAuthority((it.issuer ?: "").replace(CandidateProfileConverter2.xml10Pattern, "")),
                 firstIssuedDate = it.date?.toFormattedDateTime(),
                 freeFormEffectivePeriod = null
         )
