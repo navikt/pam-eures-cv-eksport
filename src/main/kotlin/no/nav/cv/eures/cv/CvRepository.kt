@@ -52,9 +52,6 @@ class RawCV {
     @Column(name = "SIST_ENDRET", nullable = false)
     lateinit var sistEndret: ZonedDateTime
 
-    @Column(name = "RAW_AVRO", nullable = false )
-    var rawAvro: String? = ""
-
     @Column(name = "PROSESSERT", nullable = false)
     var prosessert: Boolean = false
 
@@ -71,7 +68,6 @@ class RawCV {
             aktoerId: String? = null,
             foedselsnummer: String? = null,
             sistEndret: ZonedDateTime? = null,
-            rawAvro: String? = "",
             underOppfoelging: Boolean? = null,
             meldingstype: RecordType,
             jsonCv: String? = null
@@ -79,20 +75,12 @@ class RawCV {
         this.aktoerId = aktoerId ?: this.aktoerId
         this.foedselsnummer = foedselsnummer ?: this.foedselsnummer
         this.sistEndret = sistEndret ?: this.sistEndret
-        this.rawAvro = rawAvro ?: this.rawAvro
         this.underOppfoelging = underOppfoelging ?: this.underOppfoelging
         this.meldingstype = meldingstype
         this.jsonCv = jsonCv ?: this.jsonCv
         this.prosessert = false
 
         return this
-    }
-
-    fun getWireBytes() : ByteArray
-        = if (!rawAvro?.isBlank()!!) Base64.getDecoder().decode(rawAvro) else ByteArray(0)
-
-    override fun toString(): String {
-        return "RawCV(aktoerId='$aktoerId', sistEndret=$sistEndret, rawAvro='$rawAvro')"
     }
 
     companion object {
@@ -104,10 +92,9 @@ class RawCV {
                 aktoerId: String,
                 foedselsnummer: String,
                 sistEndret: ZonedDateTime,
-                rawAvro: String? = "",
                 underOppfoelging: Boolean? = false,
                 meldingstype: RecordType,
                 jsonCv: String? = null
-        ) = RawCV().update(aktoerId, foedselsnummer, sistEndret, rawAvro, underOppfoelging, meldingstype, jsonCv)
+        ) = RawCV().update(aktoerId, foedselsnummer, sistEndret, underOppfoelging, meldingstype, jsonCv)
     }
 }

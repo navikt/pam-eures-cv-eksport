@@ -51,7 +51,6 @@ class CvRawServiceTest {
         assertTrue(rawCvCaptor.firstValue.meldingstype == RawCV.Companion.RecordType.UPDATE)
         assertTrue(rawCvCaptor.firstValue.foedselsnummer == fnr)
         assertTrue(rawCvCaptor.firstValue.jsonCv == rawJsonCv)
-        assertTrue(rawCvCaptor.firstValue.rawAvro == "")
     }
 
     @Test

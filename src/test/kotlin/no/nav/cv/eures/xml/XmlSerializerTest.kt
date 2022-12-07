@@ -37,7 +37,6 @@ class XmlSerializerTest {
                 aktoerId = fnr,
                 foedselsnummer = fnr,
                 sistEndret = ZonedDateTime.now(),
-                rawAvro = rawAvroBase64,
                 underOppfoelging = false,
                 meldingstype = RawCV.Companion.RecordType.CREATE
         )
