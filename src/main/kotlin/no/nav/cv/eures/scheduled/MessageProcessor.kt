@@ -117,7 +117,7 @@ class MessageProcessor(
 
     @Scheduled(fixedDelay = 5000)
     fun process() {
-        val (avroCver, jsonCver) = cvRepository.hentUprosesserteCver(PageRequest.of(0,100)).partition { rawCV ->  rawCV.jsonCv == null}
+        val (avroCver, jsonCver) = cvRepository.hentUprosesserteCver(PageRequest.of(0,500)).partition { rawCV ->  rawCV.jsonCv == null}
         avroCver
             .processRecords()
             .also { rawCvs ->
