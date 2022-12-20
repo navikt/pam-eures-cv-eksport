@@ -1,5 +1,6 @@
 package no.nav.cv.eures.cv
 
+import org.springframework.data.domain.Pageable
 import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.data.jpa.repository.Modifying
 import org.springframework.data.jpa.repository.Query
@@ -17,7 +18,7 @@ interface CvRepository : JpaRepository<RawCV, Long> {
     fun hentCvByFoedselsnummer(foedselsnummer: String) : RawCV?
 
     @Query("SELECT cv FROM RawCV cv WHERE cv.prosessert = false")
-    fun hentUprosesserteCver(): List<RawCV>
+    fun hentUprosesserteCver(pageable: Pageable): List<RawCV>
 
     @Query("SELECT cv FROM RawCV cv JOIN CvXml cvXml ON cv.foedselsnummer = cvXml.foedselsnummer " +
             "WHERE cv.sistEndret < ?1 AND cvXml.slettet IS NULL")

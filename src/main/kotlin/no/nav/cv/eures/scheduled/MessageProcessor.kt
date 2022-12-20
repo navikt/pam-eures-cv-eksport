@@ -11,6 +11,7 @@ import no.nav.cv.eures.samtykke.SamtykkeRepository
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.context.annotation.Profile
+import org.springframework.data.domain.PageRequest
 import org.springframework.scheduling.annotation.Scheduled
 import org.springframework.stereotype.Service
 
@@ -116,7 +117,7 @@ class MessageProcessor(
 
     @Scheduled(fixedDelay = 5000)
     fun process() {
-        val (avroCver, jsonCver) = cvRepository.hentUprosesserteCver().partition { rawCV ->  rawCV.jsonCv == null}
+        val (avroCver, jsonCver) = cvRepository.hentUprosesserteCver(PageRequest.of(0,100)).partition { rawCV ->  rawCV.jsonCv == null}
         avroCver
             .processRecords()
             .also { rawCvs ->
