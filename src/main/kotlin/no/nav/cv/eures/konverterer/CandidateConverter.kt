@@ -6,7 +6,7 @@ import no.nav.cv.eures.model.CandidateSupplier
 import no.nav.cv.eures.model.DocumentId
 import no.nav.cv.eures.samtykke.Samtykke
 
-class CandidateConverter2 (
+class CandidateConverter (
     private val dto : CvEndretInternDto,
     private val samtykke : Samtykke
 ) {
@@ -15,8 +15,8 @@ class CandidateConverter2 (
             Candidate(
                 documentId = DocumentId(uuid = dto.cv?.uuid.toString()),
                 candidateSupplier = CandidateSupplier().default(),
-                candidatePerson = CandidatePersonConverter2(dto, samtykke).toXmlRepresentation(),
-                candidateProfile = CandidateProfileConverter2(dto, samtykke).toXmlRepresentation()
+                candidatePerson = CandidatePersonConverter(dto, samtykke).toXmlRepresentation(),
+                candidateProfile = CandidateProfileConverter(dto, samtykke).toXmlRepresentation()
             )
     )
 }

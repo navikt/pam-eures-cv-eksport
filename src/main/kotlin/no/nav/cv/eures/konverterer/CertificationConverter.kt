@@ -10,14 +10,14 @@ import no.nav.cv.eures.samtykke.Samtykke
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 
-class CertificationConverter2(
+class CertificationConverter(
         private val dto: CvEndretInternDto,
         private val samtykke: Samtykke
 ) {
     private val ikkeSamtykket = null
 
     companion object {
-        val log: Logger = LoggerFactory.getLogger(CertificationConverter2::class.java)
+        val log: Logger = LoggerFactory.getLogger(CertificationConverter::class.java)
     }
 
     fun toXmlRepresentation(): Certifications? {
@@ -81,8 +81,8 @@ class CertificationConverter2(
 
         Certification(
                 certificationTypeCode = null,
-                certificationName = it.title.replace(CandidateProfileConverter2.xml10Pattern, ""),
-                issuingAuthortity = IssuingAuthority((it.issuer ?: "").replace(CandidateProfileConverter2.xml10Pattern, "")),
+                certificationName = it.title.replace(CandidateProfileConverter.xml10Pattern, ""),
+                issuingAuthortity = IssuingAuthority((it.issuer ?: "").replace(CandidateProfileConverter.xml10Pattern, "")),
                 firstIssuedDate = it.date?.toFormattedDateTime(),
                 freeFormEffectivePeriod = null
         )

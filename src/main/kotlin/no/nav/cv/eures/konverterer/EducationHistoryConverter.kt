@@ -6,7 +6,7 @@ import no.nav.cv.eures.model.*
 
 
 
-class EducationHistoryConverter2(
+class EducationHistoryConverter(
         private val dto: CvEndretInternDto
 ) {
 

@@ -8,13 +8,13 @@ import no.nav.cv.eures.model.Licenses
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 
-class LicensesConverter2 (
+class LicensesConverter (
         private val dto: CvEndretInternDto
 ) {
     private val ikkeSamtykket = null
 
     companion object {
-        val log: Logger = LoggerFactory.getLogger(LicensesConverter2::class.java)
+        val log: Logger = LoggerFactory.getLogger(LicensesConverter::class.java)
     }
 
     fun toXmlRepresentation() : Licenses? {

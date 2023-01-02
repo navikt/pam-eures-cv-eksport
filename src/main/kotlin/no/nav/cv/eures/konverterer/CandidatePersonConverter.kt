@@ -8,13 +8,13 @@ import no.nav.cv.eures.model.*
 import no.nav.cv.eures.samtykke.Samtykke
 import org.slf4j.LoggerFactory
 
-class CandidatePersonConverter2(
+class CandidatePersonConverter(
         private val dto : CvEndretInternDto,
         private val samtykke: Samtykke
 ) {
 
     companion object {
-        val log = LoggerFactory.getLogger(CandidatePersonConverter2::class.java)
+        val log = LoggerFactory.getLogger(CandidatePersonConverter::class.java)
     }
 
     fun toXmlRepresentation(): CandidatePerson {

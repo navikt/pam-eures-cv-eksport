@@ -4,7 +4,7 @@ import no.nav.cv.dto.CvEndretInternDto
 import no.nav.cv.eures.model.CandidateProfile
 import no.nav.cv.eures.samtykke.Samtykke
 
-class CandidateProfileConverter2(
+class CandidateProfileConverter(
     private val dto: CvEndretInternDto,
     private val samtykke: Samtykke
 ) {
@@ -17,10 +17,10 @@ class CandidateProfileConverter2(
     fun toXmlRepresentation()
             = CandidateProfile(
             executiveSummary = if(samtykke.sammendrag) dto.cv?.summary.orEmpty() else ikkeSamtykket,
-            employmentHistory = if(samtykke.arbeidserfaring) EmploymentHistoryConverter2(dto).toXmlRepresentation() else null,
-            educationHistory = if(samtykke.utdanning) EducationHistoryConverter2(dto).toXmlRepresentation() else null,
-            licenses = if(samtykke.foererkort) LicensesConverter2(dto).toXmlRepresentation() else null,
-            certifications = CertificationConverter2(dto, samtykke).toXmlRepresentation(),
-            personQualifications = PersonQualificationsConverter2(dto, samtykke).toXmlRepresentation()
+            employmentHistory = if(samtykke.arbeidserfaring) EmploymentHistoryConverter(dto).toXmlRepresentation() else null,
+            educationHistory = if(samtykke.utdanning) EducationHistoryConverter(dto).toXmlRepresentation() else null,
+            licenses = if(samtykke.foererkort) LicensesConverter(dto).toXmlRepresentation() else null,
+            certifications = CertificationConverter(dto, samtykke).toXmlRepresentation(),
+            personQualifications = PersonQualificationsConverter(dto, samtykke).toXmlRepresentation()
     )
 }

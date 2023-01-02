@@ -10,14 +10,14 @@ import no.nav.cv.eures.samtykke.Samtykke
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 
-class PersonQualificationsConverter2(
+class PersonQualificationsConverter(
     private val dto: CvEndretInternDto,
     private val samtykke: Samtykke,
     private val janzzService: JanzzService = JanzzService.instance()
 ) {
 
     companion object {
-        val log: Logger = LoggerFactory.getLogger(PersonQualificationsConverter2::class.java)
+        val log: Logger = LoggerFactory.getLogger(PersonQualificationsConverter::class.java)
     }
 
     fun toXmlRepresentation(): PersonQualifications? {

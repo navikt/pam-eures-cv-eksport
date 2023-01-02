@@ -5,7 +5,7 @@ import no.nav.cv.dto.cv.CvEndretInternWorkExperience
 import no.nav.cv.eures.janzz.JanzzService
 import no.nav.cv.eures.model.*
 
-class EmploymentHistoryConverter2(
+class EmploymentHistoryConverter(
     private val dto: CvEndretInternDto,
     private val janzzService: JanzzService = JanzzService.instance()
 ) {
