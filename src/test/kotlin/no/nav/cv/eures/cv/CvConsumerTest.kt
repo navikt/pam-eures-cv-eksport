@@ -24,7 +24,6 @@ class CvConsumerTest {
     private val cvRawService = Mockito.mock(CvRawService::class.java)
     private val meterRegistry = Mockito.mock(MeterRegistry::class.java)
 
-    private val testData = CvTestData()
 
     private val PARTITION = 0
 
@@ -58,7 +57,7 @@ class CvConsumerTest {
 
         cvConsumer.receive(
             listOf(
-                internRecord(offset, testData.aktoerId1, cv)
+                internRecord(offset, aktorId, cv)
             )
         )
 
@@ -82,7 +81,7 @@ class CvConsumerTest {
         var cvEndretInternDto = createCvEndretInternDto(aktoerID, fodselsnr, "", meldingsType)
         cvConsumer.receive(
             listOf(
-                internRecord(offset, testData.aktoerId1, cvEndretInternDto)
+                internRecord(offset, aktoerID, cvEndretInternDto)
             )
         )
 
@@ -132,7 +131,5 @@ class CvConsumerTest {
             updatedBy = null
         )
     }
-
-
 
 }

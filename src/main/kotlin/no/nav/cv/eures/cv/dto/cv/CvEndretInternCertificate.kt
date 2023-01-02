@@ -1,7 +1,6 @@
 package no.nav.cv.dto.cv
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties
-import no.nav.arbeid.cv.avro.Sertifikat
 import java.time.ZonedDateTime
 
 @JsonIgnoreProperties(ignoreUnknown = true)
@@ -13,3 +12,7 @@ data class CvEndretInternCertificate(
     val fromDate: ZonedDateTime?,
     val toDate: ZonedDateTime?
 )
+
+enum class FagdokumentasjonType {
+    SVENNEBREV_FAGBREV, MESTERBREV, AUTORISASJON
+}

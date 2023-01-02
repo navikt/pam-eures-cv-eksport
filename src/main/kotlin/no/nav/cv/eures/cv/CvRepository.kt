@@ -69,13 +69,13 @@ class RawCV {
     var jsonCv: String? = null
 
     fun update(
-            aktoerId: String? = null,
-            foedselsnummer: String? = null,
-            sistEndret: ZonedDateTime? = null,
-            rawAvro: String? = "",
-            underOppfoelging: Boolean? = null,
-            meldingstype: RecordType,
-            jsonCv: String? = null
+        aktoerId: String? = null,
+        foedselsnummer: String? = null,
+        sistEndret: ZonedDateTime? = null,
+        rawAvro: String? = "",
+        underOppfoelging: Boolean? = null,
+        meldingstype: RecordType,
+        jsonCv: String? = null
     ) : RawCV {
         this.aktoerId = aktoerId ?: this.aktoerId
         this.foedselsnummer = foedselsnummer ?: this.foedselsnummer
@@ -90,7 +90,7 @@ class RawCV {
     }
 
     fun getWireBytes() : ByteArray
-        = if (!rawAvro?.isBlank()!!) Base64.getDecoder().decode(rawAvro) else ByteArray(0)
+            = if (!rawAvro?.isBlank()!!) Base64.getDecoder().decode(rawAvro) else ByteArray(0)
 
     override fun toString(): String {
         return "RawCV(aktoerId='$aktoerId', sistEndret=$sistEndret, rawAvro='$rawAvro')"
@@ -102,13 +102,13 @@ class RawCV {
         }
 
         fun create(
-                aktoerId: String,
-                foedselsnummer: String,
-                sistEndret: ZonedDateTime,
-                rawAvro: String? = "",
-                underOppfoelging: Boolean? = false,
-                meldingstype: RecordType,
-                jsonCv: String? = null
+            aktoerId: String,
+            foedselsnummer: String,
+            sistEndret: ZonedDateTime,
+            rawAvro: String? = "",
+            underOppfoelging: Boolean? = false,
+            meldingstype: RecordType,
+            jsonCv: String? = null
         ) = RawCV().update(aktoerId, foedselsnummer, sistEndret, rawAvro, underOppfoelging, meldingstype, jsonCv)
     }
 }

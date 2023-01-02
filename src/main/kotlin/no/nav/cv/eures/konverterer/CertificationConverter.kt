@@ -1,6 +1,7 @@
 package no.nav.cv.eures.konverterer
 
-import no.nav.arbeid.cv.avro.*
+import no.nav.cv.dto.CvEndretInternDto
+import no.nav.cv.dto.cv.*
 import no.nav.cv.eures.model.Certification
 import no.nav.cv.eures.model.Certifications
 import no.nav.cv.eures.model.FreeFormEffectivePeriod
@@ -10,7 +11,7 @@ import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 
 class CertificationConverter(
-        private val cv: Cv,
+        private val dto: CvEndretInternDto,
         private val samtykke: Samtykke
 ) {
     private val ikkeSamtykket = null
@@ -19,28 +20,22 @@ class CertificationConverter(
         val log: Logger = LoggerFactory.getLogger(CertificationConverter::class.java)
     }
 
-    val debug = cv.aktoerId in listOf("2308808164824", "2672989697496", "2503811631032")
-
-
     fun toXmlRepresentation(): Certifications? {
-        if(debug)
-            log.debug("${cv.aktoerId} CERT samtykke $samtykke")
-
         val certs = mutableListOf<Certification>()
 
+
+        val (autorisasjon, fagbrev) = dto.cv?.vocationalCertificates?.toCertifications() ?: Pair(emptyList(), emptyList())
+
         if (samtykke.offentligeGodkjenninger)
-            certs.addAll(cv.godkjenninger.toCertifications())
+            certs.addAll(dto.cv?.authorizations?.toCertifications().orEmpty())
+            certs.addAll(autorisasjon)
+
 
         if (samtykke.andreGodkjenninger)
-            certs.addAll(cv.sertifikat.toCertifications())
+            certs.addAll(dto.cv?.certificates?.toCertifications().orEmpty())
 
         if (samtykke.kurs)
-            certs.addAll(cv.kurs.toCertifications())
-
-        val (autorisasjon, fagbrev) = cv.fagdokumentasjon.toCertifications()
-
-        if (samtykke.offentligeGodkjenninger)
-            certs.addAll(autorisasjon)
+            certs.addAll(dto.cv?.courses?.toCertifications().orEmpty())
 
         if (samtykke.fagbrev)
             certs.addAll(fagbrev)
@@ -49,79 +44,76 @@ class CertificationConverter(
     }
 
     @JvmName("toCertificationsGodkjenning")
-    private fun List<Godkjenning>.toCertifications() = mapNotNull {
-        it.tittel ?: return@mapNotNull null
-        it.utsteder ?: return@mapNotNull null
+    private fun List<CvEndretInternAuthorization>.toCertifications() = mapNotNull {
+        it.title ?: return@mapNotNull null
 
         Certification(
-                certificationTypeCode = null, // TODO: Find out what certificationTypeCode should be
-                certificationName = it.tittel,
-                issuingAuthortity = IssuingAuthority(it.utsteder),
-                firstIssuedDate = it.gjennomfoert?.toFormattedDateTime(),
+                certificationTypeCode = null,
+                certificationName = it.title,
+                issuingAuthortity = IssuingAuthority(it.issuer ?: ""),
+                firstIssuedDate = it.fromDate?.toFormattedDateTime(),
                 freeFormEffectivePeriod = FreeFormEffectivePeriod(
                         startDate = null,
-                        endDate = it.utloeper?.toFormattedDateTime()
+                        endDate = it.toDate?.toFormattedDateTime()
                 )
         )
-    }.onEach { if(debug) log.debug("${cv.aktoerId} CERT Godkjenning $it") }
+    }
 
     @JvmName("toCertificationsSertifikat")
-    private fun List<Sertifikat>.toCertifications() = mapNotNull {
-        it.utsteder ?: return@mapNotNull null
-        it.sertifikatnavn ?: it.sertifikatnavnFritekst ?: return@mapNotNull null
+    private fun List<CvEndretInternCertificate>.toCertifications() = mapNotNull {
+        it.certificateName ?: it.alternativeName ?: return@mapNotNull null
 
         Certification(
-                certificationTypeCode = null, // TODO: Find out what certificationTypeCode should be
-                certificationName = it.sertifikatnavn ?: it.sertifikatnavnFritekst,
-                issuingAuthortity = IssuingAuthority(it.utsteder),
-                firstIssuedDate = it.gjennomfoert?.toFormattedDateTime(),
+                certificationTypeCode = null,
+                certificationName = it.certificateName ?: it.alternativeName ?: return@mapNotNull null,
+                issuingAuthortity = IssuingAuthority(it.issuer ?: ""),
+                firstIssuedDate = it.fromDate?.toFormattedDateTime(),
                 freeFormEffectivePeriod = FreeFormEffectivePeriod(
                         startDate = null,
-                        endDate = it.utloeper?.toFormattedDateTime()
+                        endDate = it.toDate?.toFormattedDateTime()
                 )
         )
-    }.onEach { if(debug) log.debug("${cv.aktoerId} CERT Sertifikat $it") }
+    }
 
     @JvmName("toCertificationsKurs")
-    private fun List<Kurs>.toCertifications() = mapNotNull {
-        it.tittel ?: return@mapNotNull null
-        it.utsteder ?: return@mapNotNull null
+    private fun List<CvEndretInternCourse>.toCertifications() = mapNotNull {
+        it.title ?: return@mapNotNull null
 
         Certification(
-                certificationTypeCode = null, // TODO: Find out what certificationTypeCode should be
-                certificationName = it.tittel.replace(CandidateProfileConverter.xml10Pattern, ""),
-                issuingAuthortity = IssuingAuthority(it.utsteder.replace(CandidateProfileConverter.xml10Pattern, "")),
-                firstIssuedDate = it.tidspunkt?.toFormattedDateTime(),
+                certificationTypeCode = null,
+                certificationName = it.title.replace(CandidateProfileConverter.xml10Pattern, ""),
+                issuingAuthortity = IssuingAuthority((it.issuer ?: "").replace(CandidateProfileConverter.xml10Pattern, "")),
+                firstIssuedDate = it.date?.toFormattedDateTime(),
                 freeFormEffectivePeriod = null
         )
-    }.onEach { if(debug) log.debug("${cv.aktoerId} CERT Kurs $it") }
+    }
 
     @JvmName("toCertificationsFagdokumentasjon")
-    private fun List<Fagdokumentasjon>.toCertifications() : Pair<List<Certification>, List<Certification>> {
-        val (aut, fag) = partition { it.type == FagdokumentasjonType.AUTORISASJON }
+    private fun List<CvEndretInternVocationalCertificate>.toCertifications() : Pair<List<Certification>, List<Certification>> {
+        val (aut, fag) = partition { it.certificateType == FagdokumentasjonType.AUTORISASJON.toString() }
 
         return Pair(
                 aut.mapNotNull {
-                    it.tittel ?: return@mapNotNull null
+                    it.title ?: return@mapNotNull null
                     Certification(
-                            certificationTypeCode = null, // TODO: Find out what certificationTypeCode should be
-                            certificationName = it.tittel,
+                            certificationTypeCode = null,
+                            certificationName = it.title,
                             issuingAuthortity = IssuingAuthority(""),
                             firstIssuedDate = null,
                             freeFormEffectivePeriod = null
                     )
-                }.onEach { if(debug) log.debug("${cv.aktoerId} CERT Autorisasjon $it") },
+                },
 
                 fag.mapNotNull {
-                    it.tittel ?: return@mapNotNull null
+                    it.title ?: return@mapNotNull null
                     Certification(
-                            certificationTypeCode = null, // TODO: Find out what certificationTypeCode should be
-                            certificationName = it.tittel,
+                            certificationTypeCode = null,
+                            certificationName = it.title,
                             issuingAuthortity = IssuingAuthority("Yrkesopplæringsnemnd"),
                             firstIssuedDate = null,
                             freeFormEffectivePeriod = null
                     )
-                }.onEach { if(debug) log.debug("${cv.aktoerId} CERT Fagbrev $it") }
+                }
         )
     }
 }

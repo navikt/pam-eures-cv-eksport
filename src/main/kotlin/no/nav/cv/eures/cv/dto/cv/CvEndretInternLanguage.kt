@@ -9,3 +9,8 @@ data class CvEndretInternLanguage(
     val oralProficiency: String,
     val writtenProficiency: String
 )
+
+enum class Ferdighetsnivaa {
+    IKKE_OPPGITT, NYBEGYNNER, GODT, VELDIG_GODT,
+    FOERSTESPRAAK
+}

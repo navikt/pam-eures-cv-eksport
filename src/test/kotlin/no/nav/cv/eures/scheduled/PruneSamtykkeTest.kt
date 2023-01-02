@@ -42,7 +42,6 @@ internal class PruneSamtykkeTest {
             aktoerId = "aid1",
             foedselsnummer = deleteThisFoedselsnummer,
             sistEndret = deleteThisSistEndret,
-            rawAvro = "Raw Avro",
             meldingstype = RawCV.Companion.RecordType.CREATE)
 
         val deleteThisXmlCv = CvXml.create(
@@ -58,7 +57,6 @@ internal class PruneSamtykkeTest {
             aktoerId = "aid2",
             foedselsnummer = keepThisFoedselsnummer,
             sistEndret = keepThisSistEndret,
-            rawAvro = "Raw Avro",
             meldingstype = RawCV.Companion.RecordType.CREATE)
 
         val keepThisXmlCv = CvXml.create(

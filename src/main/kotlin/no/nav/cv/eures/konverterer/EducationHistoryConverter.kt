@@ -1,34 +1,29 @@
 package no.nav.cv.eures.konverterer
 
-import no.nav.arbeid.cv.avro.Cv
-import no.nav.arbeid.cv.avro.Utdannelse
+import no.nav.cv.dto.CvEndretInternDto
+import no.nav.cv.dto.cv.CvEndretInternEducation
 import no.nav.cv.eures.model.*
-import no.nav.cv.eures.samtykke.Samtykke
 
 
 
 class EducationHistoryConverter(
-        private val cv: Cv,
-        private val samtykke: Samtykke
+        private val dto: CvEndretInternDto
 ) {
-    private val ikkeSamtykket = null
 
-    fun toXmlRepresentation()
-            = when(samtykke.utdanning) {
-        true -> EducationHistory(cv.utdannelse.toEducationList())
-        false -> ikkeSamtykket
+    fun toXmlRepresentation() : EducationHistory {
+        return EducationHistory(dto.cv?.education?.toEducationList().orEmpty())
     }
 
-    // TODO støtte null i fra-tidpsunkt
-    private fun List<Utdannelse>.toEducationList()
+    private fun List<CvEndretInternEducation>.toEducationList()
             = map { EducationOrganizationAttendance(
-            organizationName = it.laerested,
-            programName = "${it.utdanningsretning} - ${it.beskrivelse}",
+            organizationName = it.institution ?: "",
+            programName = "${it.field} - ${it.description}",
             attendancePeriod = AttendancePeriod(
-                    it.fraTidspunkt?.toFormattedDateTime() ?: DateText("Unknown"),
-                    it.tilTidspunkt?.toFormattedDateTime()),
-            educationLevelCode = EducationLevelCode(code = it.nuskodeGrad.toEducationLevelCode()),
-            educationDegree = educationDegree(it.nuskodeGrad.toEducationLevelCode())
+                    it.startDate?.toFormattedDateTime() ?: DateText("Unknown"),
+                    it.endDate?.toFormattedDateTime()),
+            //educationLevelCode = EducationLevelCode(code = it.nuskodeGrad.toEducationLevelCode()),
+            educationLevelCode = EducationLevelCode(code = it.nuskode?.toEducationLevelCode().orEmpty()),
+            educationDegree = educationDegree(it.nuskode?.toEducationLevelCode().orEmpty())
     ) }
 
     private fun String.toEducationLevelCode() = substring(0, 1)

@@ -1,16 +1,12 @@
 package no.nav.cv.eures.konverterer
 
-import no.nav.arbeid.cv.avro.Cv
-import no.nav.arbeid.cv.avro.Jobbprofil
-import no.nav.arbeid.cv.avro.Melding
-import no.nav.arbeid.cv.avro.Meldingstype
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
+import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
+import com.fasterxml.jackson.module.kotlin.readValue
+import no.nav.cv.dto.CvEndretInternDto
 import no.nav.cv.eures.cv.*
 import no.nav.cv.eures.model.Candidate
 import no.nav.cv.eures.samtykke.SamtykkeRepository
-import no.nav.cv.eures.samtykke.SamtykkeService
-import no.nav.cv.eures.util.toMelding
-import org.apache.avro.io.DecoderFactory
-import org.apache.avro.specific.SpecificDatumReader
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
@@ -19,33 +15,16 @@ import java.math.BigInteger
 import java.security.MessageDigest
 
 @Service
-class CvConverterService(
-        private val cvRepository: CvRepository,
+class CvConverterService2(
         private val cvXmlRepository: CvXmlRepository,
-        private val samtykkeRepository: SamtykkeRepository
+        private val samtykkeRepository: SamtykkeRepository,
+        private val cvRepository: CvRepository
 ) {
 
     companion object {
-        val log: Logger = LoggerFactory.getLogger(CvConverterService::class.java)
-    }
-
-
-    // This is definitely not the best solution, but unfortunately
-    // it's the only one I see for handling both avro versions without
-    // ending up in situations where we re-index things and get errors
-    // until we finish processing the first part of the topic.
-    private fun RawCV.toMelding(): Melding? {
-        val wireBytes = getWireBytes()
-
-        if (wireBytes.isEmpty()) return null
-
-        return wireBytes.toMelding(aktoerId)
-    }
-
-    private fun Melding.cvAndProfile(): Pair<Cv?, Jobbprofil?>? = when (meldingstype) {
-        Meldingstype.OPPRETT -> Pair(opprettCv?.cv, opprettJobbprofil?.jobbprofil)
-        Meldingstype.ENDRE -> Pair(endreCv?.cv, endreJobbprofil?.jobbprofil)
-        else -> null
+        val log: Logger = LoggerFactory.getLogger(CvConverterService2::class.java)
+        val objectMapper = jacksonObjectMapper()
+            .registerModule(JavaTimeModule())
     }
 
     fun updateExisting(cvXml: CvXml?): CvXml? {
@@ -54,7 +33,7 @@ class CvConverterService(
         if (cvXml == null) return null
 
         return convertToXml(cvXml.foedselsnummer)
-                ?.let { (_, xml, _) -> updateIfChanged(cvXml, xml)}
+            ?.let { (_, xml, _) -> updateIfChanged(cvXml, xml)}
     }
 
     fun updateIfChanged(cvXml: CvXml, newXml: String): CvXml {
@@ -81,72 +60,62 @@ class CvConverterService(
         return BigInteger(1, md.digest(input.toByteArray())).toString(16).padStart(32, '0')
     }
 
-    fun createNew(foedselsnummer: String) {
+    fun createNew(fodselsnummer: String) {
         val now = ZonedDateTime.now()
-        convertToXml(foedselsnummer)
-                ?.let { (ref, xml, _) ->
-                    val checksum = md5(xml)
-                    log.debug("Create New: Before save of ${xml.length} bytes of xml with checksum $checksum")
-                    cvXmlRepository.save(CvXml.create(
+        convertToXml(fodselsnummer)
+            ?.let { (ref, xml, _) ->
+                val checksum = md5(xml)
+                log.debug("Create New: Before save of ${xml.length} bytes of xml with checksum $checksum")
+                fodselsnummer?.let {
+                    cvXmlRepository.save(
+                        CvXml.create(
                             reference = ref,
-                            foedselsnummer = foedselsnummer,
+                            foedselsnummer = fodselsnummer,
                             opprettet = now,
                             sistEndret = now,
                             slettet = null,
                             xml = xml,
                             checksum = checksum
-                    ))
+                        )
+                    )
                 }
+            }
     }
 
-    fun createOrUpdate(foedselsnummer: String) = cvXmlRepository.fetch(foedselsnummer)
-            ?.let { updateExisting(it) }
-            ?: createNew(foedselsnummer)
+    fun createOrUpdate(fodselsnummer: String) = cvXmlRepository.fetch(fodselsnummer)
+        ?.let { updateExisting(it) }
+        ?: createNew(fodselsnummer)
 
-
-    fun delete(foedselsnummer: String): CvXml? = cvXmlRepository.fetch(foedselsnummer)
+    fun delete(fodselsnummer: String): CvXml? = cvXmlRepository.fetch(fodselsnummer)
             ?.let {
                 it.slettet = it.slettet ?: ZonedDateTime.now()
                 it.xml = ""
                 it.checksum = ""
-                samtykkeRepository.slettSamtykke(foedselsnummer)
+                samtykkeRepository.slettSamtykke(fodselsnummer)
                 return@let cvXmlRepository.save(it)
             }
 
 
-    fun convertToXml(foedselsnummer: String): Triple<String, String, Candidate>? {
-        val record = cvRepository.hentCvByFoedselsnummer(foedselsnummer)
-            ?: run {
-                log.info("Trying to convert XML for ${foedselsnummer.take(1)}.........${foedselsnummer.takeLast(1)} but got nothing from raw cv repo ")
-                return null
+    fun convertToXml(fodselsnummer: String): Triple<String, String, Candidate>? {
+        val record = cvRepository.hentCvByFoedselsnummer(fodselsnummer)
+        val dto = objectMapper.readValue<CvEndretInternDto>(record?.jsonCv!!)
+        return dto
+            .let {
+                log.debug("Got CV aktoerid: ${it.aktorId}")
+
+                samtykkeRepository.hentSamtykke(fodselsnummer)
+                    ?.run {
+                        val (xml, previewJson) = try {
+                            val candidate = CandidateConverter(it, this).toXmlRepresentation()
+                            Pair(XmlSerializer.serialize(candidate), candidate)
+                        } catch (e: Exception) {
+                            log.error("Failed to convert CV to XML for candidate ${it.aktorId}", e)
+                            throw CvNotConvertedException("Failed to convert CV to XML for candidate ${it.aktorId}", e)
+                        }
+                        return@let Triple(it.kandidatNr ?: "", xml, previewJson)
+                    }
+
             }
-        return record.toMelding()
-                ?.cvAndProfile()
-                ?.let { (cv, profile) ->
-
-                    log.debug("Got CV aktoerid: ${cv?.aktoerId} Profile ID: ${profile?.jobbprofilId}")
-
-                    cv ?: return@let null
-
-                    samtykkeRepository.hentSamtykke(foedselsnummer)
-                            ?.run {
-                                val (xml, previewJson) = try {
-                                    val candidate = CandidateConverter(cv, profile, this).toXmlRepresentation()
-                                    Pair(XmlSerializer.serialize(candidate), candidate)
-                                } catch (e: Exception) {
-                                    log.error("Failed to convert CV to XML for candidate ${cv.aktoerId}", e)
-                                    throw CvNotConvertedException("Failed to convert CV to XML for candidate ${cv.aktoerId}", e)
-                                }
-
-                                return@let Triple(cv.arenaKandidatnr, xml, previewJson)
-                            }
-                }
-            ?: run {
-                log.info("Trying to convert XML for ${foedselsnummer.take(1)}.........${foedselsnummer.takeLast(1)} but got null from melding.cvAndProfile() ")
-                null
-            }
-
-
     }
 
 }

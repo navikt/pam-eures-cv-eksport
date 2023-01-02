@@ -1,57 +1,44 @@
 package no.nav.cv.eures.konverterer
 
-import no.nav.arbeid.cv.avro.Arbeidserfaring
-import no.nav.arbeid.cv.avro.Cv
+import no.nav.cv.dto.CvEndretInternDto
+import no.nav.cv.dto.cv.CvEndretInternWorkExperience
 import no.nav.cv.eures.janzz.JanzzService
 import no.nav.cv.eures.model.*
-import no.nav.cv.eures.samtykke.Samtykke
 
 class EmploymentHistoryConverter(
-        private val cv: Cv,
-        private val samtykke: Samtykke,
-        private val janzzService: JanzzService = JanzzService.instance()
+    private val dto: CvEndretInternDto,
+    private val janzzService: JanzzService = JanzzService.instance()
 ) {
-    private val ikkeSamtykket = null
 
-    fun toXmlRepresentation() = when (samtykke.arbeidserfaring) {
-        true -> EmploymentHistory(cv.arbeidserfaring.toEmploymentList())
-        false -> ikkeSamtykket
+    fun toXmlRepresentation() : EmploymentHistory {
+       return EmploymentHistory(dto.cv?.workExperience?.toEmploymentList().orEmpty())
     }
 
-    fun List<Arbeidserfaring>.toEmploymentList() = map {
+    fun List<CvEndretInternWorkExperience>.toEmploymentList() = map {
         EmployerHistory(
-                organizationName = it.arbeidsgiver ?: "",
+                organizationName = it?.employer ?: "",
                 employmentPeriod = AttendancePeriod(
-                        it.fraTidspunkt?.toFormattedDateTime() ?: DateText("Unknown"),
-                        it.tilTidspunkt?.toFormattedDateTime()
+                        it.fromDate?.toFormattedDateTime() ?: DateText("Unknown"),
+                        it.toDate?.toFormattedDateTime()
                 ),
                 positionHistory = it.toPositionHistory())
     }
 
-    fun Arbeidserfaring.toPositionHistory() = listOf(PositionHistory(
-            positionTitle = stillingstittel ?: stillingstittelFritekst, // TODO Skal dette være friktekstfeltet?
+    fun CvEndretInternWorkExperience.toPositionHistory() = listOf(PositionHistory(
+            positionTitle = (jobTitle ?: alternativeJobTitle).orEmpty(),
             employmentPeriod = AttendancePeriod(
-                    fraTidspunkt?.toFormattedDateTime() ?: DateText("Unknown"),
-                    tilTidspunkt?.toFormattedDateTime()
+                    fromDate?.toFormattedDateTime() ?: DateText("Unknown"),
+                    toDate?.toFormattedDateTime()
             ),
-            jobCategoryCode = stillingstittel?.toJobCategoryCode()
+            jobCategoryCode = jobTitle?.toJobCategoryCode()
     ))
 
     private fun String.toJobCategoryCode(): JobCategoryCode? = janzzService.getEscoForTerm(this, JanzzService.EscoLookupType.OCCUPATION)
-            .firstOrNull() // TODO Might consider something more refined than just picking the first result
+            .firstOrNull()
             ?.let {
                 JobCategoryCode(
                         name = it.term,
                         code = it.esco
                 )
             }
-
-
-
 }
-
-
-//val organizationName: String,
-//val organizationContact: PersonContact, // TODO Usikker paa denne mappingen
-//val industryCode: IndustryCode,
-//val employmentPeriod: AttendancePeriod
