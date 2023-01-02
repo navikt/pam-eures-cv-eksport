@@ -2,7 +2,7 @@ package no.nav.cv.eures.xml
 
 import no.nav.cv.eures.cv.CvRepository
 import no.nav.cv.eures.cv.RawCV
-import no.nav.cv.eures.konverterer.CvConverterService2
+import no.nav.cv.eures.konverterer.CvConverterService
 import no.nav.cv.eures.samtykke.Samtykke
 import no.nav.cv.eures.samtykke.SamtykkeRepository
 import org.junit.jupiter.api.Disabled
@@ -17,7 +17,7 @@ import java.time.ZonedDateTime
 class XmlSerializerTest {
 
     @Autowired
-    lateinit var cvConverterService2: CvConverterService2
+    lateinit var cvConverterService2: CvConverterService
 
     @Autowired
     lateinit var cvRepository: CvRepository

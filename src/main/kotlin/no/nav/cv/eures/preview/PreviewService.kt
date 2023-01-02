@@ -1,13 +1,13 @@
 package no.nav.cv.eures.preview
 
 import no.nav.cv.eures.janzz.JanzzService
-import no.nav.cv.eures.konverterer.CvConverterService2
+import no.nav.cv.eures.konverterer.CvConverterService
 import no.nav.cv.eures.model.Candidate
 import org.springframework.stereotype.Service
 
 @Service
 class PreviewService(
-    private val cvConverterService2: CvConverterService2,
+    private val cvConverterService2: CvConverterService,
     private val janzzService: JanzzService
 ) {
 

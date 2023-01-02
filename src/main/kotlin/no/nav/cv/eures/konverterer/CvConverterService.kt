@@ -15,14 +15,14 @@ import java.math.BigInteger
 import java.security.MessageDigest
 
 @Service
-class CvConverterService2(
+class CvConverterService(
         private val cvXmlRepository: CvXmlRepository,
         private val samtykkeRepository: SamtykkeRepository,
         private val cvRepository: CvRepository
 ) {
 
     companion object {
-        val log: Logger = LoggerFactory.getLogger(CvConverterService2::class.java)
+        val log: Logger = LoggerFactory.getLogger(CvConverterService::class.java)
         val objectMapper = jacksonObjectMapper()
             .registerModule(JavaTimeModule())
     }

@@ -1,6 +1,6 @@
 package no.nav.cv.eures.util
 
-import no.nav.cv.eures.konverterer.CvConverterService2
+import no.nav.cv.eures.konverterer.CvConverterService
 import no.nav.cv.eures.scheduled.XmlUpdater
 import no.nav.security.token.support.core.api.Unprotected
 import org.slf4j.LoggerFactory
@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.RestController
 @RequestMapping("internal/reprocess")
 class AdminController(
     private val xmlUpdater: XmlUpdater,
-    private val cvConverterService2: CvConverterService2,
+    private val cvConverterService2: CvConverterService,
 ) {
 
     companion object {
