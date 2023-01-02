@@ -25,7 +25,7 @@ class CvRepositoryTest {
     @Test
     fun `finn cv knyttet til foedselsnummer`() {
         val cv = RawCV.create(testData.aktoerId1, testData.foedselsnummer1,
-                testData.now, false, RawCV.Companion.RecordType.CREATE, testData.melding1Serialized)
+                testData.now, "",false, RawCV.Companion.RecordType.CREATE, testData.melding1Serialized)
 
         cvRepository.saveAndFlush(cv)
 
@@ -40,9 +40,9 @@ class CvRepositoryTest {
     @Test
     fun `finn en av flere cv`() {
         val cv1 = RawCV.create(testData.aktoerId1, testData.foedselsnummer1,
-                testData.now, false, RawCV.Companion.RecordType.CREATE, testData.melding1Serialized)
+                testData.now, "", false, RawCV.Companion.RecordType.CREATE, testData.melding1Serialized)
         val cv2 = RawCV.create(testData.aktoerId2, testData.foedselsnummer2,
-                testData.yesterday, false, RawCV.Companion.RecordType.CREATE, testData.melding2Serialized)
+                testData.yesterday, "", false, RawCV.Companion.RecordType.CREATE, testData.melding2Serialized)
 
         cvRepository.saveAndFlush(cv1)
         cvRepository.saveAndFlush(cv2)
@@ -65,12 +65,12 @@ class CvRepositoryTest {
     @Test
     fun `cv blir oppdatert`() {
         val cv1 = RawCV.create(testData.aktoerId1, testData.foedselsnummer1,
-                testData.now,  false, RawCV.Companion.RecordType.CREATE, testData.melding1Serialized)
+                testData.now, "", false, RawCV.Companion.RecordType.CREATE, testData.melding1Serialized)
 
         cvRepository.saveAndFlush(cv1)
 
         val cv2 = cvRepository.hentCvByFoedselsnummer(testData.foedselsnummer1)
-                ?.update(testData.aktoerId1, testData.foedselsnummer1, testData.now,
+                ?.update(testData.aktoerId1, testData.foedselsnummer1, testData.now,"",
                     testData.underOppfoelging, RawCV.Companion.RecordType.UPDATE, testData.melding2Serialized)
 
         assertNotNull(cv2)
@@ -92,13 +92,13 @@ class CvRepositoryTest {
 
     @Test
     fun `gammel cv blir hentet`() {
-        val nyCv = RawCV.create(testData.aktoerId1, testData.foedselsnummer1, testData.now,
+        val nyCv = RawCV.create(testData.aktoerId1, testData.foedselsnummer1, testData.now,"",
                 false, RawCV.Companion.RecordType.CREATE,testData.melding1Serialized)
 
         val nyXmlCv = CvXml.create("", testData.aktoerId1, testData.now, testData.now,
                 null, "", "")
 
-        val gammelCv = RawCV.create(testData.aktoerId2, testData.foedselsnummer2, testData.yesterday,
+        val gammelCv = RawCV.create(testData.aktoerId2, testData.foedselsnummer2, testData.yesterday,"",
                  false, RawCV.Companion.RecordType.CREATE, testData.melding2Serialized)
 
         val gammelXmlCv = CvXml.create("", testData.aktoerId2, testData.yesterday, testData.yesterday,
@@ -120,7 +120,7 @@ class CvRepositoryTest {
 
     @Test
     fun `gammel cv blir ikke hentet hvis den er markert slettet`() {
-        val cv = RawCV.create(testData.aktoerId1, testData.foedselsnummer1, testData.yesterday, false,
+        val cv = RawCV.create(testData.aktoerId1, testData.foedselsnummer1, testData.yesterday, "",false,
                 RawCV.Companion.RecordType.CREATE, testData.melding1Serialized)
 
         val xmlCv = CvXml.create("", testData.aktoerId1, testData.yesterday, testData.yesterday,
