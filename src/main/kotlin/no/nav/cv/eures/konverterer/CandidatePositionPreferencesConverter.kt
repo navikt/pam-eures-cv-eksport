@@ -14,5 +14,5 @@ class CandidatePositionPreferencesConverter(
     }
 
     private fun List<String>.toPositionPreferences() : CandidatePositionPreferences =
-        CandidatePositionPreferences(map{countryCode -> PreferredLocation(ReferenceLocation(countryCode))})
+        CandidatePositionPreferences(map{countryCode -> PreferredLocation(ReferenceLocation(countryCode = countryCode))})
 }
