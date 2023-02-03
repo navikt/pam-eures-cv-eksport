@@ -56,7 +56,7 @@ class CvConsumer(
 
             meterRegistry.counter("cv.endring.mottatt",
                 "meldingstype", cvEndretInternDto.meldingstype.toString())
-            log.info("Vi mottok meldigstype: ${cvEndretInternDto.meldingstype}")
+
             when (cvEndretInternDto.meldingstype) {
                 CvMeldingstype.OPPRETT -> cvRawService.createOrUpdateRawCvRecord(cvEndretInternDto, cvAsJson)
                 CvMeldingstype.ENDRE -> cvRawService.createOrUpdateRawCvRecord(cvEndretInternDto, cvAsJson)
