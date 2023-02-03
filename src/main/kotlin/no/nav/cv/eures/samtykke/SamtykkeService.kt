@@ -13,7 +13,7 @@ import javax.transaction.Transactional
 @Transactional
 class SamtykkeService(
     private val samtykkeRepository: SamtykkeRepository,
-    private val cvConverterService: CvConverterService,
+    private val cvConverterService2: CvConverterService,
     private val cvRepository: CvRepository,
     private val cvXmlRepository: CvXmlRepository,
     private val meterRegistry: MeterRegistry
@@ -37,7 +37,7 @@ class SamtykkeService(
             log.warn("Got exception when trying to increase metric counter for deleted samtykke", e)
         }
 
-        cvConverterService.delete(foedselsnummer)
+        cvConverterService2.delete(foedselsnummer)
         samtykkeRepository.slettSamtykke(foedselsnummer)
     }
 
@@ -57,7 +57,7 @@ class SamtykkeService(
 
         samtykkeRepository.oppdaterSamtykke(foedselsnummer, samtykke)
                 .run { if (cvRepository.hentCvByFoedselsnummer(foedselsnummer)?.jsonCv != null) {
-                        cvConverterService.createOrUpdate(foedselsnummer)
+                        cvConverterService2.createOrUpdate(foedselsnummer)
                     }
                 }
 
