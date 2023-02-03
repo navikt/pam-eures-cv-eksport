@@ -30,7 +30,7 @@ class CvRawService(
 
         if(existing != null) {
             if (existing.underOppfoelging && (dto.oppfolgingsInformasjon != null && !dto.oppfolgingsInformasjon.erUnderOppfolging)) {
-                log.info("Deleting ${existing.aktoerId} due to not being 'under oppfølging' anymore")
+                log.debug("Deleting ${existing.aktoerId} due to not being 'under oppfølging' anymore")
 
                 // By deleting samtykke we also mark the XML CV for deletion
                 try {
@@ -39,15 +39,13 @@ class CvRawService(
                     log.error("Fikk exception ${e.message} under sletting av cv $this", e)
                 }
             } else {
-                log.info("Updating ${existing.aktoerId} med meldingstype ${existing.meldingstype}")
+                log.debug("Updating ${existing.aktoerId}")
                 existing.update(
                     sistEndret = ZonedDateTime.now(),
                     jsonCv = cvAsJson,
                     underOppfoelging = (dto.oppfolgingsInformasjon != null),
                     meldingstype = RawCV.Companion.RecordType.UPDATE
                 )
-
-                log.info("Oppdatert meldingstype med ${RawCV.Companion.RecordType.UPDATE} til: ${existing.meldingstype}")
 
                 try {
                     cvRepository.saveAndFlush(existing)
@@ -56,7 +54,7 @@ class CvRawService(
                 }
             }
         } else {
-            log.info("inserting new record for $aktoerId")
+            log.debug("inserting new record for $aktoerId")
 
             cvRepository.deleteCvByAktorId(aktoerId)
 
