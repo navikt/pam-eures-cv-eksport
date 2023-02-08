@@ -1,6 +1,7 @@
 package no.nav.cv.eures.konverterer
 
 import no.nav.cv.dto.CvEndretInternDto
+import no.nav.cv.eures.model.CandidatePositionPreferences
 import no.nav.cv.eures.model.CandidateProfile
 import no.nav.cv.eures.samtykke.Samtykke
 
@@ -16,6 +17,7 @@ class CandidateProfileConverter(
 
     fun toXmlRepresentation()
             = CandidateProfile(
+            candidatePositionPreferences = CandidatePositionPreferencesConverter(samtykke).toXmlRepresentation(),
             executiveSummary = if(samtykke.sammendrag) dto.cv?.summary.orEmpty() else ikkeSamtykket,
             employmentHistory = if(samtykke.arbeidserfaring) EmploymentHistoryConverter(dto).toXmlRepresentation() else null,
             educationHistory = if(samtykke.utdanning) EducationHistoryConverter(dto).toXmlRepresentation() else null,
