@@ -5,7 +5,7 @@ import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty
 
 data class CandidatePositionPreferences(
     @JacksonXmlElementWrapper(useWrapping = false)
-    val preferredLocations: List<PreferredLocation>
+    val preferredLocation: List<PreferredLocation>
 )
 
 data class PreferredLocation(
