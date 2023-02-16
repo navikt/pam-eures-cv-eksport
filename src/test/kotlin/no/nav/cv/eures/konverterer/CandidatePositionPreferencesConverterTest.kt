@@ -12,8 +12,8 @@ class CandidatePositionPreferencesConverterTest {
     fun `test konvertering til xml`() {
         var samtykke = Samtykke(personalia = true, land= listOf<String>("DE", "NO"))
         var converter = CandidatePositionPreferencesConverter(samtykke)
-        Assert.assertEquals(2, converter.toXmlRepresentation()?.preferredLocations?.size)
-        Assert.assertEquals("DE", converter.toXmlRepresentation()?.preferredLocations?.get(0)?.referenceLocation?.countryCode)
-        Assert.assertEquals("NO", converter.toXmlRepresentation()?.preferredLocations?.get(1)?.referenceLocation?.countryCode)
+        Assert.assertEquals(2, converter.toXmlRepresentation()?.preferredLocation?.size)
+        Assert.assertEquals("DE", converter.toXmlRepresentation()?.preferredLocation?.get(0)?.referenceLocation?.countryCode)
+        Assert.assertEquals("NO", converter.toXmlRepresentation()?.preferredLocation?.get(1)?.referenceLocation?.countryCode)
     }
 }
