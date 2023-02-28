@@ -22,13 +22,13 @@ data class EducationOrganizationAttendance(
 // 4.28.12
 data class EducationLevelCode(
         @JacksonXmlProperty(isAttribute = true, localName = "listName")
-        val listName: String = "EURES_EQF",
+        val listName: String = "EURES_ISCEDEducationLevel",
 
         @JacksonXmlProperty(isAttribute = true, localName = "listURI")
-        val listURI: String = "http://ec.europa.eu/esco/ConceptScheme/EQF2012/ConceptScheme",
+        val listURI: String = "https://ec.europa.eu/eures",
 
         @JacksonXmlProperty(isAttribute = true, localName = "listVersionID")
-        val listVersionID: String = "2008/C11/01",
+        val listVersionID: String = "2011",
 
         //@JacksonXmlProperty(localName = "text")
         @JacksonXmlText
