@@ -2340,7 +2340,7 @@ hba				I	L	Hamba
 hbb				I	L	Huba	
 hbn				I	L	Heiban	
 hbo				I	H	Ancient Hebrew	
-hbs			sh	M	L	Serbo-Croatian	Code element for 639-1 has been deprecated
+hbs				M	L	Serbo-Croatian
 hbu				I	L	Habu	
 hca				I	L	Andaman Creole Hindi	
 hch				I	L	Huichol	
