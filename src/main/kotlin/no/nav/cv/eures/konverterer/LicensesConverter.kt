@@ -15,7 +15,7 @@ class LicensesConverter(
 
     companion object {
         val log: Logger = LoggerFactory.getLogger(LicensesConverter::class.java)
-        val licenseTypeCodes =
+        val euresAcceptedLicenseTypeCodes =
             listOf("AM", "A1", "A2", "A", "B1", "B", "BE", "C1", "C1E", "C", "CE", "D1", "D1E", "DE", "D");
     }
 
@@ -25,7 +25,7 @@ class LicensesConverter(
 
     fun List<CvEndretInternDriversLicence>.toLicenses(): Licenses {
         return Licenses(filter { cvEndretInternDriversLicence1 ->
-            licenseTypeCodes.contains(
+            euresAcceptedLicenseTypeCodes.contains(
                 cvEndretInternDriversLicence1.klasse
             )
         }
