@@ -41,7 +41,7 @@ spec:
       tenant: {{ azure_ad_tenant }}
   gcp:
     sqlInstances:
-      - type: POSTGRES_11
+      - type: POSTGRES_14
         tier: {{ cloudsql_db_tier }}
         diskAutoresize: true
         diskType: SSD
