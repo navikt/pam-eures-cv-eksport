@@ -2,7 +2,7 @@
 `pam-eures-cv-eksport` er et API som tilrettelegger for innhenting av CV-data fra [EURES](https://ec.europa.eu/eures/public/homepage). Den tar seg av lagring av samtykke for deling av CV-data med EURES (gjennom [pam-personbruker](https://github.com/navikt/pam-personbruker)), samt konvertering av dataene til riktig format.
 
 ## Api-dokumentasjon
-Swagger-ui av endepunktene kan finnes på https://arbeidsplassen.dev.nav.no/pam-eures-cv-eksport/swagger-ui.html
+Swagger-ui av endepunktene kan finnes på https://arbeidsplassen.intern.dev.nav.no/pam-eures-cv-eksport/swagger-ui.html
 Den kan også finnes på http://localhost:9030/pam-eures-cv-eksport/swagger-ui.html hvis applikasjonen kjører lokalt.
 For å få den til å enable dokumentasjonen lokalt, må `SWAGGER_ENABLED=true` legges til som en miljøvariabel.
 
