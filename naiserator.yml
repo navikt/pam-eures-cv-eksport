@@ -31,6 +31,9 @@ spec:
         - application: pam-eures-cv-eksport-proxy
         - application: pam-personbruker
         - application: pam-cv
+    outbound:
+      external:
+        - host: www.janzz.jobs
   webproxy: false
   envFrom:
     - secret: pam-eures-cv-eksport-secret
