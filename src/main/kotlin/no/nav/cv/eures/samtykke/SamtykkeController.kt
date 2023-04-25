@@ -4,6 +4,7 @@ import io.swagger.v3.oas.annotations.Operation
 import no.nav.cv.eures.bruker.InnloggetBruker
 import no.nav.cv.eures.pdl.PdlPersonGateway
 import no.nav.security.token.support.core.api.ProtectedWithClaims
+import no.nav.security.token.support.core.api.RequiredIssuers
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.http.HttpStatus
@@ -12,7 +13,10 @@ import org.springframework.web.bind.annotation.*
 
 @RestController
 @RequestMapping("samtykke")
-@ProtectedWithClaims(issuer = "selvbetjening")
+@RequiredIssuers(
+    ProtectedWithClaims(issuer = "selvbetjening"),
+    ProtectedWithClaims(issuer = "tokenx")
+)
 class SamtykkeController(
     private val samtykkeService: SamtykkeService,
     private val innloggetbrukerService: InnloggetBruker,

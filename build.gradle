@@ -3,7 +3,7 @@ plugins {
     id "org.jetbrains.kotlin.plugin.spring" version "1.7.20"
     id "org.jetbrains.kotlin.plugin.jpa" version "1.7.20"
     id "application"
-    id "org.springframework.boot" version "2.7.4"
+    id "org.springframework.boot" version "2.7.11"
     id "io.spring.dependency-management" version "1.0.14.RELEASE"
 }
 
@@ -25,7 +25,7 @@ configurations {
 ext {
     springdocVersion = '1.6.12'
     kotlinVersion = '1.7.20'
-    tokenSupportVersion = '2.1.6'
+    tokenSupportVersion = '2.1.9'
     jacksonVersion = '2.13.4'
 }
 
@@ -43,7 +43,7 @@ dependencies {
     implementation "org.apache.kafka:kafka-clients:3.3.1"
     implementation "com.fasterxml.jackson.core:jackson-databind:2.13.4.2"
 
-    implementation "org.postgresql:postgresql:42.5.0"
+    implementation 'org.postgresql:postgresql:42.5.1'
     implementation "org.hibernate:hibernate-core"
     implementation "org.flywaydb:flyway-core"
 
