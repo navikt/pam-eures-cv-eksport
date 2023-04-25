@@ -30,7 +30,6 @@ class SamtykkeController(
     @GetMapping(produces = ["application/json"])
     fun hentSamtykke(): ResponseEntity<Samtykke> {
         val fnr = extractFnr()
-        log.info("henter samtykke for $fnr")
         return samtykkeService.hentSamtykke(fnr)
             ?.let { ResponseEntity.ok(it) }
             ?: run {

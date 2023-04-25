@@ -6,7 +6,6 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties
 data class HentPersonDto(
     val data: HentPersonData? = null,
     val errors: List<PdlError>? = null,
-    //val extensions: Map<String, String>?
 ) {
 
     val person get() = data?.hentPerson

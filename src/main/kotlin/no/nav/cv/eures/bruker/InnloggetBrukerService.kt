@@ -23,14 +23,5 @@ class InnloggetBrukerService (
         }
 
         return claims.getStringClaim("pid") ?: claims.subject
-//
-//
-//        val fnr = contextHolder.tokenValidationContext.getClaims("selvbetjening").let {
-//            it.getStringClaim("pid") ?: it.subject
-//        }
-//        if (fnr == null || fnr.trim { it <= ' ' }.isEmpty()) {
-//            throw IllegalStateException("Fant ikke FNR i token")
-//        }
-//        return fnr
     }
 }
