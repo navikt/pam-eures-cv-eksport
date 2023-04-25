@@ -39,6 +39,8 @@ spec:
     application:
       enabled: true
       tenant: {{ azure_ad_tenant }}
+  tokenx:
+    enabled: true
   gcp:
     sqlInstances:
       - type: POSTGRES_14
