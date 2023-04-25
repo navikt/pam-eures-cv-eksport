@@ -34,6 +34,7 @@ spec:
     outbound:
       external:
         - host: www.janzz.jobs
+        - host: {{ pdl_host }}
   webproxy: false
   envFrom:
     - secret: pam-eures-cv-eksport-secret
