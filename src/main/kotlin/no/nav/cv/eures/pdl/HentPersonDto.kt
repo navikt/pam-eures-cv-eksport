@@ -1,5 +1,8 @@
 package no.nav.cv.eures.pdl
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties
+
+@JsonIgnoreProperties(ignoreUnknown = true)
 data class HentPersonDto(
     val data: HentPersonData? = null,
     val errors: List<PdlError>? = null

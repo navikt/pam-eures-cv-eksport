@@ -13,6 +13,9 @@ no.nav.security.jwt:
       discoveryurl: ${LOGINSERVICE_IDPORTEN_DISCOVERY_URL:http://${mock-oauth2-server.hostname}:${mock-oauth2-server.port}/selvbetjening/.well-known/openid-configuration}
       accepted_audience: ${LOGINSERVICE_IDPORTEN_AUDIENCE:aud-localhost}
       cookie_name: selvbetjening-idtoken
+    tokenx:
+      discovery-url: ${TOKEN_X_WELL_KNOWN_URL:http://host.docker.internal:${mock-oauth2-server.port}/tokenx/.well-known/openid-configuration}
+      accepted_audience: ${TOKEN_X_CLIENT_ID:local:teampam:pam-eures-cv-eksport}
   client:
     registration:
       pdl:

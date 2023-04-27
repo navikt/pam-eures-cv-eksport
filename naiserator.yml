@@ -31,6 +31,10 @@ spec:
         - application: pam-eures-cv-eksport-proxy
         - application: pam-personbruker
         - application: pam-cv
+    outbound:
+      external:
+        - host: www.janzz.jobs
+        - host: {{ pdl_host }}
   webproxy: false
   envFrom:
     - secret: pam-eures-cv-eksport-secret
@@ -39,6 +43,8 @@ spec:
     application:
       enabled: true
       tenant: {{ azure_ad_tenant }}
+  tokenx:
+    enabled: true
   gcp:
     sqlInstances:
       - type: POSTGRES_14

@@ -1,5 +1,6 @@
 package no.nav.cv.eures.eures
 
+import no.nav.cv.eures.util.NavCallIdHandlerInterceptor
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.context.annotation.Configuration
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry
@@ -12,5 +13,6 @@ class EuresConfig(
 
     override fun addInterceptors(registry: InterceptorRegistry) {
         registry.addInterceptor(EuresSecurityHandler(ourToken))
+        registry.addInterceptor(NavCallIdHandlerInterceptor())
     }
 }
