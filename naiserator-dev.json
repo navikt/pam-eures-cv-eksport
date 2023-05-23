@@ -1,7 +1,7 @@
 {
   "cloudsql_db_tier": "db-f1-micro",
   "kafka_consumer_topic_cv_endret_intern": "teampam.cv-endret-intern-v3",
-  "ingress":  ["https://arbeidsplassen.dev.nav.no/pam-eures-cv-eksport", "https://pam-eures-cv-eksport.dev.intern.nav.no/pam-eures-cv-eksport", "https://arbeidsplassen.intern.dev.nav.no/pam-eures-cv-eksport", "https://pam-eures-cv-eksport.intern.dev.nav.no/pam-eures-cv-eksport"],
+  "ingress":  ["https://arbeidsplassen.intern.dev.nav.no/pam-eures-cv-eksport", "https://pam-eures-cv-eksport.intern.dev.nav.no/pam-eures-cv-eksport"],
   "avro_version_fiftytwo_hex": "NoInt0000031f",
   "azure_ad_tenant": "trygdeetaten.no",
   "pdl_base_url": "https://pdl-api.dev-fss-pub.nais.io",
