@@ -9,6 +9,7 @@ import org.slf4j.LoggerFactory
 
 @RestController
 @RequestMapping("input/api/cv/v1.0")
+@Unprotected
 class EuresController(
     private val euresService: EuresService
 ) {
@@ -34,7 +35,6 @@ class EuresController(
         return changedReferences
     }
 
-    @Unprotected
     @PostMapping("getDetails", consumes = ["application/json"], produces = ["application/json"])
     fun getDetails(@RequestBody references: List<String>) =
         euresService.getDetails(references)
