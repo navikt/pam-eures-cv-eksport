@@ -8,7 +8,7 @@ import org.springframework.scheduling.annotation.EnableScheduling
 
 
 @SpringBootApplication
-@EnableJwtTokenValidation(ignore = ["org.springdoc", "org.springframework", "no.nav.cv.eures.eures.EuresController"])
+@EnableJwtTokenValidation(ignore = ["org.springdoc", "org.springframework"])
 @EnableScheduling
 class Application
 
