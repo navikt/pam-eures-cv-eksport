@@ -5,7 +5,6 @@ import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Repository
 import org.springframework.transaction.annotation.Transactional
-import java.math.BigInteger
 import java.time.ZonedDateTime
 import jakarta.persistence.*
 
@@ -104,7 +103,7 @@ private class JpaJanzzCacheRepository(
     @Transactional
     override fun getCacheCount(): Long
             = (entityManager.createNativeQuery(getCacheCount)
-            .singleResult as BigInteger).toLong()
+            .singleResult as Long)
 
     private val getEsco =
         """
