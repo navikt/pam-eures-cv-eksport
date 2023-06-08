@@ -6,7 +6,6 @@ import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Repository
 import org.springframework.transaction.annotation.Transactional
-import java.math.BigInteger
 import java.time.ZonedDateTime
 import jakarta.persistence.*
 
@@ -108,7 +107,7 @@ private open class JpaSamtykkeRepository(
             ).map { kategori ->
                 val query = "SELECT COUNT(*) FROM SAMTYKKE WHERE $kategori = true"
                 val antall = (entityManager.createNativeQuery(query)
-                    .singleResult as BigInteger).toLong()
+                    .singleResult as Long)
 
                 Pair(kategori, antall)
             }.toMap()
