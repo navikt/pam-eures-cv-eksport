@@ -7,7 +7,7 @@ import org.springframework.stereotype.Repository
 import org.springframework.transaction.annotation.Transactional
 import java.math.BigInteger
 import java.time.ZonedDateTime
-import javax.persistence.*
+import jakarta.persistence.*
 
 
 interface JanzzCacheRepository {
@@ -124,7 +124,8 @@ class EscoCacheEntity {
 
     @Id
     @Column(name = "ID")
-    @GeneratedValue(generator = "ESCO_CACHE_SEQ")
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "esco_cache_generator")
+    @SequenceGenerator(name = "esco_cache_generator", sequenceName = "ESCO_CACHE_SEQ", allocationSize = 1)
     private val id: Long? = null
 
     @Column(name = "TERM")

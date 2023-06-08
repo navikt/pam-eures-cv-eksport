@@ -8,7 +8,7 @@ import org.springframework.stereotype.Repository
 import org.springframework.transaction.annotation.Transactional
 import java.math.BigInteger
 import java.time.ZonedDateTime
-import javax.persistence.*
+import jakarta.persistence.*
 
 interface SamtykkeRepository {
 
@@ -161,7 +161,8 @@ private open class JpaSamtykkeRepository(
 class SamtykkeEntity {
     @Id
     @Column(name = "ID")
-    @GeneratedValue(generator = "SAMTYKKE_SEQ")
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "samtykke_generator")
+    @SequenceGenerator(name = "samtykke_generator", sequenceName = "SAMTYKKE_SEQ", allocationSize = 1)
     private var id: Long? = null
 
     @Column(name = "FOEDSELSNUMMER", nullable = false, unique = true)

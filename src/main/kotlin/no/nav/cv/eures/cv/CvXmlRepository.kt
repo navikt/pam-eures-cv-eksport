@@ -5,7 +5,7 @@ import org.springframework.data.domain.Pageable
 import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.data.jpa.repository.Query
 import java.time.ZonedDateTime
-import javax.persistence.*
+import jakarta.persistence.*
 
 interface CvXmlRepository : JpaRepository<CvXml, Long> {
 
@@ -65,7 +65,8 @@ interface CvXmlRepository : JpaRepository<CvXml, Long> {
 class CvXml {
     @Id
     @Column(name = "ID")
-    @GeneratedValue(generator = "CV_XML_SEQ")
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "cv_xml_generator")
+    @SequenceGenerator(name = "cv_xml_generator", sequenceName = "CV_XML_SEQ", allocationSize = 1)
     var id: Long? = null
 
     @Column(name = "FOEDSELSNUMMER", nullable = false, unique = true)

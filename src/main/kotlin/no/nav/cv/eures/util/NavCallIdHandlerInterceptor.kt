@@ -1,13 +1,14 @@
 package no.nav.cv.eures.util
 
+import jakarta.servlet.http.HttpServletRequest
+import jakarta.servlet.http.HttpServletResponse
 import org.apache.commons.lang3.StringUtils
 import org.slf4j.MDC
 import org.springframework.lang.Nullable
 import org.springframework.web.servlet.HandlerInterceptor
 import java.lang.Exception
 import java.util.*
-import javax.servlet.http.HttpServletRequest
-import javax.servlet.http.HttpServletResponse
+
 
 
 class NavCallIdHandlerInterceptor : HandlerInterceptor {

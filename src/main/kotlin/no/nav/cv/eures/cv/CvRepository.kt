@@ -7,7 +7,7 @@ import org.springframework.data.jpa.repository.Query
 import org.springframework.transaction.annotation.Transactional
 import java.time.ZonedDateTime
 import java.util.*
-import javax.persistence.*
+import jakarta.persistence.*
 
 interface CvRepository : JpaRepository<RawCV, Long> {
 
@@ -41,7 +41,8 @@ interface CvRepository : JpaRepository<RawCV, Long> {
 class RawCV {
     @Id
     @Column(name = "ID")
-    @GeneratedValue(generator = "CV_RAW_SEQ")
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "cvraw_generator")
+    @SequenceGenerator(name = "cvraw_generator", sequenceName = "CV_RAW_SEQ", allocationSize = 1)
     private var id: Long? = null
 
     @Column(name = "AKTOER_ID", nullable = false, unique = true)

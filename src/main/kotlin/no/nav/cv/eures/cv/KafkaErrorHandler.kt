@@ -1,5 +1,5 @@
 package no.nav.cv.eures.cv
-
+/*
 import org.apache.kafka.clients.consumer.ConsumerRecords
 import org.slf4j.LoggerFactory
 import org.springframework.kafka.listener.SeekToCurrentBatchErrorHandler
@@ -19,3 +19,5 @@ class KafkaErrorHandler : SeekToCurrentBatchErrorHandler() {
     }
 
 }
+
+ */
