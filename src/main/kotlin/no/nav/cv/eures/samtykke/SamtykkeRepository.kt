@@ -86,7 +86,7 @@ private open class JpaSamtykkeRepository(
     @Transactional
     override fun hentAntallSamtykker() : Long
             = (entityManager.createNativeQuery(hentAntallSamtykker)
-            .singleResult as BigInteger).toLong()
+            .singleResult as Long)
 
 
     @Transactional
