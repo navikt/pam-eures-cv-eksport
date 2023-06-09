@@ -84,7 +84,7 @@ private class JpaJanzzCacheRepository(
 
     private val pruneCache =
             """
-                DELETE EscoCacheEntity
+                DELETE FROM ESCO_CACHE
                 WHERE UPDATED < :sevenDaysAgo
             """.replace(serieMedWhitespace, " ")
 
