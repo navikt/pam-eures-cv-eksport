@@ -90,7 +90,7 @@ private class JpaJanzzCacheRepository(
 
     @Transactional
     override fun pruneCache() {
-        entityManager.createQuery(pruneCache)
+        entityManager.createNativeQuery(pruneCache)
                 .setParameter("sevenDaysAgo", ZonedDateTime.now().minusDays(7))
                 .executeUpdate()
     }
