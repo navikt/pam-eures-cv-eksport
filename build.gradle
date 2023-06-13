@@ -68,8 +68,6 @@ dependencies {
 
     implementation "net.minidev:json-smart:2.4.8"
 
-    implementation "org.springframework.boot:spring-boot-properties-migrator:3.0.3"
-
     runtimeOnly "org.springdoc:springdoc-openapi-kotlin:${springdocVersion}"
     runtimeOnly "com.fasterxml.jackson.module:jackson-module-kotlin:${jacksonVersion}"
 
