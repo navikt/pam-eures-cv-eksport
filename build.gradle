@@ -3,7 +3,7 @@ plugins {
     id "org.jetbrains.kotlin.plugin.spring" version "1.7.20"
     id "org.jetbrains.kotlin.plugin.jpa" version "1.7.20"
     id "application"
-    id "org.springframework.boot" version "2.7.11"
+    id "org.springframework.boot" version "3.0.7"
     id "io.spring.dependency-management" version "1.0.14.RELEASE"
 }
 
@@ -25,14 +25,16 @@ configurations {
 ext {
     springdocVersion = '1.6.12'
     kotlinVersion = '1.7.20'
-    tokenSupportVersion = '2.1.9'
+    tokenSupportVersion = '3.1.0'
     jacksonVersion = '2.13.4'
+    hibernateVersion = '6.2.4.Final'
 }
 
 dependencies {
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:${kotlinVersion}"
     implementation "org.jetbrains.kotlin:kotlin-reflect:${kotlinVersion}"
-    implementation "javax.annotation:javax.annotation-api"
+    implementation "jakarta.persistence:jakarta.persistence-api"
+    implementation "jakarta.servlet:jakarta.servlet-api"
     implementation "net.logstash.logback:logstash-logback-encoder:7.2"
 
     //SNYK fixes
@@ -44,7 +46,7 @@ dependencies {
     implementation "com.fasterxml.jackson.core:jackson-databind:2.13.4.2"
 
     implementation 'org.postgresql:postgresql:42.5.1'
-    implementation "org.hibernate:hibernate-core"
+    implementation "org.hibernate:hibernate-core:${hibernateVersion}"
     implementation "org.flywaydb:flyway-core"
 
     implementation "org.springdoc:springdoc-openapi-ui:${springdocVersion}"
@@ -79,7 +81,6 @@ dependencies {
     testImplementation "no.nav.security:mock-oauth2-server"
     testImplementation "com.nhaarman.mockitokotlin2:mockito-kotlin:2.2.0"
     testImplementation "org.powermock:powermock-api-mockito2:2.0.9"
-
 }
 
 test.classpath += configurations.developmentOnly

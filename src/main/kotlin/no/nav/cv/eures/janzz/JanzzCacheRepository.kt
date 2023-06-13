@@ -5,9 +5,8 @@ import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Repository
 import org.springframework.transaction.annotation.Transactional
-import java.math.BigInteger
 import java.time.ZonedDateTime
-import javax.persistence.*
+import jakarta.persistence.*
 
 
 interface JanzzCacheRepository {
@@ -85,13 +84,13 @@ private class JpaJanzzCacheRepository(
 
     private val pruneCache =
             """
-                DELETE EscoCacheEntity
+                DELETE FROM ESCO_CACHE
                 WHERE UPDATED < :sevenDaysAgo
             """.replace(serieMedWhitespace, " ")
 
     @Transactional
     override fun pruneCache() {
-        entityManager.createQuery(pruneCache)
+        entityManager.createNativeQuery(pruneCache)
                 .setParameter("sevenDaysAgo", ZonedDateTime.now().minusDays(7))
                 .executeUpdate()
     }
@@ -104,7 +103,7 @@ private class JpaJanzzCacheRepository(
     @Transactional
     override fun getCacheCount(): Long
             = (entityManager.createNativeQuery(getCacheCount)
-            .singleResult as BigInteger).toLong()
+            .singleResult as Long)
 
     private val getEsco =
         """
@@ -124,7 +123,8 @@ class EscoCacheEntity {
 
     @Id
     @Column(name = "ID")
-    @GeneratedValue(generator = "ESCO_CACHE_SEQ")
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "esco_cache_generator")
+    @SequenceGenerator(name = "esco_cache_generator", sequenceName = "ESCO_CACHE_SEQ", allocationSize = 1)
     private val id: Long? = null
 
     @Column(name = "TERM")

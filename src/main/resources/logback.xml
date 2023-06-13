@@ -1,6 +1,10 @@
 <configuration>
     <appender name="stdout_json" class="ch.qos.logback.core.ConsoleAppender">
-        <encoder class="net.logstash.logback.encoder.LogstashEncoder" />
+        <encoder class="net.logstash.logback.encoder.LogstashEncoder">
+            <throwableConverter class="net.logstash.logback.stacktrace.ShortenedThrowableConverter">
+                <exclude>org\.springframework\.security\.web\.ObservationFilterChainDecorator</exclude>
+            </throwableConverter>
+        </encoder>
     </appender>
 
     <logger name="no.nav" level="debug"/>

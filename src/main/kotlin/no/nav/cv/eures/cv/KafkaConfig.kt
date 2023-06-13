@@ -11,6 +11,8 @@ import org.springframework.kafka.annotation.EnableKafka
 import org.springframework.kafka.config.ConcurrentKafkaListenerContainerFactory
 import org.springframework.kafka.core.ConsumerFactory
 import org.springframework.kafka.core.DefaultKafkaConsumerFactory
+import org.springframework.kafka.listener.CommonContainerStoppingErrorHandler
+import org.springframework.kafka.listener.CommonErrorHandler
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor
 import java.time.Duration
 import java.util.*
@@ -44,10 +46,10 @@ class KafkaConfig {
             setConcurrency(1)
             setConsumerFactory(consumerFactoryInternCvTopic())
             containerProperties.pollTimeout = Long.MAX_VALUE
-            containerProperties.consumerTaskExecutor = containerExecutor()
-            setBatchListener(true)
-            containerProperties.authorizationExceptionRetryInterval = Duration.ofSeconds(60)
-            setBatchErrorHandler(KafkaErrorHandler())
+            containerProperties.listenerTaskExecutor = containerExecutor()
+            isBatchListener = true
+            containerProperties.authExceptionRetryInterval = Duration.ofSeconds(60)
+            setCommonErrorHandler(CommonContainerStoppingErrorHandler())
         }
     }
 
