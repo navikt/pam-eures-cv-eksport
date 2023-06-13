@@ -11,6 +11,7 @@ import org.springframework.kafka.annotation.EnableKafka
 import org.springframework.kafka.config.ConcurrentKafkaListenerContainerFactory
 import org.springframework.kafka.core.ConsumerFactory
 import org.springframework.kafka.core.DefaultKafkaConsumerFactory
+import org.springframework.kafka.listener.CommonContainerStoppingErrorHandler
 import org.springframework.kafka.listener.CommonErrorHandler
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor
 import java.time.Duration
@@ -48,8 +49,7 @@ class KafkaConfig {
             containerProperties.listenerTaskExecutor = containerExecutor()
             isBatchListener = true
             containerProperties.authExceptionRetryInterval = Duration.ofSeconds(60)
-            //gammel setBatchErrorHandler(KafkaErrorHandler())
-            //ny setCommonErrorHandler(CommonErrorHandler())
+            setCommonErrorHandler(CommonContainerStoppingErrorHandler())
         }
     }
 
