@@ -9,6 +9,7 @@ import org.slf4j.LoggerFactory
 
 @RestController
 @RequestMapping("input/api/cv/v1.0")
+@Unprotected
 class EuresController(
     private val euresService: EuresService
 ) {
