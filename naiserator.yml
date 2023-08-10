@@ -30,7 +30,6 @@ spec:
       rules:
         - application: pam-eures-cv-eksport-proxy
         - application: pam-personbruker
-        - application: pam-cv
     outbound:
       external:
         - host: www.janzz.jobs
@@ -38,7 +37,6 @@ spec:
   webproxy: false
   envFrom:
     - secret: pam-eures-cv-eksport-secret
-    - configmap: loginservice-idporten
   azure:
     application:
       enabled: true
