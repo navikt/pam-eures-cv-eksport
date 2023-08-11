@@ -145,12 +145,12 @@ class SamtykkeControllerTest {
 
     private fun generateTestToken(): String {
         val token = mockOAuth2Server.issueToken(
-            "selvbetjening",
+            "tokenx",
             "EuresTilgangController",
             DefaultOAuth2TokenCallback(
-                subject = "selvbetjening",
-                audience = listOf("aud-localhost"),
-                claims = mapOf("issuer" to "selvbetjening",
+                subject = "tokenx",
+                audience = listOf("someaudience"),
+                claims = mapOf("issuer" to "tokenx",
                     "pid" to "111111111"),
                 expiry = 3600)
         )

@@ -12,7 +12,6 @@ import org.springframework.web.bind.annotation.*
 @RestController
 @RequestMapping("eures/tilgang")
 @RequiredIssuers(
-    ProtectedWithClaims(issuer = "selvbetjening"),
     ProtectedWithClaims(issuer = "tokenx")
 )
 class EuresTilgangController (

@@ -14,7 +14,6 @@ import org.springframework.web.bind.annotation.*
 @RestController
 @RequestMapping("samtykke")
 @RequiredIssuers(
-    ProtectedWithClaims(issuer = "selvbetjening"),
     ProtectedWithClaims(issuer = "tokenx")
 )
 class SamtykkeController(

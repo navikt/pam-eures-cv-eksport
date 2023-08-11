@@ -10,7 +10,6 @@ import org.springframework.web.bind.annotation.RestController
 @RestController
 @RequestMapping("preview")
 @RequiredIssuers(
-    ProtectedWithClaims(issuer = "selvbetjening"),
     ProtectedWithClaims(issuer = "tokenx")
 )
 class PreviewController(
