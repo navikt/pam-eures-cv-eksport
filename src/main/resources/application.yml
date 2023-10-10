@@ -4,7 +4,7 @@ server:
     context-path: /pam-eures-cv-eksport
 
 mock-oauth2-server:
-  port: 8080
+  port: 8233
   hostname: host.docker.internal
 
 no.nav.security.jwt:
@@ -15,7 +15,7 @@ no.nav.security.jwt:
   client:
     registration:
       pdl:
-        token-endpoint-url: ${AZURE_OPENID_CONFIG_TOKEN_ENDPOINT:http://localhost:8080/default/token}
+        token-endpoint-url: ${AZURE_OPENID_CONFIG_TOKEN_ENDPOINT:http://localhost:8233/default/token}
         grant-type: client_credentials
         scope: ${PDL_SCOPE:some_scope}
         authentication:

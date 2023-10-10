@@ -15,10 +15,10 @@ Det kreves at enkelte ting kjører på PC
 4. Legg inn innslag i /etc/hosts med `127.0.0.1 host.docker.internal`
 
 ### Kommandolinje
-`gradle run`
+`gradle run --args='--spring.profiles.active=dev'`
 
 Dette kjører opp appen vha gradle. Da puttes også src/test/* på classpath. Der finnes det en logback-test.xml som gjør
-logging litt hyggeligere.  
+logging litt hyggeligere. Det må kjøres med en annen profil enn test, siden det som ligger i test-properties kun er for testene og ikke lokal kjøring.  
 
 ### Intellij
 Bruk IntelliJ sin gradle-plugin, og velg Tasks -> application -> run. Da får man de
