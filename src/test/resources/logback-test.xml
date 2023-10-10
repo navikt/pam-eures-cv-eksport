@@ -8,8 +8,8 @@
     </appender>
 
     <logger name="no.nav" level="debug"/>
-    <logger name="no.nav.security" level="info"/>
-    <logger name="org.apache.kafka" level="info"/>
+    <logger name="no.nav.security" level="debug"/>
+    <logger name="org.apache.kafka" level="off"/>
 
     <root level="info">
         <appender-ref ref="stdout_json" />
