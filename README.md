@@ -24,24 +24,13 @@ logging litt hyggeligere. Det må kjøres med en annen profil enn test, siden de
 Bruk IntelliJ sin gradle-plugin, og velg Tasks -> application -> run. Da får man de
 nødvendige ting på classpathen
 
-## Oppsett av database første gang
-Opprett database med applikasjonens defaultbruker 
-
-Start med å installere og starte postgresserveren - hvis det ikke allerede er på plass
-* Installere: `brew install postgresql`
-* Start postgres-server og la den gå. For eksempel ved `postgres -D /usr/local/var/postgres`
-
-Opprett bruker `pam-eures-cv-eksport` uten passord, og database `pam-eures-cv-eksport` som eies av denne brukeren i din 
-favorittklient.
-Eksempler ved postgres' kommandolinje-verktøy
-* `createuser -e pam-eures-cv-eksport`
-* `createdb --owner=pam-eures-cv-eksport pam-eures-cv-eksport`.
-
-### Oppstart senere
-Sørg for at samme postgres kjører `postgres -D /usr/local/var/postgres`.
+## Oppsett av database
+Databasen kan opprettes og startes med å kjøre: 
+`./start-docker-compose.sh`
+Dette oppretter en database som heter pam-eures-cv-eksport, med brukernavn `postgres` og default passord. 
 
 Hvis du har behov for å koble på databasen å sjekke ting manuelt, så kan det også gjøres i favorittklienten din
-* Eksempel med psql `psql --user=pam-eures-cv-eksport -d pam-eures-cv-eksport`
+* Eksempel med psql `psql --user=postgres -d pam-eures-cv-eksport`
 
 ## Kafka
 Kan starte dockerimage med pam-cv-api's kafka-topic vha `pam-cv-api/migrering/src/test/resources/cv-pipeline.sh up`
