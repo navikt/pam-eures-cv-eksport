@@ -89,6 +89,7 @@ class PdlPersonService(
                 setRequestProperty("Authorization", "Bearer ${tokenProvider.get()}")
                 setRequestProperty(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
                 setRequestProperty("Tema", "REK")
+                setRequestProperty("Behandlingsnummer", "B104")
 
                 outputStream.writer(Charsets.UTF_8).apply {
                     write(objectMapper.writeValueAsString(query))
@@ -130,6 +131,7 @@ class PdlPersonService(
                 setRequestProperty("Authorization", "Bearer ${tokenProvider.get()}")
                 setRequestProperty(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
                 setRequestProperty("Tema", "REK")
+                setRequestProperty("Behandlingsnummer", "B104")
 
                 outputStream.writer(Charsets.UTF_8).apply {
                     write(objectMapper.writeValueAsString(query))
