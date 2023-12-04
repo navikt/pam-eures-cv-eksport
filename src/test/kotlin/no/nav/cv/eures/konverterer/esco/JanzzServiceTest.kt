@@ -19,9 +19,6 @@ internal class JanzzServiceTest {
         println(janzzService.getEscoForTerm("Programmering", JanzzService.EscoLookupType.SKILL))
         println(janzzService.getEscoForTerm("Programmering", JanzzService.EscoLookupType.SKILL))
 
-        println(janzzService.getEscoForTerm("NO HIT", JanzzService.EscoLookupType.SKILL))
-        println(janzzService.getEscoForTerm("NO HIT", JanzzService.EscoLookupType.SKILL))
-
         println(janzzService.getEscoForTerm("Førstestyrmann", JanzzService.EscoLookupType.OCCUPATION))
         println(janzzService.getEscoForTerm("Førstestyrmann", JanzzService.EscoLookupType.OCCUPATION))
     }
