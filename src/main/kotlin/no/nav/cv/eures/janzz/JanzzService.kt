@@ -72,24 +72,11 @@ class JanzzService(
 
         if (json == null) {
             log.error("Janzz query for term $term returned null")
-            return listOf(
-                CachedEscoMapping(
-                    term = term,
-                    conceptId = "",
-                    esco = "NO HIT",
-                    updated = ZonedDateTime.now())
-            )
+            return listOf()
         }
 
         //exact match
-        val res = objectMapper.readValue<List<JanzzEscoLabelMapping>>(json).firstOrNull() ?: return listOf(
-            CachedEscoMapping(
-                term = term,
-                conceptId = "",
-                esco = "NO HIT",
-                updated = ZonedDateTime.now()
-            )
-        )
+        val res = objectMapper.readValue<List<JanzzEscoLabelMapping>>(json).firstOrNull() ?: return listOf()
 
         val escoSubstring = when(escoLookupType) {
             EscoLookupType.SKILL -> skillEscoSubstring
@@ -112,16 +99,6 @@ class JanzzService(
                     updated = ZonedDateTime.now()
                 )
             }
-
-        return hits.ifEmpty {
-            log.info("Janzz query for term $term had no valid isco codes")
-            listOf(
-                CachedEscoMapping(
-                    term = term,
-                    conceptId = "",
-                    esco = "NO HIT",
-                    updated = ZonedDateTime.now())
-            )
-        }
+        return hits
     }
 }
