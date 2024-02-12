@@ -56,6 +56,11 @@ spec:
   prometheus:
     enabled: true
     path: /pam-eures-cv-eksport/actuator/prometheus
+  observability:
+    logging:
+      destinations:
+        - id: loki
+        - id: elastic
   env:
     - name: KAFKA_CONSUMER_TOPIC_CV_ENDRET_INTERN
       value: {{ kafka_consumer_topic_cv_endret_intern }}
