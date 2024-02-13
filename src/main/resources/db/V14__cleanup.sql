@@ -1,0 +1,1 @@
+alter table cv_raw drop column testkolonne;
