@@ -27,7 +27,7 @@ class JanzzQuery(
         return client.get()
             .uri { uriBuilder ->
                 uriBuilder
-                    .path("/japi/labels/")
+                    .path("/japi/typeahead/")
                     .queryParam("q", query)
                     .queryParam("lang", lang)
                     .queryParam("branch", branch)
