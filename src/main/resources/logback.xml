@@ -7,7 +7,7 @@
         </encoder>
     </appender>
 
-    <logger name="no.nav" level="debug"/>
+    <logger name="no.nav" level="info"/>
     <logger name="no.nav.security" level="info"/>
     <logger name="org.apache.kafka" level="info"/>
 

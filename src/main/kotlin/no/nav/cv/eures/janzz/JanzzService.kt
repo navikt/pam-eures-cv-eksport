@@ -46,7 +46,7 @@ class JanzzService(
         val cachedEsco = janzzCacheRepository.fetchFromCacheTerm(standardizedTerm)
 
         val isNotEmpty = cachedEsco.isNotEmpty()
-        log.info("Cache for $escoLookup $standardizedTerm contains ${cachedEsco.size} hits and isNotEmpty: $isNotEmpty")
+        log.debug("Cache for $escoLookup $standardizedTerm contains ${cachedEsco.size} hits and isNotEmpty: $isNotEmpty")
 
         return when {
             isNotEmpty -> cachedEsco
@@ -57,7 +57,7 @@ class JanzzService(
     private fun fetchAndSaveToCache(term: String, escoLookupType: EscoLookupType): List<CachedEscoMapping> {
         val queryResult = queryJanzzByTerm(term, escoLookupType)
         janzzCacheRepository.saveToCache(queryResult)
-        log.info("Saved ${queryResult.size} results to cache for term $term")
+        log.debug("Saved ${queryResult.size} results to cache for term $term")
 
         return queryResult
     }
