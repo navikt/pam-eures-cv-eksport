@@ -11,7 +11,7 @@ import org.springframework.stereotype.Service
 @Service
 class SamtykkeService(
     private val samtykkeRepository: SamtykkeRepository,
-    private val cvConverterService2: CvConverterService,
+    private val cvConverterService: CvConverterService,
     private val cvRepository: CvRepository,
     private val cvXmlRepository: CvXmlRepository,
     private val meterRegistry: MeterRegistry
@@ -20,8 +20,7 @@ class SamtykkeService(
         val log: Logger = LoggerFactory.getLogger(SamtykkeService::class.java)
     }
 
-    fun hentSamtykke(foedselsnummer: String): Samtykke? =
-            samtykkeRepository.hentSamtykke(foedselsnummer)
+    fun hentSamtykke(foedselsnummer: String): Samtykke? = samtykkeRepository.hentSamtykke(foedselsnummer)
 
     fun slettSamtykke(foedselsnummer: String) {
         val existing = samtykkeRepository.hentSamtykke(foedselsnummer)
@@ -35,7 +34,7 @@ class SamtykkeService(
             log.warn("Got exception when trying to increase metric counter for deleted samtykke", e)
         }
 
-        cvConverterService2.delete(foedselsnummer)
+        cvConverterService.delete(foedselsnummer)
         samtykkeRepository.slettSamtykke(foedselsnummer)
     }
 
@@ -55,7 +54,7 @@ class SamtykkeService(
 
         samtykkeRepository.oppdaterSamtykke(foedselsnummer, samtykke)
                 .run { if (cvRepository.hentCvByFoedselsnummer(foedselsnummer)?.jsonCv != null) {
-                        cvConverterService2.createOrUpdate(foedselsnummer)
+                        cvConverterService.createOrUpdate(foedselsnummer)
                     }
                 }
 
