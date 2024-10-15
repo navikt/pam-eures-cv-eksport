@@ -30,6 +30,7 @@ spec:
       rules:
         - application: pam-eures-cv-eksport-proxy
         - application: pam-personbruker
+        - application: cv
     outbound:
       external:
         - host: www.janzz.jobs
