@@ -10,7 +10,7 @@ class InnloggetBrukerService (
 ) : InnloggetBruker {
 
     override fun fodselsnummer(): String {
-        val context = contextHolder.tokenValidationContext
+        val context = contextHolder.getTokenValidationContext()
         val issuers = context.issuers
         var claims : JwtTokenClaims? = null
 

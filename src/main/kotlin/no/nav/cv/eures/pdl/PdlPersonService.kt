@@ -10,6 +10,7 @@ import org.springframework.http.MediaType
 import org.springframework.stereotype.Service
 import java.io.InputStream
 import java.net.HttpURLConnection
+import java.net.URI
 import java.net.URL
 import java.time.LocalDate
 import java.util.function.Supplier
@@ -80,7 +81,7 @@ class PdlPersonService(
         try {
             log.info("Henter persondata fra PDL")
 
-            val (responseCode, responseBody) = with(URL(url).openConnection() as HttpURLConnection) {
+            val (responseCode, responseBody) = with(URI(url).toURL().openConnection() as HttpURLConnection) {
                 requestMethod = "POST"
                 connectTimeout = 10000
                 readTimeout = 10000
@@ -122,7 +123,7 @@ class PdlPersonService(
         try {
             log.info("Henter persondata fra PDL")
 
-            val (responseCode, responseBody) = with(URL(url).openConnection() as HttpURLConnection) {
+            val (responseCode, responseBody) = with(URI(url).toURL().openConnection() as HttpURLConnection) {
                 requestMethod = "POST"
                 connectTimeout = 10000
                 readTimeout = 10000

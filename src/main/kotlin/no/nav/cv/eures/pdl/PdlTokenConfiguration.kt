@@ -19,6 +19,6 @@ open class PdlTokenConfiguration {
         val clientProperties: ClientProperties = clientConfigurationProperties.registration["pdl"]
             ?: throw RuntimeException("could not find oauth2 client config for PDL")
 
-        return Supplier { oAuth2AccessTokenService.getAccessToken(clientProperties).accessToken }
+        return Supplier { oAuth2AccessTokenService.getAccessToken(clientProperties).accessToken ?: ""}
     }
 }

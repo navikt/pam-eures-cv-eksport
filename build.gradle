@@ -1,15 +1,15 @@
 plugins {
-    id "org.jetbrains.kotlin.jvm" version "1.7.20"
-    id "org.jetbrains.kotlin.plugin.spring" version "1.7.20"
-    id "org.jetbrains.kotlin.plugin.jpa" version "1.7.20"
+    id "org.jetbrains.kotlin.jvm" version "2.0.21"
+    id "org.jetbrains.kotlin.plugin.spring" version "2.0.21"
+    id "org.jetbrains.kotlin.plugin.jpa" version "2.0.21"
     id "application"
-    id "org.springframework.boot" version "3.0.7"
-    id "io.spring.dependency-management" version "1.0.14.RELEASE"
+    id "org.springframework.boot" version "3.3.4"
+    id "io.spring.dependency-management" version "1.1.6"
 }
 
 version "0.1"
 group "no.nav.cv.eures"
-sourceCompatibility = '1.18'
+sourceCompatibility = '1.21'
 
 repositories {
     mavenCentral()
@@ -23,10 +23,10 @@ configurations {
 }
 
 ext {
-    springdocVersion = '1.6.12'
-    kotlinVersion = '1.7.20'
-    tokenSupportVersion = '3.1.0'
-    jacksonVersion = '2.13.4'
+    springdocVersion = '1.8.0'
+    kotlinVersion = '2.0.21'
+    tokenSupportVersion = '5.0.5'
+    jacksonVersion = '2.18.0'
     hibernateVersion = '6.2.4.Final'
 }
 
@@ -37,17 +37,17 @@ dependencies {
     implementation "jakarta.servlet:jakarta.servlet-api"
     implementation "net.logstash.logback:logstash-logback-encoder:7.2"
 
-    //SNYK fixes
-    implementation "org.yaml:snakeyaml:1.33"
+    implementation "org.yaml:snakeyaml:2.3"
     implementation "com.fasterxml.jackson.module:jackson-module-kotlin:${jacksonVersion}"
     implementation "com.fasterxml.jackson.dataformat:jackson-dataformat-xml:${jacksonVersion}"
-    implementation "org.springframework.boot:spring-boot-starter-webflux:2.7.5"
-    implementation "org.apache.kafka:kafka-clients:3.3.1"
-    implementation "com.fasterxml.jackson.core:jackson-databind:2.13.4.2"
+    implementation "org.springframework.boot:spring-boot-starter-webflux:3.3.4"
+    implementation "org.apache.kafka:kafka-clients:3.8.0"
+    implementation "com.fasterxml.jackson.core:jackson-databind:${jacksonVersion}"
 
-    implementation 'org.postgresql:postgresql:42.7.2'
+    implementation 'org.postgresql:postgresql:42.7.4'
     implementation "org.hibernate:hibernate-core:${hibernateVersion}"
     implementation "org.flywaydb:flyway-core"
+    runtimeOnly    "org.flywaydb:flyway-database-postgresql"
 
     implementation "org.springdoc:springdoc-openapi-ui:${springdocVersion}"
 
@@ -66,7 +66,7 @@ dependencies {
     implementation "no.nav.security:token-client-core:${tokenSupportVersion}"
     implementation "no.nav.security:token-client-spring:${tokenSupportVersion}"
 
-    implementation "net.minidev:json-smart:2.4.8"
+    implementation "net.minidev:json-smart:2.5.1"
 
     runtimeOnly "org.springdoc:springdoc-openapi-kotlin:${springdocVersion}"
     runtimeOnly "com.fasterxml.jackson.module:jackson-module-kotlin:${jacksonVersion}"
@@ -79,7 +79,7 @@ dependencies {
     testImplementation "org.mockito:mockito-core"
     testImplementation "no.nav.security:token-validation-spring-test:${tokenSupportVersion}"
     testImplementation "no.nav.security:mock-oauth2-server"
-    testImplementation "com.nhaarman.mockitokotlin2:mockito-kotlin:2.2.0"
+    testImplementation "org.mockito.kotlin:mockito-kotlin:5.4.0"
     testImplementation "org.powermock:powermock-api-mockito2:2.0.9"
 }
 
@@ -96,7 +96,7 @@ test {
 
 compileKotlin {
 	kotlinOptions {
-	    jvmTarget = '18'
+	    jvmTarget = '21'
 	    //Will retain parameter names for Java reflection
 	    javaParameters = true
 	}
@@ -104,7 +104,7 @@ compileKotlin {
 
 compileTestKotlin {
 	kotlinOptions {
-	    jvmTarget = '18'
+	    jvmTarget = '21'
 	    javaParameters = true
 	}
 }

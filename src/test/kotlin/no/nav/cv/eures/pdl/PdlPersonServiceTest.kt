@@ -1,9 +1,10 @@
 package no.nav.cv.eures.pdl
 
-import com.nhaarman.mockitokotlin2.doReturn
-import com.nhaarman.mockitokotlin2.whenever
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
+import org.mockito.Mockito.doReturn
+import org.mockito.kotlin.any
+import org.mockito.kotlin.whenever
 import org.powermock.api.mockito.PowerMockito
 import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.boot.test.mock.mockito.MockBean
@@ -38,7 +39,7 @@ class PdlPersonServiceTest {
             null
         )
     ))))
-    doReturn(dto).whenever(pdlPersonGateway).hentPersondataFraPdl(com.nhaarman.mockitokotlin2.any())
+    doReturn(dto).whenever(pdlPersonGateway).hentPersondataFraPdl(any())
 
     assertEquals("Statsborgerskap NOR (Norsk) skal returnere true", true, pdlPersonGateway.erEUEOSstatsborger("11"))
     }
@@ -52,7 +53,7 @@ class PdlPersonServiceTest {
                 null
             )
         ))))
-        doReturn(dto).whenever(pdlPersonGateway).hentPersondataFraPdl(com.nhaarman.mockitokotlin2.any())
+        doReturn(dto).whenever(pdlPersonGateway).hentPersondataFraPdl(any())
 
         assertEquals("Statsborgerskap AFG (Afganistan) skal returnere false", false, pdlPersonGateway.erEUEOSstatsborger("11"))
     }
@@ -66,7 +67,7 @@ class PdlPersonServiceTest {
                 "2020-01-01"
             )
         ))))
-        doReturn(dto).whenever(pdlPersonGateway).hentPersondataFraPdl(com.nhaarman.mockitokotlin2.any())
+        doReturn(dto).whenever(pdlPersonGateway).hentPersondataFraPdl(any())
 
         assertEquals("Utgått NOR (Norsk) statsborgerskal skal returnere false", false, pdlPersonGateway.erEUEOSstatsborger("11"))
     }
@@ -84,7 +85,7 @@ class PdlPersonServiceTest {
                 null
             )
         ))))
-        doReturn(dto).whenever(pdlPersonGateway).hentPersondataFraPdl(com.nhaarman.mockitokotlin2.any())
+        doReturn(dto).whenever(pdlPersonGateway).hentPersondataFraPdl(any())
 
         assertEquals("Ett gyldig statsborger av flere skal gi true", true, pdlPersonGateway.erEUEOSstatsborger("11"))
     }
@@ -92,7 +93,7 @@ class PdlPersonServiceTest {
     @Test
     fun `call erEUEOSborger returns false ved ingen statsborgerskap`() {
         val dto = HentPersonDto(HentPersonDto.HentPersonData("", HentPersonDto.HentPersonData.Person()))
-        doReturn(dto).whenever(pdlPersonGateway).hentPersondataFraPdl(com.nhaarman.mockitokotlin2.any())
+        doReturn(dto).whenever(pdlPersonGateway).hentPersondataFraPdl(any())
 
         assertEquals("Ingen statsborgerskap skal gi false", false, pdlPersonGateway.erEUEOSstatsborger("11"))
     }

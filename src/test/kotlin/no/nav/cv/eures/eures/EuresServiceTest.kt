@@ -1,6 +1,5 @@
 package no.nav.cv.eures.eures
 
-import com.nhaarman.mockitokotlin2.eq
 import no.nav.cv.eures.cv.CvXml
 import no.nav.cv.eures.cv.CvXmlRepository
 import no.nav.cv.eures.eures.dto.GetDetails.CandidateDetail.Status.ACTIVE
@@ -13,6 +12,7 @@ import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertAll
 import org.mockito.Mockito
+import org.mockito.kotlin.eq
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.PageImpl
 import org.springframework.data.domain.PageRequest
