@@ -8,11 +8,14 @@ For å få den til å enable dokumentasjonen lokalt, må `SWAGGER_ENABLED=true` 
 
 ## For å kjøre appen lokalt
 
-Det kreves at enkelte ting kjører på PC
-1. Postgres med applikasjonens database, pam-eures-cv-eksport
-2. Kafka-oppsett fra CV. Se nedenfor 
-3. Containeren mock-login må kjøre. Den kan startes fra pam-personbruker ved å kjøre `npm run localhost-api`.
-4. Legg inn innslag i /etc/hosts med `127.0.0.1 host.docker.internal`
+Postgres med applikasjonens database, pam-eures-cv-eksport, kafka oppsett og mock-oauth2-server må kjøre lokalt.
+Dette kan startes med scriptet under
+
+```shell 
+./start-docker-compose.sh
+ ```
+
+Legg inn innslag i /etc/hosts med `127.0.0.1 host.docker.internal` hvis dette mangler.
 
 ### Kommandolinje
 `gradle run --args='--spring.profiles.active=dev'`
@@ -31,14 +34,6 @@ Dette oppretter en database som heter pam-eures-cv-eksport, med brukernavn `post
 
 Hvis du har behov for å koble på databasen å sjekke ting manuelt, så kan det også gjøres i favorittklienten din
 * Eksempel med psql `psql --user=postgres -d pam-eures-cv-eksport`
-
-## Kafka
-Kan starte dockerimage med pam-cv-api's kafka-topic vha `pam-cv-api/migrering/src/test/resources/cv-pipeline.sh up`
-Den starter kafka med broker på `localhost:9091`, og schema registry på `localhost:8081` Dette
-er defaultverdier i appen
-
-Her kan man bruke  `pam-cv-api` sin Kafka VM og bruke nevnte app sine syntetiske test data for å ha noen meldinger 
-å konsumere. Sjekk README i CV API for instruksjoner.
 
 ## XML test mapping
 I `Konverterer.kt` finnes det en `testing()` funksjon (kjøres automagisk) som dumper XML for en hardkodet syntetisk 

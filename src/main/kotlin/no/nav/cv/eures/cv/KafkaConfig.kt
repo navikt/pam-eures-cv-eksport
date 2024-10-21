@@ -12,7 +12,6 @@ import org.springframework.kafka.config.ConcurrentKafkaListenerContainerFactory
 import org.springframework.kafka.core.ConsumerFactory
 import org.springframework.kafka.core.DefaultKafkaConsumerFactory
 import org.springframework.kafka.listener.CommonContainerStoppingErrorHandler
-import org.springframework.kafka.listener.CommonErrorHandler
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor
 import java.time.Duration
 import java.util.*
@@ -26,7 +25,7 @@ class KafkaConfig {
     lateinit var keyStorePath: String
 
     @Value("\${kafka.aiven.credstorePassword}")
-    lateinit var credstorePassword: String
+     private val credstorePassword: String? = null
 
     @Value("\${kafka.aiven.truststorePath}")
     lateinit var truststorePath: String
@@ -55,28 +54,31 @@ class KafkaConfig {
 
     @Bean
     fun consumerFactoryInternCvTopic() : ConsumerFactory<String, String> {
-        val props: MutableMap<String, Any> = hashMapOf(
-            ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG to brokers,
-            ConsumerConfig.GROUP_ID_CONFIG to groupidInternTopic,
-            ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG to StringDeserializer::class.java,
-            ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG to StringDeserializer::class.java,
-            ConsumerConfig.CLIENT_ID_CONFIG to (System.getenv("POD_NAME") ?: "pam-eures-cv-eksport-${UUID.randomUUID()}"),
-            ConsumerConfig.AUTO_OFFSET_RESET_CONFIG to "earliest",
-            ConsumerConfig.ENABLE_AUTO_COMMIT_CONFIG to true,
+        val props: MutableMap<String, Any> = mutableMapOf<String, Any>()
+        props[ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG] = brokers
+        props[ConsumerConfig.GROUP_ID_CONFIG] = groupidInternTopic
+        props[ConsumerConfig.CLIENT_ID_CONFIG] = (System.getenv("POD_NAME") ?: "pam-eures-cv-eksport-${UUID.randomUUID()}")
 
-            CommonClientConfigs.SECURITY_PROTOCOL_CONFIG to "SSL",
-            SslConfigs.SSL_ENDPOINT_IDENTIFICATION_ALGORITHM_CONFIG to "",
-            SslConfigs.SSL_TRUSTSTORE_TYPE_CONFIG to "JKS",
-            SslConfigs.SSL_KEYSTORE_TYPE_CONFIG to "PKCS12",
-            SslConfigs.SSL_KEY_PASSWORD_CONFIG to credstorePassword
-        )
+        if(!credstorePassword.isNullOrBlank()) {
+            props[SslConfigs.SSL_TRUSTSTORE_PASSWORD_CONFIG] = credstorePassword
+            props[SslConfigs.SSL_KEYSTORE_PASSWORD_CONFIG] = credstorePassword
+            props[SslConfigs.SSL_KEY_PASSWORD_CONFIG] = credstorePassword
+            props[SslConfigs.SSL_TRUSTSTORE_TYPE_CONFIG] = "JKS"
+            props[SslConfigs.SSL_KEYSTORE_TYPE_CONFIG] = "PKCS12"
+            props[SslConfigs.SSL_ENDPOINT_IDENTIFICATION_ALGORITHM_CONFIG] = ""
+        }
+
+        props[ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG] = StringDeserializer::class.java.name
+        props[ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG] = StringDeserializer::class.java.name
+        props[ConsumerConfig.ENABLE_AUTO_COMMIT_CONFIG] = true
+        props[ConsumerConfig.AUTO_OFFSET_RESET_CONFIG] = "earliest"
+
         System.getenv("KAFKA_KEYSTORE_PATH")?.let {
-            props.put(SslConfigs.SSL_KEYSTORE_LOCATION_CONFIG, keyStorePath)
-            props.put(SslConfigs.SSL_KEYSTORE_PASSWORD_CONFIG, credstorePassword)
+            props[SslConfigs.SSL_KEYSTORE_LOCATION_CONFIG] = keyStorePath
         }
         System.getenv("KAFKA_TRUSTSTORE_PATH")?.let {
-            props.put(SslConfigs.SSL_TRUSTSTORE_LOCATION_CONFIG, truststorePath)
-            props.put(SslConfigs.SSL_TRUSTSTORE_PASSWORD_CONFIG, credstorePassword)
+            props[SslConfigs.SSL_TRUSTSTORE_LOCATION_CONFIG] = truststorePath
+            props[CommonClientConfigs.SECURITY_PROTOCOL_CONFIG] = "SSL"
         }
         return DefaultKafkaConsumerFactory<String, String>(props)
     }
