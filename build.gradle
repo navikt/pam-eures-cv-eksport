@@ -26,7 +26,7 @@ ext {
     springdocVersion = '1.8.0'
     kotlinVersion = '2.0.21'
     tokenSupportVersion = '5.0.5'
-    jacksonVersion = '2.18.0'
+    jacksonVersion = '2.17.2'
     hibernateVersion = '6.2.4.Final'
 }
 
