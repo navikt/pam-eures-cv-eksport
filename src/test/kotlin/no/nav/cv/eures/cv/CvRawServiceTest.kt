@@ -10,6 +10,7 @@ import org.junit.jupiter.api.Test
 import org.mockito.Mockito
 import org.mockito.Mockito.mock
 import org.mockito.Mockito.`when`
+import org.mockito.kotlin.argumentCaptor
 import java.time.ZonedDateTime
 
 class CvRawServiceTest {
@@ -19,7 +20,7 @@ class CvRawServiceTest {
     private val cvRepository = mock(CvRepository::class.java)
     private val samtykkeService = mock(SamtykkeService::class.java)
 
-    val rawCvCaptor = com.nhaarman.mockitokotlin2.argumentCaptor<RawCV>()
+    val rawCvCaptor = argumentCaptor<RawCV>()
 
     @BeforeEach
     fun init() {

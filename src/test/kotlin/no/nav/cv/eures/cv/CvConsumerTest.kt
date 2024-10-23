@@ -2,7 +2,6 @@ package no.nav.cv.eures.cv
 
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
-import com.nhaarman.mockitokotlin2.any
 import io.micrometer.core.instrument.MeterRegistry
 import no.nav.cv.dto.CvEndretInternDto
 import no.nav.cv.dto.CvMeldingstype
@@ -13,6 +12,8 @@ import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.mockito.Mockito
+import org.mockito.kotlin.any
+import org.mockito.kotlin.argumentCaptor
 import java.time.ZonedDateTime
 import java.util.*
 
@@ -27,8 +28,8 @@ class CvConsumerTest {
 
     private val PARTITION = 0
 
-    val stringCaptor = com.nhaarman.mockitokotlin2.argumentCaptor<String>()
-    val meldingCaptorCvInternDto = com.nhaarman.mockitokotlin2.argumentCaptor<CvEndretInternDto>()
+    val stringCaptor = argumentCaptor<String>()
+    val meldingCaptorCvInternDto = argumentCaptor<CvEndretInternDto>()
 
     val jacksonMapper = jacksonObjectMapper()
         .registerModule(JavaTimeModule())

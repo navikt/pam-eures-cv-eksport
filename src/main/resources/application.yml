@@ -4,18 +4,18 @@ server:
     context-path: /pam-eures-cv-eksport
 
 mock-oauth2-server:
-  port: 8233
+  port: 8237
   hostname: host.docker.internal
 
 no.nav.security.jwt:
   issuer:
     tokenx:
       discovery-url: ${TOKEN_X_WELL_KNOWN_URL:http://host.docker.internal:${mock-oauth2-server.port}/tokenx/.well-known/openid-configuration}
-      accepted_audience: ${TOKEN_X_CLIENT_ID:local:teampam:pam-eures-cv-eksport}
+      accepted_audience: ${TOKEN_X_CLIENT_ID:local-token-x-client-id}
   client:
     registration:
       pdl:
-        token-endpoint-url: ${AZURE_OPENID_CONFIG_TOKEN_ENDPOINT:http://localhost:8233/default/token}
+        token-endpoint-url: ${AZURE_OPENID_CONFIG_TOKEN_ENDPOINT:http://localhost:8237/default/token}
         grant-type: client_credentials
         scope: ${PDL_SCOPE:some_scope}
         authentication:
@@ -55,9 +55,6 @@ kafka:
     keystorePath: ${KAFKA_KEYSTORE_PATH:/dev/zero}
     truststorePath: ${KAFKA_TRUSTSTORE_PATH:/dev/zero}
     credstorePassword: ${KAFKA_CREDSTORE_PASSWORD:pwd}
-    schemaRegistry: ${KAFKA_SCHEMA_REGISTRY:pwd}
-    schemaUsername: ${KAFKA_SCHEMA_REGISTRY_USER:none}
-    schemaPassword: ${KAFKA_SCHEMA_REGISTRY_PASSWORD:none}
   topics:
     consumers:
       cv_endret_intern: ${KAFKA_CONSUMER_TOPIC_CV_ENDRET_INTERN:teampam.cv-endret-intern-v3}

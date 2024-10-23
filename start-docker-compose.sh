@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 # Start shared docker compose services (must be sourced, or DOCKER_COMPOSE_COMMAND won't be available)
-. ../pam-docker-compose-shared/start-docker-compose.sh postgres
+. ../pam-docker-compose-shared/start-docker-compose.sh postgres mock-oauth2-server zookeeper kafka
 
 # Create databases
 ../pam-docker-compose-shared/create-database.sh "pam-eures-cv-eksport"
