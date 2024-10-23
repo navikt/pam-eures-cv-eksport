@@ -23,7 +23,7 @@ configurations {
 }
 
 ext {
-    springdocVersion = '1.8.0'
+    springdocVersion = '2.6.0'
     kotlinVersion = '2.0.21'
     tokenSupportVersion = '5.0.5'
     jacksonVersion = '2.17.2'
@@ -49,7 +49,7 @@ dependencies {
     implementation "org.flywaydb:flyway-core"
     runtimeOnly    "org.flywaydb:flyway-database-postgresql"
 
-    implementation "org.springdoc:springdoc-openapi-ui:${springdocVersion}"
+    implementation "org.springdoc:springdoc-openapi-starter-webmvc-ui:${springdocVersion}"
 
     implementation "org.springframework.kafka:spring-kafka"
     implementation "org.projectreactor:reactor-spring:1.0.1.RELEASE"
@@ -68,7 +68,7 @@ dependencies {
 
     implementation "net.minidev:json-smart:2.5.1"
 
-    runtimeOnly "org.springdoc:springdoc-openapi-kotlin:${springdocVersion}"
+    runtimeOnly "org.springdoc:springdoc-openapi-starter-webmvc-ui:${springdocVersion}"
     runtimeOnly "com.fasterxml.jackson.module:jackson-module-kotlin:${jacksonVersion}"
 
     testImplementation('org.springframework.boot:spring-boot-starter-test') {
