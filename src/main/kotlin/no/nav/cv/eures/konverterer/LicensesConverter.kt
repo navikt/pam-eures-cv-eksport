@@ -11,8 +11,6 @@ import org.slf4j.LoggerFactory
 class LicensesConverter(
     private val dto: CvEndretInternDto
 ) {
-    private val ikkeSamtykket = null
-
     companion object {
         val log: Logger = LoggerFactory.getLogger(LicensesConverter::class.java)
         val euresAcceptedLicenseTypeCodes =
@@ -23,23 +21,19 @@ class LicensesConverter(
         return dto.cv?.driversLicenses?.toLicenses()
     }
 
-    fun List<CvEndretInternDriversLicence>.toLicenses(): Licenses {
-        return Licenses(filter { cvEndretInternDriversLicence1 ->
-            euresAcceptedLicenseTypeCodes.contains(
-                cvEndretInternDriversLicence1.klasse
-            )
-        }
-            .map { cvEndretInternDriversLicence ->
-                License(
-                    licenseTypeCode = cvEndretInternDriversLicence.klasse ?: "",
-                    licenseName = cvEndretInternDriversLicence.description ?: "",
-                    freeFormPeriod = FreeFormPeriod(
-                        startDate = cvEndretInternDriversLicence.acquiredDate?.toFormattedDateTime(),
-                        endDate = cvEndretInternDriversLicence.expiryDate?.toFormattedDateTime()
-                    )
-                )
-            }
-        )
-    }
-}
+    fun List<CvEndretInternDriversLicence>.toLicenses() = Licenses(
+        mapNotNull { cvInternLicence ->
+            val licenseTypeCode = cvInternLicence.klasse?.split(" - ")?.first() ?: ""
 
+            if (!euresAcceptedLicenseTypeCodes.contains(licenseTypeCode)) return@mapNotNull null
+
+            License(
+                licenseTypeCode = licenseTypeCode,
+                licenseName = cvInternLicence.description ?: "",
+                freeFormPeriod = FreeFormPeriod(
+                    startDate = cvInternLicence.acquiredDate?.toFormattedDateTime(),
+                    endDate = cvInternLicence.expiryDate?.toFormattedDateTime()
+                )
+            )
+        })
+}
