@@ -35,7 +35,7 @@ class OntologiClient(
 
     fun hentKonseptGrupperingFraOntologien(konseptId: String): KonseptGrupperingDTO {
         val request = HttpRequest.newBuilder()
-            .uri(URI("$baseUrl/rest/ontologi/konseptGruppering/{konseptId}"))
+            .uri(URI("$baseUrl/rest/ontologi/konseptGruppering/${konseptId}"))
             .header("Nav-CallId", "pam-eures-cv-eksport-${UUID.randomUUID()}")
             .timeout(Duration.ofMinutes(5))
             .GET()
