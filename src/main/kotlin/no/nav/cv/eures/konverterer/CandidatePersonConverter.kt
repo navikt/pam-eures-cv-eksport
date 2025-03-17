@@ -26,7 +26,7 @@ class CandidatePersonConverter(
                     familyName = ""
                 ),
                 communication = listOf(),
-                residencyCountryCode = "",
+                residencyCountryCode = "NO",
                 nationalityCode = null,
                 birthDate = "",
                 genderCode = GenderCode.NotSpecified,
@@ -46,7 +46,7 @@ class CandidatePersonConverter(
                 city = dto.personalia?.poststed,
                 countryCode = null),
 
-            residencyCountryCode = "",
+            residencyCountryCode = "NO",
             nationalityCode =  null,
             birthDate = dto.personalia?.foedselsdato.toString(),
             genderCode = GenderCode.NotSpecified,
