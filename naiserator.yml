@@ -31,6 +31,8 @@ spec:
         - application: pam-personbruker
         - application: cv
     outbound:
+      rules:
+        - application: pam-ontologi
       external:
         - host: {{ pdl_host }}
   webproxy: false
