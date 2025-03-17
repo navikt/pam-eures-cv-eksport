@@ -2,7 +2,8 @@ package no.nav.cv.eures.konverterer
 
 import no.nav.cv.dto.CvEndretInternDto
 import no.nav.cv.dto.cv.CvEndretInternLanguage
-import no.nav.cv.eures.janzz.JanzzService
+import no.nav.cv.eures.esco.EscoService
+import no.nav.cv.eures.esco.dto.EscoKodeType
 import no.nav.cv.eures.konverterer.language.LanguageConverter
 import no.nav.cv.eures.model.PersonCompetency
 import no.nav.cv.eures.model.PersonQualifications
@@ -13,7 +14,7 @@ import org.slf4j.LoggerFactory
 class PersonQualificationsConverter(
     private val dto: CvEndretInternDto,
     private val samtykke: Samtykke,
-    private val janzzService: JanzzService = JanzzService.instance()
+    private val escoService: EscoService = EscoService.instance()
 ) {
 
     companion object {
@@ -27,8 +28,7 @@ class PersonQualificationsConverter(
             qualifications.addAll(dto.cv?.languages?.toLanguages().orEmpty())
 
         if (samtykke.kompetanser) {
-            qualifications.addAll(dto.cv?.skillDrafts?.mapNotNull { it.title }?.toEsco().orEmpty())
-            qualifications.addAll(dto.jobWishes?.skills?.mapNotNull { it.title }?.toEsco().orEmpty())
+            qualifications.addAll(dto.jobWishes?.skills?.mapNotNull { it.conceptId }?.toEsco().orEmpty())
         }
         return if (qualifications.isNotEmpty()) PersonQualifications(qualifications) else null
     }
@@ -41,9 +41,7 @@ class PersonQualificationsConverter(
 
 
     @JvmName("toEscoKompetanser")
-    private fun List<String>.toEsco(): List<PersonCompetency> = asSequence()
-        .map { janzzService.getEscoForTerm(it, JanzzService.EscoLookupType.SKILL) }
-        .flatten()
-        .map { PersonCompetency(competencyID = it.esco, taxonomyID = "other") }.toList()
-
+    private fun List<String>.toEsco(): List<PersonCompetency> = flatMap { escoService.hentEscoForKonseptId(it) }
+        .filter { it.type == EscoKodeType.ESCO }
+        .map { PersonCompetency(competencyID = it.kode, taxonomyID = "other") }
 }

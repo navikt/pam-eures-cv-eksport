@@ -67,12 +67,8 @@ eures:
   # RVVSRVMgc3VwZXIgdGVzdHNlY3JldA==
   token: ${EURES_TOKEN:EURES super testsecret}
 
-janzz:
-  authorization:
-    token: ${JANZZ_AUTH_TOKEN:dumytoken}
-  labels:
-    host: https://www.janzz.jobs
-    resultLimit: 200
+pam-ontologi:
+  baseurl: http://pam-ontologi
 
 management:
   endpoint:
