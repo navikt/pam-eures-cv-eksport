@@ -41,7 +41,7 @@ class PersonQualificationsConverter(
 
 
     @JvmName("toEscoKompetanser")
-    private fun List<String>.toEsco(): List<PersonCompetency> = flatMap { escoService.hentEscoForKonseptId(it) }
+    private fun List<String>.toEsco(): List<PersonCompetency> = mapNotNull { escoService.hentEscoForKonseptId(it) }
         .filter { it.type == EscoKodeType.ESCO }
         .map { PersonCompetency(competencyID = it.kode, taxonomyID = "other") }
 }

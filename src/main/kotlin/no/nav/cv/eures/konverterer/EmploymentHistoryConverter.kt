@@ -37,8 +37,5 @@ class EmploymentHistoryConverter(
         )
     )
 
-    private fun String.toJobCategoryCode(): JobCategoryCode? = escoService
-        .hentEscoForKonseptId(this)
-        .maxByOrNull { it.type == EscoKodeType.ESCO }
-        ?.tilJobCategoryCode()
+    private fun String.toJobCategoryCode(): JobCategoryCode? = escoService.hentEscoForKonseptId(this)?.tilJobCategoryCode()
 }

@@ -19,24 +19,17 @@ class EscoService(private val ontologiClient: OntologiClient) : InitializingBean
         instance = this
     }
 
-    fun hentEscoForKonseptId(konseptId: String): List<EscoConceptDto> {
-        val konseptGruppering = ontologiClient.hentKonseptGrupperingFraOntologien(konseptId)
-        val esco = konseptGruppering.esco
+    fun hentEscoForKonseptId(konseptId: String): EscoConceptDto? {
+        val escoDto = ontologiClient.hentEscoInformasjonFraOntologien(konseptId)
 
-        if (esco == null || esco.uri.isEmpty()) {
+        if (escoDto.uri.isEmpty()) {
             log.warn("Fant ingen escokode for konseptId $konseptId ved oppslag mot pam-ontologi")
-            return emptyList()
+            return null
         }
 
-        return esco.uri.split("|").map {
-            val type = if (it.contains("/isco/")) ISCO else ESCO
-            val kode = if (type == ESCO) it else it.lowercase().removePrefix(iscoPrefix)
+        val type = if (escoDto.uri.contains("/isco/")) ISCO else ESCO
+        val kode = if (type == ESCO) escoDto.uri else escoDto.uri.lowercase().removePrefix(iscoPrefix)
 
-            EscoConceptDto(
-                label = esco.label ?: "",
-                kode = kode,
-                type = type
-            )
-        }
+        return EscoConceptDto(label = escoDto.label ?: "", kode = kode, type = type)
     }
 }

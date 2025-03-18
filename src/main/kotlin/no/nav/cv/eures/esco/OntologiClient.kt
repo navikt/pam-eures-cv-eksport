@@ -5,7 +5,7 @@ import com.fasterxml.jackson.databind.SerializationFeature
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import com.fasterxml.jackson.module.kotlin.readValue
-import no.nav.cv.eures.esco.dto.KonseptGrupperingDTO
+import no.nav.cv.eures.esco.dto.EscoDTO
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Service
 import java.net.URI
@@ -33,9 +33,9 @@ class OntologiClient(
         .version(HttpClient.Version.HTTP_1_1)
         .build()
 
-    fun hentKonseptGrupperingFraOntologien(konseptId: String): KonseptGrupperingDTO {
+    fun hentEscoInformasjonFraOntologien(konseptId: String): EscoDTO {
         val request = HttpRequest.newBuilder()
-            .uri(URI("$baseUrl/rest/ontologi/konseptGruppering/${konseptId}"))
+            .uri(URI("$baseUrl/rest/ontologi/eures/${konseptId}"))
             .header("Nav-CallId", "pam-eures-cv-eksport-${UUID.randomUUID()}")
             .timeout(Duration.ofMinutes(5))
             .GET()
@@ -47,6 +47,6 @@ class OntologiClient(
             throw RuntimeException("Feil i euresoppslag med konseptid $konseptId mot pam-ontologi ${response.statusCode()} : ${response.body()}")
         }
 
-        return objectMapper.readValue<KonseptGrupperingDTO>(response.body())
+        return objectMapper.readValue<EscoDTO>(response.body())
     }
 }

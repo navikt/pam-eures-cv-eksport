@@ -3,8 +3,6 @@ package no.nav.cv.eures.konverterer.esco
 import no.nav.cv.eures.esco.EscoService
 import no.nav.cv.eures.esco.OntologiClient
 import no.nav.cv.eures.esco.dto.EscoDTO
-import no.nav.cv.eures.esco.dto.EscoKodeType
-import no.nav.cv.eures.esco.dto.KonseptGrupperingDTO
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 import org.mockito.Mockito.mock
@@ -16,24 +14,23 @@ open class EscoServiceTest {
 
     @Test
     fun `test escoService`() {
-        val mockRespons = KonseptGrupperingDTO(1234, "Fin erfaring", listOf("1234"), EscoDTO("Fin erfaring ESCO","http://data.europa.eu/esco/occupation/4ad4024e-d1d3-4dea-b6d1-2c7948111dce|http://data.europa.eu/esco/isco/c1234"))
-        `when`(ontologiClient.hentKonseptGrupperingFraOntologien("1234")).thenReturn(mockRespons)
+        val mockResponsEsco =
+            EscoDTO("Fin erfaring ESCO", "http://data.europa.eu/esco/occupation/4ad4024e-d1d3-4dea-b6d1-2c7948111dce")
+        val mockResponsIsco = EscoDTO("Fin erfaring ISCO", "http://data.europa.eu/esco/isco/c1234")
 
-        val respons = escoService.hentEscoForKonseptId("1234")
+        `when`(ontologiClient.hentEscoInformasjonFraOntologien("1234")).thenReturn(mockResponsIsco)
+        `when`(ontologiClient.hentEscoInformasjonFraOntologien("1234e")).thenReturn(mockResponsEsco)
 
-        assertEquals(2, respons.size)
+        val responsEsco = escoService.hentEscoForKonseptId("1234e")
+        val responsIsco = escoService.hentEscoForKonseptId("1234")
 
-        val (esco, isco) = respons.partition { it.type == EscoKodeType.ESCO }
+        assertEquals("Fin erfaring ESCO", responsEsco?.label)
+        assertEquals("http://data.europa.eu/esco/occupation/4ad4024e-d1d3-4dea-b6d1-2c7948111dce", responsEsco?.kode)
+        assertEquals("Fin erfaring ISCO", responsIsco?.label)
+        assertEquals("1234", responsIsco?.kode)
 
-        assertEquals(1, esco.size)
-        assertEquals(1, isco.size)
+        val escoJobCategory = responsEsco!!.tilJobCategoryCode()
 
-        assertEquals("Fin erfaring ESCO", esco.first().label)
-        assertEquals("Fin erfaring ESCO", isco.first().label)
-        assertEquals("http://data.europa.eu/esco/occupation/4ad4024e-d1d3-4dea-b6d1-2c7948111dce", esco.first().kode)
-        assertEquals("1234", isco.first().kode)
-
-        val escoJobCategory = esco.first().tilJobCategoryCode()
         assertEquals("http://data.europa.eu/esco/occupation/4ad4024e-d1d3-4dea-b6d1-2c7948111dce", escoJobCategory.code)
         assertEquals("Fin erfaring ESCO", escoJobCategory.name)
         assertEquals("https://ec.europa.eu/esco/portal", escoJobCategory.listURI)
@@ -41,9 +38,9 @@ open class EscoServiceTest {
         assertEquals("ESCO_Occupations", escoJobCategory.listName)
         assertEquals("ESCOv1.09", escoJobCategory.listVersionID)
 
-        val iscoJobCategory = isco.first().tilJobCategoryCode()
+        val iscoJobCategory = responsIsco!!.tilJobCategoryCode()
         assertEquals("1234", iscoJobCategory.code)
-        assertEquals("Fin erfaring ESCO", iscoJobCategory.name)
+        assertEquals("Fin erfaring ISCO", iscoJobCategory.name)
         assertEquals("http://ec.europa.eu/esco/ConceptScheme/ISCO2008", iscoJobCategory.listURI)
         assertEquals("http://ec.europa.eu/esco/ConceptScheme/ISCO2008", iscoJobCategory.listSchemeURI)
         assertEquals("ISCO2008", iscoJobCategory.listName)
