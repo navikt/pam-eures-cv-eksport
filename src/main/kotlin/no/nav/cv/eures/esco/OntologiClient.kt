@@ -35,7 +35,7 @@ class OntologiClient(
 
     fun hentEscoInformasjonFraOntologien(konseptId: String): EscoDTO? {
         val request = HttpRequest.newBuilder()
-            .uri(URI("$baseUrl/rest/ontologi/eures/${konseptId}"))
+            .uri(URI("$baseUrl/rest/ontologi/esco/${konseptId}"))
             .header("Nav-CallId", "pam-eures-cv-eksport-${UUID.randomUUID()}")
             .timeout(Duration.ofMinutes(5))
             .GET()
