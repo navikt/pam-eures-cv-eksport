@@ -22,7 +22,7 @@ class EscoService(private val ontologiClient: OntologiClient) : InitializingBean
     fun hentEscoForKonseptId(konseptId: String): EscoConceptDto? {
         val escoDto = ontologiClient.hentEscoInformasjonFraOntologien(konseptId)
 
-        if (escoDto.uri.isEmpty()) {
+        if (escoDto == null || escoDto.uri.isEmpty()) {
             log.warn("Fant ingen escokode for konseptId $konseptId ved oppslag mot pam-ontologi")
             return null
         }

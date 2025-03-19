@@ -33,7 +33,7 @@ class OntologiClient(
         .version(HttpClient.Version.HTTP_1_1)
         .build()
 
-    fun hentEscoInformasjonFraOntologien(konseptId: String): EscoDTO {
+    fun hentEscoInformasjonFraOntologien(konseptId: String): EscoDTO? {
         val request = HttpRequest.newBuilder()
             .uri(URI("$baseUrl/rest/ontologi/eures/${konseptId}"))
             .header("Nav-CallId", "pam-eures-cv-eksport-${UUID.randomUUID()}")
@@ -42,6 +42,8 @@ class OntologiClient(
             .build()
 
         val response = httpClient.send(request, BodyHandlers.ofString())
+
+        if (response.statusCode() == 404) return null
 
         if (response.statusCode() > 300) {
             throw RuntimeException("Feil i euresoppslag med konseptid $konseptId mot pam-ontologi ${response.statusCode()} : ${response.body()}")
