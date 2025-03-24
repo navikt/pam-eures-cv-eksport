@@ -44,7 +44,7 @@ data class JobCategoryCode(
         val listSchemeURI: String ="https://ec.europa.eu/esco/portal",
 
         @JacksonXmlProperty(isAttribute = true, localName = "listVersionID")
-        val listVersionID: String = "ESCOv1",
+        val listVersionID: String = "ESCOv1.09",
 
         @JacksonXmlProperty(isAttribute = true, localName = "name")
         val name: String,
