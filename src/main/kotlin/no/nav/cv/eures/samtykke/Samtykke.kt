@@ -2,9 +2,14 @@ package no.nav.cv.eures.samtykke
 
 import java.time.ZonedDateTime
 
+// TODO: Sjekk all bruk av samtykke + Legg til i databasen
+// TODO: Sjekk all bruk av samtykke + Legg til i databasen
+// TODO: Sjekk all bruk av samtykke + Legg til i databasen
+
 data class Samtykke(
         val sistEndret: ZonedDateTime = ZonedDateTime.now(),
         val personalia: Boolean = false,
+        val jobbonsker: Boolean = false,
         val utdanning: Boolean = false,
         val fagbrev: Boolean = false, // TODO Er denne i  bruk som fagdokumentasjon?
         val arbeidserfaring: Boolean = false,
@@ -17,7 +22,6 @@ data class Samtykke(
         val spraak: Boolean = false,
         val sammendrag: Boolean = false,
         val kompetanser: Boolean = false,
-
         val land: List<String> = listOf()
 )
 
