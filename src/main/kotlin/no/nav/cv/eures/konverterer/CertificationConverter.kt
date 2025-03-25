@@ -10,10 +10,7 @@ import no.nav.cv.eures.samtykke.Samtykke
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 
-class CertificationConverter(
-        private val dto: CvEndretInternDto,
-        private val samtykke: Samtykke
-) {
+class CertificationConverter(private val dto: CvEndretInternDto, private val samtykke: Samtykke) {
     private val ikkeSamtykket = null
 
     companion object {
@@ -23,22 +20,18 @@ class CertificationConverter(
     fun toXmlRepresentation(): Certifications? {
         val certs = mutableListOf<Certification>()
 
-
         val (autorisasjon, fagbrev) = dto.cv?.vocationalCertificates?.toCertifications() ?: Pair(emptyList(), emptyList())
 
-        if (samtykke.offentligeGodkjenninger)
+        if (samtykke.offentligeGodkjenninger) {
             certs.addAll(dto.cv?.authorizations?.toCertifications().orEmpty())
             certs.addAll(autorisasjon)
+        }
 
+        if (samtykke.andreGodkjenninger) certs.addAll(dto.cv?.certificates?.toCertifications().orEmpty())
 
-        if (samtykke.andreGodkjenninger)
-            certs.addAll(dto.cv?.certificates?.toCertifications().orEmpty())
+        if (samtykke.kurs) certs.addAll(dto.cv?.courses?.toCertifications().orEmpty())
 
-        if (samtykke.kurs)
-            certs.addAll(dto.cv?.courses?.toCertifications().orEmpty())
-
-        if (samtykke.fagbrev)
-            certs.addAll(fagbrev)
+        if (samtykke.fagbrev) certs.addAll(fagbrev)
 
         return if (certs.isEmpty()) ikkeSamtykket else Certifications(certs)
     }
@@ -48,15 +41,15 @@ class CertificationConverter(
         it.title ?: return@mapNotNull null
 
         Certification(
-                certificationTypeCode = null,
-                certificationName = it.title,
-                issuingAuthortity = IssuingAuthority(it.issuer ?: ""),
-                firstIssuedDate = it.fromDate?.toFormattedDateTime(),
-                freeFormEffectivePeriod = FreeFormEffectivePeriod(
-                        startDate = null,
-                        endDate = it.toDate?.toFormattedDateTime()
+            certificationTypeCode = null,
+            certificationName = it.title,
+            issuingAuthortity = IssuingAuthority(it.issuer ?: ""),
+            firstIssuedDate = it.fromDate?.toFormattedDateTime(),
+            freeFormEffectivePeriod = it.fromDate?.let { fromDate ->
+                FreeFormEffectivePeriod(
+                    startDate = fromDate.toFormattedDateTime(), endDate = it.fromDate.toFormattedDateTime()
                 )
-        )
+            })
     }
 
     @JvmName("toCertificationsSertifikat")
@@ -64,15 +57,15 @@ class CertificationConverter(
         it.certificateName ?: it.alternativeName ?: return@mapNotNull null
 
         Certification(
-                certificationTypeCode = null,
-                certificationName = it.certificateName ?: it.alternativeName ?: return@mapNotNull null,
-                issuingAuthortity = IssuingAuthority(it.issuer ?: ""),
-                firstIssuedDate = it.fromDate?.toFormattedDateTime(),
-                freeFormEffectivePeriod = FreeFormEffectivePeriod(
-                        startDate = null,
-                        endDate = it.toDate?.toFormattedDateTime()
+            certificationTypeCode = null,
+            certificationName = it.certificateName ?: it.alternativeName ?: return@mapNotNull null,
+            issuingAuthortity = IssuingAuthority(it.issuer ?: ""),
+            firstIssuedDate = it.fromDate?.toFormattedDateTime(),
+            freeFormEffectivePeriod = it.fromDate?.let { fromDate ->
+                FreeFormEffectivePeriod(
+                    startDate = fromDate.toFormattedDateTime(), endDate = it.fromDate.toFormattedDateTime()
                 )
-        )
+            })
     }
 
     @JvmName("toCertificationsKurs")
@@ -80,40 +73,39 @@ class CertificationConverter(
         it.title ?: return@mapNotNull null
 
         Certification(
-                certificationTypeCode = null,
-                certificationName = it.title.replace(CandidateProfileConverter.xml10Pattern, ""),
-                issuingAuthortity = IssuingAuthority((it.issuer ?: "").replace(CandidateProfileConverter.xml10Pattern, "")),
-                firstIssuedDate = it.date?.toFormattedDateTime(),
-                freeFormEffectivePeriod = null
+            certificationTypeCode = null,
+            certificationName = it.title.replace(CandidateProfileConverter.xml10Pattern, ""),
+            issuingAuthortity = IssuingAuthority((it.issuer ?: "").replace(CandidateProfileConverter.xml10Pattern, "")),
+            firstIssuedDate = it.date?.toFormattedDateTime(),
+            freeFormEffectivePeriod = null
         )
     }
 
     @JvmName("toCertificationsFagdokumentasjon")
-    private fun List<CvEndretInternVocationalCertificate>.toCertifications() : Pair<List<Certification>, List<Certification>> {
+    private fun List<CvEndretInternVocationalCertificate>.toCertifications(): Pair<List<Certification>, List<Certification>> {
         val (aut, fag) = partition { it.certificateType == FagdokumentasjonType.AUTORISASJON.toString() }
 
         return Pair(
-                aut.mapNotNull {
-                    it.title ?: return@mapNotNull null
-                    Certification(
-                            certificationTypeCode = null,
-                            certificationName = it.title,
-                            issuingAuthortity = IssuingAuthority(""),
-                            firstIssuedDate = null,
-                            freeFormEffectivePeriod = null
-                    )
-                },
+            aut.mapNotNull {
+                it.title ?: return@mapNotNull null
+                Certification(
+                    certificationTypeCode = null,
+                    certificationName = it.title,
+                    issuingAuthortity = IssuingAuthority(""),
+                    firstIssuedDate = null,
+                    freeFormEffectivePeriod = null
+                )
+            },
 
-                fag.mapNotNull {
-                    it.title ?: return@mapNotNull null
-                    Certification(
-                            certificationTypeCode = null,
-                            certificationName = it.title,
-                            issuingAuthortity = IssuingAuthority("Yrkesopplæringsnemnd"),
-                            firstIssuedDate = null,
-                            freeFormEffectivePeriod = null
-                    )
-                }
-        )
+            fag.mapNotNull {
+                it.title ?: return@mapNotNull null
+                Certification(
+                    certificationTypeCode = null,
+                    certificationName = it.title,
+                    issuingAuthortity = IssuingAuthority("Yrkesopplæringsnemnd"),
+                    firstIssuedDate = null,
+                    freeFormEffectivePeriod = null
+                )
+            })
     }
 }
