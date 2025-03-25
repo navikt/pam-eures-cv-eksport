@@ -15,7 +15,7 @@ class CandidatePositionPreferencesConverter(
     fun toXmlRepresentation(): CandidatePositionPreferences = CandidatePositionPreferences(
         preferredLocation = samtykke.land.map { countryCode -> PreferredLocation(ReferenceLocation(countryCode = countryCode)) },
         jobCategory = if (samtykke.jobboensker) jobbønsker?.occupations?.toXmlRepresentation() else null,
-        positionOffering = if (samtykke.jobboensker) jobbønsker?.occupationTypes?.toXmlRepresentation() else null,
+        positionOfferingTypeCode = if (samtykke.jobboensker) jobbønsker?.occupationTypes?.toXmlRepresentation() else null,
         positionSchedule = if (samtykke.jobboensker) jobbønsker?.workLoadTypes?.toXmlRepresentation() else null
     )
 
@@ -44,8 +44,8 @@ class CandidatePositionPreferencesConverter(
     @JvmName("toPositionScheduleCode")
     private fun List<CvEndretInternWorkLoadType>.toXmlRepresentation() = mapNotNull {
         when (it.title) {
-            Omfang.HELTID -> PositionScheduleCode(name = FullTime.name, code = FullTime.name)
-            Omfang.DELTID -> PositionScheduleCode(name = PartTime.name, code = PartTime.name)
+            Omfang.HELTID -> PositionScheduleTypeCode(name = FullTime.name, code = FullTime.name)
+            Omfang.DELTID -> PositionScheduleTypeCode(name = PartTime.name, code = PartTime.name)
             null -> null
         }
     }.distinctBy { it.code }

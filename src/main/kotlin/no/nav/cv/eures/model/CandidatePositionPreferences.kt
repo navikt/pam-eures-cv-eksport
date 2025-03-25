@@ -8,9 +8,9 @@ data class CandidatePositionPreferences(
     @JacksonXmlElementWrapper(useWrapping = false)
     val jobCategory: List<JobCategory>?,
     @JacksonXmlElementWrapper(useWrapping = false)
-    val positionOffering: List<PositionOfferingTypeCode>?,
+    val positionOfferingTypeCode: List<PositionOfferingTypeCode>?,
     @JacksonXmlElementWrapper(useWrapping = false)
-    val positionSchedule: List<PositionScheduleCode>?
+    val positionScheduleTypeCode: List<PositionScheduleTypeCode>?
 )
 
 data class PreferredLocation(

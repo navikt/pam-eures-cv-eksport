@@ -5,7 +5,7 @@ import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlText
 
 enum class PositionSchedule { FullTime, PartTime, FlexTime, Any }
 
-data class PositionScheduleCode(
+data class PositionScheduleTypeCode(
     @JacksonXmlProperty(isAttribute = true, localName = "listName")
     val listName: String = "PositionScheduleCodeContentType",
 
