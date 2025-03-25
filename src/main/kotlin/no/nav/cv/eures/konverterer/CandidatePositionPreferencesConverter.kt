@@ -12,12 +12,11 @@ class CandidatePositionPreferencesConverter(
     private val jobbønsker: CvEndretInternJobwishesDto?,
     private val escoService: EscoService = EscoService.instance()
 ) {
-
     fun toXmlRepresentation(): CandidatePositionPreferences = CandidatePositionPreferences(
         preferredLocation = samtykke.land.map { countryCode -> PreferredLocation(ReferenceLocation(countryCode = countryCode)) },
-        jobCategory = if (samtykke.jobbonsker) jobbønsker?.occupations?.toXmlRepresentation() else null,
-        positionOffering = if (samtykke.jobbonsker) jobbønsker?.occupationTypes?.toXmlRepresentation() else null,
-        positionSchedule = if (samtykke.jobbonsker) jobbønsker?.workLoadTypes?.toXmlRepresentation() else null
+        jobCategory = if (samtykke.jobboensker) jobbønsker?.occupations?.toXmlRepresentation() else null,
+        positionOffering = if (samtykke.jobboensker) jobbønsker?.occupationTypes?.toXmlRepresentation() else null,
+        positionSchedule = if (samtykke.jobboensker) jobbønsker?.workLoadTypes?.toXmlRepresentation() else null
     )
 
     @JvmName("toJobCategoryCode")

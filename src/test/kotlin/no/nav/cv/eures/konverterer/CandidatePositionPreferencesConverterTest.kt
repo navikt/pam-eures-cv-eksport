@@ -26,7 +26,7 @@ class CandidatePositionPreferencesConverterTest {
         `when`(ontologiClient.hentEscoInformasjonFraOntologien("12345")).thenReturn(mockResponsEsco)
 
 
-        val samtykke = Samtykke(personalia = true, jobbonsker = true, land = listOf("DE", "NO"))
+        val samtykke = Samtykke(personalia = true, jobboensker = true, land = listOf("DE", "NO"))
         val jobbønsker = lagJobbønsker(occupations = lagJobber(1234, 12345), occupationTypes = lagAnsettelsesform(Ansettelsesform.FAST, Ansettelsesform.FERIEJOBB, Ansettelsesform.SESONG), workloadTypes = lagOmfang(Omfang.HELTID, Omfang.DELTID, Omfang.HELTID))
 
         val converter = CandidatePositionPreferencesConverter(samtykke, jobbønsker, escoService)
@@ -54,7 +54,7 @@ class CandidatePositionPreferencesConverterTest {
 
     @Test
     fun `test konvertering til xml uten samtykke for jobbønsker`() {
-        val samtykke = Samtykke(personalia = true, jobbonsker = false, land = listOf("DE", "NO"))
+        val samtykke = Samtykke(personalia = true, jobboensker = false, land = listOf("DE", "NO"))
         val jobbønsker = lagJobbønsker(occupationTypes = lagAnsettelsesform(Ansettelsesform.FAST, Ansettelsesform.FERIEJOBB, Ansettelsesform.SESONG), workloadTypes = lagOmfang(Omfang.HELTID, Omfang.DELTID, Omfang.HELTID))
 
         val converter = CandidatePositionPreferencesConverter(samtykke, jobbønsker, escoService)
