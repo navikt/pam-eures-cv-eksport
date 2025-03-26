@@ -49,35 +49,40 @@ class CertificationConverter(private val dto: CvEndretInternDto, private val sam
                 FreeFormEffectivePeriod(
                     startDate = fromDate.toFormattedDateTime(), endDate = it.toDate?.toFormattedDateTime()
                 )
-            })
+            },
+            description = "Authorization: ${it.title}"
+            )
     }
 
     @JvmName("toCertificationsSertifikat")
     private fun List<CvEndretInternCertificate>.toCertifications() = mapNotNull {
-        it.certificateName ?: it.alternativeName ?: return@mapNotNull null
+        val name = it.certificateName ?: it.alternativeName ?: return@mapNotNull null
 
         Certification(
             certificationTypeCode = null,
-            certificationName = it.certificateName ?: it.alternativeName ?: return@mapNotNull null,
+            certificationName = name,
             issuingAuthority = IssuingAuthority(it.issuer ?: ""),
             firstIssuedDate = it.fromDate?.toFormattedDateTime(),
             freeFormEffectivePeriod = it.fromDate?.let { fromDate ->
                 FreeFormEffectivePeriod(
                     startDate = fromDate.toFormattedDateTime(), endDate = it.toDate?.toFormattedDateTime()
                 )
-            })
+            },
+            description = "Certificate: ${it.certificateName}"
+        )
     }
 
     @JvmName("toCertificationsKurs")
     private fun List<CvEndretInternCourse>.toCertifications() = mapNotNull {
-        it.title ?: return@mapNotNull null
+        val title =  it.title?.replace(CandidateProfileConverter.xml10Pattern, "") ?: return@mapNotNull null
 
         Certification(
             certificationTypeCode = null,
-            certificationName = it.title.replace(CandidateProfileConverter.xml10Pattern, ""),
+            certificationName = title,
             issuingAuthority = IssuingAuthority((it.issuer ?: "").replace(CandidateProfileConverter.xml10Pattern, "")),
             firstIssuedDate = it.date?.toFormattedDateTime(),
-            freeFormEffectivePeriod = null
+            freeFormEffectivePeriod = null,
+            description = "Certificate: $title"
         )
     }
 
@@ -93,7 +98,8 @@ class CertificationConverter(private val dto: CvEndretInternDto, private val sam
                     certificationName = it.title,
                     issuingAuthority = IssuingAuthority(""),
                     firstIssuedDate = null,
-                    freeFormEffectivePeriod = null
+                    freeFormEffectivePeriod = null,
+                    description = "Authorization: ${it.title}"
                 )
             },
 
@@ -104,7 +110,8 @@ class CertificationConverter(private val dto: CvEndretInternDto, private val sam
                     certificationName = it.title,
                     issuingAuthority = IssuingAuthority("Yrkesopplæringsnemnd"),
                     firstIssuedDate = null,
-                    freeFormEffectivePeriod = null
+                    freeFormEffectivePeriod = null,
+                    description = "Degree certificate: ${it.title}"
                 )
             })
     }
