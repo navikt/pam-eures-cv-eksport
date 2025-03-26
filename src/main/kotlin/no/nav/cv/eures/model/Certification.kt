@@ -10,7 +10,7 @@ data class Certifications(
 data class Certification(
         val certificationTypeCode: String?,
         val certificationName: String,
-        val issuingAuthortity: IssuingAuthority,
+        val issuingAuthority: IssuingAuthority,
         val firstIssuedDate: FormattedDateTime?,
         val freeFormEffectivePeriod: FreeFormEffectivePeriod?
 )

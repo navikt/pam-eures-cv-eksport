@@ -43,7 +43,7 @@ class CertificationConverter(private val dto: CvEndretInternDto, private val sam
         Certification(
             certificationTypeCode = null,
             certificationName = it.title,
-            issuingAuthortity = IssuingAuthority(it.issuer ?: ""),
+            issuingAuthority = IssuingAuthority(it.issuer ?: ""),
             firstIssuedDate = it.fromDate?.toFormattedDateTime(),
             freeFormEffectivePeriod = it.fromDate?.let { fromDate ->
                 FreeFormEffectivePeriod(
@@ -59,7 +59,7 @@ class CertificationConverter(private val dto: CvEndretInternDto, private val sam
         Certification(
             certificationTypeCode = null,
             certificationName = it.certificateName ?: it.alternativeName ?: return@mapNotNull null,
-            issuingAuthortity = IssuingAuthority(it.issuer ?: ""),
+            issuingAuthority = IssuingAuthority(it.issuer ?: ""),
             firstIssuedDate = it.fromDate?.toFormattedDateTime(),
             freeFormEffectivePeriod = it.fromDate?.let { fromDate ->
                 FreeFormEffectivePeriod(
@@ -75,7 +75,7 @@ class CertificationConverter(private val dto: CvEndretInternDto, private val sam
         Certification(
             certificationTypeCode = null,
             certificationName = it.title.replace(CandidateProfileConverter.xml10Pattern, ""),
-            issuingAuthortity = IssuingAuthority((it.issuer ?: "").replace(CandidateProfileConverter.xml10Pattern, "")),
+            issuingAuthority = IssuingAuthority((it.issuer ?: "").replace(CandidateProfileConverter.xml10Pattern, "")),
             firstIssuedDate = it.date?.toFormattedDateTime(),
             freeFormEffectivePeriod = null
         )
@@ -91,7 +91,7 @@ class CertificationConverter(private val dto: CvEndretInternDto, private val sam
                 Certification(
                     certificationTypeCode = null,
                     certificationName = it.title,
-                    issuingAuthortity = IssuingAuthority(""),
+                    issuingAuthority = IssuingAuthority(""),
                     firstIssuedDate = null,
                     freeFormEffectivePeriod = null
                 )
@@ -102,7 +102,7 @@ class CertificationConverter(private val dto: CvEndretInternDto, private val sam
                 Certification(
                     certificationTypeCode = null,
                     certificationName = it.title,
-                    issuingAuthortity = IssuingAuthority("Yrkesopplæringsnemnd"),
+                    issuingAuthority = IssuingAuthority("Yrkesopplæringsnemnd"),
                     firstIssuedDate = null,
                     freeFormEffectivePeriod = null
                 )
