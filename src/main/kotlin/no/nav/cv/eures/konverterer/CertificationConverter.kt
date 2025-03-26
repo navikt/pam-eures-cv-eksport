@@ -49,9 +49,8 @@ class CertificationConverter(private val dto: CvEndretInternDto, private val sam
                 FreeFormEffectivePeriod(
                     startDate = fromDate.toFormattedDateTime(), endDate = it.toDate?.toFormattedDateTime()
                 )
-            },
-            description = "Authorization: ${it.title}"
-            )
+            }
+        )
     }
 
     @JvmName("toCertificationsSertifikat")
@@ -67,8 +66,7 @@ class CertificationConverter(private val dto: CvEndretInternDto, private val sam
                 FreeFormEffectivePeriod(
                     startDate = fromDate.toFormattedDateTime(), endDate = it.toDate?.toFormattedDateTime()
                 )
-            },
-            description = "Certificate: ${it.certificateName}"
+            }
         )
     }
 
@@ -82,7 +80,6 @@ class CertificationConverter(private val dto: CvEndretInternDto, private val sam
             issuingAuthority = IssuingAuthority((it.issuer ?: "").replace(CandidateProfileConverter.xml10Pattern, "")),
             firstIssuedDate = it.date?.toFormattedDateTime(),
             freeFormEffectivePeriod = null,
-            description = "Certificate: $title"
         )
     }
 
@@ -99,7 +96,6 @@ class CertificationConverter(private val dto: CvEndretInternDto, private val sam
                     issuingAuthority = IssuingAuthority(""),
                     firstIssuedDate = null,
                     freeFormEffectivePeriod = null,
-                    description = "Authorization: ${it.title}"
                 )
             },
 
@@ -111,7 +107,6 @@ class CertificationConverter(private val dto: CvEndretInternDto, private val sam
                     issuingAuthority = IssuingAuthority("Yrkesopplæringsnemnd"),
                     firstIssuedDate = null,
                     freeFormEffectivePeriod = null,
-                    description = "Degree certificate: ${it.title}"
                 )
             })
     }

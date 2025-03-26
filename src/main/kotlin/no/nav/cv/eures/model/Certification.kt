@@ -14,8 +14,6 @@ data class Certification(
         val issuingAuthority: IssuingAuthority,
         val firstIssuedDate: FormattedDateTime?,
         val freeFormEffectivePeriod: FreeFormEffectivePeriod?,
-        @JacksonXmlProperty(localName = "oa:Description")
-        val description: String = ""
 )
 
 data class IssuingAuthority(
