@@ -20,8 +20,10 @@ class CandidatePositionPreferencesConverter(
     )
 
     @JvmName("toJobCategoryCode")
-    private fun List<CvEndretInternOccupation>.toXmlRepresentation() = mapNotNull {
-        escoService.hentEscoForKonseptId(it.conceptId.toString())?.tilJobCategoryCode()
+    private fun List<CvEndretInternOccupation>.toXmlRepresentation() = mapNotNull { occupation ->
+        occupation.conceptId?.let {
+            escoService.hentEscoForKonseptId(it.toString())?.tilJobCategoryCode()
+        }
     }.map { JobCategory(it) }
 
     @JvmName("toPositionOfferingTypeCode")
