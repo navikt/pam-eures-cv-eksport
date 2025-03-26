@@ -47,7 +47,7 @@ class CertificationConverter(private val dto: CvEndretInternDto, private val sam
             firstIssuedDate = it.fromDate?.toFormattedDateTime(),
             freeFormEffectivePeriod = it.fromDate?.let { fromDate ->
                 FreeFormEffectivePeriod(
-                    startDate = fromDate.toFormattedDateTime(), endDate = it.fromDate.toFormattedDateTime()
+                    startDate = fromDate.toFormattedDateTime(), endDate = it.toDate?.toFormattedDateTime()
                 )
             })
     }
@@ -63,7 +63,7 @@ class CertificationConverter(private val dto: CvEndretInternDto, private val sam
             firstIssuedDate = it.fromDate?.toFormattedDateTime(),
             freeFormEffectivePeriod = it.fromDate?.let { fromDate ->
                 FreeFormEffectivePeriod(
-                    startDate = fromDate.toFormattedDateTime(), endDate = it.fromDate.toFormattedDateTime()
+                    startDate = fromDate.toFormattedDateTime(), endDate = it.toDate?.toFormattedDateTime()
                 )
             })
     }
