@@ -1,6 +1,7 @@
 package no.nav.cv.eures.model
 
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlElementWrapper
+import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty
 
 data class Certifications(
         @JacksonXmlElementWrapper(useWrapping = false)
@@ -10,12 +11,13 @@ data class Certifications(
 data class Certification(
         val certificationTypeCode: String?,
         val certificationName: String,
-        val issuingAuthortity: IssuingAuthority,
+        val issuingAuthority: IssuingAuthority,
         val firstIssuedDate: FormattedDateTime?,
-        val freeFormEffectivePeriod: FreeFormEffectivePeriod?
+        val freeFormEffectivePeriod: FreeFormEffectivePeriod?,
 )
 
 data class IssuingAuthority(
+        @JacksonXmlProperty(localName = "oa:Name")
         val name: String
 )
 

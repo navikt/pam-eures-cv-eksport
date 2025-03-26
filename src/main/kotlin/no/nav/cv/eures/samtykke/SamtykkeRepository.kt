@@ -212,10 +212,14 @@ class SamtykkeEntity {
     @Column(name = "LAND", nullable = false)
     var land: String = "[]"
 
+    @Column(name = "JOBBOENSKER", nullable = false)
+    var jobboensker: Boolean = false
+
 
     fun toSamtykke() = Samtykke(
             sistEndret = sistEndret,
             personalia = personalia,
+            jobboensker = jobboensker,
             utdanning = utdanning,
             fagbrev = fagbrev,
             arbeidserfaring = arbeidserfaring,
@@ -252,6 +256,7 @@ class SamtykkeEntity {
             samtykkeEntity.sammendrag = samtykke.sammendrag
             samtykkeEntity.kompetanser = samtykke.kompetanser
             samtykkeEntity.land = objectMapper.writeValueAsString(samtykke.land)
+            samtykkeEntity.jobboensker = samtykke.jobboensker
 
             return samtykkeEntity
         }

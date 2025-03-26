@@ -20,4 +20,4 @@ fun Long.toFormattedDateTime() : FormattedDateTime {
 }
 
 fun ZonedDateTime.toFormattedDateTime()
-        = FormattedDateTime(this.format(DateTimeFormatter.ofPattern(dateFormat)))
+        = FormattedDateTime(this.format(DateTimeFormatter.ofPattern(dateFormat).withZone(this.zone)))

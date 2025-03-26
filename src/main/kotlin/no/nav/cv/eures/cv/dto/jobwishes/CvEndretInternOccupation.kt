@@ -4,5 +4,6 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 data class CvEndretInternOccupation(
-    val title: String?
+    val title: String?,
+    val conceptId: Long?
 )

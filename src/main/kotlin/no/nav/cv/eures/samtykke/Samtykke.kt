@@ -5,6 +5,7 @@ import java.time.ZonedDateTime
 data class Samtykke(
         val sistEndret: ZonedDateTime = ZonedDateTime.now(),
         val personalia: Boolean = false,
+        val jobboensker: Boolean = false,
         val utdanning: Boolean = false,
         val fagbrev: Boolean = false, // TODO Er denne i  bruk som fagdokumentasjon?
         val arbeidserfaring: Boolean = false,
@@ -17,7 +18,5 @@ data class Samtykke(
         val spraak: Boolean = false,
         val sammendrag: Boolean = false,
         val kompetanser: Boolean = false,
-
         val land: List<String> = listOf()
 )
-

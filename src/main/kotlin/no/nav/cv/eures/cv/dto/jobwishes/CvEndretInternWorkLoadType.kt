@@ -4,5 +4,9 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 data class CvEndretInternWorkLoadType(
-    val title: String?
+    val title: Omfang?
 )
+
+enum class Omfang {
+    HELTID, DELTID;
+}

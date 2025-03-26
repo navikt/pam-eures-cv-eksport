@@ -4,5 +4,11 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 data class CvEndretInternOccupationType(
-    val title: String?
+    val title: Ansettelsesform?
 )
+
+enum class Ansettelsesform {
+    ENGASJEMENT, FAST, FERIEJOBB, PROSJEKT,
+    SELVSTENDIG_NAERINGSDRIVENDE, SESONG,
+    VIKARIAT, TRAINEE, LAERLING, ANNET;
+}

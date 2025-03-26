@@ -3,7 +3,6 @@ package no.nav.cv.eures.konverterer
 import no.nav.cv.dto.CvEndretInternDto
 import no.nav.cv.dto.cv.CvEndretInternWorkExperience
 import no.nav.cv.eures.esco.EscoService
-import no.nav.cv.eures.esco.dto.EscoKodeType
 import no.nav.cv.eures.model.*
 
 class EmploymentHistoryConverter(
