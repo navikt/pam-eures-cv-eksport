@@ -1,6 +1,7 @@
 package no.nav.cv.eures.model
 
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlElementWrapper
+import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty
 
 data class Certifications(
         @JacksonXmlElementWrapper(useWrapping = false)
@@ -16,6 +17,7 @@ data class Certification(
 )
 
 data class IssuingAuthority(
+        @JacksonXmlProperty(localName = "oa:Name")
         val name: String
 )
 
