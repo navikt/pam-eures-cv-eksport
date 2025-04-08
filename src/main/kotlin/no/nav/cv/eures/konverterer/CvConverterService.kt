@@ -33,7 +33,7 @@ class CvConverterService(
         if (cvXml == null) return null
 
         return convertToXml(cvXml.foedselsnummer)
-            ?.let { (_, xml, _) -> updateIfChanged(cvXml, xml)}
+            ?.let { (_, xml, _) -> updateIfChanged(cvXml, xml)} ?: delete(cvXml.foedselsnummer)
     }
 
     fun updateIfChanged(cvXml: CvXml, newXml: String): CvXml {
@@ -66,7 +66,7 @@ class CvConverterService(
             ?.let { (ref, xml, _) ->
                 val checksum = md5(xml)
                 log.debug("Create New: Before save of ${xml.length} bytes of xml with checksum $checksum")
-                fodselsnummer?.let {
+                fodselsnummer.let {
                     cvXmlRepository.save(
                         CvXml.create(
                             reference = ref,
@@ -79,26 +79,29 @@ class CvConverterService(
                         )
                     )
                 }
-            }
+            } ?: delete(fodselsnummer)
     }
 
     fun createOrUpdate(fodselsnummer: String) = cvXmlRepository.fetch(fodselsnummer)
         ?.let { updateExisting(it) }
         ?: createNew(fodselsnummer)
 
-    fun delete(fodselsnummer: String): CvXml? = cvXmlRepository.fetch(fodselsnummer)
-            ?.let {
-                it.slettet = it.slettet ?: ZonedDateTime.now()
-                it.xml = ""
-                it.checksum = ""
-                samtykkeRepository.slettSamtykke(fodselsnummer)
-                return@let cvXmlRepository.save(it)
-            }
+    fun delete(fodselsnummer: String): CvXml? {
+        samtykkeRepository.slettSamtykke(fodselsnummer)
 
+        return cvXmlRepository.fetch(fodselsnummer)?.let {
+            it.slettet = it.slettet ?: ZonedDateTime.now()
+            it.xml = ""
+            it.checksum = ""
+            return@let cvXmlRepository.save(it)
+        }
+    }
 
     fun convertToXml(fodselsnummer: String): Triple<String, String, Candidate>? {
         val record = cvRepository.hentCvByFoedselsnummer(fodselsnummer)
-        val dto = objectMapper.readValue<CvEndretInternDto>(record?.jsonCv!!)
+        val jsonCv = record?.jsonCv ?: return null
+
+        val dto = objectMapper.readValue<CvEndretInternDto>(jsonCv)
         return dto
             .let {
                 log.debug("Got CV aktoerid: ${it.aktorId}")
@@ -112,6 +115,7 @@ class CvConverterService(
                             log.error("Failed to convert CV to XML for candidate ${it.aktorId}", e)
                             throw CvNotConvertedException("Failed to convert CV to XML for candidate ${it.aktorId}", e)
                         }
+
                         return@let Triple(it.kandidatNr ?: "", xml, previewJson)
                     }
 
