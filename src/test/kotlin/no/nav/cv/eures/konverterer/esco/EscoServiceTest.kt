@@ -36,7 +36,7 @@ open class EscoServiceTest {
         assertEquals("https://ec.europa.eu/esco/portal", escoJobCategory.listURI)
         assertEquals("https://ec.europa.eu/esco/portal", escoJobCategory.listSchemeURI)
         assertEquals("ESCO_Occupations", escoJobCategory.listName)
-        assertEquals("ESCOv1.09", escoJobCategory.listVersionID)
+        assertEquals("ESCOv1", escoJobCategory.listVersionID)
 
         val iscoJobCategory = responsIsco!!.tilJobCategoryCode()
         assertEquals("1234", iscoJobCategory.code)
