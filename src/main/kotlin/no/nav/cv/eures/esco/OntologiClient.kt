@@ -6,6 +6,7 @@ import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import com.fasterxml.jackson.module.kotlin.readValue
 import no.nav.cv.eures.esco.dto.EscoDTO
+import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Service
 import java.net.URI
@@ -25,7 +26,7 @@ class OntologiClient(
             .disable(DeserializationFeature.ADJUST_DATES_TO_CONTEXT_TIME_ZONE)
             .disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES)
             .setTimeZone(TimeZone.getTimeZone("Europe/Oslo"))
-
+        val log = LoggerFactory.getLogger(OntologiClient::class.java)
     }
 
     private val httpClient: HttpClient = HttpClient.newBuilder()
@@ -34,6 +35,11 @@ class OntologiClient(
         .build()
 
     fun hentEscoInformasjonFraOntologien(konseptId: String): EscoDTO? {
+        if (konseptId.isBlank()) {
+            log.warn("Prøvde å hente escoinformasjon for tom konseptId, returnerer null")
+            return null
+        }
+
         val request = HttpRequest.newBuilder()
             .uri(URI("$baseUrl/rest/ontologi/esco/${konseptId}"))
             .header("Nav-CallId", "pam-eures-cv-eksport-${UUID.randomUUID()}")
