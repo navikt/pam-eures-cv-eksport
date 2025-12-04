@@ -14,9 +14,9 @@ import org.mockito.kotlin.times
 import org.mockito.kotlin.verify
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest
-import org.springframework.boot.test.mock.mockito.MockBean
 import org.springframework.http.HttpHeaders
 import org.springframework.http.MediaType
+import org.springframework.test.context.bean.override.mockito.MockitoBean
 import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers
@@ -32,13 +32,13 @@ class SamtykkeControllerTest {
     @Autowired
     private lateinit var mockMvc: MockMvc
 
-    @MockBean
+    @MockitoBean
     private lateinit var samtykkeService: SamtykkeService
 
-    @MockBean
+    @MockitoBean
     private lateinit var pdlPersonGateway: PdlPersonGateway
 
-    @MockBean
+    @MockitoBean
     private lateinit var innloggetbrukerService: InnloggetBrukerService
 
     @Test
