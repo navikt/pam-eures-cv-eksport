@@ -46,21 +46,21 @@ class GenerateMetricSinkMetricsTest {
         ))
 
         val valueCaptor = argumentCaptor<String>()
-        whenever(kafkaTemplate.send(eq(topic), valueCaptor.capture()))
+        whenever(kafkaTemplate.send(eq(topic), any(), valueCaptor.capture()))
                 .thenReturn(CompletableFuture())
 
         generateMetricSinkMetrics.generateAndSendMetrics()
 
-        verify(kafkaTemplate, times(1)).send(eq(topic), any())
+        verify(kafkaTemplate, times(1)).send(eq(topic), any(), any())
 
         val sentJson = valueCaptor.firstValue
         val metrikk = objectMapper.readValue<MetricSinkMetrikk>(sentJson)
 
-        assertEquals("EURES_SAMTYKKE", metrikk.type)
+        assertEquals("EURES_CV_EKSPORT", metrikk.type)
         assertNotNull(metrikk.timestamp)
         assertFalse(metrikk.timestamp.contains("Z"), "Timestamp should be LocalDateTime format without timezone")
 
-        val payload = objectMapper.readValue<EuresSamtykkePayload>(metrikk.payload)
+        val payload = objectMapper.readValue<EuresCvEksportMetrikkPayload>(metrikk.payload)
         assertEquals(42L, payload.antallSamtykker)
         assertEquals(3, payload.antallPerLand["NO"])
         assertEquals(1, payload.antallPerLand["SE"])
@@ -73,15 +73,15 @@ class GenerateMetricSinkMetricsTest {
         whenever(samtykkeRepository.hentAlleLand()).thenReturn(emptyList())
 
         val valueCaptor = argumentCaptor<String>()
-        whenever(kafkaTemplate.send(eq(topic), valueCaptor.capture()))
+        whenever(kafkaTemplate.send(eq(topic), any(), valueCaptor.capture()))
                 .thenReturn(CompletableFuture())
 
         generateMetricSinkMetrics.generateAndSendMetrics()
 
-        verify(kafkaTemplate, times(1)).send(eq(topic), any())
+        verify(kafkaTemplate, times(1)).send(eq(topic), any(), any())
 
         val metrikk = objectMapper.readValue<MetricSinkMetrikk>(valueCaptor.firstValue)
-        val payload = objectMapper.readValue<EuresSamtykkePayload>(metrikk.payload)
+        val payload = objectMapper.readValue<EuresCvEksportMetrikkPayload>(metrikk.payload)
 
         assertEquals(0L, payload.antallSamtykker)
         assertTrue(payload.antallPerLand.isEmpty())
@@ -93,7 +93,7 @@ class GenerateMetricSinkMetricsTest {
                 .thenThrow(RuntimeException("DB error"))
 
         assertDoesNotThrow { generateMetricSinkMetrics.generateAndSendMetrics() }
-        verify(kafkaTemplate, never()).send(any<String>(), any())
+        verify(kafkaTemplate, never()).send(any(), any(), any())
     }
 
     @Test
@@ -102,13 +102,13 @@ class GenerateMetricSinkMetricsTest {
         whenever(samtykkeRepository.hentAlleLand()).thenReturn(listOf("""["FI"]"""))
 
         val valueCaptor = argumentCaptor<String>()
-        whenever(kafkaTemplate.send(eq(topic), valueCaptor.capture()))
+        whenever(kafkaTemplate.send(eq(topic), any(), valueCaptor.capture()))
                 .thenReturn(CompletableFuture())
 
         generateMetricSinkMetrics.generateAndSendMetrics()
 
         val outerMap = objectMapper.readValue<Map<String, Any>>(valueCaptor.firstValue)
-        assertEquals("EURES_SAMTYKKE", outerMap["type"])
+        assertEquals("EURES_CV_EKSPORT", outerMap["type"])
 
         // payload field should be a string (not nested object) per pam-metric-sink contract
         assertTrue(outerMap["payload"] is String, "payload should be a JSON string, not a nested object")

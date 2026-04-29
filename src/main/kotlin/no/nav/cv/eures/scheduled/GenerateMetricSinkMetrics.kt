@@ -13,8 +13,9 @@ import org.springframework.scheduling.annotation.Scheduled
 import org.springframework.stereotype.Service
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
+import java.util.UUID
 
-data class EuresSamtykkePayload(
+data class EuresCvEksportMetrikkPayload(
     val antallSamtykker: Long,
     val antallPerLand: Map<String, Int>,
 )
@@ -34,6 +35,7 @@ class GenerateMetricSinkMetrics(
 ) {
     companion object {
         val log: Logger = LoggerFactory.getLogger(GenerateMetricSinkMetrics::class.java)
+        val metrikkType = "EURES_CV_EKSPORT"
     }
 
     private val objectMapper = ObjectMapper().registerModule(KotlinModule.Builder().build())
@@ -48,25 +50,25 @@ class GenerateMetricSinkMetrics(
                 .groupingBy { it }
                 .eachCount()
 
-            val payload = EuresSamtykkePayload(
+            val payload = EuresCvEksportMetrikkPayload(
                 antallSamtykker = count,
                 antallPerLand = countryCounts,
             )
 
             val metrikk = MetricSinkMetrikk(
-                type = "EURES_SAMTYKKE",
+                type = metrikkType,
                 payload = objectMapper.writeValueAsString(payload),
                 timestamp = LocalDateTime.now().withNano(0).format(DateTimeFormatter.ISO_LOCAL_DATE_TIME),
             )
 
             log.info("Sending metric-sink metric: $count samtykker, country counts $countryCounts")
 
-            kafkaTemplate.send(metricSinkTopic, objectMapper.writeValueAsString(metrikk))
+            kafkaTemplate.send(metricSinkTopic, UUID.randomUUID().toString(), objectMapper.writeValueAsString(metrikk))
                 .whenComplete { result, ex ->
                     if (ex != null) {
-                        log.error("Failed to send EURES_SAMTYKKE metric to metric-sink", ex)
+                        log.error("Failed to send EURES_CV_EKSPORT metric to metric-sink", ex)
                     } else {
-                        log.info("Sent EURES_SAMTYKKE metric to metric-sink (offset=${result.recordMetadata.offset()})")
+                        log.info("Sent EURES_CV_EKSPORT metric to metric-sink (offset=${result.recordMetadata.offset()})")
                     }
                 }
         } catch (e: Exception) {
