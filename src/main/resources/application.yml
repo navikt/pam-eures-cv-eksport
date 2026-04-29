@@ -58,6 +58,8 @@ kafka:
   topics:
     consumers:
       cv_endret_intern: ${KAFKA_CONSUMER_TOPIC_CV_ENDRET_INTERN:teampam.cv-endret-intern-v3}
+    producers:
+      metric_sink: ${KAFKA_PRODUCER_TOPIC_METRIC_SINK:teampam.metric-sink-v1}
 
 jackson:
   serializationInclusion: ALWAYS

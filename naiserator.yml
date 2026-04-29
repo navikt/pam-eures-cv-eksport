@@ -73,6 +73,8 @@ spec:
       value: {{ pdl_base_url }}
     - name: SWAGGER_ENABLED
       value: "{{ swagger_enabled }}"
+    - name: KAFKA_PRODUCER_TOPIC_METRIC_SINK
+      value: teampam.metric-sink-v1
   ingresses:
   {{#each ingress as |url|}}
      - {{url}}

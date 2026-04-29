@@ -79,4 +79,44 @@ internal class SamtykkeRepositoryTest {
         assertEquals(samtykke.offentligeGodkjenninger, hentet?.offentligeGodkjenninger)
 
     }
+
+    @Test
+    fun `hentAntallSamtykkerMedBooleanTrue - teller kun samtykker med minst ett boolean-felt satt til true`() {
+        val medTrue = Samtykke(now, personalia = true)
+        val medFlerTrue = Samtykke(now, utdanning = true, spraak = true)
+        val utenTrue = Samtykke(now)
+
+        samtykkeRepository.oppdaterSamtykke("fnr1", medTrue)
+        samtykkeRepository.oppdaterSamtykke("fnr2", medFlerTrue)
+        samtykkeRepository.oppdaterSamtykke("fnr3", utenTrue)
+
+        val antall = samtykkeRepository.hentAntallSamtykkerMedBooleanTrue()
+
+        assertEquals(2L, antall)
+    }
+
+    @Test
+    fun `hentAntallSamtykkerMedBooleanTrue - returnerer 0 når ingen har boolean true`() {
+        samtykkeRepository.oppdaterSamtykke("fnr1", Samtykke(now))
+        samtykkeRepository.oppdaterSamtykke("fnr2", Samtykke(now))
+
+        assertEquals(0L, samtykkeRepository.hentAntallSamtykkerMedBooleanTrue())
+    }
+
+    @Test
+    fun `hentAntallSamtykkerMedBooleanTrue - teller alle boolean-felter`() {
+        samtykkeRepository.oppdaterSamtykke("fnr1", Samtykke(now, fagbrev = true))
+        samtykkeRepository.oppdaterSamtykke("fnr2", Samtykke(now, arbeidserfaring = true))
+        samtykkeRepository.oppdaterSamtykke("fnr3", Samtykke(now, annenErfaring = true))
+        samtykkeRepository.oppdaterSamtykke("fnr4", Samtykke(now, foererkort = true))
+        samtykkeRepository.oppdaterSamtykke("fnr5", Samtykke(now, lovregulerteYrker = true))
+        samtykkeRepository.oppdaterSamtykke("fnr6", Samtykke(now, offentligeGodkjenninger = true))
+        samtykkeRepository.oppdaterSamtykke("fnr7", Samtykke(now, andreGodkjenninger = true))
+        samtykkeRepository.oppdaterSamtykke("fnr8", Samtykke(now, kurs = true))
+        samtykkeRepository.oppdaterSamtykke("fnr9", Samtykke(now, sammendrag = true))
+        samtykkeRepository.oppdaterSamtykke("fnr10", Samtykke(now, kompetanser = true))
+        samtykkeRepository.oppdaterSamtykke("fnr11", Samtykke(now, jobboensker = true))
+
+        assertEquals(11L, samtykkeRepository.hentAntallSamtykkerMedBooleanTrue())
+    }
 }
