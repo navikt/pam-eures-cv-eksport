@@ -15,6 +15,7 @@ interface SamtykkeRepository {
     fun hentSamtykkeUtenNaaverendeXml(foedselsnummer: List<String>) : List<SamtykkeEntity>
     fun hentGamleSamtykker(time: ZonedDateTime): List<SamtykkeEntity>
     fun hentAntallSamtykker() : Long
+    fun hentAntallSamtykkerMedBooleanTrue() : Long
     fun hentAntallSamtykkerPerKategori(): Map<String, Long>
     fun slettSamtykke(foedselsnummer: String) : Int
     fun oppdaterSamtykke(foedselsnummer: String, samtykke: Samtykke)
@@ -85,6 +86,21 @@ private open class JpaSamtykkeRepository(
     @Transactional
     override fun hentAntallSamtykker() : Long
             = (entityManager.createNativeQuery(hentAntallSamtykker)
+            .singleResult as Long)
+
+    private val hentAntallSamtykkerMedBooleanTrue =
+            """
+                SELECT COUNT(*) FROM SAMTYKKE WHERE
+                PERSONALIA = true OR UTDANNING = true OR FAGBREV = true OR
+                ARBEIDSERFARING = true OR ANNEN_ERFARING = true OR FOERERKORT = true OR
+                LOVREGULERTE_YRKER = true OR OFFENTLIGE_GODKJENNINGER = true OR
+                ANDRE_GODKJENNINGER = true OR KURS = true OR SPRAAK = true OR
+                SAMMENDRAG = true OR KOMPETANSER = true OR JOBBOENSKER = true
+            """.replace(serieMedWhitespace, " ")
+
+    @Transactional(readOnly = true)
+    override fun hentAntallSamtykkerMedBooleanTrue(): Long =
+            (entityManager.createNativeQuery(hentAntallSamtykkerMedBooleanTrue)
             .singleResult as Long)
 
 
