@@ -40,7 +40,7 @@ class GenerateMetricSinkMetrics(
 
     private val objectMapper = ObjectMapper().registerModule(KotlinModule.Builder().build())
 
-    @Scheduled(cron = "0 */15 * * * *")
+    @Scheduled(cron = "0 0 4 * * *")
     fun generateAndSendMetrics() {
         try {
             val count = samtykkeRepository.hentAntallSamtykkerMedBooleanTrue()
