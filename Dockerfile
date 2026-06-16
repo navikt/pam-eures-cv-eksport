@@ -1,13 +1,8 @@
-FROM eclipse-temurin:21-jre-alpine
+FROM europe-north1-docker.pkg.dev/cgr-nav/pull-through/nav.no/jre:openjdk-21
 
-RUN apk add --no-cache bash
-RUN adduser -u 1000 apprunner -D
-USER apprunner
-
+COPY build/libs/pam-eures-cv-eksport-*.jar /app.jar
 EXPOSE 8080
-
+ENV JAVA_OPTS="-XX:-OmitStackTraceInFastThrow -Xms256m -Xmx1536m"
 ENV LANG='nb_NO.UTF-8' LANGUAGE='nb_NO:nb' LC_ALL='nb:NO.UTF-8' TZ="Europe/Oslo"
-ENV JAVA_OPTS="-Xms768m -Xmx1280m"
 
-COPY build/libs/pam-eures-cv-eksport-*.jar ./app.jar
-CMD ["java", "-jar", "app.jar"]
+ENTRYPOINT ["java", "-jar", "/app.jar"]
