@@ -59,7 +59,7 @@ dependencies {
 
     implementation "org.springframework.boot:spring-boot-starter-web"
     implementation 'org.springframework.boot:spring-boot-starter-actuator'
-    implementation 'io.micrometer:micrometer-registry-prometheus:1.9.4'
+    implementation 'io.micrometer:micrometer-registry-prometheus'
 
     implementation "no.nav.security:token-validation-spring:${tokenSupportVersion}"
     implementation "no.nav.security:token-client-core:${tokenSupportVersion}"
