@@ -17,7 +17,7 @@ jobs:
       id-token: write
       security-events: write
     if: "(github.ref_name == 'master') || contains(github.event.head_commit.message, 'deploy:dev') || contains(github.ref, 'feature/')"
-    uses: navikt/pam-deploy/.github/workflows/deploy-dev.yml@v7
+    uses: navikt/pam-deploy/.github/workflows/deploy-dev.yml@v8
     with:
       NAIS_RESOURCE: naiserator.yml
       JAVA_VERSION: "21"
