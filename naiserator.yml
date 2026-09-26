@@ -45,7 +45,7 @@ spec:
     enabled: true
   gcp:
     sqlInstances:
-      - type: POSTGRES_14
+      - type: POSTGRES_18
         tier: {{ cloudsql_db_tier }}
         diskAutoresize: true
         diskType: SSD
