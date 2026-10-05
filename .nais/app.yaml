@@ -47,6 +47,9 @@ spec:
       destinations:
         - id: loki
         - id: elastic
+    autoInstrumentation:
+      enabled: true
+      runtime: java
   env:
     - name: KAFKA_CONSUMER_TOPIC_CV_ENDRET_INTERN
       value: teampam.cv-endret-intern-v3
