@@ -1,8 +1,7 @@
 package no.nav.cv.eures.scheduled
 
-import com.fasterxml.jackson.databind.ObjectMapper
-import com.fasterxml.jackson.module.kotlin.KotlinModule
-import com.fasterxml.jackson.module.kotlin.readValue
+import tools.jackson.databind.json.JsonMapper
+import tools.jackson.module.kotlin.readValue
 import io.micrometer.core.instrument.MeterRegistry
 import no.nav.cv.eures.cv.CvRepository
 import no.nav.cv.eures.eures.EuresService
@@ -21,12 +20,11 @@ class GenerateMetrics(
         private val samtykkeRepository: SamtykkeRepository,
         private val cvRepository: CvRepository,
         private val euresService: EuresService,
+        private val jsonMapper: JsonMapper,
 ) {
     companion object {
         val log: Logger = LoggerFactory.getLogger(GenerateMetrics::class.java)
     }
-
-    private val objectMapper = ObjectMapper().registerModule(KotlinModule.Builder().build())
 
     val gauges = mutableMapOf<String, AtomicLong>()
 
@@ -84,7 +82,7 @@ class GenerateMetrics(
     private fun extractCountries()
           = samtykkeRepository
             .hentAlleLand()
-            .map { json -> objectMapper.readValue<List<String>>(json) }
+            .map { json -> jsonMapper.readValue<List<String>>(json) }
             .flatten()
             .groupingBy { it }
             .eachCount()

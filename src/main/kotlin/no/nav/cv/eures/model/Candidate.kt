@@ -1,12 +1,10 @@
 package no.nav.cv.eures.model
 
 import com.fasterxml.jackson.annotation.JsonProperty
-import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlElementWrapper
-import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty
-import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlRootElement
-import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlText
+import tools.jackson.dataformat.xml.annotation.JacksonXmlElementWrapper
+import tools.jackson.dataformat.xml.annotation.JacksonXmlProperty
+import tools.jackson.dataformat.xml.annotation.JacksonXmlText
 
-@JacksonXmlRootElement
 data class Candidate(
         @JacksonXmlProperty(isAttribute = true, localName = "xmlns")
         val xmlns: String = "http://www.hr-xml.org/3",
@@ -78,6 +76,5 @@ enum class PositionSeekingStatus {
     Passive,
     NotConsideringPositions
 }
-
 
 

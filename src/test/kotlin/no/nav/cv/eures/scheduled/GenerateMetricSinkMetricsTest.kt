@@ -1,8 +1,8 @@
 package no.nav.cv.eures.scheduled
 
-import com.fasterxml.jackson.databind.ObjectMapper
-import com.fasterxml.jackson.module.kotlin.KotlinModule
-import com.fasterxml.jackson.module.kotlin.readValue
+import tools.jackson.module.kotlin.jsonMapper
+import tools.jackson.module.kotlin.kotlinModule
+import tools.jackson.module.kotlin.readValue
 import no.nav.cv.eures.samtykke.SamtykkeRepository
 import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.BeforeEach
@@ -21,7 +21,7 @@ class GenerateMetricSinkMetricsTest {
     @Suppress("UNCHECKED_CAST")
     private val kafkaTemplate = mock(KafkaTemplate::class.java) as KafkaTemplate<String, String>
 
-    private val objectMapper = ObjectMapper().registerModule(KotlinModule.Builder().build())
+    private val objectMapper = jsonMapper { addModule(kotlinModule()) }
 
     private lateinit var generateMetricSinkMetrics: GenerateMetricSinkMetrics
 
@@ -33,6 +33,7 @@ class GenerateMetricSinkMetricsTest {
                 samtykkeRepository,
                 kafkaTemplate,
                 topic,
+                objectMapper,
         )
     }
 

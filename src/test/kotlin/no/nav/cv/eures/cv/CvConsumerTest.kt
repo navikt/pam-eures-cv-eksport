@@ -1,7 +1,7 @@
 package no.nav.cv.eures.cv
 
-import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
-import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
+import tools.jackson.module.kotlin.jsonMapper
+import tools.jackson.module.kotlin.kotlinModule
 import io.micrometer.core.instrument.MeterRegistry
 import no.nav.cv.dto.CvEndretInternDto
 import no.nav.cv.dto.CvMeldingstype
@@ -31,12 +31,11 @@ class CvConsumerTest {
     val stringCaptor = argumentCaptor<String>()
     val meldingCaptorCvInternDto = argumentCaptor<CvEndretInternDto>()
 
-    val jacksonMapper = jacksonObjectMapper()
-        .registerModule(JavaTimeModule())
+    val jacksonMapper = jsonMapper { addModule(kotlinModule()) }
 
     @BeforeEach
     fun setup() {
-        cvConsumer = CvConsumer(cvRawService, meterRegistry)
+        cvConsumer = CvConsumer(cvRawService, meterRegistry, jacksonMapper)
     }
 
     private fun internRecord(offset: Long, aktorId: String, dto: CvEndretInternDto) = ConsumerRecord<String, String>(

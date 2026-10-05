@@ -1,8 +1,8 @@
 package no.nav.cv.eures.cv
 
-import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
-import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
-import com.fasterxml.jackson.module.kotlin.readValue
+import tools.jackson.module.kotlin.jsonMapper
+import tools.jackson.module.kotlin.kotlinModule
+import tools.jackson.module.kotlin.readValue
 import no.nav.cv.dto.CvEndretInternDto
 import no.nav.cv.dto.CvMeldingstype
 import no.nav.cv.dto.cv.CvEndretInternCvDto
@@ -30,7 +30,7 @@ class CvRawServiceIntegrationTest {
 
     private val samtykkeService = mock(SamtykkeService::class.java)
 
-    private val objectMapper = jacksonObjectMapper().registerModule(JavaTimeModule())
+    private val objectMapper = jsonMapper { addModule(kotlinModule()) }
 
     @BeforeEach
     fun init() {

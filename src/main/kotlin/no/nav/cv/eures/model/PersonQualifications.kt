@@ -1,6 +1,6 @@
 package no.nav.cv.eures.model
 
-import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlElementWrapper
+import tools.jackson.dataformat.xml.annotation.JacksonXmlElementWrapper
 
 data class PersonQualifications(
         @JacksonXmlElementWrapper(useWrapping = false)

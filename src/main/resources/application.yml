@@ -23,6 +23,9 @@ no.nav.security.jwt:
           client-secret: ${AZURE_APP_CLIENT_SECRET:dummy}
           client-auth-method: client_secret_basic
 spring:
+  jackson:
+    deserialization:
+      fail-on-null-for-primitives: false
   datasource:
     driver-class-name: ${DB_DRIVER:org.postgresql.Driver}
     url: jdbc:postgresql://${DB_HOST:localhost}:${DB_PORT:35432}/${DB_DATABASE:pam-eures-cv-eksport}

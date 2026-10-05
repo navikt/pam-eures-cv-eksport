@@ -5,9 +5,9 @@ import org.junit.jupiter.api.Test
 import org.mockito.Mockito.doReturn
 import org.mockito.kotlin.any
 import org.mockito.kotlin.whenever
-import org.powermock.api.mockito.PowerMockito
-import org.springframework.beans.factory.annotation.Qualifier
-import org.springframework.boot.test.mock.mockito.MockBean
+import org.mockito.kotlin.spy
+import tools.jackson.module.kotlin.jsonMapper
+import tools.jackson.module.kotlin.kotlinModule
 import org.springframework.test.util.AssertionErrors.assertEquals
 import java.util.function.Supplier
 
@@ -15,14 +15,12 @@ class PdlPersonServiceTest {
 
     private lateinit var pdlPersonGateway: PdlPersonService
 
-    @MockBean
-    @Qualifier("pdlTokenProvider")
     private val tokenProvider: Supplier<String> = Supplier { "value" }
 
 
     @BeforeEach
     fun setUp() {
-        pdlPersonGateway = PowerMockito.spy(PdlPersonService(tokenProvider))
+        pdlPersonGateway = spy(PdlPersonService(tokenProvider, jsonMapper { addModule(kotlinModule()) }))
     }
 
     @Test
