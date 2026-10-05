@@ -1,6 +1,7 @@
 package no.nav.cv.eures.cv
 
-import no.nav.cv.eures.util.jsonMapper
+import tools.jackson.module.kotlin.jsonMapper
+import tools.jackson.module.kotlin.kotlinModule
 import no.nav.cv.dto.CvEndretInternDto
 import no.nav.cv.dto.CvMeldingstype
 import no.nav.cv.dto.cv.CvEndretInternCvDto
@@ -10,7 +11,7 @@ import java.time.LocalDate
 import java.time.ZonedDateTime
 import java.util.*
 
-val jacksonMapper = jsonMapper().writer().withDefaultPrettyPrinter()
+val jacksonMapper = jsonMapper { addModule(kotlinModule()) }.writer().withDefaultPrettyPrinter()
 
 data class CvTestData(
     val now: ZonedDateTime = ZonedDateTime.now(),

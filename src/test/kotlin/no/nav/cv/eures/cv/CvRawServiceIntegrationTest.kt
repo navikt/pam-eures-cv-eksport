@@ -1,6 +1,7 @@
 package no.nav.cv.eures.cv
 
-import no.nav.cv.eures.util.jsonMapper
+import tools.jackson.module.kotlin.jsonMapper
+import tools.jackson.module.kotlin.kotlinModule
 import tools.jackson.module.kotlin.readValue
 import no.nav.cv.dto.CvEndretInternDto
 import no.nav.cv.dto.CvMeldingstype
@@ -29,7 +30,7 @@ class CvRawServiceIntegrationTest {
 
     private val samtykkeService = mock(SamtykkeService::class.java)
 
-    private val objectMapper = jsonMapper()
+    private val objectMapper = jsonMapper { addModule(kotlinModule()) }
 
     @BeforeEach
     fun init() {

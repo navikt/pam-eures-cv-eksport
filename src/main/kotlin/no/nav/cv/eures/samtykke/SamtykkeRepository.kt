@@ -1,7 +1,7 @@
 package no.nav.cv.eures.samtykke
 
-import tools.jackson.core.type.TypeReference
-import no.nav.cv.eures.util.jsonMapper
+import tools.jackson.databind.json.JsonMapper
+import tools.jackson.module.kotlin.readValue
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Repository
@@ -25,7 +25,8 @@ interface SamtykkeRepository {
 
 @Repository
 private open class JpaSamtykkeRepository(
-        @PersistenceContext private val entityManager: EntityManager
+        @PersistenceContext private val entityManager: EntityManager,
+        private val jsonMapper: JsonMapper,
 ) : SamtykkeRepository {
     private val serieMedWhitespace = Regex("(\\s+)")
 
@@ -45,7 +46,7 @@ private open class JpaSamtykkeRepository(
                 .setParameter("foedselsnummer", foedselsnummer)
                 .resultList
                 .map { it as SamtykkeEntity }
-                .map { it.toSamtykke() }
+                .map { it.toSamtykke(jsonMapper) }
                 .firstOrNull()
 
     private val hentSamtykkeUtenNaavaerendeXmlQuery =
@@ -145,7 +146,7 @@ private open class JpaSamtykkeRepository(
     @Transactional
     override fun oppdaterSamtykke(foedselsnummer: String, samtykke: Samtykke) {
         slettSamtykke(foedselsnummer)
-        entityManager.persist(SamtykkeEntity.from(foedselsnummer, samtykke))
+        entityManager.persist(SamtykkeEntity.from(foedselsnummer, samtykke, jsonMapper))
     }
 
     private val finnFoedselsnumre =
@@ -232,7 +233,7 @@ class SamtykkeEntity {
     var jobboensker: Boolean = false
 
 
-    fun toSamtykke() = Samtykke(
+    fun toSamtykke(jsonMapper: JsonMapper) = Samtykke(
             sistEndret = sistEndret,
             personalia = personalia,
             jobboensker = jobboensker,
@@ -248,13 +249,11 @@ class SamtykkeEntity {
             spraak = spraak,
             sammendrag = sammendrag,
             kompetanser = kompetanser,
-            land = objectMapper.readValue(land, object: TypeReference<List<String>>() {})
+            land = jsonMapper.readValue<List<String>>(land)
     )
 
     companion object {
-        val objectMapper = jsonMapper()
-
-        fun from(foedselsnummer: String, samtykke: Samtykke): SamtykkeEntity {
+        fun from(foedselsnummer: String, samtykke: Samtykke, jsonMapper: JsonMapper): SamtykkeEntity {
             val samtykkeEntity = SamtykkeEntity()
             samtykkeEntity.foedselsnummer = foedselsnummer
             samtykkeEntity.sistEndret = samtykke.sistEndret
@@ -271,7 +270,7 @@ class SamtykkeEntity {
             samtykkeEntity.spraak = samtykke.spraak
             samtykkeEntity.sammendrag = samtykke.sammendrag
             samtykkeEntity.kompetanser = samtykke.kompetanser
-            samtykkeEntity.land = objectMapper.writeValueAsString(samtykke.land)
+            samtykkeEntity.land = jsonMapper.writeValueAsString(samtykke.land)
             samtykkeEntity.jobboensker = samtykke.jobboensker
 
             return samtykkeEntity

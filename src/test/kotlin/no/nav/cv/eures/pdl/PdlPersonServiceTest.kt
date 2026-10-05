@@ -6,6 +6,8 @@ import org.mockito.Mockito.doReturn
 import org.mockito.kotlin.any
 import org.mockito.kotlin.whenever
 import org.mockito.kotlin.spy
+import tools.jackson.module.kotlin.jsonMapper
+import tools.jackson.module.kotlin.kotlinModule
 import org.springframework.test.util.AssertionErrors.assertEquals
 import java.util.function.Supplier
 
@@ -18,7 +20,7 @@ class PdlPersonServiceTest {
 
     @BeforeEach
     fun setUp() {
-        pdlPersonGateway = spy(PdlPersonService(tokenProvider))
+        pdlPersonGateway = spy(PdlPersonService(tokenProvider, jsonMapper { addModule(kotlinModule()) }))
     }
 
     @Test

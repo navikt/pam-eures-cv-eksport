@@ -1,6 +1,7 @@
 package no.nav.cv.eures.samtykke
 
-import no.nav.cv.eures.util.jsonMapper
+import tools.jackson.module.kotlin.jsonMapper
+import tools.jackson.module.kotlin.kotlinModule
 import no.nav.cv.eures.bruker.InnloggetBrukerService
 import no.nav.cv.eures.pdl.PdlPersonGateway
 import no.nav.security.mock.oauth2.MockOAuth2Server
@@ -135,7 +136,7 @@ class SamtykkeControllerTest {
     }
     private fun asJsonString(obj: Any): String {
         return try {
-            jsonMapper().writeValueAsString(obj)
+            jsonMapper { addModule(kotlinModule()) }.writeValueAsString(obj)
         } catch (e: Exception) {
             throw RuntimeException(e)
         }

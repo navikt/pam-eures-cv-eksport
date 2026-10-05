@@ -1,6 +1,6 @@
 package no.nav.cv.eures.konverterer
 
-import no.nav.cv.eures.util.jsonMapper
+import tools.jackson.databind.json.JsonMapper
 import tools.jackson.module.kotlin.readValue
 import no.nav.cv.dto.CvEndretInternDto
 import no.nav.cv.eures.cv.*
@@ -17,12 +17,12 @@ import java.security.MessageDigest
 class CvConverterService(
         private val cvXmlRepository: CvXmlRepository,
         private val samtykkeRepository: SamtykkeRepository,
-        private val cvRepository: CvRepository
+        private val cvRepository: CvRepository,
+        private val jsonMapper: JsonMapper,
 ) {
 
     companion object {
         val log: Logger = LoggerFactory.getLogger(CvConverterService::class.java)
-        val objectMapper = jsonMapper()
     }
 
     fun updateExisting(cvXml: CvXml?): CvXml? {
@@ -99,7 +99,7 @@ class CvConverterService(
         val record = cvRepository.hentCvByFoedselsnummer(fodselsnummer)
         val jsonCv = record?.jsonCv ?: return null
 
-        val dto = objectMapper.readValue<CvEndretInternDto>(jsonCv)
+        val dto = jsonMapper.readValue<CvEndretInternDto>(jsonCv)
         return dto
             .let {
                 log.debug("Got CV aktoerid: ${it.aktorId}")

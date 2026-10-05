@@ -15,7 +15,6 @@ object XmlSerializer {
     private val escapeRegex =
             Regex("[^\u0009\u000A\u000D\u0020-\uD7FF\uE000-\uFFFD\u10000-\u10FFFF]")
     private val xml: XmlMapper = XmlMapper.builder()
-        .configureForJackson2()
         .addModule(KotlinModule.Builder().build())
         .propertyNamingStrategy(PropertyNamingStrategies.UPPER_CAMEL_CASE)
         .changeDefaultPropertyInclusion { it.withValueInclusion(JsonInclude.Include.NON_NULL) }

@@ -1,6 +1,7 @@
 package no.nav.cv.eures.eures
 
-import no.nav.cv.eures.util.jsonMapper
+import tools.jackson.module.kotlin.jsonMapper
+import tools.jackson.module.kotlin.kotlinModule
 
 import no.nav.cv.eures.eures.dto.GetChangedReferences
 import no.nav.cv.eures.eures.dto.GetDetails
@@ -127,7 +128,7 @@ class EuresControllerTest {
     }
     private fun asJsonString(obj: Any): String {
         return try {
-            jsonMapper().writeValueAsString(obj)
+            jsonMapper { addModule(kotlinModule()) }.writeValueAsString(obj)
         } catch (e: Exception) {
             throw RuntimeException(e)
         }

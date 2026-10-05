@@ -1,9 +1,7 @@
 package no.nav.cv.eures.esco
 
-import tools.jackson.databind.DeserializationFeature
-import tools.jackson.databind.cfg.DateTimeFeature
+import tools.jackson.databind.json.JsonMapper
 import tools.jackson.module.kotlin.readValue
-import no.nav.cv.eures.util.jsonMapper
 import no.nav.cv.eures.esco.dto.EscoDTO
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Value
@@ -18,14 +16,9 @@ import java.util.*
 @Service
 class OntologiClient(
     @Value("\${pam-ontologi.baseurl}") private val baseUrl: String,
+    private val jsonMapper: JsonMapper,
 ) {
     companion object {
-        private val objectMapper = jsonMapper().rebuild()
-            .disable(DateTimeFeature.WRITE_DATES_AS_TIMESTAMPS)
-            .disable(DateTimeFeature.ADJUST_DATES_TO_CONTEXT_TIME_ZONE)
-            .disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES)
-            .defaultTimeZone(TimeZone.getTimeZone("Europe/Oslo"))
-            .build()
         val log = LoggerFactory.getLogger(OntologiClient::class.java)
     }
 
@@ -55,6 +48,6 @@ class OntologiClient(
             throw RuntimeException("Feil i euresoppslag med konseptid $konseptId mot pam-ontologi ${response.statusCode()} : ${response.body()}")
         }
 
-        return objectMapper.readValue<EscoDTO>(response.body())
+        return jsonMapper.readValue<EscoDTO>(response.body())
     }
 }

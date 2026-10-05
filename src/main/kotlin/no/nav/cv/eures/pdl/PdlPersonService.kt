@@ -1,6 +1,6 @@
 package no.nav.cv.eures.pdl
 
-import no.nav.cv.eures.util.jsonMapper
+import tools.jackson.databind.json.JsonMapper
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.context.annotation.Profile
@@ -18,10 +18,10 @@ import java.util.function.Supplier
 @Profile("!dev & !test")
 class PdlPersonService(
     @Qualifier("pdlTokenProvider") private val tokenProvider: Supplier<String>,
+    private val jsonMapper: JsonMapper,
 ) : PdlPersonGateway {
     companion object {
         private val log = LoggerFactory.getLogger(PdlPersonService::class.java)
-        private val objectMapper = jsonMapper()
     }
 
     private val url: String = "${System.getenv("PDL_BASE_URL") ?: "https://pdl-api.dev.intern.nav.no"}/graphql"
@@ -91,7 +91,7 @@ class PdlPersonService(
                 setRequestProperty("Behandlingsnummer", "B104")
 
                 outputStream.writer(Charsets.UTF_8).apply {
-                    write(objectMapper.writeValueAsString(query))
+                    write(jsonMapper.writeValueAsString(query))
                     flush()
                 }
 
@@ -103,7 +103,7 @@ class PdlPersonService(
                 throw RuntimeException("unknown error (responseCode=$responseCode) from pdl")
             }
 
-            val response = objectMapper.readValue(responseBody, HentPersonDto::class.java)
+            val response = jsonMapper.readValue(responseBody, HentPersonDto::class.java)
             if (response.errors?.firstOrNull() != null) {
                 return null
             }
@@ -133,7 +133,7 @@ class PdlPersonService(
                 setRequestProperty("Behandlingsnummer", "B104")
 
                 outputStream.writer(Charsets.UTF_8).apply {
-                    write(objectMapper.writeValueAsString(query))
+                    write(jsonMapper.writeValueAsString(query))
                     flush()
                 }
 
@@ -145,7 +145,7 @@ class PdlPersonService(
                 throw RuntimeException("unknown error (responseCode=$responseCode) from pdl")
             }
 
-            val response = objectMapper.readValue(responseBody, HentPersonBolkDto::class.java)
+            val response = jsonMapper.readValue(responseBody, HentPersonBolkDto::class.java)
             if (response.errors?.firstOrNull() != null) {
                 log.warn("Fikk error fra PDL ${response.errors.firstOrNull()?.message}")
             }
