@@ -1,7 +1,6 @@
 package no.nav.cv.eures.pdl
 
-import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
-import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
+import no.nav.cv.eures.util.jsonMapper
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.context.annotation.Profile
@@ -22,8 +21,7 @@ class PdlPersonService(
 ) : PdlPersonGateway {
     companion object {
         private val log = LoggerFactory.getLogger(PdlPersonService::class.java)
-        private val objectMapper = jacksonObjectMapper()
-            .registerModule(JavaTimeModule())
+        private val objectMapper = jsonMapper()
     }
 
     private val url: String = "${System.getenv("PDL_BASE_URL") ?: "https://pdl-api.dev.intern.nav.no"}/graphql"

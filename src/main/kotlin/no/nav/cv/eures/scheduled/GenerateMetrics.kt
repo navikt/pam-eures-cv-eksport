@@ -1,8 +1,7 @@
 package no.nav.cv.eures.scheduled
 
-import com.fasterxml.jackson.databind.ObjectMapper
-import com.fasterxml.jackson.module.kotlin.KotlinModule
-import com.fasterxml.jackson.module.kotlin.readValue
+import no.nav.cv.eures.util.jsonMapper
+import tools.jackson.module.kotlin.readValue
 import io.micrometer.core.instrument.MeterRegistry
 import no.nav.cv.eures.cv.CvRepository
 import no.nav.cv.eures.eures.EuresService
@@ -26,7 +25,7 @@ class GenerateMetrics(
         val log: Logger = LoggerFactory.getLogger(GenerateMetrics::class.java)
     }
 
-    private val objectMapper = ObjectMapper().registerModule(KotlinModule.Builder().build())
+    private val objectMapper = jsonMapper()
 
     val gauges = mutableMapOf<String, AtomicLong>()
 

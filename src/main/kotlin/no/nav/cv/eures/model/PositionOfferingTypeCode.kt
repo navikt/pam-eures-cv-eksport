@@ -1,7 +1,7 @@
 package no.nav.cv.eures.model
 
-import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty
-import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlText
+import tools.jackson.dataformat.xml.annotation.JacksonXmlProperty
+import tools.jackson.dataformat.xml.annotation.JacksonXmlText
 
 enum class PositionOfferingTypes { DirectHire, Temporary, TemporaryToHire, ContractToHire, Contract, Internship, Apprenticeship, Seasonal, OnCall, RecruitmentReserve, SelfEmployed, Volunteer}
 

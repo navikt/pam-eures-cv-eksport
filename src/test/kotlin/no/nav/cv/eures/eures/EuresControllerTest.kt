@@ -1,10 +1,9 @@
 package no.nav.cv.eures.eures
 
-import com.fasterxml.jackson.databind.ObjectMapper
-import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
-import com.fasterxml.jackson.module.kotlin.KotlinModule
+import no.nav.cv.eures.util.jsonMapper
 
 import no.nav.cv.eures.eures.dto.GetChangedReferences
+import no.nav.cv.eures.eures.dto.GetDetails
 import no.nav.cv.eures.model.Converters.toUtcZonedDateTime
 import no.nav.security.token.support.spring.test.EnableMockOAuth2Server
 import org.junit.jupiter.api.Test
@@ -14,8 +13,8 @@ import org.mockito.kotlin.any
 import org.mockito.kotlin.times
 import org.mockito.kotlin.verify
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest
-import org.springframework.boot.test.mock.mockito.MockBean
+import org.springframework.boot.webmvc.test.autoconfigure.WebMvcTest
+import org.springframework.test.context.bean.override.mockito.MockitoBean
 import org.springframework.http.*
 import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders
@@ -34,7 +33,7 @@ class EuresControllerTest {
     @Autowired
     private lateinit var mockMvc: MockMvc
 
-    @MockBean
+    @MockitoBean
     private lateinit var euresService: EuresService
 
     @Test
@@ -63,6 +62,35 @@ class EuresControllerTest {
             MockMvcResultMatchers.status().isOk
         )
         verify(euresService, times(1)).getDetails(references)
+    }
+
+    @Test
+    fun `details response preserves field names and omits null values`() {
+        Mockito.`when`(euresService.getDetails(listOf("FD100003"))).thenReturn(
+            GetDetails(mapOf("FD100003" to GetDetails.CandidateDetail(
+                creationTimestamp = 1607963578952,
+                reference = "FD100003",
+                status = GetDetails.CandidateDetail.Status.ACTIVE,
+                content = "<Candidate/>",
+            )))
+        )
+
+        mockMvc.perform(
+            MockMvcRequestBuilders.post("/input/api/cv/v1.0/getDetails")
+                .headers(headerWithToken(VALID_TEST_TOKEN_BASE64))
+                .contentType(MediaType.APPLICATION_JSON)
+                .content("""["FD100003"]""")
+        ).andExpect(
+            MockMvcResultMatchers.status().isOk
+        ).andExpect(
+            MockMvcResultMatchers.content().json(
+                """{"details":{"FD100003":{"creationTimestamp":1607963578952,"reference":"FD100003","status":"ACTIVE","content":"<Candidate/>","source":"NAV","contentFormatVersion":"1.3"}}}"""
+            )
+        ).andExpect(
+            MockMvcResultMatchers.jsonPath("$.details.FD100003.closingTimestamp").doesNotExist()
+        ).andExpect(
+            MockMvcResultMatchers.jsonPath("$.details.FD100003.lastModificationTimestamp").doesNotExist()
+        )
     }
 
     @Test
@@ -99,9 +127,7 @@ class EuresControllerTest {
     }
     private fun asJsonString(obj: Any): String {
         return try {
-            ObjectMapper().registerModule(
-                KotlinModule.Builder().build()
-            ).registerModule(JavaTimeModule()).writeValueAsString(obj)
+            jsonMapper().writeValueAsString(obj)
         } catch (e: Exception) {
             throw RuntimeException(e)
         }

@@ -1,7 +1,6 @@
 package no.nav.cv.eures.cv
 
-import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
-import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
+import no.nav.cv.eures.util.jsonMapper
 import io.micrometer.core.instrument.MeterRegistry
 import no.nav.cv.dto.CvEndretInternDto
 import no.nav.cv.dto.CvMeldingstype
@@ -31,8 +30,7 @@ class CvConsumerTest {
     val stringCaptor = argumentCaptor<String>()
     val meldingCaptorCvInternDto = argumentCaptor<CvEndretInternDto>()
 
-    val jacksonMapper = jacksonObjectMapper()
-        .registerModule(JavaTimeModule())
+    val jacksonMapper = jsonMapper()
 
     @BeforeEach
     fun setup() {

@@ -1,7 +1,7 @@
 package no.nav.cv.eures.samtykke
 
-import com.fasterxml.jackson.core.type.TypeReference
-import com.fasterxml.jackson.databind.ObjectMapper
+import tools.jackson.core.type.TypeReference
+import no.nav.cv.eures.util.jsonMapper
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Repository
@@ -252,7 +252,7 @@ class SamtykkeEntity {
     )
 
     companion object {
-        val objectMapper = ObjectMapper()
+        val objectMapper = jsonMapper()
 
         fun from(foedselsnummer: String, samtykke: Samtykke): SamtykkeEntity {
             val samtykkeEntity = SamtykkeEntity()

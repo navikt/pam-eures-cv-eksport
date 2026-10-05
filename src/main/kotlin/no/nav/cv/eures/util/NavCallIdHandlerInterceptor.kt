@@ -2,9 +2,7 @@ package no.nav.cv.eures.util
 
 import jakarta.servlet.http.HttpServletRequest
 import jakarta.servlet.http.HttpServletResponse
-import org.apache.commons.lang3.StringUtils
 import org.slf4j.MDC
-import org.springframework.lang.Nullable
 import org.springframework.web.servlet.HandlerInterceptor
 import java.lang.Exception
 import java.util.*
@@ -13,10 +11,9 @@ import java.util.*
 
 class NavCallIdHandlerInterceptor : HandlerInterceptor {
     override fun preHandle(request: HttpServletRequest, response: HttpServletResponse, handler: Any): Boolean {
-        var callId = request.getHeader(NAV_CALL_ID_HEADER_NAME)
-        if (StringUtils.isBlank(callId)) {
-            callId = UUID.randomUUID().toString()
-        }
+        val callId = request.getHeader(NAV_CALL_ID_HEADER_NAME)
+            .takeUnless { it.isNullOrBlank() }
+            ?: UUID.randomUUID().toString()
         MDC.put(NAV_CALL_ID_MDC_KEY, callId)
         return true
     }
@@ -25,7 +22,7 @@ class NavCallIdHandlerInterceptor : HandlerInterceptor {
         request: HttpServletRequest,
         response: HttpServletResponse,
         handler: Any,
-        @Nullable ex: Exception?
+        ex: Exception?
     ) {
         MDC.remove(NAV_CALL_ID_MDC_KEY)
     }

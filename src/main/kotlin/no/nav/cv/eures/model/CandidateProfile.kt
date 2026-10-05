@@ -1,6 +1,6 @@
 package no.nav.cv.eures.model
 
-import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty
+import tools.jackson.dataformat.xml.annotation.JacksonXmlProperty
 
 // 4.11
 data class CandidateProfile(

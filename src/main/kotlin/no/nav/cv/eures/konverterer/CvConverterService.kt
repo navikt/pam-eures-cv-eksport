@@ -1,8 +1,7 @@
 package no.nav.cv.eures.konverterer
 
-import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
-import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
-import com.fasterxml.jackson.module.kotlin.readValue
+import no.nav.cv.eures.util.jsonMapper
+import tools.jackson.module.kotlin.readValue
 import no.nav.cv.dto.CvEndretInternDto
 import no.nav.cv.eures.cv.*
 import no.nav.cv.eures.model.Candidate
@@ -23,8 +22,7 @@ class CvConverterService(
 
     companion object {
         val log: Logger = LoggerFactory.getLogger(CvConverterService::class.java)
-        val objectMapper = jacksonObjectMapper()
-            .registerModule(JavaTimeModule())
+        val objectMapper = jsonMapper()
     }
 
     fun updateExisting(cvXml: CvXml?): CvXml? {

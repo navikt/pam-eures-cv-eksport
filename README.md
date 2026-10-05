@@ -8,6 +8,9 @@ For å få den til å enable dokumentasjonen lokalt, må `SWAGGER_ENABLED=true` 
 
 ## For å kjøre appen lokalt
 
+Applikasjonen bruker Spring Boot 4.1.1 og Java 25. Java-versjonen er konfigurert i
+`mise.toml` og `.sdkmanrc`. Gradle-wrapperen brukes til bygg og lokal kjøring.
+
 Postgres med applikasjonens database, pam-eures-cv-eksport, kafka oppsett og mock-oauth2-server må kjøre lokalt.
 Dette kan startes med scriptet under
 
@@ -18,7 +21,7 @@ Dette kan startes med scriptet under
 Legg inn innslag i /etc/hosts med `127.0.0.1 host.docker.internal` hvis dette mangler.
 
 ### Kommandolinje
-`gradle run --args='--spring.profiles.active=dev'`
+`./gradlew run --args='--spring.profiles.active=dev'`
 
 Dette kjører opp appen vha gradle. Da puttes også src/test/* på classpath. Der finnes det en logback-test.xml som gjør
 logging litt hyggeligere. Det må kjøres med en annen profil enn test, siden det som ligger i test-properties kun er for testene og ikke lokal kjøring.  

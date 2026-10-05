@@ -1,8 +1,6 @@
 package no.nav.cv.eures.samtykke
 
-import com.fasterxml.jackson.databind.ObjectMapper
-import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
-import com.fasterxml.jackson.module.kotlin.KotlinModule
+import no.nav.cv.eures.util.jsonMapper
 import no.nav.cv.eures.bruker.InnloggetBrukerService
 import no.nav.cv.eures.pdl.PdlPersonGateway
 import no.nav.security.mock.oauth2.MockOAuth2Server
@@ -13,7 +11,7 @@ import org.mockito.Mockito
 import org.mockito.kotlin.times
 import org.mockito.kotlin.verify
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest
+import org.springframework.boot.webmvc.test.autoconfigure.WebMvcTest
 import org.springframework.http.HttpHeaders
 import org.springframework.http.MediaType
 import org.springframework.test.context.bean.override.mockito.MockitoBean
@@ -85,6 +83,8 @@ class SamtykkeControllerTest {
             MockMvcResultMatchers.status().isOk
         ).andExpect(
             MockMvcResultMatchers.content().json("{\"personalia\":false}")
+        ).andExpect(
+            MockMvcResultMatchers.jsonPath("$.sistEndret").isString
         )
 
         verify(innloggetbrukerService, times(1)).fodselsnummer()
@@ -135,9 +135,7 @@ class SamtykkeControllerTest {
     }
     private fun asJsonString(obj: Any): String {
         return try {
-            ObjectMapper().registerModule(
-                KotlinModule.Builder().build()
-            ).registerModule(JavaTimeModule()).writeValueAsString(obj)
+            jsonMapper().writeValueAsString(obj)
         } catch (e: Exception) {
             throw RuntimeException(e)
         }

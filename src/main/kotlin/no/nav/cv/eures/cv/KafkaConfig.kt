@@ -46,9 +46,9 @@ class KafkaConfig {
             setConcurrency(1)
             setConsumerFactory(consumerFactoryInternCvTopic())
             containerProperties.pollTimeout = Long.MAX_VALUE
-            containerProperties.listenerTaskExecutor = containerExecutor()
-            isBatchListener = true
-            containerProperties.authExceptionRetryInterval = Duration.ofSeconds(60)
+            containerProperties.setListenerTaskExecutor(containerExecutor())
+            setBatchListener(true)
+            containerProperties.setAuthExceptionRetryInterval(Duration.ofSeconds(60))
             setCommonErrorHandler(CommonContainerStoppingErrorHandler())
         }
     }

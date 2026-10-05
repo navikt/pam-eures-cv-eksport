@@ -1,8 +1,7 @@
 package no.nav.cv.eures.scheduled
 
-import com.fasterxml.jackson.databind.ObjectMapper
-import com.fasterxml.jackson.module.kotlin.KotlinModule
-import com.fasterxml.jackson.module.kotlin.readValue
+import no.nav.cv.eures.util.jsonMapper
+import tools.jackson.module.kotlin.readValue
 import no.nav.cv.eures.samtykke.SamtykkeRepository
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
@@ -38,7 +37,7 @@ class GenerateMetricSinkMetrics(
         val metrikkType = "EURES_CV_EKSPORT"
     }
 
-    private val objectMapper = ObjectMapper().registerModule(KotlinModule.Builder().build())
+    private val objectMapper = jsonMapper()
 
     @Scheduled(cron = "0 0 4 * * *")
     fun generateAndSendMetrics() {

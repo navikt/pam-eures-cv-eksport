@@ -1,7 +1,7 @@
 package no.nav.cv.eures.model
 
-import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlElementWrapper
-import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty
+import tools.jackson.dataformat.xml.annotation.JacksonXmlElementWrapper
+import tools.jackson.dataformat.xml.annotation.JacksonXmlProperty
 
 // 4.5
 data class CandidateSupplier(
@@ -21,4 +21,3 @@ data class CandidateSupplier(
 ) {
         fun default() = listOf(this)
 }
-
