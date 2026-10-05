@@ -1,12 +1,11 @@
-apiVersion: "nais.io/v1alpha1"
-kind: "Application"
+apiVersion: nais.io/v1alpha1
+kind: Application
 metadata:
   name: pam-eures-cv-eksport
   namespace: teampam
   labels:
     team: teampam
 spec:
-  image: {{ image }}
   port: 9030
   liveness:
     path: /pam-eures-cv-eksport/internal/isAlive
@@ -32,27 +31,14 @@ spec:
     outbound:
       rules:
         - application: pam-ontologi
-      external:
-        - host: {{ pdl_host }}
   webproxy: false
   envFrom:
     - secret: pam-eures-cv-eksport-secret
   azure:
     application:
       enabled: true
-      tenant: {{ azure_ad_tenant }}
   tokenx:
     enabled: true
-  gcp:
-    sqlInstances:
-      - type: POSTGRES_18
-        tier: {{ cloudsql_db_tier }}
-        diskAutoresize: true
-        diskType: SSD
-        highAvailability: true
-        databases:
-          - name: pam-eures-cv-eksport
-            envVarPrefix: DB
   prometheus:
     enabled: true
     path: /pam-eures-cv-eksport/actuator/prometheus
@@ -63,20 +49,8 @@ spec:
         - id: elastic
   env:
     - name: KAFKA_CONSUMER_TOPIC_CV_ENDRET_INTERN
-      value: {{ kafka_consumer_topic_cv_endret_intern }}
+      value: teampam.cv-endret-intern-v3
     - name: DB_DRIVER
-      value: 'org.postgresql.Driver'
-    - name: PDL_SCOPE
-      value: {{ pdl_scope }}
-    - name: PDL_BASE_URL
-      value: {{ pdl_base_url }}
-    - name: SWAGGER_ENABLED
-      value: "{{ swagger_enabled }}"
+      value: org.postgresql.Driver
     - name: KAFKA_PRODUCER_TOPIC_METRIC_SINK
       value: teampam.metric-sink-v1
-  ingresses:
-  {{#each ingress as |url|}}
-     - {{url}}
-  {{/each}}
-  kafka:
-    pool: {{kafka_pool}}

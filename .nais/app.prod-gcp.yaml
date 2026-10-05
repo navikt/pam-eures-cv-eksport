@@ -1,0 +1,30 @@
+spec:
+  accessPolicy:
+    outbound:
+      external:
+        - host: pdl-api.prod-fss-pub.nais.io
+  azure:
+    application:
+      tenant: nav.no
+  gcp:
+    sqlInstances:
+      - type: POSTGRES_18
+        tier: db-custom-1-6144
+        diskAutoresize: true
+        diskType: SSD
+        highAvailability: true
+        databases:
+          - name: pam-eures-cv-eksport
+            envVarPrefix: DB
+  env:
+    - name: PDL_SCOPE
+      value: api://prod-fss.pdl.pdl-api/.default
+    - name: PDL_BASE_URL
+      value: https://pdl-api.prod-fss-pub.nais.io
+    - name: SWAGGER_ENABLED
+      value: "false"
+  ingresses:
+    - https://arbeidsplassen.nav.no/pam-eures-cv-eksport
+    - https://pam-eures-cv-eksport.intern.nav.no/pam-eures-cv-eksport
+  kafka:
+    pool: nav-prod
