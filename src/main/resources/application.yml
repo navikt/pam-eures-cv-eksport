@@ -1,5 +1,7 @@
 server:
   port: 9030
+  tomcat:
+    max-locale-count: -1
   servlet:
     context-path: /pam-eures-cv-eksport
 
