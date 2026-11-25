@@ -14,10 +14,10 @@ import java.net.http.HttpRequest
 import java.net.http.HttpResponse
 
 @SpringBootTest(
-    classes = [TomcatServletWebServerAutoConfiguration::class, TomcatConfigTest.LocaleCountServlet::class],
+    classes = [TomcatServletWebServerAutoConfiguration::class, AcceptLanguageLocaleCountTest.LocaleCountServlet::class],
     webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT,
 )
-class TomcatConfigTest(@param:LocalServerPort private val port: Int) {
+class AcceptLanguageLocaleCountTest(@param:LocalServerPort private val port: Int) {
 
     private val languages = listOf("nb", "nn", "no", "en", "sv", "da", "de", "fr", "es", "fi", "pl", "se")
 
